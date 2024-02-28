@@ -1,0 +1,365 @@
+﻿@model PlanillaPM.Models.Empleado
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container-fluid">
+    <!-- general form elements -->
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Editar Empleado</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdEmpleado" />
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: var(--blue);; ">
+                    <h5>Informacion Personal</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="text-center" id="image-drop-area" style="cursor: pointer;">
+                                    <img id="profile-img" class="profile-user-img img-fluid img-circle" src="@Model.FotografiaBase64" alt="User profile picture">
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NombreEmpleado" class="control-label"></label>
+                                <input asp-for="NombreEmpleado" class="form-control" required />
+                                <span asp-validation-for="NombreEmpleado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="ApellidoEmpleado" class="control-label"></label>
+                                <input asp-for="ApellidoEmpleado" class="form-control" required />
+                                <span asp-validation-for="ApellidoEmpleado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Fotografia" class="control-label"></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="validateImage(event)" />
+                                    <label class="custom-file-label" for="customFile"></label>
+                                    <span asp-validation-for="Fotografia" class="text-danger"></span>
+                                </div>
+                                <span asp-validation-for="Fotografia" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CodigoInterno" class="control-label"></label>
+                                <input asp-for="CodigoInterno" class="form-control" />
+                                <span asp-validation-for="CodigoInterno" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroIdentidad" class="control-label"></label>
+                                <input asp-for="NumeroIdentidad" class="form-control" type="text" />
+                                <span asp-validation-for="NumeroIdentidad" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Genero" class="control-label"></label>
+                                <select asp-for="Genero" class="form-control select2bs4" style="width: 100%;">
+                                    <option>seleccionar</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <span asp-validation-for="Genero" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroRegistroTributario" class="control-label"></label>
+                                <input asp-for="NumeroRegistroTributario" class="form-control" type="number" />
+                                <span asp-validation-for="NumeroRegistroTributario" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="control-label"></label>
+                                <input asp-for="Direccion" class="form-control" />
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input asp-for="Telefono" class="form-control" type="number" required />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CiudadResidencia" class="control-label"></label>
+                                <input asp-for="CiudadResidencia" class="form-control" required />
+                                <span asp-validation-for="CiudadResidencia" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Nacionalidad" class="control-label"></label>
+                                <select asp-for="Nacionalidad" class="form-control" required>
+                                    <option value="">Selecciona una nacionalidad</option>
+                                    <option value="Beliceño/a">Beliceño/a</option>
+                                    <option value="Costarricense">Costarricense</option>
+                                    <option value="Salvadoreño/a">Salvadoreño/a</option>
+                                    <option value="Guatemalteco/a">Guatemalteco/a</option>
+                                    <option value="Hondureño/a">Hondureño/a</option>
+                                    <option value="Nicaragüense">Nicaragüense</option>
+                                    <option value="Panameño/a">Panameño/a</option>
+                                </select>
+                                <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaNacimiento" class="control-label"></label>
+                                <input asp-for="FechaNacimiento" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="SalarioBase" class="control-label"></label>
+                                <input asp-for="SalarioBase" class="form-control" type="number" required />
+                                <span asp-validation-for="SalarioBase" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <h3></h3>
+                </div>
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Informacion General</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="control-label"></label>
+                                <input asp-for="FechaInicio" class="form-control" type="date" />
+                                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEncargado" class="control-label"></label>
+                                <select asp-for="IdEncargado" class="form-control select2bs4" style="width: 100%;" asp-items="ViewBag.IdEncargado">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdEncargado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdCargo" class="control-label"></label>
+                                <select asp-for="IdCargo" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdCargo" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdCargo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdDepartamento" class="control-label"></label>
+                                <select asp-for="IdDepartamento" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdDepartamento" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdDepartamento" class="text-danger"></span>
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroLicencia" class="control-label"></label>
+                                <input asp-for="NumeroLicencia" class="form-control" type="number" />
+                                <span asp-validation-for="NumeroLicencia" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaVencimientoLicencia" class="control-label"></label>
+                                <input asp-for="FechaVencimientoLicencia" class="form-control" type="date" />
+                                <span asp-validation-for="FechaVencimientoLicencia" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdTipoContrato" class="control-label"></label>
+                                <select asp-for="IdTipoContrato" class="form-control select2bs4 is-invalid" id="IdTipoContrato" asp-items="ViewBag.IdTipoContrato" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdTipoContrato" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdTipoNomina" class="control-label"></label>
+                                <select asp-for="IdTipoNomina" class="form-control select2bs4 is-invalid" id="IdTipoNomina" asp-items="ViewBag.IdTipoNomina" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdTipoContrato" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdBanco" class="control-label"></label>
+                                <select asp-for="IdBanco" class="form-select select2bs4" id="IdBanco" asp-items="ViewBag.IdBanco">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdBanco" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CuentaBancaria" class="control-label"></label>
+                                <input asp-for="CuentaBancaria" class="form-control" />
+                                <span asp-validation-for="CuentaBancaria" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
+                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Responsable</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaCreacion" class="control-label"></label>
+                                <input asp-for="FechaCreacion" class="form-control" disabled/>
+                                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaModificacion" class="control-label"></label>
+                                <input asp-for="FechaModificacion" class="form-control" disabled />
+                                <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CreadoPor" class="control-label"></label>
+                                <input asp-for="CreadoPor" class="form-control" disabled />
+                                <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="ModificadoPor" class="control-label"></label>
+                                <input asp-for="ModificadoPor" class="form-control" disabled />
+                                <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+      
+                </div>
+                <br />
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <input type="submit" value="Editar" class="btn btn-primary" style="background-color: var(--blue);;" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
+        </form>
+    </div>
+    <!-- /.card -->
+
+    <script>
+        function validateImage(event) {
+            var input = event.target;
+            var file = input.files[0];
+            var fileSize = file.size / 1024; // tamaño del archivo en kilobytes
+
+            // Límite máximo de tamaño de archivo en kilobytes (1 MB)
+            var maxSizeKB = 1024;
+
+            if (fileSize > maxSizeKB) {
+                // Restablecer el valor del campo de entrada de archivo
+                input.value = '';
+                // Mostrar mensaje de error al usuario
+                toastr.warning('La imagen es demasiado grande. Por favor, seleccione una imagen más pequeña.');
+
+                return false; // Detener la carga del archivo
+            }
+
+            // Si pasa la validación, mostrar la vista previa de la imagen
+            previewImage(event);
+        }
+
+        function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var output = document.getElementById('profile-img');
+                output.src = dataURL;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

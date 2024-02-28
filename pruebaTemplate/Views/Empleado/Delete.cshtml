@@ -1,0 +1,308 @@
+﻿@model PlanillaPM.Models.Empleado
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+
+
+<div class="container-fluid">
+
+    <div class="alert alert-danger alert-dismissible">
+       
+        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+        ¿Estás seguro de que quieres eliminar esto?
+    </div>
+
+    <!-- general form elements -->
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: #1797C0;">
+            <h3 class="card-title">Eliminar Empleado</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form asp-action="Delete">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: #1797C0; ">
+                    <h5>Informacion Personal</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="text-center" id="image-drop-area" style="cursor: pointer;">
+                                    <img id="profile-img" class="profile-user-img img-fluid img-circle" src="@Model.FotografiaBase64" alt="User profile picture">
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NombreEmpleado" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NombreEmpleado)" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="ApellidoEmpleado" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.ApellidoEmpleado)" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Fotografia" class="control-label"></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" />
+                                    <label class="custom-file-label" for="customFile"></label>                                 
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CodigoInterno" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CodigoInterno)" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroIdentidad" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroIdentidad)" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Genero" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Genero)" disabled>
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroRegistroTributario" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroRegistroTributario)" disabled>
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Direccion)" disabled>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Telefono)" disabled>
+                               
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CiudadResidencia" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CiudadResidencia)" disabled>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Email)" disabled>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Nacionalidad" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Nacionalidad)" disabled>
+                               
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaNacimiento" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaNacimiento)" disabled>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="SalarioBase" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.SalarioBase)" disabled>
+                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <h3></h3>
+                </div>
+                <div class="callout callout-info" style="border-left-color: #1797C0; ">
+                    <h5>Informacion General</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInicio)" disabled>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEncargado" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEncargado)" disabled>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdCargo" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdCargo)" disabled>
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdDepartamento" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdDepartamento)" disabled>
+                               
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroLicencia" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroLicencia)" disabled>
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaVencimientoLicencia" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaVencimientoLicencia)" disabled>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdTipoContrato" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoContrato)" disabled>
+                               
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdTipoNomina" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoNomina)" disabled>
+                               
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdBanco" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdBanco)" disabled>
+                               
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CuentaBancaria" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CuentaBancaria)" disabled>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
+                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
+                           
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+                <input type="hidden" asp-for="IdEmpleado" />
+                <input type="submit" value="Delete" class="btn btn-danger" /> 
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
+        </form>
+        
+    </div>
+    <!-- /.card -->
+
+    <script>
+        function validateImage(event) {
+            var input = event.target;
+            var file = input.files[0];
+            var fileSize = file.size / 1024; // tamaño del archivo en kilobytes
+
+            // Límite máximo de tamaño de archivo en kilobytes (1 MB)
+            var maxSizeKB = 1024;
+
+            if (fileSize > maxSizeKB) {
+                // Restablecer el valor del campo de entrada de archivo
+                input.value = '';
+                // Mostrar mensaje de error al usuario
+                toastr.warning('La imagen es demasiado grande. Por favor, seleccione una imagen más pequeña.');
+
+                return false; // Detener la carga del archivo
+            }
+
+            // Si pasa la validación, mostrar la vista previa de la imagen
+            previewImage(event);
+        }
+
+        function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var output = document.getElementById('profile-img');
+                output.src = dataURL;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

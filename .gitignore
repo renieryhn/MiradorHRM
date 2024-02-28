@@ -1,0 +1,25 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/pruebaTemplate/bin/Debug/net8.0
+/.vs/PlanillaPM/v17/.wsuo
+/pruebaTemplate/obj/Debug/net8.0/apphost.exe
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.AssemblyInfo.cs
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.AssemblyInfoInputs.cache
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.assets.cache
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.csproj.AssemblyReference.cache
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.csproj.CoreCompileInputs.cache
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.csproj.FileListAbsolute.txt
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.dll
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.GeneratedMSBuildEditorConfig.editorconfig
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.genruntimeconfig.cache
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.pdb
+/pruebaTemplate/obj/Debug/net8.0/PlanillaPM.sourcelink.json
+/pruebaTemplate/obj/Debug/net8.0/staticwebassets.build.json
+/pruebaTemplate/obj/Debug/net8.0/staticwebassets.development.json
+/pruebaTemplate/obj/Debug/net8.0/staticwebassets.pack.json
+/pruebaTemplate/obj/PlanillaPM.csproj.nuget.dgspec.json
+/pruebaTemplate/obj/project.assets.json
+/pruebaTemplate/obj/project.nuget.cache
+/pruebaTemplate.zip

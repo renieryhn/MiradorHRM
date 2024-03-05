@@ -1,0 +1,91 @@
+﻿@using PlanillaPM.Models;
+@model PersonalDataViewModel
+
+@{
+    ViewData["Title"] = "Datos Personales";
+    Layout = "../shared/_layout";
+}
+@if (ViewData["mensaje"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.success('@Html.Raw(ViewData["mensaje"])');
+        });
+    </script>
+}
+
+@if (ViewData["Error"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.error('@Html.Raw(ViewData["Error"])');
+        });
+    </script>
+}
+
+<div class="container-fluid">
+
+    <!-- general form elements -->
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Datos Personales</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form asp-action="UpdatePersonalData">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: var(--blue);; ">
+                    <h5>Aquí puedes actualizar tu información</h5>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="UserName"></label>
+                        <input asp-for="UserName" class="form-control" readonly />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" readonly />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <br />
+                    <h3></h3>
+                </div>
+
+               
+                <br />
+
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+                <input type="submit" value="Guardar Cambios" class="btn btn-primary" style="background-color: var(--blue);" />
+               
+            </div>
+        </form>
+    </div>
+    <!-- /.card -->
+
+    
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+

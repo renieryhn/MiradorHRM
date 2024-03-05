@@ -1,0 +1,89 @@
+﻿
+@using PlanillaPM.Models;
+@model Registro
+
+@{
+    ViewData["Title"] = "Registro";
+}
+@if (ViewData["mensaje"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.error('@Html.Raw(ViewData["mensaje"])');
+        });
+    </script>
+
+}
+
+<h1>Regístrate</h1>
+
+<div class="card">
+    <div class="card-body register-card-body">
+        <p class="login-box-msg">Registrar Nuevo Usuario</p>
+
+        <form asp-action="Registro">
+            <div class="input-group mb-3">
+                <input asp-for="Email" type="email" class="form-control" placeholder="Email">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Número de teléfono" data-inputmask='"mask": "(999) 9999-9999"' data-mask />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-phone"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-group mb-3">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
+                <input asp-for="RetypePassword" type="password" class="form-control" placeholder="Retype password" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                   
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <div class="social-auth-links text-center">
+          
+            <a class="btn btn-block btn-secondary" asp-action="LoginExterno" asp-route-proveedor="Microsoft">
+                <i class="fab fa-windows mr-2"></i> Iniciar sesión con Microsoft
+            </a>
+            <a class="btn btn-block btn-secondary" asp-action="LoginExterno" asp-route-proveedor="">
+                <i class="fab fa-google-plus mr-2"></i>
+                Regístrate usando Google+
+            </a>
+        </div>
+
+        <a class="text-center" asp-action="login">Deseo Loguearme</a>
+    </div>
+    <!-- /.form-box -->
+</div><!-- /.card -->
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

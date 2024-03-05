@@ -1,0 +1,86 @@
+﻿@using PlanillaPM.Models;
+@model UsuarioListado
+
+@{
+    ViewData["Title"] = "Listado de usuarios";
+    Layout = "../shared/_layout";
+}
+
+<h1>Listado de usuarios</h1>
+
+@if (Model.Mensaje is not null)
+{
+    <div class="alert alert-success" role="alert">
+        @Model.Mensaje
+    </div>
+}
+
+@if (Model.Usuarios is not null)
+{
+
+    <form method="post">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td>Admin</td>
+                    <td>RRHH</td>
+                    <td>Administracion</td>
+                    <td>Email</td>
+                </tr>
+            </thead>
+            <tbody>
+              
+
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td>
+                            <button class="btn btn-primary me-2"
+                                    asp-action="HacerAdmin"
+                                    asp-route-email="@usuario.Email">
+                                Hacer Admin
+                            </button>
+                            <button class="btn btn-secondary me-2"
+                                    asp-action="RemoverAdmin"
+                                    asp-route-email="@usuario.Email">
+                                Remover Admin
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary me-2"
+                                    asp-action="HacerRRHH"
+                                    asp-route-email="@usuario.Email">
+                                Hacer RRHH
+                            </button>
+                            <button class="btn btn-secondary me-2"
+                                    asp-action="RemoverRRHH"
+                                    asp-route-email="@usuario.Email">
+                                Remover RRHH
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary me-2"
+                                    asp-action="Haceradministracion"
+                                    asp-route-email="@usuario.Email">
+                                Hacer Administracion
+                            </button>
+                            <button class="btn btn-secondary me-2"
+                                    asp-action="Removeradministracion"
+                                    asp-route-email="@usuario.Email">
+                                Remover Administracion
+                            </button>
+                        </td>
+                        <td>
+                            @usuario.Email
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+
+}
+else
+{
+    <p>No hay usuarios para mostrar</p>
+}

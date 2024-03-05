@@ -1,0 +1,82 @@
+﻿@using PlanillaPM.Models;
+@model Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+@if (ViewData["mensaje"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.error('@Html.Raw(ViewData["mensaje"])');
+        });
+    </script>
+
+}
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Inicia sesión para iniciar tu sesión</p>
+        <form asp-action="Login" >          
+            <div class="input-group mb-3">
+                <input asp-for="Email" type="email" class="form-control" placeholder="Email">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="Password"  type="password" class="form-control" placeholder="Password">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+              
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <input type="checkbox" id="remember" asp-for="Recuerdame">
+                    <label for="remember">
+                        Recuerdame
+                    </label>
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button class="btn btn-primary btn-block">Login</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <div class="social-auth-links text-center mb-3">
+            
+            <a class="btn btn-block btn-secondary" asp-action="LoginExterno" asp-route-proveedor="Microsoft">
+                <i class="fab fa-windows mr-2"></i> Iniciar sesión con Microsoft
+            </a>      
+            <a class="btn btn-block btn-secondary" asp-action="LoginExterno" asp-route-proveedor="">
+                <i class="fab fa-google-plus mr-2"></i>
+                Regístrate usando Google+
+            </a>
+        </div>
+        <!-- /.social-auth-links -->
+
+        <p class="mb-0">
+            <a class="text-center" asp-action="registro">Crear una nueva cuenta</a>
+        </p>
+        <p class="mb-0">
+            <a class="text-center" asp-action="ForgotPassword">Has olvidado la contraseña</a>
+        </p>
+        
+    </div>
+    <!-- /.login-card-body -->
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

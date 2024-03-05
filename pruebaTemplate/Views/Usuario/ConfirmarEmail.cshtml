@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewData["Title"] = "Registro Exitoso";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!string.IsNullOrEmpty(ViewData["mensaje"] as string))
+{
+    <div class="alert alert-success" role="alert">
+        @Html.Raw(ViewData["mensaje"])
+    </div>
+}
+
+<p>
+    ¡Ya puedes iniciar sesion!
+</p>
+<p><a href="/Usuario/Login">Volver a la página de inicio de sesión</a></p>

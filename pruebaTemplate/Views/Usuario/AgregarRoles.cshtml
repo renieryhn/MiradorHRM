@@ -1,0 +1,34 @@
+﻿@using PlanillaPM.Models;
+
+@model TipoRol
+
+@{
+    ViewData["Title"] = "AgregarRoles";
+    Layout = "../shared/_layout";
+}
+
+<h1>Agregar Rol</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="AgregarRoles">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre del Rol</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Agregar</button>
+            <a class="btn btn-success" asp-action="Index">Regresar</a>
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,15 @@
+﻿@using PlanillaPM.Models;
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Perfil";
+    Layout = "../shared/_layout";
+}
+
+<h2>Perfil</h2>
+
+<ul>
+    <li><strong>Nombre de Usuario:</strong> @Model.UserName</li>
+    <li><strong>Correo Electrónico:</strong> @Model.Email</li>
+    <li><strong>Número de Teléfono:</strong> @Model.PhoneNumber</li>
+</ul>

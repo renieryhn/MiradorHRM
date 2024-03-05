@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using pruebaTemplate.Models;
 
 namespace PlanillaPM.Models;
 
-public partial class PlanillaContext : DbContext
+public partial class PlanillaContext : IdentityDbContext
 {
-    public PlanillaContext()
-    {
-    }
 
-    public PlanillaContext(DbContextOptions options) 
+
+
+    public PlanillaContext(DbContextOptions<PlanillaContext> options)
         : base(options)
     {
     }
@@ -35,6 +35,8 @@ public partial class PlanillaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<ArchivoAdjunto>(entity =>
         {
             entity.HasKey(e => e.IdArchivo);

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PlanillaPM.Models
+namespace PlanillaPM.ViewModel
 {
     public class ResetPasswordViewModel
     {

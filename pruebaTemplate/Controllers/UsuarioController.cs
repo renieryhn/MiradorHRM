@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using PlanillaPM.Models;
 using PlanillaPM.Services;
 using PlanillaPM.Servicio;
+using PlanillaPM.ViewModel;
 using Syncfusion.EJ2.Notifications;
 using System.Security.Claims;
 using System.Text;

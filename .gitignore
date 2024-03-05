@@ -40,3 +40,4 @@
 *.json
 /pruebaTemplate/PlanillaPM.csproj
 /pruebaTemplate/PlanillaPM.csproj.user
+/.vs/slnx.sqlite

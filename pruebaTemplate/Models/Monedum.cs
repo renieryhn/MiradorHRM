@@ -20,4 +20,6 @@ public partial class Monedum
     public string CreadoPor { get; set; } = null!;
 
     public string ModificadoPor { get; set; } = null!;
+
+    public virtual ICollection<Empresa> Empresas { get; set; } = new List<Empresa>();
 }

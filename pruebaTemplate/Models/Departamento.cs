@@ -9,6 +9,8 @@ public partial class Departamento
 
     public string NombreDepartamento { get; set; } = null!;
 
+    public int? IdDivision { get; set; }
+
     public bool Activo { get; set; }
 
     public DateOnly FechaCreacion { get; set; }
@@ -20,4 +22,6 @@ public partial class Departamento
     public string ModificadoPor { get; set; } = null!;
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+
+    public virtual Division? IdDivisionNavigation { get; set; }
 }

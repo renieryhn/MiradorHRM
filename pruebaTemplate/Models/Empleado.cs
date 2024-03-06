@@ -113,11 +113,49 @@ public partial class Empleado
     [DisplayName("Modificado Por")]
     public string? ModificadoPor { get; set; }
 
+    public string? Comentarios { get; set; }
+
+    public string? Observaciones { get; set; }
+
+    public int EstadoCivil { get; set; }
+
+    public DateOnly? FechaInactivacion { get; set; }
+
+    public string? MotivoInactivacion { get; set; }
+
+    public int? IdClaseEmpleado { get; set; }
+
     [DisplayName("Nombre Completo")]
     public string NombreCompleto
     {
         get { return string.Format("{0} {1}", NombreEmpleado, ApellidoEmpleado); }
     }
+
+    public virtual ICollection<EmpleadoActivo> EmpleadoActivos { get; set; } = new List<EmpleadoActivo>();
+
+    public virtual ICollection<EmpleadoAusencium> EmpleadoAusencia { get; set; } = new List<EmpleadoAusencium>();
+
+    public virtual ICollection<EmpleadoCargoHistorico> EmpleadoCargoHistoricos { get; set; } = new List<EmpleadoCargoHistorico>();
+
+    public virtual ICollection<EmpleadoContacto> EmpleadoContactos { get; set; } = new List<EmpleadoContacto>();
+
+    public virtual ICollection<EmpleadoContrato> EmpleadoContratos { get; set; } = new List<EmpleadoContrato>();
+
+    public virtual ICollection<EmpleadoDeduccion> EmpleadoDeduccions { get; set; } = new List<EmpleadoDeduccion>();
+
+    public virtual ICollection<EmpleadoEducacion> EmpleadoEducacions { get; set; } = new List<EmpleadoEducacion>();
+
+    public virtual ICollection<EmpleadoExperiencium> EmpleadoExperiencia { get; set; } = new List<EmpleadoExperiencium>();
+
+    public virtual ICollection<EmpleadoHabilidad> EmpleadoHabilidads { get; set; } = new List<EmpleadoHabilidad>();
+
+    public virtual ICollection<EmpleadoHorario> EmpleadoHorarios { get; set; } = new List<EmpleadoHorario>();
+
+    public virtual ICollection<EmpleadoIngreso> EmpleadoIngresos { get; set; } = new List<EmpleadoIngreso>();
+
+    public virtual ICollection<EmpleadoSalarioHistorico> EmpleadoSalarioHistoricos { get; set; } = new List<EmpleadoSalarioHistorico>();
+
+
     [DisplayName("Banco")]
     public virtual Banco? IdBancoNavigation { get; set; } = null!;
     [DisplayName("Cargo")]
@@ -130,6 +168,8 @@ public partial class Empleado
     public virtual TipoContrato? IdTipoContratoNavigation { get; set; } = null!;
     [DisplayName("Tipo de Nómina")]
     public virtual TipoNomina? IdTipoNominaNavigation { get; set; } = null!;
+
+    public virtual ClaseEmpleado? IdClaseEmpleadoNavigation { get; set; }
 
     public virtual ICollection<Empleado> InverseIdEncargadoNavigation { get; set; } = new List<Empleado>();
 

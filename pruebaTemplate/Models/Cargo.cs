@@ -19,5 +19,7 @@ public partial class Cargo
 
     public string ModificadoPor { get; set; } = null!;
 
+    public virtual ICollection<EmpleadoContrato> EmpleadoContratos { get; set; } = new List<EmpleadoContrato>();
+
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
 }

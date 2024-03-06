@@ -9,6 +9,8 @@ public partial class ClaseEmpleado
 
     public string NombreClaseEmpleado { get; set; } = null!;
 
+    public int? IdHorario { get; set; }
+
     public bool Activo { get; set; }
 
     public DateOnly FechaCreacion { get; set; }
@@ -18,4 +20,9 @@ public partial class ClaseEmpleado
     public string CreadoPor { get; set; } = null!;
 
     public string ModificadoPor { get; set; } = null!;
+
+    public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+
+    public virtual Horario? IdHorarioNavigation { get; set; }
 }
+

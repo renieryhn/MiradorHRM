@@ -13,7 +13,7 @@ using PlanillaPM.Models;
 namespace PlanillaPM.Migrations
 {
     [DbContext(typeof(PlanillaContext))]
-    [Migration("20240222214042_Usuario")]
+   
     partial class Usuario
     {
         /// <inheritdoc />

@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaPM.Models
 {
-    public class PersonalDataViewModel
+    public class PersonalDataViewModel: IdentityUser
     {
         [Required]
         [Display(Name = "Nombre de Usuario")]
@@ -17,5 +20,10 @@ namespace PlanillaPM.Models
         [Display(Name = "Número de Teléfono")]
         public string PhoneNumber { get; set; }
 
+        [DisplayName("Fotografía")]
+        public byte[]? Avatar { get; set; } = null!;
+
+        [NotMapped]
+        public string? AvatarBase64 { get; set; } = null!;
     }
 }

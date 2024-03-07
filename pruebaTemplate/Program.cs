@@ -49,7 +49,7 @@ builder.Services.AddDbContext<PlanillaContext>(opciones =>
 //    opciones.ClientSecret = builder.Configuration["MicrosoftSecretId"];
 //});
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
+builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
 {
     opciones.SignIn.RequireConfirmedAccount = true;
     opciones.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
@@ -81,17 +81,17 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-//builder.Services.Configure<IdentityOptions>(options =>
-//{
-//    // Configurar requisitos de contraseña
-//    options.Password.RequireDigit = true;
-//    options.Password.RequiredLength = 8;
-//    options.Password.RequireNonAlphanumeric = false;
-//    options.Password.RequireUppercase = false;
-//    options.Password.RequireLowercase = false;
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Configurar requisitos de contraseña
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
 
-//    // Otros ajustes opcionales...
-//});
+    // Otros ajustes opcionales...
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

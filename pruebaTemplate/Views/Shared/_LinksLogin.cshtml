@@ -1,18 +1,38 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
+@using PlanillaPM.Models;
 
+@inject SignInManager<Usuario> SignInManager
+<div class="row">
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <span class="nav-link text-dark">Hola, @User.Identity.Name</span>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-action="logout" asp-controller="usuario">
-                <button type="submit" class="nav-link btn btn-link text-dark">
-                    Logout
+
+            <li class="nav-item">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#userOptions" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-            </form>
+                <div class="collapse navbar-collapse" id="userOptions">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle align-content-end" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="right: 1px">
+                                @if(@ViewData["Avatar64"] != null) {   
+                                <img alt="User Icon" id="usrFoto" src="data:image;base64,@ViewData["Avatar64"]" width="35" height="35" class="rounded-circle" />
+                                }
+                                @User.Identity.Name
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" asp-controller="Usuario" asp-action="PersonalData" id="lprofilePass">Editar Perfil</a>
+                                <a class="dropdown-item" asp-controller="Usuario" asp-action="Email" id="lprofilePass">Cambiar Email</a>
+                                <a class="dropdown-item" asp-controller="Usuario" asp-action="ChangePassword" id="lprofilePass">Cambiar Contraseña</a>
+                                <form class="form-inline" asp-action="logout" asp-controller="usuario">
+                                    <button type="submit" class="dropdown-item">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
         </li>
     }
     else
@@ -29,3 +49,4 @@
         </li>
     }
 </ul>
+</div>

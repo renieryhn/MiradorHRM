@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Vml;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,15 +21,15 @@ namespace PlanillaPM.Controllers
 {
     public class UsuarioController: Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<Usuario> userManager;
+        private readonly SignInManager<Usuario> signInManager;
         private readonly PlanillaContext context;
         private readonly EmailService emailService;
 
        
 
-        public UsuarioController(UserManager<IdentityUser> userManager,
-         SignInManager<IdentityUser> signInManager, 
+        public UsuarioController(UserManager<Usuario> userManager,
+         SignInManager<Usuario> signInManager, 
          PlanillaContext context,
          EmailService emailService)
         {
@@ -73,7 +74,7 @@ namespace PlanillaPM.Controllers
                 return View(modelo);
             }
 
-            var usuario = new IdentityUser() { Email = modelo.Email, UserName = modelo.Email, PhoneNumber = modelo.PhoneNumber };
+            var usuario = new Usuario() { Email = modelo.Email, UserName = modelo.Email, PhoneNumber = modelo.PhoneNumber };
             var resultado = await userManager.CreateAsync(usuario, password: modelo.Password);
 
             if (resultado.Succeeded)
@@ -374,7 +375,7 @@ namespace PlanillaPM.Controllers
                 return RedirectToAction("login", routeValues: new { mensaje });
             }
 
-            var usuario = new IdentityUser { Email = email, UserName = email };
+            var usuario = new Usuario { Email = email, UserName = email };
 
             var resultadoCrearUsuario = await userManager.CreateAsync(usuario);
 
@@ -549,13 +550,24 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+            if (user.Avatar != null)
+            {
+                var base64Image = Convert.ToBase64String(user.Avatar);
+                user.AvatarBase64 = "data:image/jpeg;base64," + base64Image;
+            }
+            else
+            {
+                // emple.FotografiaBase64 = "img/Employee.png";
+                user.AvatarBase64 = Url.Content("~/img/Employee.png");
+            }
             var model = new PersonalDataViewModel
             {
                 UserName = user.UserName,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Avatar = user.Avatar,AvatarBase64 = user.AvatarBase64
             };
+
 
             return View(model);
         }
@@ -680,19 +692,21 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdatePersonalData(string mensaje = null)
+        public async Task<IActionResult> UpdatePersonalDataAsync(string mensaje = null)
         {
             if (mensaje is not null)
             {
                 ViewData["mensaje"] = mensaje;
             }
 
+           
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePersonalData(PersonalDataViewModel model)
+        public async Task<IActionResult> UpdatePersonalData(PersonalDataViewModel model, IFormFile avatar)
         {
             if (!ModelState.IsValid)
             {
@@ -700,11 +714,20 @@ namespace PlanillaPM.Controllers
             }
 
             var user = await userManager.GetUserAsync(User);
+
             if (user == null)
             {
                 return NotFound();
             }
 
+            if (avatar != null && avatar.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await avatar.CopyToAsync(memoryStream);
+                    user.Avatar = memoryStream.ToArray(); // Asignar los bytes de la imagen al campo Avatar del modelo de usuario
+                }
+            }
 
             user.UserName = model.UserName;
             user.Email = model.Email;

@@ -1,0 +1,13 @@
+﻿@using PlanillaPM.Models;
+@model List<MenuDinamico>
+
+@if (Model != null){
+ @foreach (var item in Model)
+{
+    <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" asp-area="@item.Area" asp-controller="@item.Controler" asp-action="@item.Accion">
+            <p><strong>@item.Titulo</strong></p>
+        </a>
+    </li>
+}
+}

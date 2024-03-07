@@ -72,6 +72,21 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function () {
+            var url = $("#liMenuDinamico");
+            $.ajax({
+                url: "ObtenerMenuDinamico",
+                type: "GET",
+                success: function (data) {
+                    $("#liMenuDinamico").html(data);
+                },
+                error: function () {
+                    console.error("Error al cargar el menú dinámico");
+                }
+            });
+        });
+    </script>
 }
 
 

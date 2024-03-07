@@ -72,6 +72,12 @@ namespace PlanillaPM.Controllers
 
             return View(data);
         }
+        public IActionResult ObtenerMenuDinamico()
+        {
+            var gen = new cGeneralFun();
+            var menu = gen.ObtenerMenu("Empleado"); // Obtener el menú para el perfil
+            return PartialView("_MenuDinamico", menu); // Retornar el partial con la lista de menús
+        }
         public ActionResult Download()
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();

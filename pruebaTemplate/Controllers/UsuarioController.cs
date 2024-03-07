@@ -571,7 +571,12 @@ namespace PlanillaPM.Controllers
 
             return View(model);
         }
-
+        public IActionResult ObtenerMenuDinamico()
+        {
+            var gen = new cGeneralFun();
+            var menu = gen.ObtenerMenu("Perfil"); // Obtener el menú para el perfil
+            return PartialView("_MenuDinamico", menu); // Retornar el partial con la lista de menús
+        }
         [HttpGet]
         public async Task<IActionResult> Email(string mensaje = null)
         {

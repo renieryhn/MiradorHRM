@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using PlanillaPM.Models;
+using System.Data;
 using System.Reflection;
 
 namespace PlanillaPM
@@ -34,6 +35,31 @@ namespace PlanillaPM
                 //put a breakpoint here and check datatable
                 return dataTable;
             }
+        }
+
+        public List<MenuDinamico> ObtenerMenu(string sObjeto)
+        {
+            // Convierte el JSON en una lista de objetos MenuDinamico
+            List<MenuDinamico> menuList = ListadoDeMenus().Where(menu => menu.Objeto == sObjeto).ToList();
+            return menuList;
+        }
+
+        private List<MenuDinamico> ListadoDeMenus()
+        {
+            // Aquí puedes cargar los países desde cualquier fuente de datos, como un archivo de configuración o un servicio externo.
+            // Por ejemplo, aquí se crea una lista de países en código duro para este ejemplo.
+            var menu = new List<MenuDinamico>
+        {
+            new MenuDinamico { Objeto= "Perfil",Titulo= "Datos Personales",Area= "",Controler= "Usuario",Accion= "PersonalData" },
+            new MenuDinamico { Objeto= "Perfil",Titulo= "Cambiar Correo Electrónico",Area= "",Controler= "Usuario",Accion= "Email" },
+             new MenuDinamico { Objeto= "Perfil",Titulo= "Cambiar Contraseña",Area= "",Controler= "Usuario",Accion= "ChangePassword" },
+
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Contactos",Area= "",Controler= "Empleado",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Contratos",Area= "",Controler= "Empleado",Accion= "Index" },
+
+            // Agrega más países según necesites
+        };
+            return menu;
         }
     }
 }

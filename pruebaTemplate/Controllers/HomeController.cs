@@ -6,6 +6,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PlanillaPM.Models;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace pruebaTemplate.Controllers
 {
@@ -23,6 +25,8 @@ namespace pruebaTemplate.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var user = await userManager.GetUserAsync(User);
+            var prefix = "data:image/jpeg;base64,";
+           
 
             // Crear un objeto ProfileViewModel con los datos del usuario
             var profileViewModel = new ProfileViewModel
@@ -31,13 +35,21 @@ namespace pruebaTemplate.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Avatar = user.Avatar,
-                AvatarBase64 = Convert.ToBase64String(user.Avatar)
             };
-            ViewBag.Avatar64 = profileViewModel.AvatarBase64;
-            ViewData["Avatar64"] = profileViewModel.AvatarBase64;
+            if (user.Avatar != null)
+            {
+                profileViewModel.AvatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
+                user.AvatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
+                ViewData["Avatar64"] = profileViewModel.AvatarBase64;
+            }
+            else
+            {
+                ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
+            }
             return View("Index");
         }
 
+       
         public IActionResult Privacy()
         {
             return View();

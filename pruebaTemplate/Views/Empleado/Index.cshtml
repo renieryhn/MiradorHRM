@@ -253,11 +253,26 @@
 </div>
 
 
-<script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                var url = $("#liMenuDinamico");
+                var $table = $('#table');
+                $.ajax({
+                    url: "Empleado/ObtenerMenuDinamico",
+                    type: "GET",
+                    success: function (data) {
+                        $("#liMenuDinamico").html(data);
+                    },
+                    error: function () {
+                        console.error("Error al cargar el menú dinámico");
+                    }
+                });
+            });
+        </script>
+    }
+}
 
-    $(document).ready(function () {
-        var $table = $('#table');
 
-
-    });
-</script>

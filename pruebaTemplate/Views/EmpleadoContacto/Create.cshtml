@@ -1,0 +1,71 @@
+﻿@model PlanillaPM.Models.EmpleadoContacto
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <form asp-action="Create">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empleado Contacto</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                            <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="NombreContacto" class="control-label">Nombre Contacto</label>
+                            <input asp-for="NombreContacto" class="form-control" required />
+                                <span asp-validation-for="NombreContacto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Relacion" class="control-label"></label>
+                            <input asp-for="Relacion" class="form-control" required />
+                                <span asp-validation-for="Relacion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Celular" class="control-label" data-inputmask='"mask": "(999) 9999-9999"' data-mask></label>
+                                <input asp-for="Celular" class="form-control" required />
+                                <span asp-validation-for="Celular" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TelefonoFijo" class="control-label">Telefono Fijo</label>
+                                <input asp-for="TelefonoFijo" class="form-control" />
+                                <span asp-validation-for="TelefonoFijo" class="text-danger"></span>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            var $table = $('#table');
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+        </script>
+    }
+}

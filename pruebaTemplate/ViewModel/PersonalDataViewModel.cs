@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PlanillaPM.Models
+namespace PlanillaPM.ViewModel
 {
-    public class PersonalDataViewModel: IdentityUser
+    public class PersonalDataViewModel : IdentityUser
     {
         [Required]
         [Display(Name = "Nombre de Usuario")]
@@ -21,9 +21,9 @@ namespace PlanillaPM.Models
         public string PhoneNumber { get; set; }
 
         [DisplayName("Fotografía")]
-        public byte[]? Avatar { get; set; } = null!;
+        public byte[] Avatar { get; set; } = null!;
 
         [NotMapped]
-        public string? AvatarBase64 { get; set; } = null!;
+        public string AvatarBase64 { get; set; } = null!;
     }
 }

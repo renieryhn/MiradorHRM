@@ -520,8 +520,25 @@ namespace PlanillaPM.Controllers
         }
 
 
+        public FileContentResult Photo()
+        {
+            Usuario user = userManager.GetUserAsync(User).Result; // Espera a que la tarea se complete
 
-
+            //var prefix = "data:image/jpeg;base64;";
+            if (user != null && user.Avatar != null)
+            {
+                //string avatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
+                //ViewData["Avatar64"] = avatarBase64;
+                return File(user.Avatar, "image/jpeg");
+            }
+            else
+            {
+                //ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
+                // Opcionalmente puedes devolver una imagen predeterminada en lugar de null
+                byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+                return File(defaultAvatar, "image/png");
+            }
+        }
 
 
         public async Task<IActionResult> Index()

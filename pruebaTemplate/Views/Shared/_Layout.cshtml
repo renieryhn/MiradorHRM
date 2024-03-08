@@ -93,7 +93,15 @@
                             </p>
                         </a>
                     </li>
-
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="EmpleadoContacto" asp-action="Index">
+                            <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
+                            <p style="color: var(--GrisMenu);">
+                                <strong>Contacto</strong>
+                                <span class="right badge badge-danger">New</span>
+                            </p>
+                        </a>
+                    </li>
                     <li class="nav-item active">
                         <a class="nav-link" onclick="mostrarContenido('Perfil')" asp-controller="Usuario" asp-action="PersonalData">
                             <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
@@ -198,7 +206,8 @@
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
         <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
         <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/export/bootstrap-table-export.min.js"></script>
-
+        <script src="~/plugins/moment/moment.min.js"></script>
+        <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>

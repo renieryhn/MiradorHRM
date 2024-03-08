@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using PlanillaPM.Models;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,7 +8,6 @@
     <title>@ViewData["Title"] - pruebaTemplate</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <link rel="stylesheet" href="~/pruebaTemplate.styles.css" asp-append-version="true" />
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -40,13 +41,43 @@
             --blue: #1797C0;
             --white: #ffffff;
             --colorTable: #818290;
-            --asiderBar: #1797C0;
         }
 
         .table.table-striped.projects > tbody > tr > td {
             border-right: none;
         }
 
+        .side-inner {
+            padding: 30px 0;
+            height: 100vh;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .profile {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+            .profile img {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 10px auto;
+                border-radius: 50%;
+            }
+
+            .profile .name {
+                font-size: 16px;
+                margin-bottom: 0;
+            }
+
+            .profile .role {
+                font-size: 12px;
+                color: #cfcfcf;
+            }
     </style>
 
     <!-- Navbar -->
@@ -65,20 +96,19 @@
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
-            <partial name="_LinksLogin" />
         </ul>
+        <partial name="_LinksLogin" model="@User" />
     </nav>
 
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:var(--asiderBar);">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:#1797C0">
         <div class="sidebar">
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                <div class="image">
-                    <img src="~/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                </div>
-                <div class="info">
-                    <a href="#" class="d-block">Alexander Pierce</a>
+                <div class="profile">
+                    <img src="@Url.Action("Photo", "Usuario")" alt="Image" class="img-fluid">
+                    <h5 class="name"><strong>@User.Identity.Name</strong></h5>
+                    <span class="role"><strong>Administrador</strong></span>
                 </div>
             </div>
 
@@ -89,7 +119,7 @@
                             <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
                             <p style="color: var(--GrisMenu);">
                                 <strong>Empleado</strong>
-                                
+                                <span class="right badge badge-danger">New</span>
                             </p>
                         </a>
                     </li>
@@ -104,32 +134,25 @@
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link" onclick="mostrarContenido('Perfil')" asp-controller="Usuario" asp-action="PersonalData">
-                            <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
+                            <i class="nav-icon fas fa-id-card" style="color: var(--GrisMenu);"></i>
                             <p style="color: var(--GrisMenu);">
                                 <strong>Perfil</strong>
-                              
-                            </p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-controller="EmpleadoContacto" asp-action="Index">
-                            <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
-                            <p style="color: var(--GrisMenu);">
-                                <strong>Contacto</strong>
-                                <span class="right badge badge-danger">New</span>
+                                <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
                     </li>
                 </ul>
             </nav>
 
-            <a href="../../index3.html" class="brand-link">
-                <img src="~/img/LogoHorizontal.png" alt="Proyecto Mirador Logo" class="brand-image " style="opacity: .8">
-                <br />
-                <span class="brand-text font-weight-light"></span>
-            </a>
         </div>
+
+        <nav class="mt-1">
+            <ul class="nav nav-pills nav-sidebar flex-column">
+                <a href="#www.proyectomirador.org" class="brand-link">
+                    <img src="~/img/LogoHorizontal.png" alt="Proyecto Mirador Logo" class="brand-image" style="opacity: .8">
+                </a>
+            </ul>
+        </nav>
     </aside>
 
 
@@ -169,13 +192,9 @@
         <script src="~/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
         <!-- AdminLTE App -->
         <script src="~/js/adminlte.min.js"></script>
-        <!-- AdminLTE for demo purposes -->
-        <script src="~/js/demo.min.js"></script>
+
         <!-- Select2 -->
         <script src="~/plugins/select2/js/select2.full.min.js"></script>
-        <!-- InputMask -->
-        <script src="~/plugins/moment/moment.min.js"></script>
-        <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
         <!-- Toastr -->
         <script src="~/plugins/toastr/toastr.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
@@ -197,7 +216,6 @@
                 bsCustomFileInput.init();
             })
             $.widget.bridge('uibutton', $.ui.button)
-
 
         </script>
 

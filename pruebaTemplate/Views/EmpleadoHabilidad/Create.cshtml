@@ -1,0 +1,63 @@
+﻿@model PlanillaPM.Models.EmpleadoHabilidad
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empleado Habilidad</h3>
+        </div>
+        <form asp-action="Create">
+       
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Habilidad" class="control-label"></label>
+                                <input asp-for="Habilidad" class="form-control" required/>
+                                <span asp-validation-for="Habilidad" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                            <label asp-for="ExperienciaYears" class="control-label">Años de Experiencia</label>
+                                <input asp-for="ExperienciaYears" class="form-control" required/>
+                                <span asp-validation-for="ExperienciaYears" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" />
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            var $table = $('#table');
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+        </script>
+    }
+}

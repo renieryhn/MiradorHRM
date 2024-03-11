@@ -149,10 +149,8 @@ namespace PlanillaPM.Controllers
 
                 return View(empleadoContrato);
             }
-            catch (Exception ex)
+            catch (DbUpdateConcurrencyException)
             {
-                // Puedes manejar la excepción de manera específica o simplemente registrarla
-                // Logging.LogError(ex, "Error al intentar actualizar un registro");
 
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar actualizar el registro. Por favor, intente nuevamente.";

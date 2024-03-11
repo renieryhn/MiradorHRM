@@ -1,0 +1,149 @@
+﻿@model PlanillaPM.Models.EmpleadoAusencium
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empleado Ausencia</h3>
+        </div>
+        <form asp-action="Create">
+       
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                            <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IdTipoAusencia" class="control-label"></label>
+                            <select asp-for="IdTipoAusencia" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoAusencia"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Estado" class="control-label"></label>
+                                <input asp-for="Estado" class="form-control" required/>
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaDesde" class="control-label"></label>
+                                <input asp-for="FechaDesde" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaHasta" class="control-label"></label>
+                                <input asp-for="FechaHasta" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="HoraDesde" class="control-label"></label>
+                            <input asp-for="HoraDesde" class="form-control" type="time" required />
+                                <span asp-validation-for="HoraDesde" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="HoraHasta" class="control-label"></label>
+                            <input asp-for="HoraHasta" class="form-control" type="time" required />
+                                <span asp-validation-for="HoraHasta" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AprobadoPor" class="control-label"></label>
+                                <input asp-for="AprobadoPor" class="form-control" required />
+                                <span asp-validation-for="AprobadoPor" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" />
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>     
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="DiaCompleto" checked>
+                            <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.DiaCompleto)</label>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            var $table = $('#table');
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+
+            function validarFechas() {
+                var FechaDesde = new Date($("#FechaDesde").val());
+                var FechaHasta = new Date($("#FechaHasta").val());
+
+                if (FechaDesde > FechaHasta) {
+                    toastr.error("La Fecha de Fin debe ser igual o posterior a la Fecha de Inicio.");
+                    return false;
+                }
+                return true;
+            }
+
+            // Función para validar horas
+            function validarHoras() {
+                var horaDesde = $("#HoraDesde").val();
+                var horaHasta = $("#HoraHasta").val();
+
+                if (horaDesde && horaHasta) {
+                    if (new Date("01/01/2000 " + horaDesde) > new Date("01/01/2000 " + horaHasta)) {
+                        toastr.error("La Hora de Fin debe ser posterior a la Hora de Inicio.");
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+
+            $("form").submit(function (e) {
+                if (!validarFechas() || !validarHoras()) {
+                    e.preventDefault();
+                }
+            });
+
+
+            // Manejar cambios en el checkbox DiaCompleto
+            $("#customSwitch1").change(function () {
+                var isChecked = $(this).prop("checked");
+
+                // Habilitar o deshabilitar campos de horas
+                $("#HoraDesde, #HoraHasta").prop(isChecked);
+
+                if (isChecked) {
+                    // Si está marcado, establecer el valor predeterminado de las horas
+                    $("#HoraDesde").val("08:00").prop("required", false);
+                    $("#HoraHasta").val("16:00").prop("required", false);
+                } else {
+                    // Si está desmarcado, limpiar los campos de horas
+                    $("#HoraDesde, #HoraHasta").val("");
+
+                    if ($("#HoraDesde").val() === "" || $("#HoraHasta").val() === "") {
+                        $("#HoraDesde, #HoraHasta").prop("required", true);
+                    }
+                }
+            });
+
+            // Llamar a la función al cargar la página para establecer el estado inicial
+            $("#customSwitch1").change();
+
+        </script>
+    }
+}

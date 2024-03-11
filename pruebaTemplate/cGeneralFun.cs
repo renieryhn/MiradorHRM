@@ -56,10 +56,10 @@ namespace PlanillaPM
 
              new MenuDinamico { Objeto= "Empleado",Titulo= "Contactos",Area= "",Controler= "EmpleadoContacto",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Contratos",Area= "",Controler= "EmpleadoContrato",Accion= "Index" },
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Educación",Area= "",Controler= "Empleado",Accion= "Index" },
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Experiencia",Area= "",Controler= "Empleado",Accion= "Index" },
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Habilidades",Area= "",Controler= "Empleado",Accion= "Index" },
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Ausencias",Area= "",Controler= "Empleado",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Educación",Area= "",Controler= "EmpleadoEducacion",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Experiencia",Area= "",Controler= "EmpleadoExperiencium",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Habilidades",Area= "",Controler= "EmpleadoHabilidad",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Ausencias",Area= "",Controler= "EmpleadoAusencium",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Activos Fijos",Area= "",Controler= "Empleado",Accion= "Index" },
 
             // Agrega más países según necesites

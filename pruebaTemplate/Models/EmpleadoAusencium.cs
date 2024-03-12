@@ -6,12 +6,16 @@ namespace PlanillaPM.Models;
 
 public partial class EmpleadoAusencium
 {
+    
     public int IdEmpleadoAusencia { get; set; }
 
+    [Display(Name = "Id Empleado")]
     public int IdEmpleado { get; set; }
 
+    [Display(Name = "Id Tipo Ausencia")]
     public int IdTipoAusencia { get; set; }
 
+    [Display(Name = "Dia Completo")]
     public bool DiaCompleto { get; set; }
 
     /// <summary>
@@ -40,17 +44,21 @@ public partial class EmpleadoAusencium
     [Required(ErrorMessage = "El campo Aprobado Por es obligatorio.")]
     public string? AprobadoPor { get; set; }
 
+    [Display(Name = "Comentarios")]
     public string? Comentarios { get; set; }
 
+    [Display(Name = "Fecha Creación")]
     public DateOnly FechaCreacion { get; set; }
 
+    [Display(Name = "Fecha Modificación")]
     public DateOnly FechaModificacion { get; set; }
-
+    [Display(Name = "Creado Por")]
     public string CreadoPor { get; set; } = null!;
-
+    [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
+    [Display(Name = "Id Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
-
+    [Display(Name = "Tipo de Ausencia")]
     public virtual TipoAusencium IdTipoAusenciaNavigation { get; set; } = null!;
 }

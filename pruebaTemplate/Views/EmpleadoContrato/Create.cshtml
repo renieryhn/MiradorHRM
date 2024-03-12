@@ -1,0 +1,116 @@
+﻿@model PlanillaPM.Models.EmpleadoContrato
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary ">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empleado Contrato</h3>
+        </div>
+        <form asp-action="Create" class="w-100">
+       
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+
+                    <h5 class="mx-auto">Información General</h5>
+                <br/>                   
+                    <div class="row">
+                       
+                        <div class="col-md-4">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CodigoContrato" class="control-label"></label>
+                                <input asp-for="CodigoContrato" class="form-control" required />
+                                <span asp-validation-for="CodigoContrato" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IdTipoContrato" class="control-label"></label>
+                                <select asp-for="IdTipoContrato" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoContrato"></select>
+
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IdCargo" class="control-label"></label>
+                                <select asp-for="IdCargo" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdCargo"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Estado" class="control-label"></label>
+                                <input asp-for="Estado" class="form-control" required />
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+                                        
+                            <div class="form-group">
+                                <label asp-for="VigenciaMeses" class="control-label"></label>
+                                <input asp-for="VigenciaMeses" class="form-control" required />
+                                <span asp-validation-for="VigenciaMeses" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="control-label"></label>
+                                <input asp-for="FechaInicio" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaFin" class="control-label"></label>
+                                <input asp-for="FechaFin" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaFin" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Salario" class="control-label"></label>
+                                <input asp-for="Salario" class="form-control" type="number" required />
+                                <span asp-validation-for="Salario" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="control-label"></label>
+                                <input asp-for="Descripcion" class="form-control" />
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+                    
+        </div>
+        
+        <div class="card-footer">
+                <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+        
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            var $table = $('#table');
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+
+            function validarFechas() {
+                var fechaInicio = new Date($("#FechaInicio").val());
+                var fechaFin = new Date($("#FechaFin").val());
+
+                if (fechaInicio > fechaFin) {
+                    toastr.error("La Fecha de Fin debe ser igual o posterior a la Fecha de Inicio.");
+                    return false;
+                }
+                return true;
+            }
+
+            $("form").submit(function (e) {
+                if (!validarFechas()) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    }
+}

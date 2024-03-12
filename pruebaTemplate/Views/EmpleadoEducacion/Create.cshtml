@@ -1,0 +1,89 @@
+﻿@model PlanillaPM.Models.EmpleadoEducacion
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empleado Educacion</h3>
+        </div>
+        <form asp-action="Create">
+      
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Institucion" class="control-label"></label>
+                                <input asp-for="Institucion" class="form-control" required/>
+                                <span asp-validation-for="Institucion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TituloObtenido" class="control-label"></label>
+                                <input asp-for="TituloObtenido" class="form-control" required />
+                                <span asp-validation-for="TituloObtenido" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaDesde" class="control-label"></label>
+                                <input asp-for="FechaDesde" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaHasta" class="control-label"></label>
+                                <input asp-for="FechaHasta" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" />
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            var $table = $('#table');
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+
+            function validarFechas() {
+                var FechaDesde = new Date($("#FechaDesde").val());
+                var FechaHasta = new Date($("#FechaHasta").val());
+
+                if (FechaDesde > FechaHasta) {
+                    toastr.error("La Fecha de Fin debe ser igual o posterior a la Fecha de Inicio.");
+                    return false;
+                }
+                return true;
+            }
+
+            $("form").submit(function (e) {
+                if (!validarFechas()) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
@@ -16,16 +17,27 @@ public partial class EmpleadoAusencium
     /// <summary>
     /// Solicitada/Aprobada/Rechazada
     /// </summary>
+    [Required(ErrorMessage = "El campo Estado es obligatorio.")]
     public int Estado { get; set; }
 
+    [Display(Name = "Fecha Desde")]
+    [Required(ErrorMessage = "El campo Fecha Desde es obligatorio.")]
     public DateOnly FechaDesde { get; set; }
 
+    [Display(Name = "Fecha Hasta")]
+    [Required(ErrorMessage = "El campo Fecha Hasta es obligatorio.")]
     public DateOnly FechaHasta { get; set; }
 
+    [Display(Name = "Hora Desde")]
+    [Required(ErrorMessage = "El campo Hora Desde es obligatorio.")]
     public TimeOnly? HoraDesde { get; set; }
 
+    [Display(Name = "Hora Hasta")]
+    [Required(ErrorMessage = "El campo Hora Hasta es obligatorio.")]
     public TimeOnly? HoraHasta { get; set; }
 
+    [Display(Name = "Aprobado Por")] 
+    [Required(ErrorMessage = "El campo Aprobado Por es obligatorio.")]
     public string? AprobadoPor { get; set; }
 
     public string? Comentarios { get; set; }

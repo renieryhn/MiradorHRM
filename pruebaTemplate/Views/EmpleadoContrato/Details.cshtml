@@ -1,0 +1,144 @@
+﻿@model PlanillaPM.Models.EmpleadoContrato
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Detalle de Empleado Contrato</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div class="form-group row">
+                       </div> 
+                        <div class="form-group row">
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.CodigoContrato)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.CodigoContrato)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.IdTipoContrato)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.IdTipoContrato)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Estado)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Estado)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.VigenciaMeses)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.VigenciaMeses)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaInicio)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaInicio)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaFin)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaFin)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Salario)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Salario)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Descripcion)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Descripcion)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaCreacion)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaCreacion)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaModificacion)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaModificacion)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.CreadoPor)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.CreadoPor)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.ModificadoPor)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.ModificadoPor)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                 <label class="control-label">@Html.DisplayNameFor(model => model.IdCargoNavigation)</label>
+                             </div>
+                             <div class="col-md-8">
+                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdCargoNavigation.NombreCargo)" disabled />
+                             </div>
+                       </div> 
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                 <label class="control-label">@Html.DisplayNameFor(model => model.IdEmpleadoNavigation)</label>
+                             </div>
+                             <div class="col-md-8">
+                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEmpleadoNavigation.ApellidoEmpleado)" disabled/>
+                             </div>
+                       </div> 
+                </div>
+            </div>
+        </div>
+         <div class="card-footer">
+             <a asp-action="Edit" asp-route-id="@Model.IdEmpleadoContrato" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
+             <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+          </div>
+    </div>
+</div>
+

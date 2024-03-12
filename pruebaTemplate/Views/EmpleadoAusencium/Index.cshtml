@@ -1,0 +1,200 @@
+﻿@model IEnumerable<PlanillaPM.Models.EmpleadoAusencium>
+@using PlanillaPM.Models;
+
+        @{
+        ViewData["Title"] = "Index";
+        Pager pager = new Pager();
+        int PageNo = 0;
+        if (ViewBag.Pager != null)
+        {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+        }
+        }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Empleado Ausencia</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-vertical">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <form id="fSearch" method="post" asp-action="Index">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            </div>
+                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                                <div class="btn-group btn-group-justified" role="group">
+                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-1">
+                                <div id="resultados" class="table-responsive table-striped table-sm">
+                                    <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th data-sortable="true">No.</th>
+                                                <th></th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.DiaCompleto)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Estado)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaDesde)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaHasta)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.HoraDesde)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.HoraHasta)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.AprobadoPor)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Comentarios)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaCreacion)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaModificacion)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.CreadoPor)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.ModificadoPor)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)
+                                                        </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                            int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
+                                            }
+                                            @foreach (var item in Model) {
+                                            count = (count + 1);
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.DiaCompleto)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Estado)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaDesde)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaHasta)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.HoraDesde)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.HoraHasta)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.AprobadoPor)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Comentarios)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaCreacion)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaModificacion)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.CreadoPor)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.ModificadoPor)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.ApellidoEmpleado)
+                                                        </td>
+                                                        <td>
+                                                    @Html.DisplayFor(modelItem => item.IdTipoAusenciaNavigation.NombreTipoAusencia)
+                                                        </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+
+            var $table = $('#table');
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var mensaje = '@Html.Raw(TempData["mensaje"])';
+                if (mensaje) {
+                    toastr.success(mensaje);
+                }
+
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+        </script>
+    }
+}

@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "Edit";
 }
+
 <div class="container-fluid">
     <div class="card card-primary">
-        <form asp-action="Edit">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Editar EmpleadoContacto</h3>
+            <h3 class="card-title">Editar Empleado Contacto</h3>
         </div>
+        <form asp-action="Edit">
+        
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
                 <h5>Información General</h5>
@@ -74,7 +76,7 @@
       </form>
     </div>
 </div>
-}
+
 
 @section Scripts {
     @{

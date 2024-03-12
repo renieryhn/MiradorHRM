@@ -271,6 +271,18 @@
                     }
                 });
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var mensaje = '@Html.Raw(TempData["mensaje"])';
+                if (mensaje) {
+                    toastr.success(mensaje);
+                }
+
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
         </script>
     }
 }

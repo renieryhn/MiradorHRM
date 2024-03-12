@@ -165,37 +165,47 @@ namespace PlanillaPM.Controllers
         public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile FotoTmp)
         {
 
-            empleado.FechaCreacion = DateTime.Now;
-            empleado.CreadoPor = "Admin";
-            empleado.FechaModificacion = DateTime.Now;
-            empleado.ModificadoPor = "Admin";
-
-            // Verificar si el IdBanco seleccionado es "Seleccionar" y establecerlo como null
-            if (empleado.IdBanco == 0)
+            try
             {
+                empleado.FechaCreacion = DateTime.Now;
+                empleado.CreadoPor = "Admin";
+                empleado.FechaModificacion = DateTime.Now;
+                empleado.ModificadoPor = "Admin";
 
-                empleado.IdBanco = null;
-            }
-
-            if (ModelState.IsValid)
-            {
-                if (FotoTmp != null && FotoTmp.Length > 0)
+                // Verificar si el IdBanco seleccionado es "Seleccionar" y establecerlo como null
+                if (empleado.IdBanco == 0)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await FotoTmp.CopyToAsync(memoryStream);
-                        empleado.Fotografia = memoryStream.ToArray();
-                    }
+                    empleado.IdBanco = null;
                 }
-                _context.Add(empleado);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                if (ModelState.IsValid)
+                {
+                    if (FotoTmp != null && FotoTmp.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await FotoTmp.CopyToAsync(memoryStream);
+                            empleado.Fotografia = memoryStream.ToArray();
+                        }
+                    }
+                    _context.Add(empleado);
+                    await _context.SaveChangesAsync();
+                    TempData["mensaje"] = "Empleado creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                   // var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                  //  TempData["Error"] = "Error: " + message;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
+               // TempData["error"] = "Error: " + ex.Message;
             }
+
+
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco");
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo");
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento");
@@ -249,31 +259,35 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado)
         {
-            if (id != empleado.IdEmpleado)
+            try
             {
-                return NotFound();
-            }
+                if (id != empleado.IdEmpleado)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
                     _context.Update(empleado);
                     await _context.SaveChangesAsync();
+                    TempData["mensaje"] = "Empleado actualizado exitosamente.";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EmpleadoExists(empleado.IdEmpleado))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmpleadoExists(empleado.IdEmpleado))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            // Si llegamos a este punto, significa que hubo un error de validación
+            TempData["Error"] = "Error: Por favor, corrija los errores e intente nuevamente.";
+
             ViewData["IdBanco"] = new SelectList(_context.Bancos, "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleado.IdCargo);
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos, "IdDepartamento", "NombreDepartamento", empleado.IdDepartamento);
@@ -332,20 +346,23 @@ namespace PlanillaPM.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var empleado = await _context.Empleados.FindAsync(id);
-            if (empleado != null)
+            if (empleado == null)
             {
-                _context.Empleados.Remove(empleado);
+                return NotFound();
             }
+
             try
             {
+                _context.Empleados.Remove(empleado);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Empleado eliminado exitosamente.";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {

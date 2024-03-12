@@ -8,9 +8,10 @@ public partial class EmpleadoEducacion
 {
     public int IdEmpleadoEducacion { get; set; }
 
+    [Display(Name = "Id Empleado")]
     public int IdEmpleado { get; set; }
 
-    [Display(Name = "Institucion")]
+    [Display(Name = "Institución")]
     [Required(ErrorMessage = "El campo {0} es obligatorio.")]
     public string Institucion { get; set; } = null!;
 
@@ -28,12 +29,16 @@ public partial class EmpleadoEducacion
 
     public string? Comentarios { get; set; }
 
+    [Display(Name = "Fecha Creación")]
     public DateOnly FechaCreacion { get; set; }
 
+    [Display(Name = "Fecha Modificación")]
     public DateOnly FechaModificacion { get; set; }
 
+    [Display(Name = "Creado Por")]
     public string CreadoPor { get; set; } = null!;
 
+    [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;

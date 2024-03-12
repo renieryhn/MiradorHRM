@@ -299,5 +299,14 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            
+            document.addEventListener('DOMContentLoaded', function () {
+                var error = '@Html.Raw(TempData["Error"])';
+                if (error) {
+                    toastr.error(error);
+                }
+            });
+        </script>
     }
 }

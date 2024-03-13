@@ -25,3 +25,4 @@ public partial class DiaFestivo
 
     [DisplayName("Modificado Por")]
     public string? ModificadoPor { get; set; }
+}

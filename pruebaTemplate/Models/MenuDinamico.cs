@@ -10,8 +10,6 @@ namespace PlanillaPM.Models;
         public string Area { get; set; }
         public string Controler { get; set; }
         public string Accion { get; set; }
-
-
     public MenuDinamico()
     {
 

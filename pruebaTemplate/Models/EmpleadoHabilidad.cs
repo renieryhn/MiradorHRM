@@ -15,8 +15,10 @@ public partial class EmpleadoHabilidad
     [Display(Name = "Habilidad")]
     public string Habilidad { get; set; } = null!;
 
+    [Display(Name = "Años de Experiencia")]
     public int ExperienciaYears { get; set; }
 
+    [Display(Name = "Comentarios")]
     public string? Comentarios { get; set; }
 
     [Display(Name = "Fecha Creación")]

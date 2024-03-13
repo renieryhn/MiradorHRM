@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
 public partial class EmpleadoIngreso
 {
     public string IdIngreso { get; set; } = null!;
-
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
 
     [DisplayName("Fecha de Creación")]

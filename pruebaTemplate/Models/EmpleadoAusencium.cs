@@ -61,4 +61,11 @@ public partial class EmpleadoAusencium
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
     [Display(Name = "Tipo de Ausencia")]
     public virtual TipoAusencium IdTipoAusenciaNavigation { get; set; } = null!;
+
+    public enum EstadoAusencia
+    {
+        Solicitada,
+        Aprobada,
+        Rechazada
+    }
 }

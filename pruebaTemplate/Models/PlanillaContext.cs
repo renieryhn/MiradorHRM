@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,9 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     {
     }
     public virtual DbSet<Banco> Bancos { get; set; }
-
+    [Display(Name = "Cargo de Empleados")]
     public virtual DbSet<Cargo> Cargos { get; set; }
-
+    [Display(Name = "Clase e Empleado")]
     public virtual DbSet<ClaseEmpleado> ClaseEmpleados { get; set; }
 
     public virtual DbSet<Deduccion> Deduccions { get; set; }

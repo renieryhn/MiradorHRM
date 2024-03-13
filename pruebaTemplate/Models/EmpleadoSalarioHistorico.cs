@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
 public partial class EmpleadoSalarioHistorico
 {
     public int IdEmpleadoSalarioHistorico { get; set; }
-
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
-
+    [Display(Name = "Salario Anterio")]
     public decimal SalarioAnterior { get; set; }
-
+    [Display(Name = "Salario Actual")]
     public decimal SalarioActual { get; set; }
-
+    [Display(Name = "Comentarios")]
     public string? Comentario { get; set; }
 
     [DisplayName("Fecha de Creación")]

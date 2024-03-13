@@ -8,6 +8,7 @@ public partial class EmpleadoExperiencium
 {
     public int IdEmpleadoExperiencia { get; set; }
 
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
 
     [Display(Name = "Empresa")]

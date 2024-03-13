@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
 public partial class EmpleadoCargoHistorico
 {
     public int IdEmpleadoCargo { get; set; }
-
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
-
+    [Display(Name = "Cargo Desempeñado")]
     public int IdCargo { get; set; }
-
+    [Display(Name = "Comentarios")]
     public string? Comentario { get; set; }
 
     [DisplayName("Fecha de Creación")]

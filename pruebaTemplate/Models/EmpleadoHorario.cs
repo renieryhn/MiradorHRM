@@ -1,65 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
 public partial class EmpleadoHorario
 {
     public int IdEmpleadoHorario { get; set; }
-
+    [Display(Name = "Empleado")]
     public int Idempleado { get; set; }
-
+    [Display(Name = "Horario Base")]
     public int IdHorarioBase { get; set; }
-
+    
+    [Display(Name = "Trabaja Lunes")]
     public bool IndLunes { get; set; }
-
+    [Display(Name = "Trabaja Martes")]
     public bool IndMartes { get; set; }
-
+    [Display(Name = "Trabaja Miércoles")]
     public bool IndMiercoles { get; set; }
-
+    [Display(Name = "Trabaja Jueves")]
     public bool IndJueves { get; set; }
-
+    [Display(Name = "Trabaja Viernes")]
     public bool IndViernes { get; set; }
-
+    [Display(Name = "Trabaja Sábado")]
     public bool IndSabado { get; set; }
-
+    [Display(Name = "Trabaja Domingo")]
     public bool IndDomingo { get; set; }
-
+    [Display(Name = "Lun. Desde")]
     public TimeOnly? LunDesde { get; set; }
-
+    [Display(Name = "Lun. Hasta")]
     public TimeOnly? LunHasta { get; set; }
-
+    [Display(Name = "Mar. Desde")]
     public TimeOnly? MarDesde { get; set; }
-
+    [Display(Name = "Mar. Hasta")]
     public TimeOnly? MarHasta { get; set; }
-
+    [Display(Name = "Mie. Desde")]
     public TimeOnly? MieDesde { get; set; }
-
+    [Display(Name = "Mie. Hasta")]
     public TimeOnly? MieHasta { get; set; }
-
+    [Display(Name = "Jue. Desde")]
     public TimeOnly? JueDesde { get; set; }
-
+    [Display(Name = "Jue. Hasta")]
     public TimeOnly? JueHasta { get; set; }
-
+    [Display(Name = "Vie. Desde")]
     public TimeOnly? VieDesde { get; set; }
-
+    [Display(Name = "Vie. Hasta")]
     public TimeOnly? VieHasta { get; set; }
-
+    [Display(Name = "Sab. Desde")]
     public TimeOnly? SabDesde { get; set; }
-
+    [Display(Name = "Sab. Hasta")]
     public TimeOnly? SabHasta { get; set; }
-
+    [Display(Name = "Dom. Desde")]
     public TimeOnly? DomDesde { get; set; }
-
+    [Display(Name = "Dom. Hasta")]
     public TimeOnly? DomHasta { get; set; }
-
+    [Display(Name = "Receso a Hora de Comida")]
     public bool? IndComida { get; set; }
-
+    [Display(Name = "Comidad Desde")]
     public TimeOnly? ComidaDesde { get; set; }
-
+    [Display(Name = "Comifa Hasta")]
     public TimeOnly? ComidaHasta { get; set; }
-
+    [Display(Name = "Total de Horas por Semana")]
     public string? TotalHorasSemana { get; set; }
 
     public bool Activo { get; set; }

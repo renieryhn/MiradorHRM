@@ -7,9 +7,10 @@ namespace PlanillaPM.Models;
 public partial class DiaFestivo
 {
     public int IdDiaFestivo { get; set; }
-
+    [DisplayName("Día Festivo")]
     public string NombreDiaFestivo { get; set; } = null!;
 
+    [DisplayName("Fecha")]
     public DateOnly Fecha { get; set; }
 
     public bool Activo { get; set; }

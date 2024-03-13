@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
 public partial class TipoContrato
 {
     public int IdTipoContrato { get; set; }
-
+    [Display(Name = "Tipo de Contrato")]
     public string NombreTipoContrato { get; set; } = null!;
-
+    [Display(Name = "Activo")]
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]

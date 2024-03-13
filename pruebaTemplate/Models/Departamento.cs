@@ -7,9 +7,10 @@ namespace PlanillaPM.Models;
 public partial class Departamento
 {
     public int IdDepartamento { get; set; }
-
+    [DisplayName("Nombre del Departamento")]
     public string NombreDepartamento { get; set; } = null!;
 
+    [DisplayName("División Administrativa")]
     public int? IdDivision { get; set; }
 
     public bool Activo { get; set; }

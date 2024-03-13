@@ -27,6 +27,7 @@ public partial class EmpleadoEducacion
     [Required(ErrorMessage = "El campo {0} es obligatorio.")]
     public DateOnly FechaHasta { get; set; }
 
+    [Display(Name = "Comentarios")]
     public string? Comentarios { get; set; }
 
     [Display(Name = "Fecha Creación")]

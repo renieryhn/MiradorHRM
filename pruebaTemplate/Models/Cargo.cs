@@ -7,7 +7,7 @@ namespace PlanillaPM.Models;
 public partial class Cargo
 {
     public int IdCargo { get; set; }
-
+    [DisplayName("Nombre del Cargo ")]
     public string NombreCargo { get; set; } = null!;
 
     public bool Activo { get; set; }

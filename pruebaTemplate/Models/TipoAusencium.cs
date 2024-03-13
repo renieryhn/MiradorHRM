@@ -9,11 +9,11 @@ namespace PlanillaPM.Models;
 public partial class TipoAusencium
 {
     public int IdTipoAusencia { get; set; }
-
+    [Display(Name = "Tipo de Ausencia")]
     public string NombreTipoAusencia { get; set; } = null!;
-
+    [Display(Name = "Es con Gose de Sueldo")]
     public bool GoseSueldo { get; set; }
-
+    [Display(Name = "Activo")]
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]

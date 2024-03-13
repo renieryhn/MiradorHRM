@@ -9,11 +9,11 @@ namespace PlanillaPM.Models;
 public partial class TipoNomina
 {
     public int IdTipoNomina { get; set; }
-
+    [Display(Name = "Tipo de Planilla")]
     public string NombreTipoNomina { get; set; } = null!;
-
+    [Display(Name = "Se paga cada (No. Días)")]
     public int PagadaCadaNdias { get; set; }
-
+    [Display(Name = "Activo")]
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]

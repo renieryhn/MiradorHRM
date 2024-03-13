@@ -10,11 +10,11 @@ namespace PlanillaPM.Models;
 public partial class Producto
 {
     public int IdProducto { get; set; }
-
+    [Display(Name = "Nombre del Producto o Activo Fijo")]
     public string NombreProducto { get; set; } = null!;
-
+    [Display(Name = "Código")]
     public string? CodigoProducto { get; set; }
-
+    [Display(Name = "Descripción")]
     public string? Descripcion { get; set; }
 
     public bool Activo { get; set; }

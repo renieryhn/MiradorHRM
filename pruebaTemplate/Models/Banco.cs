@@ -6,9 +6,10 @@ namespace PlanillaPM.Models;
 public partial class Banco
 {
     public int IdBanco { get; set; }
-
+    [DisplayName("Nombre del Banco")]
     public string NombreBanco { get; set; } = null!;
 
+    [DisplayName("Activo")]
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]

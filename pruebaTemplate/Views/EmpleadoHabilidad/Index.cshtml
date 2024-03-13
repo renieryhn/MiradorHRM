@@ -145,8 +145,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
-
-            var $table = $('#table');
+            $(document).ready(function () {
+                var url = $("#liMenuDinamico");
+                var $table = $('#table');
+                $.ajax({
+                    url: "Empleado/ObtenerMenuDinamico",
+                    type: "GET",
+                    success: function (data) {
+                        $("#liMenuDinamico").html(data);
+                    },
+                    error: function () {
+                        console.error("Error al cargar el menú dinámico");
+                    }
+                });
+            });
 
             document.addEventListener('DOMContentLoaded', function () {
                 var mensaje = '@Html.Raw(TempData["mensaje"])';

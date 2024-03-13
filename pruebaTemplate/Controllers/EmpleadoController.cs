@@ -41,7 +41,7 @@ namespace PlanillaPM.Controllers
                 registros = await _context.Empleados.ToListAsync();
             }
 
-            const int pageSize = 10;
+            const int pageSize = 9;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
             var pager = new Pager(recsCount, pg, pageSize);

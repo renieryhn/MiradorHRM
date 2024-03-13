@@ -13,13 +13,17 @@ public partial class TipoAusencium
 
     public bool Activo { get; set; }
 
-    public DateOnly FechaCreacion { get; set; }
+    [DisplayName("Fecha de Creación")]
+    public DateTime FechaCreacion { get; set; }
 
-    public DateOnly FechaModificacion { get; set; }
+    [DisplayName("Fehca de Modificación")]
+    public DateTime FechaModificacion { get; set; }
 
-    public string CreadoPor { get; set; } = null!;
+    [DisplayName("Creado Por")]
+    public string? CreadoPor { get; set; }
 
-    public string ModificadoPor { get; set; } = null!;
+    [DisplayName("Modificado Por")]
+    public string? ModificadoPor { get; set; }
 
     public virtual ICollection<EmpleadoAusencium> EmpleadoAusencia { get; set; } = new List<EmpleadoAusencium>();
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
@@ -25,6 +26,9 @@ public partial class EmpleadoContacto
 
     [Display(Name = "Teléfono Fijo")]
     public string? TelefonoFijo { get; set; }
+
+    [DisplayName("Activo")]
+    public bool Activo { get; set; }
 
     [Display(Name = "Fecha Creación")]
     public DateOnly FechaCreacion { get; set; }

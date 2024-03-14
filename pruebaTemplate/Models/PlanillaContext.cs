@@ -10,13 +10,11 @@ namespace PlanillaPM.Models;
 
 public partial class PlanillaContext : IdentityDbContext<Usuario>
 {
-
-
-
     public PlanillaContext(DbContextOptions<PlanillaContext> options)
         : base(options)
     {
     }
+    [Display(Name = "Bancos Nacionales")]
     public virtual DbSet<Banco> Bancos { get; set; }
     [Display(Name = "Cargo de Empleados")]
     public virtual DbSet<Cargo> Cargos { get; set; }

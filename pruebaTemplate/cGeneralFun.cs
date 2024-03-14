@@ -1,15 +1,19 @@
 ﻿using PlanillaPM.Models;
 using System.Data;
 using System.Reflection;
+using System;
+using System.Collections;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Microsoft.AspNet.Identity;
 
 namespace PlanillaPM
 {
     public class cGeneralFun
     {
-        public static class Constants
-        {
-            public const string g_UserName = "Administrador";
-        }
         public class ListtoDataTableConverter
         {
             public DataTable ToDataTable<T>(List<T> items)

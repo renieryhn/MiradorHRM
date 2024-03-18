@@ -6,6 +6,9 @@ namespace PlanillaPM.Models
 {
     public class Usuario: IdentityUser
     {
+        //[DisplayName("Nombre de Usuario")]
+        //public string UserName { get; set; }
+        [DisplayName("Email")]
         public string Email { get; set; }
         [DisplayName("Fotografía")]
 

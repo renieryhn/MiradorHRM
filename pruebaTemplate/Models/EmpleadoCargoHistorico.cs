@@ -14,11 +14,12 @@ public partial class EmpleadoCargoHistorico
     public int IdCargo { get; set; }
     [Display(Name = "Comentarios")]
     public string? Comentario { get; set; }
-
+    [DisplayName("Activo")]
+    public bool Activo { get; set; }
     [DisplayName("Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }
 
-    [DisplayName("Fehca de Modificación")]
+    [DisplayName("Fecha de Modificación")]
     public DateTime FechaModificacion { get; set; }
 
     [DisplayName("Creado Por")]

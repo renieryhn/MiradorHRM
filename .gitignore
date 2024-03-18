@@ -43,3 +43,6 @@
 /.vs/slnx.sqlite
 /pruebaTemplate/obj/Debug/net8.0/project.razor.vs.bin
 /pruebaTemplate/obj/Debug/net8.0/PlanillaPM.MvcApplicationPartsAssemblyInfo.cs
+/pruebaTemplate/wwwroot/lib/bootstrap/dist/css
+/.gitignore
+/.gitignore

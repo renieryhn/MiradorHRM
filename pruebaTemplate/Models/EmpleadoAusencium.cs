@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
@@ -46,6 +47,9 @@ public partial class EmpleadoAusencium
 
     [Display(Name = "Comentarios")]
     public string? Comentarios { get; set; }
+
+    [DisplayName("Activo")]
+    public bool Activo { get; set; }
 
     [Display(Name = "Fecha Creación")]
     public DateOnly FechaCreacion { get; set; }

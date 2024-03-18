@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 namespace PlanillaPM.Models;
 
 public partial class Banco
@@ -13,9 +15,11 @@ public partial class Banco
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]
+     //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}", ApplyFormatInEditMode = true)]
     public DateTime FechaCreacion { get; set; }
 
-    [DisplayName("Fehca de Modificación")]
+    [DisplayName("Fecha de Modificación")]
+    //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}", ApplyFormatInEditMode = true)]
     public DateTime FechaModificacion { get; set; }
 
     [DisplayName("Creado Por")]

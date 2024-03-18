@@ -202,27 +202,33 @@ namespace PlanillaPM.Controllers
                 ViewData["mensaje"] = "Tu correo electrónico aún no ha sido verificado. Por favor, verifica tu correo electrónico y vuelve a intentarlo.";
                 return View(modelo);
             }
-
-            var resultado = await signInManager.PasswordSignInAsync(modelo.Email,
-                modelo.Password, modelo.Recuerdame, lockoutOnFailure: false);
-
-            if (resultado.Succeeded)
+            try
             {
-                // Inicio de sesión exitoso
-                return RedirectToAction("Index", "Home");
-            }
-            else if (resultado.IsLockedOut)
+                var resultado = await signInManager.PasswordSignInAsync(modelo.Email,modelo.Password, modelo.Recuerdame, lockoutOnFailure: false);
+
+                if (resultado.Succeeded)
+                {
+                    // Inicio de sesión exitoso
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (resultado.IsLockedOut)
+                {
+                    // Usuario bloqueado
+                    ViewData["mensaje"] = "La cuenta está bloqueada. Por favor, inténtalo nuevamente más tarde.";
+                    return View(modelo);
+                }
+                else
+                {
+                    // Inicio de sesión fallido
+                    ViewData["mensaje"] = "Nombre de usuario o contraseña incorrectos." + resultado.ToString();
+                    return View(modelo);
+                }
+            } catch (Exception ex)
             {
-                // Usuario bloqueado
-                ViewData["mensaje"] = "La cuenta está bloqueada. Por favor, inténtalo nuevamente más tarde.";
+                ViewData["error"] = "Error: " + ex.Message;
                 return View(modelo);
             }
-            else
-            {
-                // Inicio de sesión fallido
-                ViewData["mensaje"] = "Nombre de usuario o contraseña incorrectos." + resultado.ToString();
-                return View(modelo);
-            }
+           
         }
 
 

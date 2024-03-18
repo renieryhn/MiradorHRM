@@ -18,7 +18,7 @@ public partial class DiaFestivo
     [DisplayName("Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }
 
-    [DisplayName("Fehca de Modificación")]
+    [DisplayName("Fecha de Modificación")]
     public DateTime FechaModificacion { get; set; }
 
     [DisplayName("Creado Por")]

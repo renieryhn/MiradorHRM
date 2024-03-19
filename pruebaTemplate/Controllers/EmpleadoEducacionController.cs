@@ -5,17 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using PlanillaPM.Models;
+using ClosedXML.Excel;
+using static PlanillaPM.cGeneralFun;
+using System.Data;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoEducacionController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoEducacionController(PlanillaContext context)
+        public EmpleadoEducacionController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoEducacion
@@ -23,6 +29,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoEducacions.Include(e => e.IdEmpleadoNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoEducacion>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoEducacions.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoEducacion.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoEducacion/Details/5
@@ -56,12 +83,13 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoEducacion, true);
                     _context.Add(empleadoEducacion);
                     await _context.SaveChangesAsync();
 
@@ -110,7 +138,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
         {
             try
             {
@@ -121,6 +149,7 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoEducacion, false);
                     _context.Update(empleadoEducacion);
                     await _context.SaveChangesAsync();
 
@@ -197,6 +226,25 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoEducacionExists(int id)
         {
             return _context.EmpleadoEducacions.Any(e => e.IdEmpleadoEducacion == id);
+        }
+        private void SetCamposAuditoria(EmpleadoEducacion record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

@@ -44,29 +44,50 @@
                                     <input asp-for="TelefonoFijo" class="form-control" />
                                     <span asp-validation-for="TelefonoFijo" class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="FechaCreacion" class="control-label"></label>
-                                    <input asp-for="FechaCreacion" class="form-control" readonly/>
-                                    <span asp-validation-for="FechaCreacion" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="FechaModificacion" class="control-label"></label>
-                                    <input asp-for="FechaModificacion" class="form-control" readonly/>
-                                    <span asp-validation-for="FechaModificacion" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="CreadoPor" class="control-label"></label>
-                                    <input asp-for="CreadoPor" class="form-control" readonly/>
-                                    <span asp-validation-for="CreadoPor" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="ModificadoPor" class="control-label"></label>
-                                    <input asp-for="ModificadoPor" class="form-control" readonly/>
-                                    <span asp-validation-for="ModificadoPor" class="text-danger"></span>
-                                </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
+                            </div>
+                               
                         </div>
                 </div>
             </div>
+
+            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Otros</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaCreacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="FechaModificacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="CreadoPor" class="control-label"></label>
+                                <input asp-for="CreadoPor" class="form-control" readonly />
+                                <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ModificadoPor" class="control-label"></label>
+                                <input asp-for="ModificadoPor" class="form-control" readonly />
+                                <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
         </div>
 
         <div class="card-footer">

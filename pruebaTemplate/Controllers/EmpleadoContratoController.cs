@@ -6,16 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
+using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using static PlanillaPM.cGeneralFun;
+using System.Data;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoContratoController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoContratoController(PlanillaContext context)
+        public EmpleadoContratoController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoContrato
@@ -23,6 +29,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoContratos.Include(e => e.IdCargoNavigation).Include(e => e.IdEmpleadoNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoContrato>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoContratos.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoContrato.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoContrato/Details/5
@@ -59,12 +86,13 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoContrato, true);
                     _context.Add(empleadoContrato);
                     await _context.SaveChangesAsync();
 
@@ -120,7 +148,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
         {
             try
             {
@@ -131,6 +159,7 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoContrato, false);
                     _context.Update(empleadoContrato);
                     await _context.SaveChangesAsync();
 
@@ -219,6 +248,26 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoContratoExists(int id)
         {
             return _context.EmpleadoContratos.Any(e => e.IdEmpleadoContrato == id);
+        }
+
+        private void SetCamposAuditoria(EmpleadoContrato record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

@@ -30,6 +30,7 @@ public partial class EmpleadoActivo
     [DisplayName("Descripción")]
     public string? Descripcion { get; set; }
 
+    [DisplayName("Activo")]
     public bool Activo { get; set; }
 
     [DisplayName("Fecha de Creación")]

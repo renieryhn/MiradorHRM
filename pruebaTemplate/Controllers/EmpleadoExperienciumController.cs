@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
+using Microsoft.AspNetCore.Identity;
+using static PlanillaPM.cGeneralFun;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoExperienciumController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoExperienciumController(PlanillaContext context)
+        public EmpleadoExperienciumController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoExperiencium
@@ -23,6 +29,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoExperiencia.Include(e => e.IdEmpleadoNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoExperiencium>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoExperiencia.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoExperiencia.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoExperiencium/Details/5
@@ -56,12 +83,13 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoExperiencia,IdEmpleado,Empresa,Cargo,FechaDesde,FechaHasta,Descripcion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoExperiencium empleadoExperiencium)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoExperiencia,IdEmpleado,Empresa,Cargo,FechaDesde,FechaHasta,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoExperiencium empleadoExperiencium)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoExperiencium, true);
                     _context.Add(empleadoExperiencium);
                     await _context.SaveChangesAsync();
 
@@ -107,7 +135,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoExperiencia,IdEmpleado,Empresa,Cargo,FechaDesde,FechaHasta,Descripcion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoExperiencium empleadoExperiencium)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoExperiencia,IdEmpleado,Empresa,Cargo,FechaDesde,FechaHasta,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoExperiencium empleadoExperiencium)
         {
             try
             {
@@ -118,6 +146,7 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoExperiencium, false);
                     _context.Update(empleadoExperiencium);
                     await _context.SaveChangesAsync();
 
@@ -190,6 +219,26 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoExperienciumExists(int id)
         {
             return _context.EmpleadoExperiencia.Any(e => e.IdEmpleadoExperiencia == id);
+        }
+
+        private void SetCamposAuditoria(EmpleadoExperiencium record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

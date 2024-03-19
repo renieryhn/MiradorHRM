@@ -8,16 +8,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
+using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using static PlanillaPM.cGeneralFun;
+using System.Data;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoContactoController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoContactoController(PlanillaContext context)
+        public EmpleadoContactoController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoContacto
@@ -25,6 +31,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoContactos.Include(e => e.IdEmpleadoNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoContacto>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoContactos.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoContacto.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoContacto/Details/5
@@ -59,12 +86,13 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
+        public async Task<IActionResult> Create([Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoContacto, true);
                     _context.Add(empleadoContacto);
                     await _context.SaveChangesAsync();
 
@@ -104,7 +132,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
         {
             if (id != empleadoContacto.IdContactoEmergencia)
             {
@@ -115,6 +143,7 @@ namespace PlanillaPM.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoContacto, false);
                     _context.Update(empleadoContacto);
                     await _context.SaveChangesAsync();
 
@@ -197,6 +226,25 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoContactoExists(int id)
         {
             return _context.EmpleadoContactos.Any(e => e.IdContactoEmergencia == id);
+        }
+        private void SetCamposAuditoria(EmpleadoContacto record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

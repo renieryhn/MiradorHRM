@@ -24,10 +24,9 @@
                                 <div class="col-md-2">
                                     <label class="control-label">@Html.DisplayNameFor(model => model.DiaCompleto)</label>
                                 </div>
-                        <div class=" col-md-2 form-group form-check form-switch ml-5">
+                                <div class="col-md-8 form-group form-check form-switch ml-4">
                                    <input class="form-check-input" asp-for="DiaCompleto" /> @Html.DisplayNameFor(model => model.DiaCompleto)
                                 </div>
-
                        </div> 
                         <div class="form-group row">
                                 <div class="col-md-2">
@@ -116,28 +115,33 @@
                                 <div class="col-md-8">
                                     <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.ModificadoPor)"/>
                                 </div>
-                       </div> 
-                        <div class="form-group row">
+                       </div>
+                        <div class="form-group row"> 
+                                <div class="col-md-2">
                                  <label class="control-label">@Html.DisplayNameFor(model => model.IdEmpleadoNavigation)</label>
-                             </div>
-                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEmpleadoNavigation.ApellidoEmpleado)" disabled/>
-                             </div>
-                       </div> 
-                        <div class="form-group row">
-                            <div class="col-md-2">
-                                 <label class="control-label">@Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)</label>
-                             </div>
-                             <div class="col-md-8">
-                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoAusenciaNavigation.NombreTipoAusencia)" disabled />
-                             </div>
-                       </div> 
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEmpleadoNavigation.ApellidoEmpleado)" disabled/>
+                                </div>
+                        </div>
+                <div class="form-group row">
+                    <div class="col-md-2">
+                        <label class="control-label">@Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoAusenciaNavigation.NombreTipoAusencia)" disabled />
+                    </div>
+                </div>
+            </div> 
+                        
                 </div>
             </div>
+        <div class="card-footer">
+            <a asp-action="Edit" asp-route-id="@Model.IdEmpleadoAusencia" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
         </div>
-         <div class="card-footer">
-             <a asp-action="Edit" asp-route-id="@Model.IdEmpleadoAusencia" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
-             <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
-          </div>
-    </div>
-</div>
+        </div>
+         
+ </div>
+
 

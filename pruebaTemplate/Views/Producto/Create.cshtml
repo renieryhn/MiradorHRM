@@ -1,0 +1,46 @@
+﻿@model PlanillaPM.Models.Producto
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Producto</h3>
+        </div>
+         <form asp-action="Create">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="NombreProducto" class="control-label"></label>
+                                <input asp-for="NombreProducto" class="form-control" />
+                                <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CodigoProducto" class="control-label"></label>
+                                <input asp-for="CodigoProducto" class="form-control" />
+                                <span asp-validation-for="CodigoProducto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="control-label"></label>
+                                <input asp-for="Descripcion" class="form-control" />
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

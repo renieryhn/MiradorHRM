@@ -74,6 +74,9 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Descripcion)
                                                         </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.Activo)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.FechaCreacion)
                                                         </th>
@@ -120,6 +123,18 @@
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Descripcion)
+                                                        </td>
+                                                        <td>
+                                                            @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                            @if (item.Activo)
+                                                            {
+                                                                <span class="badge badge-success">Activo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge badge-danger">Inactivo</span>
+                                                            }
+
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.FechaCreacion)

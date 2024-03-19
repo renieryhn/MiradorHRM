@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<PlanillaPM.Models.EmpleadoContacto>
 @using PlanillaPM.Models;
 
-        @{
-        ViewData["Title"] = "Index";
+  @{
+    ViewData["Title"] = "Index";
     Pager pager = new Pager();
     int PageNo = 0;
     if (ViewBag.Pager != null)
@@ -10,7 +10,7 @@
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
     }
-        }
+  }
 
 
     <div class="container-fluid">
@@ -73,6 +73,9 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.TelefonoFijo)
                                                         </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.Activo)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.FechaCreacion)
                                                         </th>
@@ -116,6 +119,17 @@
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.TelefonoFijo)
+                                                        </td>
+                                                        <td>
+                                                            @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                            @if (item.Activo)
+                                                            {
+                                                                <span class="badge badge-success">Activo</span>
+                                                            }
+                                                            else{
+                                                                <span class="badge badge-danger">Inactivo</span>
+                                                            }
+                                                   
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.FechaCreacion)

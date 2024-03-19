@@ -36,10 +36,10 @@ public partial class EmpleadoContrato
     public bool Activo { get; set; }
 
     [Display(Name = "Fecha Creación")]
-    public DateOnly FechaCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; }
 
     [Display(Name = "Fecha Modificación")]
-    public DateOnly FechaModificacion { get; set; }
+    public DateTime FechaModificacion { get; set; }
 
     [Display(Name = "Creado Por")]
     public string CreadoPor { get; set; } = null!;

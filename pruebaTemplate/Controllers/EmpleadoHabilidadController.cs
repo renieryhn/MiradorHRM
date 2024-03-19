@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
+using static PlanillaPM.cGeneralFun;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoHabilidadController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoHabilidadController(PlanillaContext context)
+        public EmpleadoHabilidadController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoHabilidad
@@ -23,6 +29,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoHabilidads.Include(e => e.IdEmpleadoNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoHabilidad>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoHabilidads.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoHabilidad.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoHabilidad/Details/5
@@ -56,12 +83,13 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoHabilidad, true);
                     _context.Add(empleadoHabilidad);
                     await _context.SaveChangesAsync();
 
@@ -103,7 +131,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
         {
             try
             {
@@ -114,6 +142,7 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoHabilidad, false);
                     _context.Update(empleadoHabilidad);
                     await _context.SaveChangesAsync();
 
@@ -189,6 +218,26 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoHabilidadExists(int id)
         {
             return _context.EmpleadoHabilidads.Any(e => e.IdEmpleadoHabilidad == id);
+        }
+
+        private void SetCamposAuditoria(EmpleadoHabilidad record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

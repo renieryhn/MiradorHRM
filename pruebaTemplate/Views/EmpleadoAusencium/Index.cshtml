@@ -119,7 +119,16 @@
                                                         </div>
                                                     </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.DiaCompleto)
+                                                            @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                            @if (item.DiaCompleto)
+                                                            {
+                                                                <span class="badge badge-success">Activo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge badge-danger">Inactivo</span>
+                                                            }
+
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Estado)

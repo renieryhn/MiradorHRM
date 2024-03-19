@@ -5,17 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using PlanillaPM.Models;
+using ClosedXML.Excel;
+using static PlanillaPM.cGeneralFun;
+using System.Data;
 
 namespace PlanillaPM.Controllers
 {
     public class EmpleadoAusenciumController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoAusenciumController(PlanillaContext context)
+        public EmpleadoAusenciumController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: EmpleadoAusencium
@@ -23,6 +29,27 @@ namespace PlanillaPM.Controllers
         {
             var planillaContext = _context.EmpleadoAusencia.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdTipoAusenciaNavigation);
             return View(await planillaContext.ToListAsync());
+        }
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoAusencium>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoAusencia.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoAusencia.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
         }
 
         // GET: EmpleadoAusencium/Details/5
@@ -64,6 +91,7 @@ namespace PlanillaPM.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoAusencium, true);
                     _context.Add(empleadoAusencium);
                     await _context.SaveChangesAsync();
 
@@ -126,6 +154,7 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleadoAusencium, false);
                     _context.Update(empleadoAusencium);
                     await _context.SaveChangesAsync();
 
@@ -208,6 +237,26 @@ namespace PlanillaPM.Controllers
         private bool EmpleadoAusenciumExists(int id)
         {
             return _context.EmpleadoAusencia.Any(e => e.IdEmpleadoAusencia == id);
+        }
+
+        private void SetCamposAuditoria(EmpleadoAusencium record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
         }
     }
 }

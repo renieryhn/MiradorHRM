@@ -131,16 +131,215 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-controller="Banco" asp-action="Index">
-                            <i class="nav-icon fas fa-university" style="color: var(--GrisMenu);"></i>
-                            <p style="color: var(--GrisMenu);">
-                                <strong>Banco</strong>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-home"></i>
+                            <p>
+                                <strong>Empresa</strong>
+                                <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Empresa" asp-action="Index">
+                                    <i class="nav-icon fa fa-id-card-o" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Datos Generales
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Banco" asp-action="Index">
+                                    <i class="nav-icon fas fa-university" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Banco
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Moneda" asp-action="Index">
+                                    <i class="nav-icon fas fa-money" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Moneda
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Horario" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar-check-o" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Horario
+                                    </p>
+                                </a>
+                            </li>                            
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="DiaFestivo" asp-action="Index">
+                                    <i class="nav-icon fas fa-calendar" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Días Festivos
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Producto" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Producto/Activo Fijo
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                </ul>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-briefcase"></i>
+                            <p>
+                                <strong>Recursos Humanos</strong>
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                            <a class="nav-link" asp-controller="Division" asp-action="Index">
+                                <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                <p style="color: var(--GrisMenu);">
+                                    División
+                                </p>
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Departamento" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Departamento
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cargo" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Cargo
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ClaseEmpleado" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Clase de Empleado
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TipoAusencia" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Tipo de Ausencia
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TipoContrato" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Tipo de Contrato
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TipoHorario" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Tipo de Horario
+                                    </p>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-list-alt"></i>
+                            <p>
+                                <strong>Nómina</strong>
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TipoNomina" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Tipo de Nómina
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Ingreso" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Ingresos
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Deduccion" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Deducciones
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Impuesto" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Impuestos
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fa fa-user-circle"></i>
+                            <p>
+                                <strong>Seguridad</strong>
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Rol" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Uusuarios
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Division" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Roles
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Permiso" asp-action="Index">
+                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                    <p style="color: var(--GrisMenu);">
+                                        Permisos
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
             </nav>
 
         </div>

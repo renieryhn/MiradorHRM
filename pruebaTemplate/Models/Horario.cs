@@ -57,8 +57,9 @@ public partial class Horario
     public TimeOnly? DomDesde { get; set; }
     [Display(Name = "Dom. Hasta")]
     public TimeOnly? DomHasta { get; set; }
+
     [Display(Name = "Receso a Hora de Comida")]
-    public bool? IndComida { get; set; }
+    public bool IndComida { get; set; }
     [Display(Name = "Comidad Desde")]
     public TimeOnly? ComidaDesde { get; set; }
     [Display(Name = "Comifa Hasta")]

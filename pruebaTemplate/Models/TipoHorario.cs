@@ -10,6 +10,7 @@ public partial class TipoHorario
     public int IdTipoHorario { get; set; }
     [Display(Name = "Tipo de Horario")]
     public string NombreTipoHorario { get; set; } = null!;
+
     [Display(Name = "Activo")]
     public bool Activo { get; set; }
 

@@ -100,7 +100,7 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(cargo, false);
+                SetCamposAuditoria(cargo, true);
                 _context.Add(cargo);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";

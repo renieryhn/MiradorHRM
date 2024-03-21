@@ -1,0 +1,185 @@
+﻿@model IEnumerable<PlanillaPM.Models.Horario>
+@using PlanillaPM.Models;
+
+@{
+    ViewData["Title"] = "Index";
+    Pager pager = new Pager();
+    int PageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Horario</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-vertical">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <form id="fSearch" method="post" asp-action="Index">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                        </div>
+                                                        <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                            <div class="btn-group btn-group-justified" role="group">
+                                                                <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th data-sortable="true">No.</th>
+                                            <th></th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.NombreHorario)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.TurnoNumero)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndLunes)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndMartes)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndMiercoles)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndJueves)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndViernes)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndSabado)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndDomingo)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.IndComida)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.TotalHorasSemana)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.Activo)
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
+                                        }
+                                        @foreach (var item in Model)
+                                        {
+                                            count = (count + 1);
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                        <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdHorario"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdHorario"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdHorario"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.NombreHorario)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.TurnoNumero)
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndLunes)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.LunDesde) - @Html.DisplayFor(modelItem => item.LunHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndMartes)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.MarDesde) - @Html.DisplayFor(modelItem => item.MarHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndMiercoles)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.MieDesde) - @Html.DisplayFor(modelItem => item.MieHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndJueves)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.JueDesde) - @Html.DisplayFor(modelItem => item.JueHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndViernes)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.VieDesde) - @Html.DisplayFor(modelItem => item.VieHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndSabado)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.SabDesde) - @Html.DisplayFor(modelItem => item.SabHasta)</p>
+                                                </td>
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndDomingo)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.DomDesde) - @Html.DisplayFor(modelItem => item.DomHasta)</p>
+                                                </td>
+
+                                                <td>
+                                                    <a>@Html.DisplayFor(modelItem => item.IndComida)</a>
+                                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.ComidaDesde) - @Html.DisplayFor(modelItem => item.ComidaHasta)</p>
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.TotalHorasSemana)
+                                                </td>
+                                                <td>
+                                                    @if (item.Activo)
+                                                    {
+                                                        <span class="badge badge-success">Activo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-danger">Inactivo</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+

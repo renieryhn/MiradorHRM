@@ -1,0 +1,212 @@
+﻿@model IEnumerable<PlanillaPM.Models.DiaFestivo>
+@using PlanillaPM.Models;
+
+        @{
+        ViewData["Title"] = "Index";
+        Pager pager = new Pager();
+        int PageNo = 0;
+        if (ViewBag.Pager != null)
+        {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+        }
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header" style="background-color: var(--blue);">
+                        <h3 class="card-title">DiaFestivo</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-vertical">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <form id="fSearch" method="post" asp-action="Index">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            </div>
+                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                                <div class="btn-group btn-group-justified" role="group">
+                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-1">
+                                <div id="resultados" class="table-responsive table-striped table-sm">
+                                    <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th data-sortable="true">No.</th>
+                                                <th></th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.NombreDiaFestivo)
+                                                        </th>                                                       
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Color)
+                                                        </th>                                                     
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                            int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
+                                            }
+                                            @foreach (var item in Model) {
+                                            count = (count + 1);
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.NombreDiaFestivo)
+                                                        </td>
+                                                <td>
+                                                    <div style="width: 20px; height: 20px; background-color: @item.Color;"></div>
+                                                </td>
+                                                       
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />               
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+           
+                <div class="card card-primary">
+                    <div class="card-body p-0">
+                        <!-- THE CALENDAR -->
+                  
+                        <div id="calendar"></div>
+                   
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+           
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es', // Configura el idioma en español
+            initialView: 'dayGridMonth', // Vista inicial: mes
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista'
+            },
+            themeSystem: 'bootstrap',
+            editable: false,
+            droppable: false
+        });
+
+
+        $.ajax({
+            method: "GET",
+            url: "/DiaFestivo/GetDiasFestivos",
+            dataType: "json",
+            success: function (data) {
+                console.log("Datos recibidos:", data); 
+
+                
+                data.forEach(function (evento) {
+                    console.log("Evento:", evento); 
+
+                    // Convertir las fechas a objetos Date en la zona horaria de Honduras ('America/Tegucigalpa')
+                    var fechaDesde = new Date(evento.fechaDesde + 'T00:00:00-06:00'); // -06:00 indica la zona horaria de Honduras
+                    var fechaHasta = new Date(evento.fechaHasta + 'T23:59:59-06:00'); // Usamos las 23:59:59 para asegurarnos de que incluya todo el último día
+
+                    // Ajustar la fecha de finalización sumando un día adicional
+                    fechaHasta.setDate(fechaHasta.getDate() + 1);
+
+                    
+                    calendar.addEvent({
+                        title: evento.nombreDiaFestivo,
+                        start: fechaDesde,
+                        end: fechaHasta,
+                        description: evento.nombreDiaFestivo,
+                        allDay: true,
+                        backgroundColor: evento.color,
+                        borderColor: evento.color,
+                        textColor: '#ffffff'
+                    });
+                });
+
+                // Renderizar el calendario después de añadir los eventos
+                calendar.render();
+            },
+            error: function () {
+                console.error("Error al cargar los eventos."); // Registra errores en la consola
+                alert("Error al cargar los eventos.");
+            }
+        });
+
+
+
+
+
+
+
+
+
+    });
+
+
+    
+</script>

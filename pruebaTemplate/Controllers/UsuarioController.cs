@@ -19,28 +19,36 @@ using System.Text.Encodings.Web;
 
 namespace PlanillaPM.Controllers
 {
-    public class UsuarioController: Controller
+    public class UsuarioController : Controller
     {
         private readonly UserManager<Usuario> userManager;
         private readonly SignInManager<Usuario> signInManager;
         private readonly PlanillaContext context;
         private readonly EmailService emailService;
+        private IWebHostEnvironment Environment;
 
-       
 
         public UsuarioController(UserManager<Usuario> userManager,
-         SignInManager<Usuario> signInManager, 
+         SignInManager<Usuario> signInManager,
          PlanillaContext context,
-         EmailService emailService)
+         EmailService emailService,
+         IWebHostEnvironment environment)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
             this.emailService = emailService;
+            Environment = environment;
         }
 
         [AllowAnonymous]
         public IActionResult RegistrarseConfirmación()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult DiaFestivo()
         {
             return View();
         }
@@ -541,7 +549,9 @@ namespace PlanillaPM.Controllers
             {
                 //ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
                 // Opcionalmente puedes devolver una imagen predeterminada en lugar de null
-                byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+                // byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+                string wwwPath = this.Environment.WebRootPath;
+                byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
                 return File(defaultAvatar, "image/png");
             }
         }

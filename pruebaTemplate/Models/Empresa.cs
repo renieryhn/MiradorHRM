@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaPM.Models;
 
@@ -13,8 +14,9 @@ public partial class Empresa
     public string NombreEmpresa { get; set; } = null!;
     [Display(Name = "Móneda por Defecto")]
     public int IdMoneda { get; set; }
-    [Display(Name = "Lgotipo")]
+    [Display(Name = "Logo Tipo")]
     public byte[]? Logo { get; set; }
+
     [Display(Name = "Dirección")]
     public string? Direccion { get; set; }
     [Display(Name = "Teléfono")]

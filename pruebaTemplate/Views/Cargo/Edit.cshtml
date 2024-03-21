@@ -20,7 +20,7 @@
                             <input type="hidden" asp-for="IdCargo" />
                             <div class="form-group">
                                 <label asp-for="NombreCargo" class="control-label"></label>
-                                <input asp-for="NombreCargo" class="form-control" />
+                                <input asp-for="NombreCargo" class="form-control" required/>
                                 <span asp-validation-for="NombreCargo" class="text-danger"></span>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
@@ -72,7 +72,7 @@
         </form>
     </div>
 </div>
-}
+
 
 @section Scripts {
     @{

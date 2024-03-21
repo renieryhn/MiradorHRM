@@ -24,7 +24,7 @@
     <!-- Bootstrap Color Picker -->
     <link rel="stylesheet" href="~/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
     <!-- fullCalendar -->
-    <link rel="stylesheet" href="~/plugins/fullcalendar/main.css">
+    <link rel="stylesheet" href="~/plugins/fullcalendar/main.css"> 
     <!-- Select2 -->
     <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
@@ -34,6 +34,7 @@
     <link rel='stylesheet' href='https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css'>
     <!-- Fawesome Pro-->
     <script src="https://kit.fontawesome.com/0d773b434d.js" crossorigin="anonymous"></script>
+
    
 
     <style>
@@ -164,7 +165,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Moneda" asp-action="Index">
+                                <a class="nav-link" asp-controller="Monedum" asp-action="Index">
                                     <i class="nav-icon fas fa-money" style="color: var(--GrisMenu);"></i>
                                     <p style="color: var(--GrisMenu);">
                                         Moneda
@@ -411,6 +412,7 @@
         <script src="~/js/site.js" asp-append-version="true"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="~/js/demo.js"></script>
+       
         
 
         <script>
@@ -440,7 +442,11 @@
             })
             $.widget.bridge('uibutton', $.ui.button)
 
-            
+            //img empresa
+            $(function () {
+                bsCustomFileInput.init();
+            });
+
         </script>
 
 

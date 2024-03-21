@@ -1,0 +1,99 @@
+﻿@model PlanillaPM.Models.Empresa
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Empresa</h3>
+        </div>
+         <form asp-action="Create">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NombreEmpresa" class="control-label"></label>
+                                <input asp-for="NombreEmpresa" class="form-control" required/>
+                                <span asp-validation-for="NombreEmpresa" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IdMoneda" class="control-label"></label>
+                                <select asp-for="IdMoneda" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdMoneda"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Logo" class="control-label"></label>
+                                <div class="custom-file">
+                                    <input type="file" class="form-control custom-file-input" id="customFile" accept="image/*">
+                                    <label class="custom-file-label" for="customFile"></label>
+                                    <span asp-validation-for="Logo" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="control-label"></label>
+                                <input asp-for="Direccion" class="form-control" />
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input asp-for="Telefono" class="form-control" type="number" required />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" type="email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Rtn" class="control-label"></label>
+                                <input asp-for="Rtn" class="form-control" type="number"/>
+                                <span asp-validation-for="Rtn" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" />
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>                                                  
+                            <div class="form-group">
+                                <label asp-for="NombreContacto" class="control-label"></label>
+                                <input asp-for="NombreContacto" class="form-control" />
+                                <span asp-validation-for="NombreContacto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TelefonoContacto" class="control-label"></label>
+                                <input asp-for="TelefonoContacto" class="form-control" type="number" />
+                                <span asp-validation-for="TelefonoContacto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
+                            </div>
+                           
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<script>
+    window.onload = function () {
+        document.getElementById('customFile').setAttribute('accept', 'image/*');
+    };
+</script>
+}
+}

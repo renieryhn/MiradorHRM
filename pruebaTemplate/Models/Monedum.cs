@@ -14,7 +14,7 @@ public partial class Monedum
     public string Simbolo { get; set; } = null!;
     [Display(Name = "Activo")]
     public bool Activo { get; set; }
-        [DisplayName("Fecha de Creación")]
+    [DisplayName("Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }
 
     [DisplayName("Fecha de Modificación")]

@@ -287,29 +287,35 @@
                         </div>
                     </div>
 
+                   
+                </div>
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Otros</h5>
+                    <br />
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="FechaCreacion" class="control-label"></label>
-                                <input asp-for="FechaCreacion" class="form-control" readonly />
+                                <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
                                 <span asp-validation-for="FechaCreacion" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col-md-4">
+
+
                             <div class="form-group">
                                 <label asp-for="FechaModificacion" class="control-label"></label>
-                                <input asp-for="FechaModificacion" class="form-control" readonly />
+                                <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
                                 <span asp-validation-for="FechaModificacion" class="text-danger"></span>
                             </div>
                         </div>
+
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CreadoPor" class="control-label"></label>
                                 <input asp-for="CreadoPor" class="form-control" readonly />
                                 <span asp-validation-for="CreadoPor" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col-md-4">
+
                             <div class="form-group">
                                 <label asp-for="ModificadoPor" class="control-label"></label>
                                 <input asp-for="ModificadoPor" class="form-control" readonly />
@@ -317,6 +323,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -327,7 +334,7 @@
         </form>
     </div>
 </div>
-}
+
 <script type="text/javascript">
     // Function to disable all objects on the page
     function disableAllObjects() {

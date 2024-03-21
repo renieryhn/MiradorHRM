@@ -220,7 +220,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
             entity.ToTable("DiaFestivo");
 
-            entity.Property(e => e.IdDiaFestivo).ValueGeneratedNever();
+            entity.Property(e => e.IdDiaFestivo).ValueGeneratedOnAdd();
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)

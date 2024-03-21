@@ -10,8 +10,14 @@ public partial class DiaFestivo
     [DisplayName("Día Festivo")]
     public string NombreDiaFestivo { get; set; } = null!;
 
-    [DisplayName("Fecha")]
-    public DateOnly Fecha { get; set; }
+    [DisplayName("Fecha Desde")]
+    public DateOnly FechaDesde { get; set; }
+
+    [DisplayName("Fecha Hasta")]
+    public DateOnly FechaHasta { get; set; }
+
+    [DisplayName("Color")]
+    public string Color { get; set; }
 
     public bool Activo { get; set; }
 

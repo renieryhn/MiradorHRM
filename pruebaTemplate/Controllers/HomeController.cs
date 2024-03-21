@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using PlanillaPM.Models;
 using Newtonsoft.Json;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace pruebaTemplate.Controllers
 {
@@ -40,11 +41,13 @@ namespace pruebaTemplate.Controllers
             return View("Index");
         }
 
-       
+
         public IActionResult Privacy()
         {
             return View();
         }
+
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

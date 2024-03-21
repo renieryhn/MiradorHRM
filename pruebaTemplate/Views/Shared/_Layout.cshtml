@@ -21,6 +21,10 @@
     <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css">
+    <!-- Bootstrap Color Picker -->
+    <link rel="stylesheet" href="~/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="~/plugins/fullcalendar/main.css">
     <!-- Select2 -->
     <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
@@ -388,9 +392,15 @@
         <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <!-- bs-custom-file-input -->
         <script src="~/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+        <!-- jQuery UI -->
+        <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
         <!-- AdminLTE App -->
         <script src="~/js/adminlte.min.js"></script>
-
+        <!-- bootstrap color picker -->
+        <script src="~/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+        <!-- fullCalendar 2.2.5 -->
+        <script src="~/plugins/moment/moment.min.js"></script>
+        <script src="~/plugins/fullcalendar/main.js"></script>
         <!-- Select2 -->
         <script src="~/plugins/select2/js/select2.full.min.js"></script>
         <!-- Toastr -->
@@ -400,6 +410,17 @@
         <script src="~/js/demo.js"></script>
 
         <script>
+
+            $('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+            })
+
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            })
+
             $(function () {
                 //Initialize Select2 Elements
                 $('.select2bs4').select2({
@@ -415,7 +436,13 @@
             })
             $.widget.bridge('uibutton', $.ui.button)
 
+            
         </script>
+
+
+
+
+     
 
         <script src="~/js/site.js" asp-append-version="true"></script>
         <!-- FUNCIONALIDADES DEL DATATABLE -->

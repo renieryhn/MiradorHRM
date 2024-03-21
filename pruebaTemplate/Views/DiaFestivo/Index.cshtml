@@ -156,7 +156,7 @@
             droppable: false
         });
 
-       
+
         $.ajax({
             method: "GET",
             url: "/DiaFestivo/GetDiasFestivos",
@@ -164,18 +164,18 @@
             success: function (data) {
                 console.log("Datos recibidos:", data); 
 
-               
+                
                 data.forEach(function (evento) {
                     console.log("Evento:", evento); 
 
-                   
-                    var fechaDesde = new Date(evento.fechaDesde);
-                    var fechaHasta = new Date(evento.fechaHasta);
+                    // Convertir las fechas a objetos Date en la zona horaria de Honduras ('America/Tegucigalpa')
+                    var fechaDesde = new Date(evento.fechaDesde + 'T00:00:00-06:00'); // -06:00 indica la zona horaria de Honduras
+                    var fechaHasta = new Date(evento.fechaHasta + 'T23:59:59-06:00'); // Usamos las 23:59:59 para asegurarnos de que incluya todo el último día
 
-                    
+                    // Ajustar la fecha de finalización sumando un día adicional
                     fechaHasta.setDate(fechaHasta.getDate() + 1);
 
-                   
+                    
                     calendar.addEvent({
                         title: evento.nombreDiaFestivo,
                         start: fechaDesde,
@@ -188,14 +188,19 @@
                     });
                 });
 
-               
+                // Renderizar el calendario después de añadir los eventos
                 calendar.render();
             },
             error: function () {
-                console.error("Error al cargar los eventos."); 
+                console.error("Error al cargar los eventos."); // Registra errores en la consola
                 alert("Error al cargar los eventos.");
             }
         });
+
+
+
+
+
 
 
 

@@ -8,7 +8,7 @@ public partial class Division
 {
     public int IdDivision { get; set; }
     [DisplayName("Nombre de la División Administrativa")]
-    public int NombreDivision { get; set; }
+    public string NombreDivision { get; set; }
 
     public bool Activo { get; set; }
 

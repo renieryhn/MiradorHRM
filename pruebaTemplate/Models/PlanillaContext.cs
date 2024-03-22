@@ -248,6 +248,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+          
         });
 
         modelBuilder.Entity<Empleado>(entity =>

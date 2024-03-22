@@ -591,7 +591,7 @@ namespace PlanillaPM.Controllers
             else
             {
                 // emple.FotografiaBase64 = "img/Employee.png";
-                user.AvatarBase64 = Url.Content("~/img/Employee.png");
+                user.AvatarBase64 = Url.Content("~/img/usuario.png");
             }
             var model = new PersonalDataViewModel
             {

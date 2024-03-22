@@ -99,7 +99,14 @@
                                                             @Html.DisplayFor(modelItem => item.NombreTipoHorario)
                                                         </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.Activo)
+                                                            @if (item.Activo)
+                                                            {
+                                                                <span class="badge badge-success">Activo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge badge-danger">Inactivo</span>
+                                                            }
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.FechaCreacion)

@@ -1,0 +1,87 @@
+﻿@model PlanillaPM.Models.TipoNomina
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Detalle de Tipo Nomina</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div class="form-group row">
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.NombreTipoNomina)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.NombreTipoNomina)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.PagadaCadaNdias)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.PagadaCadaNdias)"/>
+                                </div>
+                       </div>
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <label class="control-label">@Html.DisplayNameFor(model => model.Activo)</label>
+                            </div>
+                            <div class="col-md-8 form-group form-check form-switch ml-4">
+                                <input class="form-check-input" asp-for="Activo" disabled /> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaCreacion)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.FechaCreacion)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.FechaModificacion)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.FechaModificacion)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.CreadoPor)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.CreadoPor)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.ModificadoPor)</label>
+                                </div>
+                                <div class="col-md-8">
+                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.ModificadoPor)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                       </div> 
+                </div>
+            </div>
+        </div>
+         <div class="card-footer">
+             <a asp-action="Edit" asp-route-id="@Model.IdTipoNomina" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
+             <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+          </div>
+    </div>
+</div>
+

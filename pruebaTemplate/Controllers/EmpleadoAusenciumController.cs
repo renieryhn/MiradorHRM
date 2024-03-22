@@ -25,10 +25,29 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoAusencium
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg, string? filter)
         {
-            var planillaContext = _context.EmpleadoAusencia.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdTipoAusenciaNavigation);
-            return View(await planillaContext.ToListAsync());
+            //var planillaContext = _context.EmpleadoAusencia.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdTipoAusenciaNavigation);
+            //return View(await planillaContext.ToListAsync());
+
+            List<EmpleadoAusencium> registros;
+            if (filter != null)
+            {
+                registros = await _context.EmpleadoAusencia.Where(r => r.AprobadoPor.ToLower().Contains(filter.ToLower())).ToListAsync();
+            }
+            else
+            {
+                registros = await _context.EmpleadoAusencia.ToListAsync();
+            }
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = registros.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+            return View(data);
+
         }
 
         public ActionResult Download()

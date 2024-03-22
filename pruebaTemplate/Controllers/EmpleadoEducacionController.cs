@@ -25,10 +25,28 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoEducacion
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg, string? filter)
         {
-            var planillaContext = _context.EmpleadoEducacions.Include(e => e.IdEmpleadoNavigation);
-            return View(await planillaContext.ToListAsync());
+            //var planillaContext = _context.EmpleadoEducacions.Include(e => e.IdEmpleadoNavigation);
+            //return View(await planillaContext.ToListAsync());
+            List<EmpleadoEducacion> registros;
+            if (filter != null)
+            {
+                registros = await _context.EmpleadoEducacions.Where(r => r.Institucion.ToLower().Contains(filter.ToLower())).ToListAsync();
+            }
+            else
+            {
+                registros = await _context.EmpleadoEducacions.ToListAsync();
+            }
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = registros.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+            return View(data);
+
         }
 
         public ActionResult Download()

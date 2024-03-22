@@ -1,0 +1,43 @@
+﻿@model PlanillaPM.Models.TipoAusencium
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Tipo Ausencia</h3>
+        </div>
+         <form asp-action="Create">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NombreTipoAusencia" class="control-label"></label>
+                                <input asp-for="NombreTipoAusencia" class="form-control" required/>
+                                <span asp-validation-for="NombreTipoAusencia" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="GoseSueldo" /> @Html.DisplayNameFor(model => model.GoseSueldo)
+                                </label>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

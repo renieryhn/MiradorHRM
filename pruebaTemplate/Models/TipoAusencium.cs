@@ -10,6 +10,7 @@ public partial class TipoAusencium
 {
     public int IdTipoAusencia { get; set; }
     [Display(Name = "Tipo de Ausencia")]
+    [Required(ErrorMessage = "El Tipo de Ausencia es obligatorio.")]
     public string NombreTipoAusencia { get; set; } = null!;
     [Display(Name = "Es con Gose de Sueldo")]
     public bool GoseSueldo { get; set; }

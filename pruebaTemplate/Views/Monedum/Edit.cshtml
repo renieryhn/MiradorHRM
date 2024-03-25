@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Editar Monedum</h3>
+            <h3 class="card-title">Editar Moneda</h3>
         </div>
          <form asp-action="Edit">
         <div class="card-body">
@@ -20,12 +20,12 @@
                         <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="NombreMoneda" class="control-label"></label>
-                                    <input asp-for="NombreMoneda" class="form-control" />
+                                    <input asp-for="NombreMoneda" class="form-control" required/>
                                     <span asp-validation-for="NombreMoneda" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Simbolo" class="control-label"></label>
-                                    <input asp-for="Simbolo" class="form-control" />
+                                <input asp-for="Simbolo" class="form-control" required />
                                     <span asp-validation-for="Simbolo" class="text-danger"></span>
                                 </div>
                                 <div class="form-group form-check form-switch ml-4">
@@ -39,7 +39,7 @@
             </div>
             <div class="callout callout-info" style="border-left-color: var(--blue); ">
                     <h5>Otros</h5>
-                    <br />
+                    <br />                 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -54,8 +54,10 @@
                                 <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
                                 <span asp-validation-for="FechaModificacion" class="text-danger"></span>
                             </div>
+                        </div>
 
 
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CreadoPor" class="control-label"></label>
                                 <input asp-for="CreadoPor" class="form-control" readonly />
@@ -67,7 +69,6 @@
                                 <input asp-for="ModificadoPor" class="form-control" readonly />
                                 <span asp-validation-for="ModificadoPor" class="text-danger"></span>
                             </div>
-
                         </div>
                     </div>
                 </div>

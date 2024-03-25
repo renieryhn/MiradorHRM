@@ -9,6 +9,7 @@ public partial class TipoHorario
 {
     public int IdTipoHorario { get; set; }
     [Display(Name = "Tipo de Horario")]
+    [Required(ErrorMessage = "El Tipo de Horario es obligatorio.")]
     public string NombreTipoHorario { get; set; } = null!;
 
     [Display(Name = "Activo")]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
@@ -8,9 +9,11 @@ public partial class Departamento
 {
     public int IdDepartamento { get; set; }
     [DisplayName("Nombre del Departamento")]
+    [Required(ErrorMessage = "El Nombre Departamento es obligatorio.")]
     public string NombreDepartamento { get; set; } = null!;
 
     [DisplayName("División Administrativa")]
+    
     public int? IdDivision { get; set; }
 
     public bool Activo { get; set; }

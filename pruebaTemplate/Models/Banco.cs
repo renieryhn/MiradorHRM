@@ -9,6 +9,7 @@ public partial class Banco
 {
     public int IdBanco { get; set; }
     [DisplayName("Nombre del Banco")]
+    [Required(ErrorMessage = "El Nombre del Banco es obligatorio.")]
     public string NombreBanco { get; set; } = null!;
 
     [DisplayName("Activo")]

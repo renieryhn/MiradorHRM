@@ -9,6 +9,7 @@ public partial class TipoContrato
 {
     public int IdTipoContrato { get; set; }
     [Display(Name = "Tipo de Contrato")]
+    [Required(ErrorMessage = "El Tipo de Contrato es obligatorio.")]
     public string NombreTipoContrato { get; set; } = null!;
     [Display(Name = "Activo")]
     public bool Activo { get; set; }

@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Crear Empleado Experiencium</h3>
+            <h3 class="card-title">Crear Empleado Experiencia</h3>
         </div>
         <form asp-action="Create">
         
@@ -31,6 +31,8 @@
                                 <input asp-for="Cargo" class="form-control" required/>
                                 <span asp-validation-for="Cargo" class="text-danger"></span>
                             </div>
+                        </div>
+                            <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="FechaDesde" class="control-label"></label>
                                 <input asp-for="FechaDesde" class="form-control" type="date" required/>

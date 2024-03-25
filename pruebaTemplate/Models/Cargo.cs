@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
@@ -8,6 +9,7 @@ public partial class Cargo
 {
     public int IdCargo { get; set; }
     [DisplayName("Nombre del Cargo ")]
+    [Required(ErrorMessage = "El Nombre del Cargo es obligatorio.")]
     public string NombreCargo { get; set; } = null!;
 
     public bool Activo { get; set; }

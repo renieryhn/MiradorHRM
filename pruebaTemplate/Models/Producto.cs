@@ -11,6 +11,7 @@ public partial class Producto
 {
     public int IdProducto { get; set; }
     [Display(Name = "Nombre del Producto o Activo Fijo")]
+    [Required(ErrorMessage = "El Nombre del Producto o Activo Fijo es obligatorio.")]
     public string NombreProducto { get; set; } = null!;
     [Display(Name = "Código")]
     public string? CodigoProducto { get; set; }

@@ -28,6 +28,12 @@
                                     <input asp-for="Habilidad" class="form-control" required/>
                                     <span asp-validation-for="Habilidad" class="text-danger"></span>
                                 </div>
+                            <div class="form-group custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" >
+                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
+                            </div>
+                        </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="ExperienciaYears" class="control-label">Años de Experiencia</label>
                                     <input asp-for="ExperienciaYears" class="form-control" required />
@@ -38,15 +44,12 @@
                                     <input asp-for="Comentarios" class="form-control" />
                                     <span asp-validation-for="Comentarios" class="text-danger"></span>
                                 </div>
-                                <div class="form-group custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
-                                    <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
-                                </div>
+                               
                         </div>
                     
                 </div>
             </div>
-            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
                     <h5>Otros</h5>
                     <br />
                     <div class="row">
@@ -63,8 +66,10 @@
                                 <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
                                 <span asp-validation-for="FechaModificacion" class="text-danger"></span>
                             </div>
+                        </div>
 
 
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CreadoPor" class="control-label"></label>
                                 <input asp-for="CreadoPor" class="form-control" readonly />
@@ -76,9 +81,9 @@
                                 <input asp-for="ModificadoPor" class="form-control" readonly />
                                 <span asp-validation-for="ModificadoPor" class="text-danger"></span>
                             </div>
-
                         </div>
                     </div>
+
                 </div>
         </div>
 

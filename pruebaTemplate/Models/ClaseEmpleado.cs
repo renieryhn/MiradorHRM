@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanillaPM.Models;
 
@@ -8,8 +9,10 @@ public partial class ClaseEmpleado
 {
     public int IdClaseEmpleado { get; set; }
     [DisplayName("Nombre de Clase")]
+    [Required(ErrorMessage = "El Nombre de Clase es obligatorio.")]
     public string NombreClaseEmpleado { get; set; } = null!;
     [DisplayName("Horario")]
+    [Required(ErrorMessage = "El Horario es obligatorio.")]
     public int? IdHorario { get; set; }
 
     public bool Activo { get; set; }

@@ -38,40 +38,47 @@
                 <div class="callout callout-info" style="border-left-color: var(--blue);">
                     <h5>Aquí puedes actualizar tu información</h5>
                     <br />
-                    <div class="form-group">
-                        <label asp-for="UserName"></label>
-                        <input asp-for="UserName" class="form-control" readonly />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Email"></label>
-                        <input asp-for="Email" class="form-control" readonly />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="PhoneNumber"></label>
-                        <input asp-for="PhoneNumber" class="form-control" />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                    </div>
+                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <div class="text-center" id="image-drop-area" style="cursor: pointer;">
-                                <img id="profile-img" class="img-thumbnail" src="@Model.AvatarBase64" alt="User profile picture">
-                            </div>
-                            <br />
+                            <label asp-for="UserName"></label>
+                            <input asp-for="UserName" class="form-control" readonly />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Avatar" class="control-label"></label>
-                        <input type="file" asp-for="Avatar" class="form-control" class="form-control" />
-                        <span asp-validation-for="Avatar" class="text-danger"></span>
-                    </div>
-                    <br />
-                    <h3></h3>
-                </div>
 
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input asp-for="Email" class="form-control" readonly />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="Avatar" class="control-label"></label>
+                            <input type="file" asp-for="Avatar" class="form-control" class="form-control" />
+                            <span asp-validation-for="Avatar" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <h3></h3>
+                </div>
+                   
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <div class="form-group text-center">
+                                <div id="image-drop-area" style="cursor: pointer;">
+                                    <img id="profile-img" class="img-thumbnail" src="@Model.AvatarBase64" alt="User profile picture" style="width: 300px; height: 300px; object-fit: cover;">
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+
+                 
+                 </div>
+            </div>
                
                 <br />
 

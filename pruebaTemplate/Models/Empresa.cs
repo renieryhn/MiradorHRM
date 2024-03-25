@@ -11,6 +11,7 @@ public partial class Empresa
 {
     public int IdEmpresa { get; set; }
     [Display(Name = "Nombre de la Empresa")]
+    [Required(ErrorMessage = "El Nombre de la Empresa es obligatorio.")]
     public string NombreEmpresa { get; set; } = null!;
     [Display(Name = "Móneda por Defecto")]
     public int IdMoneda { get; set; }
@@ -20,6 +21,7 @@ public partial class Empresa
     [Display(Name = "Dirección")]
     public string? Direccion { get; set; }
     [Display(Name = "Teléfono")]
+    [Required(ErrorMessage = "El Teléfono es obligatorio.")]
     public string Telefono { get; set; } = null!;
     [Display(Name = "Email")]
     public string? Email { get; set; }

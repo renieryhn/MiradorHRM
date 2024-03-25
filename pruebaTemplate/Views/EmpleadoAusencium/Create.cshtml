@@ -41,6 +41,12 @@
                                 <input asp-for="FechaHasta" class="form-control" type="date" required />
                                 <span asp-validation-for="FechaHasta" class="text-danger"></span>
                             </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="DiaCompleto" checked>
+                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.DiaCompleto)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="HoraDesde" class="control-label"></label>
                             <input asp-for="HoraDesde" class="form-control" type="time" required />
@@ -61,10 +67,7 @@
                                 <input asp-for="Comentarios" class="form-control" />
                                 <span asp-validation-for="Comentarios" class="text-danger"></span>
                             </div>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="DiaCompleto" checked>
-                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.DiaCompleto)</label>
-                            </div>
+                            
                       </div>
                 </div>
             </div>

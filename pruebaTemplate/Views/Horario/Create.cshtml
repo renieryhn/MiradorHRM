@@ -19,14 +19,14 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="NombreHorario" class="control-label"></label>
-                                <input asp-for="NombreHorario" class="form-control" />
+                                <input asp-for="NombreHorario" class="form-control" required/>
                                 <span asp-validation-for="NombreHorario" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="IdTipoHorario" class="control-label"></label>
-                                <select asp-for="IdTipoHorario" class="form-control" asp-items="ViewBag.IdTipoHorario"></select>
+                                <select asp-for="IdTipoHorario" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoHorario"></select>
                             </div>
                         </div>
                     </div>

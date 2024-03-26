@@ -458,7 +458,12 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.EmpleadoContratos)
                 .HasForeignKey(d => d.IdEmpleado)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EmpleadoContrato_Empleado");
+                .HasConstraintName("FK_EmpleadoContrato_Empleado");  
+            
+            entity.HasOne(d => d.IdTipoContratoNavigation).WithMany(p => p.EmpleadoContratos)
+                .HasForeignKey(d => d.IdTipoContrato)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EmpleadoContrato_TipoContrato");
         });
 
         modelBuilder.Entity<EmpleadoDeduccion>(entity =>

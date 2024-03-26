@@ -199,28 +199,32 @@
                                                    
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdCargo)
+                                                    @Html.DisplayFor(modelItem => item.IdCargoNavigation.NombreCargo)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdDepartamento)
+                                                    @Html.DisplayFor(modelItem => item.IdDepartamentoNavigation.NombreDepartamento)
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.FechaInicio)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdEncargado)
+                                                    @if (item.IdEncargado != null)
+                                                    {
+                                                        @Html.DisplayFor(modelItem => item.IdEncargadoNavigation.NombreCompleto)
+                                                    }
+                                             
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.CuentaBancaria)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdBanco)
+                                                    @Html.DisplayFor(modelItem => item.IdBancoNavigation.NombreBanco)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdTipoContrato)
+                                                    @Html.DisplayFor(modelItem => item.IdTipoContratoNavigation.NombreTipoContrato)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.IdTipoNomina)
+                                                    @Html.DisplayFor(modelItem => item.IdTipoNominaNavigation.NombreTipoNomina)
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.NumeroRegistroTributario)

@@ -62,7 +62,6 @@ namespace PlanillaPM.Controllers
                     empleado.FotografiaBase64 = "img/Employee.png";
                 }
             }
-
             var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
             var IdCargoNavigation = await _context.Cargos.ToListAsync();
             var IdEncargadoNavigation = await _context.Empleados.ToListAsync();
@@ -378,5 +377,12 @@ namespace PlanillaPM.Controllers
         {
             return _context.Empleados.Any(e => e.IdEmpleado == id);
         }
+        [HttpGet]
+        public IActionResult RenderPartialEmpleado(int id)
+        {
+            var listaDeEmpleados = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
+            return PartialView("_Empleado", listaDeEmpleados);
+        }
     }
+
 }

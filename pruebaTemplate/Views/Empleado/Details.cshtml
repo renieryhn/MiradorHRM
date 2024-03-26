@@ -5,7 +5,9 @@
 }
 
 <div class="container-fluid">
+    <div id="employeeSelection">
 
+    </div>
     <!-- general form elements -->
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
@@ -252,8 +254,24 @@
 
     </div>
     <!-- /.card -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script>
+    <script type="text/javascript">
+//document ready
+            $(document).ready(function () {
+            $.ajax({
+                url: '../RenderPartialEmpleado',
+                type: 'GET',
+                success: function (data) {
+                    // Insertar la vista parcial en el div employeeSelection
+                    $('#employeeSelection').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
         function validateImage(event) {
             var input = event.target;
             var file = input.files[0];

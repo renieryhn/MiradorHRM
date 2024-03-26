@@ -101,10 +101,10 @@
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
                                                         <th>
-                                                            @Html.DisplayNameFor(model => model.IdCargoNavigation)
+                                                            @Html.DisplayNameFor(model => model.IdCargo)
                                                         </th>
                                                         <th>
-                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                                            @Html.DisplayNameFor(model => model.IdEmpleado)
                                                         </th>
                                             </tr>
                                         </thead>
@@ -127,7 +127,7 @@
                                                             @Html.DisplayFor(modelItem => item.CodigoContrato)
                                                         </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.IdTipoContrato)
+                                                             @Html.DisplayFor(modelItem => item.IdTipoContratoNavigation.NombreTipoContrato)
                                                         </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Estado)
@@ -175,7 +175,7 @@
                                                             @Html.DisplayFor(modelItem => item.IdCargoNavigation.NombreCargo)
                                                         </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.ApellidoEmpleado)
+                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                         </td>
                                             </tr>
                                             }

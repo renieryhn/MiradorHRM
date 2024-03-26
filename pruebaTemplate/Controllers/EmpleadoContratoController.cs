@@ -46,6 +46,11 @@ namespace PlanillaPM.Controllers
             int recSkip = (pg - 1) * pageSize;
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
+
+            var IdCargoNavigation = await _context.Cargos.ToListAsync();
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+
             return View(data);
 
 
@@ -83,12 +88,12 @@ namespace PlanillaPM.Controllers
             var empleadoContrato = await _context.EmpleadoContratos
                 .Include(e => e.IdCargoNavigation)
                 .Include(e => e.IdEmpleadoNavigation)
+                 .Include(e => e.IdTipoContratoNavigation)
                 .FirstOrDefaultAsync(m => m.IdEmpleadoContrato == id);
             if (empleadoContrato == null)
             {
                 return NotFound();
             }
-
             return View(empleadoContrato);
         }
 
@@ -97,7 +102,7 @@ namespace PlanillaPM.Controllers
         {
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo");
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato");
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
 
@@ -159,7 +164,7 @@ namespace PlanillaPM.Controllers
             }
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleadoContrato.IdTipoContrato);
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContrato.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContrato.IdEmpleado);
             return View(empleadoContrato);
         }
 
@@ -191,7 +196,7 @@ namespace PlanillaPM.Controllers
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
                 ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleadoContrato.IdTipoContrato);
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContrato.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContrato.IdEmpleado);
 
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar actualizar el registro. Por favor, verifique los datos.";

@@ -9,7 +9,7 @@ public partial class EmpleadoContrato
 {
     public int IdEmpleadoContrato { get; set; }
 
-    [Display(Name = "ID Empleado")]
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
 
     [Required(ErrorMessage = "El campo Código de Contrato es obligatorio.")]
@@ -47,8 +47,11 @@ public partial class EmpleadoContrato
     [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
+    [Display(Name = "Cargos")]
     public virtual Cargo IdCargoNavigation { get; set; } = null!;
-
+    [Display(Name = "Tipo de Contrato")]
+    public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
 
 }

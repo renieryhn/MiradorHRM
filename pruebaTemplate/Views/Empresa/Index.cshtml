@@ -174,7 +174,9 @@
                                                             @Html.DisplayFor(modelItem => item.TelefonoContacto)
                                                         </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.IdMonedaNavigation.IdMoneda)
+                                                            @* @Html.DisplayFor(modelItem => item.IdMonedaNavigation.NombreMoneda) *@
+                                                        @Html.DisplayFor(modelItem => item.IdMonedaNavigation != null ? item.IdMonedaNavigation.NombreMoneda : "N/A")
+
                                                         </td>
                                             </tr>
                                             }

@@ -27,4 +27,5 @@ public partial class TipoContrato
     public string? ModificadoPor { get; set; }
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+    public virtual ICollection<EmpleadoContrato> EmpleadoContratos { get; set; } = new List<EmpleadoContrato>();
 }

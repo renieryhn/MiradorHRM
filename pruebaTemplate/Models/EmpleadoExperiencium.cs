@@ -15,7 +15,7 @@ public partial class EmpleadoExperiencium
     [Display(Name = "Empresa")]
     public string Empresa { get; set; } = null!;
 
-    [Display(Name = "Cargo")]
+    [Display(Name = "Cargo Anterior")]
     public string Cargo { get; set; } = null!;
 
     [Display(Name = "Fecha Desde")]
@@ -42,6 +42,6 @@ public partial class EmpleadoExperiencium
     [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
-    [Display(Name = "Id Empleado Navigation")]
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
 }

@@ -61,7 +61,7 @@ public partial class EmpleadoAusencium
     [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
-    [Display(Name = "Id Empleado")]
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
     [Display(Name = "Tipo de Ausencia")]
     public virtual TipoAusencium IdTipoAusenciaNavigation { get; set; } = null!;

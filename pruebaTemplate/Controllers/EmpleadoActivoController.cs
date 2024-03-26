@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using static PlanillaPM.cGeneralFun;
 
 using PlanillaPM.Models;
+using static PlanillaPM.Models.EmpleadoActivo;
 
 namespace PlanillaPM.Controllers
 {
@@ -45,6 +46,8 @@ namespace PlanillaPM.Controllers
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
             var planillaContext = _context.EmpleadoActivos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdProductoNavigation);
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            var IdProductoNavigation = await _context.Productos.ToListAsync();
             return View(data);
         }
          public ActionResult Download()
@@ -90,7 +93,9 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoActivo/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewBag.EstadoOpcion = Enum.GetValues(typeof(EstadoActual));
+            //ViewBag.EstadoOpcion = new SelectList(Enum.GetValues(typeof(EstadoActual)));
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto");
             return View();
         }
@@ -104,6 +109,7 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Realizar las operaciones necesarias para guardar el modelo en la base de datos
                 SetCamposAuditoria(empleadoActivo, true);
                 _context.Add(empleadoActivo);
                 await _context.SaveChangesAsync();
@@ -115,7 +121,7 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoActivo.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoActivo.IdEmpleado);
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", empleadoActivo.IdProducto);
             return View(empleadoActivo);
         }
@@ -133,7 +139,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoActivo.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoActivo.IdEmpleado);
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", empleadoActivo.IdProducto);
             return View(empleadoActivo);
         }

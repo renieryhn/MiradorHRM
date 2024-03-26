@@ -37,6 +37,6 @@ public partial class EmpleadoHabilidad
     [Display(Name = "Modificado Por")]
     public string ModificadoPor { get; set; } = null!;
 
-    [Display(Name = "Id Empleado Navigation")]
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaPM.Models;
 
@@ -44,15 +45,21 @@ public partial class EmpleadoActivo
 
     [DisplayName("Modificado Por")]
     public string? ModificadoPor { get; set; }
-    [DisplayName("Empleados")]
+    [DisplayName("Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
     [DisplayName("Productos")]
     public virtual Producto IdProductoNavigation { get; set; } = null!;
 
+
+    [NotMapped]
+    public EstadoActual EstadoOpcion { get; set; }
+
+
     public enum EstadoActual
     {
-        Nuevo,
-        Usado,
-        Reacondicionado
+        Nuevo=1,
+        Usado=2,
+        Reacondicionado=3,
+            test=4
     }
 }

@@ -47,3 +47,4 @@
 /.gitignore
 /.gitignore
 /pruebaTemplate/obj/Debug/net8.0/PlanillaPM.MvcApplicationPartsAssemblyInfo.cs
+/pruebaTemplate/obj/PlanillaPM.csproj.nuget.g.props

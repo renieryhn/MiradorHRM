@@ -48,3 +48,5 @@
 /.gitignore
 /pruebaTemplate/obj/Debug/net8.0/PlanillaPM.MvcApplicationPartsAssemblyInfo.cs
 /pruebaTemplate/obj/PlanillaPM.csproj.nuget.g.props
+/pruebaTemplate/obj/Debug/net8.0/project.razor.vs.bin
+/.gitignore

@@ -46,6 +46,9 @@ namespace PlanillaPM.Controllers
             int recSkip = (pg - 1) * pageSize;
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
+            
+            var IdTipoAusenciaNavigation = await _context.TipoAusencia.ToListAsync();
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
             return View(data);
 
         }

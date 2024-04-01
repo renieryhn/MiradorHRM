@@ -35,6 +35,7 @@
                                 <input asp-for="NumeroSerie" class="form-control" required />
                                 <span asp-validation-for="NumeroSerie" class="text-danger"></span>
                             </div>
+                           
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -52,6 +53,12 @@
                                 <input asp-for="Descripcion" class="form-control" />
                                 <span asp-validation-for="Descripcion" class="text-danger"></span>
                             </div>
+                            <div class="form-group">
+                                <label asp-for="Estado">Estado:</label>
+                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.EstadoOpcion), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+
                         </div>
                 </div>
             </div>

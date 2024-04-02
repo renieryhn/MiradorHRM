@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static PlanillaPM.Models.Empleado;
 
 namespace PlanillaPM.Models;
 
@@ -61,6 +62,7 @@ public partial class Empleado
     public string Telefono { get; set; } = null!;
 
     [DisplayName("Ciudad de Residencia")]
+    [Required(ErrorMessage = "La Ciudad de Residenciao es obligatorio.")]
     public string CiudadResidencia { get; set; } = null!;
 
     [DisplayName("Email")]
@@ -70,6 +72,7 @@ public partial class Empleado
     public bool Activo { get; set; }
 
     [DisplayName("Cargo")]
+    [Required(ErrorMessage = "El Cargo es obligatorio.")]
     public int IdCargo { get; set; }
 
     [DisplayName("Departamento")]
@@ -77,12 +80,15 @@ public partial class Empleado
     public int IdDepartamento { get; set; }
 
     [DisplayName("Tipo de Contrato")]
+    [Required(ErrorMessage = "El Tipo de Contrato es obligatorio.")]
     public int IdTipoContrato { get; set; }
 
     [DisplayName("Tipo de Nómina")]
+    [Required(ErrorMessage = "El Tipo de Nómina es obligatorio.")]
     public int IdTipoNomina { get; set; }
 
     [DisplayName("Encargado")]
+
     public int? IdEncargado { get; set; } = null!;
 
     [DisplayName("Fecha de Inicio")]
@@ -117,7 +123,9 @@ public partial class Empleado
 
     public string? Observaciones { get; set; }
 
-    public int EstadoCivil { get; set; }
+    [DisplayName("Estado Civil")]
+    [Required(ErrorMessage = "El Estado Civil es obligatorio.")]
+    public EstadoCivilEmpleado? EstadoCivil { get; set; }
 
     public DateOnly? FechaInactivacion { get; set; }
 
@@ -190,6 +198,15 @@ public partial class Empleado
 
             return edad;
         }
+    }
+
+    public enum EstadoCivilEmpleado
+    {
+        Soltero = 1,
+        Casado = 2,
+        Divorciado = 3,
+        Viudo = 4,
+        UnionLibre = 5
     }
 
 }

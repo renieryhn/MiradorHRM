@@ -129,7 +129,7 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Hubo un error al intentar crear el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
             }
 
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContacto.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContacto.IdEmpleado);
             return View(empleadoContacto);
         }
 
@@ -146,7 +146,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContacto.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContacto.IdEmpleado);
             return View(empleadoContacto);
         }
 
@@ -174,7 +174,7 @@ namespace PlanillaPM.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContacto.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContacto.IdEmpleado);
                 TempData["Error"] = "Hubo un error al intentar actualizar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
                 return View(empleadoContacto);
             }

@@ -412,10 +412,14 @@
         <script src="~/js/site.js" asp-append-version="true"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="~/js/demo.js"></script>
-       
+        <!-- InputMask -->
+        <script src="~/plugins/moment/moment.min.js"></script>
+        <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
         
 
         <script>
+
+            $('[data-mask]').inputmask()
 
             $('.my-colorpicker2').colorpicker()
 

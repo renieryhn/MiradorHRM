@@ -175,7 +175,16 @@
                                                         </td>
                                                         <td>
                                                             @* @Html.DisplayFor(modelItem => item.IdMonedaNavigation.NombreMoneda) *@
-                                                        @Html.DisplayFor(modelItem => item.IdMonedaNavigation != null ? item.IdMonedaNavigation.NombreMoneda : "N/A")
+                                                            @* @Html.DisplayFor(modelItem => item.IdMonedaNavigation != null ? item.IdMonedaNavigation.NombreMoneda : "N/A") *@
+
+                                                    @if (item.IdMonedaNavigation != null)
+                                                    {
+                                                        @Html.DisplayFor(modelItem => item.IdMonedaNavigation.NombreMoneda)
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>N/A</text>
+                                                    }
 
                                                         </td>
                                             </tr>

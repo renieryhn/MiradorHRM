@@ -93,7 +93,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoHabilidad/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
 
@@ -124,7 +124,7 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Ha ocurrido un error al intentar guardar la información. Por favor, inténtelo de nuevo.";
             }
 
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoHabilidad.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoHabilidad.IdEmpleado);
             return View(empleadoHabilidad);
         }
 
@@ -141,7 +141,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoHabilidad.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoHabilidad.IdEmpleado);
             return View(empleadoHabilidad);
         }
 
@@ -184,7 +184,7 @@ namespace PlanillaPM.Controllers
                 }
             }
 
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoHabilidad.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoHabilidad.IdEmpleado);
             return View(empleadoHabilidad);
         }
 

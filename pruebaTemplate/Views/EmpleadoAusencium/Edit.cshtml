@@ -26,10 +26,10 @@
                                     <label asp-for="IdTipoAusencia" class="control-label"></label>
                                     <select asp-for="IdTipoAusencia" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoAusencia"></select>
                                     <span asp-validation-for="IdTipoAusencia" class="text-danger"></span>
-                                </div>                     
+                                </div>
                                 <div class="form-group">
-                                    <label asp-for="Estado" class="control-label"></label>
-                                    <input asp-for="Estado" class="form-control" required/>
+                                    <label asp-for="Estado" class="control-label">Estado:</label>
+                                     @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.EstadoAusencia), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
                                     <span asp-validation-for="Estado" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">

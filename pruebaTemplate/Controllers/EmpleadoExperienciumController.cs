@@ -93,7 +93,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoExperiencium/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
 
@@ -118,7 +118,7 @@ namespace PlanillaPM.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoExperiencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);
             }
             catch (Exception ex)
@@ -127,7 +127,7 @@ namespace PlanillaPM.Controllers
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoExperiencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);
             }
         }
@@ -145,7 +145,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoExperiencium.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
             return View(empleadoExperiencium);
         }
 
@@ -174,7 +174,7 @@ namespace PlanillaPM.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoExperiencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);
             }
             catch (DbUpdateConcurrencyException)
@@ -182,7 +182,7 @@ namespace PlanillaPM.Controllers
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar editar el registro. Por favor, intente nuevamente.";
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoExperiencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);
             }
         }

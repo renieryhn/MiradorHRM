@@ -1,16 +1,12 @@
 ﻿using System.Data;
 using ClosedXML.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using static PlanillaPM.cGeneralFun;
-
 using PlanillaPM.Models;
+
 using static PlanillaPM.Models.EmpleadoActivo;
 
 namespace PlanillaPM.Controllers
@@ -93,7 +89,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoActivo/Create
         public IActionResult Create()
         {
-            ViewBag.EstadoOpcion = Enum.GetValues(typeof(EstadoActual));
+            ViewBag.EstadoActual = Enum.GetValues(typeof(EstadoActual));
             //ViewBag.EstadoOpcion = new SelectList(Enum.GetValues(typeof(EstadoActual)));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto");
@@ -129,16 +125,21 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoActivo/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var empleadoActivo = await _context.EmpleadoActivos.FindAsync(id);
+
             if (empleadoActivo == null)
             {
                 return NotFound();
             }
+
+            ViewBag.EstadoActual = Enum.GetValues(typeof(EmpleadoActivo.EstadoActual));
+
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoActivo.IdEmpleado);
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", empleadoActivo.IdProducto);
             return View(empleadoActivo);

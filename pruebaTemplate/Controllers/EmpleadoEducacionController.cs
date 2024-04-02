@@ -95,7 +95,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoEducacion/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
 
@@ -120,7 +120,7 @@ namespace PlanillaPM.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoEducacion.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
 
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, verifique los datos.";
@@ -150,7 +150,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoEducacion.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
             return View(empleadoEducacion);
         }
 
@@ -180,7 +180,7 @@ namespace PlanillaPM.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoEducacion.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
 
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar actualizar el registro. Por favor, verifique los datos.";

@@ -55,7 +55,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Estado">Estado:</label>
-                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.EstadoOpcion), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
+                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.EstadoActual), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
                                 <span asp-validation-for="Estado" class="text-danger"></span>
                             </div>
 

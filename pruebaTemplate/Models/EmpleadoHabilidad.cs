@@ -17,7 +17,8 @@ public partial class EmpleadoHabilidad
     public string Habilidad { get; set; } = null!;
 
     [Display(Name = "Años de Experiencia")]
-    public int ExperienciaYears { get; set; }
+    [Required(ErrorMessage = "El campo Años de Experiencia es obligatorio.")]
+    public int? ExperienciaYears { get; set; }
 
     [Display(Name = "Comentarios")]
     public string? Comentarios { get; set; }

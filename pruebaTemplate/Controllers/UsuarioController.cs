@@ -556,6 +556,22 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        //public string result que devuelve el Rol del usuario actual.
+        [HttpGet]
+        public string GetRole()
+        {
+            var user = userManager.GetUserAsync(User).Result;
+            if (user != null)
+            {
+                var roles = userManager.GetRolesAsync(user).Result;
+                if (roles.Count > 0)
+                {
+                    return roles[0];
+                }
+            }
+            return "";
+        }
+       
 
         public async Task<IActionResult> Index()
         {

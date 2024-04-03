@@ -77,6 +77,13 @@ namespace PlanillaPM.Controllers
             var menu = gen.ObtenerMenu("Empleado"); // Obtener el menú para el perfil
             return PartialView("_MenuDinamico", menu); // Retornar el partial con la lista de menús
         }
+        //Action result que devuelve el id y nombre completo del empleado para llenar el dropdownlist
+        public JsonResult GetEmpleado()
+        {
+            var empleados = _context.Empleados.Where(e => e.Activo).Select(e => new { e.IdEmpleado, e.NombreCompleto }).ToList();
+            return Json(empleados);
+        }
+
         public ActionResult Download()
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();

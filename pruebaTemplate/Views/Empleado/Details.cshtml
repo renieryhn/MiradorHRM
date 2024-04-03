@@ -9,239 +9,271 @@
 
     </div>
     <!-- general form elements -->
-    <div class="card card-primary">
-        <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalles Empleado</h3>
+    <div class="card card-primary card-tabs">
+        <div class="card-header p-0 pt-1" style="background-color: var(--blue);">
+            <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                <li class="pt-2 px-3"><h3 class="card-title">@Html.DisplayFor(model => model.NombreCompleto)</h3></li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" href="#custom-tabs-two-home" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Contactos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill" href="#custom-tabs-two-messages" role="tab" aria-controls="custom-tabs-two-messages" aria-selected="false">Contratos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill" href="#custom-tabs-two-settings" role="tab" aria-controls="custom-tabs-two-settings" aria-selected="false">Educación</a>
+                </li>
+            </ul>
         </div>
-        <!-- /.card-header -->
-        <!-- form start -->
-        
+
             <div class="card-body">
-            <div class="callout callout-info" style="border-left-color: var(--blue); ">
-                <h5>Detalles Personal</h5>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="text-center" id="image-drop-area" style="cursor: pointer;">
-                                <img id="profile-img" class="profile-user-img img-fluid img-circle" src="@Model.FotografiaBase64" alt="User profile picture">
-                                </div>
+            <div class="card card-primary card-tabs">
+                
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-two-tabContent">
+                        <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
+                            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                                <h5>Detalles Personal</h5>
                                 <br />
-                            </div>
-                        </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="text-center" id="image-drop-area" style="cursor: pointer;">
+                                                <img id="profile-img" class="profile-user-img img-fluid img-circle" src="@Model.FotografiaBase64" alt="User profile picture">
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="NombreEmpleado" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NombreEmpleado)" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="ApellidoEmpleado" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.ApellidoEmpleado)" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Fotografia" class="control-label"></label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" />
-                                    <label class="custom-file-label" for="customFile"></label>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NombreEmpleado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NombreEmpleado)" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="ApellidoEmpleado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.ApellidoEmpleado)" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @*  <div class="form-group">
+                                        <label asp-for="Fotografia" class="control-label"></label>
+                                        <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" />
+                                        <label class="custom-file-label" for="customFile"></label>
+                                        </div>
+
+                                        </div> *@
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="CodigoInterno" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CodigoInterno)" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroIdentidad" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroIdentidad)" disabled>
+                                        </div>
+                                    </div>
+
                                 </div>
 
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Genero" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Genero)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroRegistroTributario" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroRegistroTributario)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Direccion" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Direccion)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Telefono" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Telefono)" disabled>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="CiudadResidencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CiudadResidencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Email" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Email)" disabled>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Nacionalidad" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Nacionalidad)" disabled>
+
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaNacimiento" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaNacimiento)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="SalarioBase" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.SalarioBase)" disabled>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+                                <h3></h3>
+                            </div>
+                            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                                <h5>Informacion General</h5>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaInicio" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInicio)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdEncargado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEncargadoNavigation.NombreCompleto)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdCargo" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdCargoNavigation.NombreCargo)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdDepartamento" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdDepartamentoNavigation.NombreDepartamento)" disabled>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroLicencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroLicencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaVencimientoLicencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaVencimientoLicencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdTipoContrato" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoContratoNavigation.NombreTipoContrato)" disabled>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdTipoNomina" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoNominaNavigation.NombreTipoNomina)" disabled>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdBanco" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdBancoNavigation.NombreBanco)" disabled>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="CuentaBancaria" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CuentaBancaria)" disabled>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
+                                            <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="CodigoInterno" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CodigoInterno)" disabled>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="NumeroIdentidad" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroIdentidad)" disabled>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Genero" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Genero)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="NumeroRegistroTributario" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroRegistroTributario)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Direccion" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Direccion)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Telefono" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Telefono)" disabled>
-
-                            </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
 
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="CiudadResidencia" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CiudadResidencia)" disabled>
-
-                            </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel" aria-labelledby="custom-tabs-two-messages-tab">
+                            Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Email" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Email)" disabled>
-
-                            </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
+                            Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
                         </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Nacionalidad" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Nacionalidad)" disabled>
-
-                            </div>
-
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="FechaNacimiento" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaNacimiento)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="SalarioBase" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.SalarioBase)" disabled>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <br />
-                    <h3></h3>
-                </div>
-            <div class="callout callout-info" style="border-left-color: var(--blue); ">
-                    <h5>Informacion General</h5>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="FechaInicio" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInicio)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdEncargado" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEncargado)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdCargo" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdCargo)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdDepartamento" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdDepartamento)" disabled>
-
-
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="NumeroLicencia" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroLicencia)" disabled>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="FechaVencimientoLicencia" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaVencimientoLicencia)" disabled>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdTipoContrato" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoContrato)" disabled>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdTipoNomina" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoNomina)" disabled>
-
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdBanco" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdBanco)" disabled>
-
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="CuentaBancaria" class="control-label"></label>
-                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CuentaBancaria)" disabled>
-
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
-                                <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
-
-                            </div>
-
-                        </div>
-
                     </div>
                 </div>
+                <!-- /.card -->
+            </div>
+
                 <br />
 
             </div>
@@ -292,6 +324,21 @@
             // Si pasa la validación, mostrar la vista previa de la imagen
             previewImage(event);
         }
+
+        // $(document).ready(function () {
+        //     var url = $("#liMenuDinamico");
+        //     var $table = $('#table');
+        //     $.ajax({
+        //         url: "../ObtenerMenuDinamico",
+        //         type: "GET",
+        //         success: function (data) {
+        //             $("#liMenuDinamico").html(data);
+        //         },
+        //         error: function () {
+        //             console.error("Error al cargar el menú dinámico");
+        //         }
+        //     });
+        // });
 
         function previewImage(event) {
             var input = event.target;

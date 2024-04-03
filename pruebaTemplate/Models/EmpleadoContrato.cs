@@ -51,7 +51,11 @@ public partial class EmpleadoContrato
     public virtual Cargo IdCargoNavigation { get; set; } = null!;
 
     [Display(Name = "Empleado")]
-    public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
+    public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;    
+    
+    [Display(Name = "Tipo Contrato")]
+    public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
+
 
 }
 

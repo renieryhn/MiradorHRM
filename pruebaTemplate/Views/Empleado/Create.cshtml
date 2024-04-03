@@ -66,7 +66,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="NumeroIdentidad" class="control-label"></label>
-                                <input asp-for="NumeroIdentidad" class="form-control" type="text" />
+                                <input asp-for="NumeroIdentidad" class="form-control" placeholder="Identidad" data-inputmask='"mask": "9999-9999-99999"' data-mask />
                                 <span asp-validation-for="NumeroIdentidad" class="text-danger"></span>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="NumeroRegistroTributario" class="control-label"></label>
-                                <input asp-for="NumeroRegistroTributario" class="form-control" type="number" />
+                                <input asp-for="NumeroRegistroTributario" class="form-control" placeholder="RTN" data-inputmask='"mask": "9999-9999-999999"' data-mask />
                                 <span asp-validation-for="NumeroRegistroTributario" class="text-danger"></span>
                             </div>
                         </div>
@@ -103,12 +103,17 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+
                                 <label asp-for="Telefono" class="control-label"></label>
-                                <input asp-for="Telefono" class="form-control" type="number" required />
+                                <input asp-for="Telefono" class="form-control" placeholder="Número de teléfono" data-inputmask='"mask": "(999) 9999-9999"' data-mask required />
                                 <span asp-validation-for="Telefono" class="text-danger"></span>
+                                
                             </div>
 
+                            
+                          
                         </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CiudadResidencia" class="control-label"></label>
@@ -130,7 +135,17 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="Nacionalidad" class="control-label"></label>
-                                <input asp-for="Nacionalidad" class="form-control" required />
+                                <select asp-for="Nacionalidad" class="form-control select2bs4 is-invalid" required>
+                                    <option value="">Selecciona una nacionalidad</option>
+                                    <option value="Beliceño/a">Beliceño/a</option>
+                                    <option value="Costarricense">Costarricense</option>
+                                    <option value="Salvadoreño/a">Salvadoreño/a</option>
+                                    <option value="Guatemalteco/a">Guatemalteco/a</option>
+                                    <option value="Hondureño/a" selected>Hondureño/a</option>
+                                    <option value="Nicaragüense">Nicaragüense</option>
+                                    <option value="Panameño/a">Panameño/a</option>
+                                </select>
+
                                 <span asp-validation-for="Nacionalidad" class="text-danger"></span>
                             </div>
 
@@ -198,7 +213,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="NumeroLicencia" class="control-label"></label>
-                                <input asp-for="NumeroLicencia" class="form-control" type="number" />
+                                <input asp-for="NumeroLicencia" class="form-control" placeholder="Licencia" data-inputmask='"mask": "99-999999"' data-mask />
                                 <span asp-validation-for="NumeroLicencia" class="text-danger"></span>
                             </div>
                         </div>
@@ -233,6 +248,14 @@
                             </div>
 
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="EstadoCivil">EstadoCivil:</label>
+                                @Html.DropDownListFor(model => model.EstadoCivil, new SelectList(ViewBag.EstadoCivilEmpleado), "Seleccione el Estado Civil", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="EstadoCivil" class="text-danger"></span>
+                            </div>
+                        </div>
+                       
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdBanco" class="control-label"></label>
@@ -317,14 +340,7 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var error = '@Html.Raw(TempData["Error"])';
-                if (error) {
-                    toastr.error(error);
-                }
-            });
-        </script>
+        
     }
 }
 

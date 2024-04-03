@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using DocumentFormat.OpenXml.Vml;
 using Microsoft.Win32;
+using static PlanillaPM.Models.EmpleadoActivo;
+using static PlanillaPM.Models.Empleado;
 
 namespace PlanillaPM.Controllers
 {
@@ -154,6 +156,7 @@ namespace PlanillaPM.Controllers
         // GET: Empleado/Create
         public IActionResult Create()
         {
+            ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(EstadoCivilEmpleado));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco");
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo");
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento");
@@ -168,7 +171,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile FotoTmp)
+        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile FotoTmp)
         {
 
             try
@@ -248,7 +251,7 @@ namespace PlanillaPM.Controllers
                 empleado.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
 
-
+            ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(Empleado.EstadoCivilEmpleado));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo", empleado.IdCargo);
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento", empleado.IdDepartamento);
@@ -263,7 +266,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado)
         {
             try
             {

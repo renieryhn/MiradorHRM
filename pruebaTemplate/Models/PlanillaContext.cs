@@ -323,8 +323,12 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Descripcion).HasMaxLength(1000);
             entity.Property(e => e.Estado)
-                .HasDefaultValue(1)
+                .HasConversion<int>()
+                .HasDefaultValue(EmpleadoActivo.EstadoActual.Nuevo)
                 .HasComment("Nuevo/Usado/Reacondicionado");
+            //entity.Property(e => e.Estado)
+            //    .HasDefaultValue(1)
+            //    .HasComment("Nuevo/Usado/Reacondicionado");
             entity.Property(e => e.FechaAsignacion).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");
@@ -458,8 +462,8 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.EmpleadoContratos)
                 .HasForeignKey(d => d.IdEmpleado)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EmpleadoContrato_Empleado");  
-            
+                .HasConstraintName("FK_EmpleadoContrato_Empleado");
+
             entity.HasOne(d => d.IdTipoContratoNavigation).WithMany(p => p.EmpleadoContratos)
                 .HasForeignKey(d => d.IdTipoContrato)
                 .OnDelete(DeleteBehavior.ClientSetNull)

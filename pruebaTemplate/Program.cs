@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using PlanillaPM.Models;
 using PlanillaPM.Services;
 using PlanillaPM.Servicio;
+using Syncfusion.Licensing;
 using System.Configuration;
 
 
@@ -22,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //builder.Services.AddControllersWithViews();
 //builder.Services.AddDbContext<PlanillaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sDBConnection")));
-
+SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJxS0d+X1RPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9nSXpTdERkXHhdcHZVQGY=");
 var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
     .RequireAuthenticatedUser()
     .Build();

@@ -38,11 +38,11 @@
                             <select asp-for="IdCargo" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdCargo"></select>
                                     <span asp-validation-for="IdCargo" class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Estado" class="control-label"></label>
-                            <input asp-for="Estado" class="form-control" required />
-                                    <span asp-validation-for="Estado" class="text-danger"></span>
-                                </div>
+                            <div class="form-group">
+                                <label asp-for="Estado" class="control-label">Estado:</label>
+                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.EstadoContrato), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
                                     <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)

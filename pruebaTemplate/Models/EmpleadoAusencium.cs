@@ -23,7 +23,7 @@ public partial class EmpleadoAusencium
     /// Solicitada/Aprobada/Rechazada
     /// </summary>
     [Required(ErrorMessage = "El campo Estado es obligatorio.")]
-    public int Estado { get; set; }
+    public EstadoAusencia Estado { get; set; }
 
     [Display(Name = "Fecha Desde")]
     [Required(ErrorMessage = "El campo Fecha Desde es obligatorio.")]
@@ -68,8 +68,8 @@ public partial class EmpleadoAusencium
 
     public enum EstadoAusencia
     {
-        Solicitada,
-        Aprobada,
-        Rechazada
+        Solicitada=1,
+        Aprobada=2,
+        Rechazada=3
     }
 }

@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using ClosedXML.Excel;
 using static PlanillaPM.cGeneralFun;
 using System.Data;
+using static PlanillaPM.Models.EmpleadoAusencium;
+using static PlanillaPM.Models.EmpleadoContrato;
 
 namespace PlanillaPM.Controllers
 {
@@ -27,8 +29,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoContrato
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            //var planillaContext = _context.EmpleadoContratos.Include(e => e.IdCargoNavigation).Include(e => e.IdEmpleadoNavigation);
-            //return View(await planillaContext.ToListAsync());
+            
 
             List<EmpleadoContrato> registros;
             if (filter != null)
@@ -88,7 +89,7 @@ namespace PlanillaPM.Controllers
             var empleadoContrato = await _context.EmpleadoContratos
                 .Include(e => e.IdCargoNavigation)
                 .Include(e => e.IdEmpleadoNavigation)
-                 .Include(e => e.IdTipoContratoNavigation)
+                .Include(e => e.IdTipoContratoNavigation)
                 .FirstOrDefaultAsync(m => m.IdEmpleadoContrato == id);
             if (empleadoContrato == null)
             {
@@ -100,6 +101,7 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoContrato/Create
         public IActionResult Create()
         {
+            ViewBag.EstadoContrato = Enum.GetValues(typeof(EstadoContrato));
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo");
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato");
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
@@ -129,7 +131,7 @@ namespace PlanillaPM.Controllers
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
                 ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleadoContrato.IdTipoContrato);
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoContrato.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContrato.IdEmpleado);
 
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, verifique los datos.";
@@ -138,8 +140,7 @@ namespace PlanillaPM.Controllers
             }
             catch (Exception ex)
             {
-                // Puedes manejar la excepción de manera específica o simplemente registrarla
-                // Logging.LogError(ex, "Error al intentar crear un registro");
+                
 
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
@@ -162,6 +163,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+            ViewBag.EstadoContrato = Enum.GetValues(typeof(EmpleadoContrato.EstadoContrato));
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleadoContrato.IdTipoContrato);
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContrato.IdEmpleado);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using static PlanillaPM.Models.EmpleadoActivo;
 
 namespace PlanillaPM.Models;
 
@@ -16,18 +17,25 @@ public partial class EmpleadoContrato
     [Display(Name = "Código de Contrato")]
     public string CodigoContrato { get; set; } = null!;
     [Display(Name = "Tipo de Contrato")]
+    [Required(ErrorMessage = "El Tipo de Contrato es obligatorio.")]
     public int IdTipoContrato { get; set; }
     [Display(Name = "Cargo")]
+    [Required(ErrorMessage = "El Cargo es obligatorio.")]
     public int IdCargo { get; set; }
     [Display(Name = "Estado")]
-    public int Estado { get; set; }
+    [Required(ErrorMessage = "El Estado es obligatorio.")]
+    public EstadoContrato Estado { get; set; }
     [Display(Name = "Vegencia del Contrato (Meses)")]
+    [Required(ErrorMessage = "El campo Vegencia del Contrato es obligatorio.")]
     public int VigenciaMeses { get; set; }
     [Display(Name = "Fecha de Inicio")]
+    [Required(ErrorMessage = "La Fecha de Inicio es obligatorio.")]
     public DateOnly FechaInicio { get; set; }
     [Display(Name = "Fecha de Finalización")]
+    [Required(ErrorMessage = "La Fecha de Finalización es obligatorio.")]
     public DateOnly FechaFin { get; set; }
     [Display(Name = "Salario")]
+    [Required(ErrorMessage = "El Salario es obligatorio.")]
     public decimal Salario { get; set; }
     [Display(Name = "Descripción")]
     public string? Descripcion { get; set; }
@@ -57,5 +65,16 @@ public partial class EmpleadoContrato
     public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
 
 
+    [Display(Name = "Tipo Contrato")]
+    public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
+
+    public enum EstadoContrato
+    {
+        Borrador = 1,
+        Aprobado = 2,
+        Cancelado = 3,
+        Finalizado = 4
+    }
 }
+
 

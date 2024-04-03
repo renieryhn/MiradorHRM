@@ -6,3 +6,18 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<div class="text-center">
+    <form asp-controller="Home" asp-action="CreateDocument">
+        <button type="submit" class="btn btn-primary">Crear Documento</button>
+    </form>
+</div>
+
+<form asp-controller="Home" asp-action="ConvertirWordAPdf" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Seleccionar archivo de Word:</label>
+        <input type="file" name="file" id="file" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Convertir a PDF</button>
+</form>

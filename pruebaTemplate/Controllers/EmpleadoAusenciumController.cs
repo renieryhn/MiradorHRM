@@ -10,6 +10,7 @@ using PlanillaPM.Models;
 using ClosedXML.Excel;
 using static PlanillaPM.cGeneralFun;
 using System.Data;
+using static PlanillaPM.Models.EmpleadoAusencium;
 
 namespace PlanillaPM.Controllers
 {
@@ -97,7 +98,8 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoAusencium/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado");
+            ViewBag.EstadoAusencia = Enum.GetValues(typeof(EstadoAusencia));
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia");
             return View();
         }
@@ -122,7 +124,7 @@ namespace PlanillaPM.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoAusencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
                 ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
 
                 // Si el modelo no es válido pero no se ha lanzado una excepción,
@@ -155,7 +157,8 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoAusencium.IdEmpleado);
+            ViewBag.EstadoAusencia = Enum.GetValues(typeof(EmpleadoAusencium.EstadoAusencia));
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
             ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
             return View(empleadoAusencium);
         }
@@ -186,7 +189,7 @@ namespace PlanillaPM.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoAusencium.IdEmpleado);
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
                 ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
 
                 // Si el modelo no es válido pero no se ha lanzado una excepción,

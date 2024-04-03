@@ -58,7 +58,7 @@ namespace PlanillaPM
             new MenuDinamico { Objeto= "Perfil",Titulo= "Cambiar Correo Electrónico",Area= "",Controler= "Usuario",Accion= "Email" },
              new MenuDinamico { Objeto= "Perfil",Titulo= "Cambiar Contraseña",Area= "",Controler= "Usuario",Accion= "ChangePassword" },
 
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Contactos",Area= "",Controler= "EmpleadoContacto",Accion= "Index" },
+             new MenuDinamico { Objeto= "Empleado",Titulo= "Contacto de Emergencia",Area= "",Controler= "EmpleadoContacto",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Contratos",Area= "",Controler= "EmpleadoContrato",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Educación",Area= "",Controler= "EmpleadoEducacion",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Experiencia",Area= "",Controler= "EmpleadoExperiencium",Accion= "Index" },

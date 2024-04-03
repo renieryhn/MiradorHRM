@@ -10,8 +10,10 @@ public partial class TipoNomina
 {
     public int IdTipoNomina { get; set; }
     [Display(Name = "Tipo de Planilla")]
+    [Required(ErrorMessage = "El Tipo de Planilla es obligatorio.")]
     public string NombreTipoNomina { get; set; } = null!;
     [Display(Name = "Se paga cada (No. Días)")]
+    [Required(ErrorMessage = "El es obligatorio.")]
     public int PagadaCadaNdias { get; set; }
     [Display(Name = "Activo")]
     public bool Activo { get; set; }

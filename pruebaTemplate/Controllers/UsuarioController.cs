@@ -48,6 +48,12 @@ namespace PlanillaPM.Controllers
         }
 
         [AllowAnonymous]
+        public IActionResult Constancia1()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         public IActionResult DiaFestivo()
         {
             return View();

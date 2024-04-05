@@ -18,8 +18,10 @@ using Microsoft.Win32;
 using static PlanillaPM.Models.EmpleadoActivo;
 using static PlanillaPM.Models.Empleado;
 
+
 namespace PlanillaPM.Controllers
 {
+    [AllowAnonymous]
     public class EmpleadoController : Controller
     {
         private readonly PlanillaContext _context;

@@ -15,10 +15,13 @@ using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
 using Syncfusion.DocIORenderer;
 using DocumentFormat.OpenXml.Vml.Office;
+using Syncfusion.HtmlConverter;
+using System.Net.Http.Headers;
 
 
 namespace pruebaTemplate.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -52,7 +55,8 @@ namespace pruebaTemplate.Controllers
             return View();
         }
 
-        
+      
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -127,6 +131,33 @@ Honduras.
         }
 
 
+        [AllowAnonymous]
+        public IActionResult ExportToPDF()
+        {
+            // Inicializar el convertidor HTML a PDF
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
+
+            // Establecer el tamaño del viewport al tamaño de una hoja de Word (8.5 x 11 pulgadas) en puntos (1 pulgada = 72 puntos)
+            int widthInPoints = (int)(8.5 * 72);
+            int heightInPoints = (int)(11 * 72);
+            blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
+
+            // Asignar la configuración del convertidor al convertidor HTML
+            htmlConverter.ConverterSettings = blinkConverterSettings;
+
+            // Convertir la URL a PDF
+            using (PdfDocument document = htmlConverter.Convert("https://localhost:7021/Usuario/Constancia1"))
+            {
+                // Crear un MemoryStream para almacenar el PDF
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+                stream.Position = 0;
+
+                // Devolver el archivo PDF
+                return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "HTML-to-PDF.pdf");
+            }
+        }
 
         [HttpPost]
         public IActionResult ConvertirWordAPdf(IFormFile file)

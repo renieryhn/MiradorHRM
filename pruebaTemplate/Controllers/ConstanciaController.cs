@@ -69,7 +69,17 @@ namespace PlanillaPM.Controllers
 
             return View();
         }
+        
+        public IActionResult FContratoCorto()
+        {
+            
+           return View();
+        }
+        
+        public IActionResult FContrato()
+        {
 
-
+            return View();
+        }
     }
 }

@@ -10,7 +10,7 @@
 
 <div class="text-center">
     <form asp-controller="Home" asp-action="CreateDocument">
-        <button type="submit" class="btn btn-primary">Crear Documento</button>
+        <button type="submit" class="btn btn-primary">Descargar Informacion User</button>
     </form>
 </div>
 
@@ -21,3 +21,14 @@
     </div>
     <button type="submit" class="btn btn-primary">Convertir a PDF</button>
 </form>
+
+@{
+    Html.BeginForm("ExportToPDF", "Home", FormMethod.Post, new { @class = "text-center" });
+    {
+        <div class="d-inline-block">
+            <button type="submit" class="btn btn-primary" style="width:150px;height:40px;">Convertir Generar a PDF</button>
+        </div>
+    }
+    Html.EndForm();
+}
+

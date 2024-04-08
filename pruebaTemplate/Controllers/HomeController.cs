@@ -13,15 +13,15 @@ using Microsoft.AspNetCore.Authorization;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
-using System.IO;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Syncfusion.DocIORenderer;
-
+using DocumentFormat.OpenXml.Vml.Office;
+using Syncfusion.HtmlConverter;
+using System.Net.Http.Headers;
 
 
 namespace pruebaTemplate.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -36,8 +36,6 @@ namespace pruebaTemplate.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var user = await userManager.GetUserAsync(User);
-           
-           
 
             // Crear un objeto ProfileViewModel con los datos del usuario
             var profileViewModel = new ProfileViewModel
@@ -48,7 +46,7 @@ namespace pruebaTemplate.Controllers
                 Avatar = user.Avatar,
             };
 
-            return View("Index");
+            return View(profileViewModel);
         }
 
 
@@ -57,7 +55,8 @@ namespace pruebaTemplate.Controllers
             return View();
         }
 
-        
+      
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -65,39 +64,99 @@ namespace pruebaTemplate.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult CreateDocument ()
+        [HttpPost]
+        public async Task<IActionResult> CreateDocument()
         {
-            //Create a new PDF document
+            // Crear un nuevo documento PDF
             PdfDocument document = new PdfDocument();
 
-            //Add a page to the document
+            // Agregar una página al documento con tamaño A4
             PdfPage page = document.Pages.Add();
 
-            //Create PDF graphics for the page
-            PdfGraphics graphics = page.Graphics;
+            // Set the standard font
+            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
 
-            //Set the standard font
-            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
+            // Load image
+            string webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            string imagePath = Path.Combine(webRootPath, "img", "Constancia1.png");
+            using (FileStream fileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+            {
+                PdfBitmap image = new PdfBitmap(fileStream);
 
-            //Draw the text
-            graphics.DrawString("Hello World!", font, PdfBrushes.Black, new PointF(0, 0));
+                // Get image dimensions
+                float imageWidth = image.Width * 0.4f; // Reducir el ancho de la imagen a la mitad
+                float imageHeight = image.Height * 0.4f; // Reducir la altura de la imagen a la mitad
 
-            //Saving the PDF to the MemoryStream
-            MemoryStream stream = new MemoryStream();
+                // Calculate center position for the image horizontally
+                float centerX = (page.Size.Width - imageWidth) / 2;
 
-            document.Save(stream);
+                // Draw the image
+                page.Graphics.DrawImage(image, new RectangleF(centerX, 50, imageWidth, imageHeight));
 
-            //Set the position as '0'.
-            stream.Position = 0;
+                // Draw the additional content
+                string additionalContent = @"
+C O N S T A N C I A
+La suscrita Directora de Proyecto Mirador Honduras LLC (La Organización), hace constar que: El ciudadano XXXXXX, mayor de edad, unión libre, Maestro de educación primaria con número de identidad, 0000-000-000 y con domicilio en el municipio de Santa Ana, Departamento de la Paz, Presto sus servicios a PROYECTO MIRADOR desde el 03 de Mayo de 2022 hasta el 31 de Mayo del 2023. 
 
-            //Download the PDF document in the browser
-            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+Y para los fines que el interesado estime conveniente se extiende la presente en la ciudad de Santa Bárbara, a los 02 día del mes de Febrero del año 2024. 
 
-            fileStreamResult.FileDownloadName = "Sample.pdf";
+____________________________
+Emilia Girón de Mendoza
+Directora de Proyecto Mirador LLC (La Organización)
+Honduras.
+";
 
-            return fileStreamResult;
+                // Draw the additional content
+                float additionalContentWidth = 500f; // Anchura del texto adicional
+                PdfTextElement textElement = new PdfTextElement(additionalContent, font);
+                textElement.Brush = PdfBrushes.Black;
+                textElement.Font = font;
+                textElement.StringFormat = new PdfStringFormat() { Alignment = PdfTextAlignment.Justify }; // Alineación justificada
+                textElement.Draw(page, new RectangleF(0, 60 + imageHeight + 20, page.Graphics.ClientSize.Width, page.Graphics.ClientSize.Height)); // Dibujar el texto justificado
 
 
+                // Guardar el PDF en MemoryStream
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+
+                // Establecer la posición en '0'
+                stream.Position = 0;
+
+                // Descargar el documento PDF en el navegador
+                FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+                fileStreamResult.FileDownloadName = "Constancia.pdf";
+
+                return fileStreamResult;
+            }
+        }
+
+
+        [AllowAnonymous]
+        public IActionResult ExportToPDF()
+        {
+            // Inicializar el convertidor HTML a PDF
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
+
+            // Establecer el tamaño del viewport al tamaño de una hoja de Word (8.5 x 11 pulgadas) en puntos (1 pulgada = 72 puntos)
+            int widthInPoints = (int)(8.5 * 72);
+            int heightInPoints = (int)(11 * 72);
+            blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
+
+            // Asignar la configuración del convertidor al convertidor HTML
+            htmlConverter.ConverterSettings = blinkConverterSettings;
+
+            // Convertir la URL a PDF
+            using (PdfDocument document = htmlConverter.Convert("https://localhost:7021/Usuario/Constancia1"))
+            {
+                // Crear un MemoryStream para almacenar el PDF
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+                stream.Position = 0;
+
+                // Devolver el archivo PDF
+                return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "HTML-to-PDF.pdf");
+            }
         }
 
         [HttpPost]

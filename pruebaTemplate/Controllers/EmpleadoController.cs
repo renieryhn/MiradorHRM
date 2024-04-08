@@ -119,8 +119,8 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var emple = await _context.Empleados.FindAsync(id);
-
+            //var emple = await _context.Empleados.FindAsync(id);
+            var emple = await _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefaultAsync();
             if (emple == null)
             {
                 return NotFound();

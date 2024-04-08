@@ -27,20 +27,25 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContacto
-        public async Task<IActionResult> Index(int pg, string? filter)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado)
         {
-            //var planillaContext = _context.EmpleadoContactos.Include(e => e.IdEmpleadoNavigation);
-            //return View(await planillaContext.ToListAsync());
+            IQueryable<EmpleadoContacto> query = _context.EmpleadoContactos;
+
+            if (!String.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.NombreContacto.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
 
             List<EmpleadoContacto> registros;
-            if (filter != null)
-            {
-                registros = await _context.EmpleadoContactos.Where(r => r.NombreContacto.ToLower().Contains(filter.ToLower())).ToListAsync();
-            }
-            else
-            {
-                registros = await _context.EmpleadoContactos.ToListAsync();
-            }
+            registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
+            
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -50,7 +55,14 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
 
             var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+            } else
+            {
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
+            }
+          
             return View(data);
 
 
@@ -134,14 +146,16 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContacto/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string returnUrl)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
-
+            ViewBag.ReturnUrl = returnUrl;
             var empleadoContacto = await _context.EmpleadoContactos.FindAsync(id);
+
             if (empleadoContacto == null)
             {
                 return NotFound();
@@ -155,7 +169,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto, string returnUrl)
         {
             if (id != empleadoContacto.IdContactoEmergencia)
             {
@@ -171,7 +185,16 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     TempData["mensaje"] = "Empleado Contacto actualizado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    //volver a la pagina que invocó el edit 
+
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContacto.IdEmpleado);

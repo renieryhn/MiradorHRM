@@ -64,10 +64,6 @@ public partial class EmpleadoContrato
     [Display(Name = "Tipo Contrato")]
     public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
 
-
-    [Display(Name = "Tipo Contrato")]
-    public virtual TipoContrato IdTipoContratoNavigation { get; set; } = null!;
-
     public enum EstadoContrato
     {
         Borrador = 1,

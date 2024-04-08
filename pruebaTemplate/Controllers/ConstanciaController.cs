@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlanillaPM.Models;
@@ -69,17 +70,41 @@ namespace PlanillaPM.Controllers
 
             return View();
         }
-        
-        public IActionResult FContratoCorto()
+
+        public IActionResult FContrato(int id)
         {
-            
-           return View();
-        }
-        
-        public IActionResult FContrato()
-        {
+            // Obtener los datos del empleado correspondiente al ID
+            var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+
+            ViewData["Nombre"] = empleado.NombreCompleto;
+            ViewData["Identidad"] = empleado.NumeroIdentidad;
+            ViewData["SalarioBase"] = empleado.SalarioBase;
 
             return View();
         }
+
+        public IActionResult FContratoCorto(int id)
+        {
+            // Obtener los datos del empleado correspondiente al ID
+            var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+
+            ViewData["Nombre"] = empleado.NombreCompleto;
+            ViewData["Identidad"] = empleado.NumeroIdentidad;
+            ViewData["SalarioBase"] = empleado.SalarioBase;
+
+            return View();
+        }
+        
+       
     }
 }

@@ -52,7 +52,6 @@ namespace PlanillaPM.Controllers
             return RedirectToAction("Constancia1", "Constancia", new { id = id });
         }
 
-
         [HttpPost]
         public async Task<IActionResult> PasarIDConstancia2(int id)
         {
@@ -79,6 +78,34 @@ namespace PlanillaPM.Controllers
 
             // Redirigir a la acción Constancia1 en el controlador Constancia
             return RedirectToAction("ConstanciaTrabajo", "Constancia", new { id = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> pasarIDDFContrato(int id)
+        {
+            // Obtener detalles del empleado
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+            // Redirigir a la acción Constancia1 en el controlador Constancia
+            return RedirectToAction("FContrato", "Constancia", new { id = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> pasarIDDFContratoCorto(int id)
+        {
+            // Obtener detalles del empleado
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+            // Redirigir a la acción Constancia1 en el controlador Constancia
+            return RedirectToAction("FContratoCorto", "Constancia", new { id = id });
         }
 
 
@@ -195,6 +222,83 @@ namespace PlanillaPM.Controllers
 
                 // Devolver el archivo PDF
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Constancia de Trabajo.pdf");
+            }
+        }
+
+        public IActionResult ExportToPDFContrato(int id)
+        {
+            // Obtener los datos del empleado correspondiente al ID
+            var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound(); // Retornar NotFound si no se encuentra el empleado
+            }
+
+            // Inicializar el convertidor HTML a PDF
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
+
+            // Establecer el tamaño del viewport al tamaño de una hoja de Word (8.5 x 11 pulgadas) en puntos (1 pulgada = 72 puntos)
+            int widthInPoints = (int)(8.5 * 72);
+            int heightInPoints = (int)(11 * 72);
+
+            // Establecer el tamaño del viewport
+            blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
+
+            // Asignar la configuración del convertidor al convertidor HTML
+            htmlConverter.ConverterSettings = blinkConverterSettings;
+
+            // Construir la URL con el ID del empleado
+            string url = $"https://localhost:7021/Constancia/FContrato/{id}";
+
+            // Convertir la URL a PDF
+            using (PdfDocument document = htmlConverter.Convert(url))
+            {
+                // Crear un MemoryStream para almacenar el PDF
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+                stream.Position = 0;
+
+                // Devolver el archivo PDF
+                return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Contrato.pdf");
+            }
+        }
+        public IActionResult ExportToPDFContratoCorto(int id)
+        {
+            // Obtener los datos del empleado correspondiente al ID
+            var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound(); // Retornar NotFound si no se encuentra el empleado
+            }
+
+            // Inicializar el convertidor HTML a PDF
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
+            BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
+
+            // Establecer el tamaño del viewport al tamaño de una hoja de Word (8.5 x 11 pulgadas) en puntos (1 pulgada = 72 puntos)
+            int widthInPoints = (int)(8.5 * 72);
+            int heightInPoints = (int)(11 * 72);
+
+            // Establecer el tamaño del viewport
+            blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
+
+            // Asignar la configuración del convertidor al convertidor HTML
+            htmlConverter.ConverterSettings = blinkConverterSettings;
+
+            // Construir la URL con el ID del empleado
+            string url = $"https://localhost:7021/Constancia/FContratoCorto/{id}";
+
+            // Convertir la URL a PDF
+            using (PdfDocument document = htmlConverter.Convert(url))
+            {
+                // Crear un MemoryStream para almacenar el PDF
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+                stream.Position = 0;
+
+                // Devolver el archivo PDF
+                return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Contrato Corto.pdf");
             }
         }
 

@@ -273,6 +273,8 @@
                                                 <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia1?id=@Model.IdEmpleado">Constancia de Servicios</a>
                                                 <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia2?id=@Model.IdEmpleado">Constancia de Laboral</a>
                                                 <a class="dropdown-item" href="/Empleado/ExportToPDFConstanciaTrabajo?id=@Model.IdEmpleado">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContrato?id=@Model.IdEmpleado">Contrato</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContratoCorto?id=@Model.IdEmpleado">Contrato Corto</a>
                                             </div>
                                         </div>
                                     </div>
@@ -291,6 +293,8 @@
                                                 <a class="dropdown-item" onclick="pasarIDConstancia1('@Model.IdEmpleado')">Constancia de Servicios </a>
                                                 <a class="dropdown-item" onclick="pasarIDConstancia2('@Model.IdEmpleado')">Constancia de Laboral</a>
                                                 <a class="dropdown-item" onclick="pasarIDConstanciaTrabajo('@Model.IdEmpleado')">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContrato('@Model.IdEmpleado')">Contrato</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContratoCorto('@Model.IdEmpleado')">Contrato Corto</a>
                                             </div>
                                         </div>
                                     </div>
@@ -400,7 +404,6 @@
             });
         }
 
-
         function pasarIDConstancia2(id) {
             $.ajax({
                 url: "/Empleado/PasarIDConstancia2?id=" + id,
@@ -416,25 +419,53 @@
             });
         }
 
+        function pasarIDConstanciaTrabajo(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/ConstanciaTrabajo?id=" + id;
 
-    function pasarIDConstanciaTrabajo(id) {
-        $.ajax({
-            url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
-            type: "POST",
-            success: function () {
-                // Redirigir a la página correspondiente después de que se haya pasado el ID
-                window.location.href = "/Constancia/ConstanciaTrabajo?id=" + id;
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
 
-            },
-            error: function () {
-                alert("Error al pasar el ID del empleado.");
-            }
-        });
-    }
+        function pasarIDDFContrato(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/FContrato?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDDFContratoCorto(id) {
+            $.ajax({
+                url: "/Empleado/pasarIDDFContratoCorto?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                     window.location.href = "/Constancia/FContratoCorto?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
 
     </script>
 
-</div>
 
 
 

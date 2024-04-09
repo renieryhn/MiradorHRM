@@ -161,7 +161,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="SalarioBase" class="control-label"></label>
-                                <input asp-for="SalarioBase" class="form-control" type="number" required />
+                                <input asp-for="SalarioBase" class="form-control"  required />
                                 <span asp-validation-for="SalarioBase" class="text-danger"></span>
                             </div>
                         </div>
@@ -213,7 +213,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="NumeroLicencia" class="control-label"></label>
-                                <input asp-for="NumeroLicencia" class="form-control" placeholder="Licencia" data-inputmask='"mask": "99-999999"' data-mask />
+                                <input asp-for="NumeroLicencia" class="form-control"  placeholder="Licencia" data-inputmask='"mask": "99-999999"' data-mask />
                                 <span asp-validation-for="NumeroLicencia" class="text-danger"></span>
                             </div>
                         </div>
@@ -340,7 +340,23 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        
+        <script>
+            // Obtener el separador decimal del navegador
+            var sep = (1.1).toLocaleString().substring(1, 2);
+
+            $(document).ready(function () {
+                $('#SalarioBase').inputmask('decimal', {
+                    radixPoint: sep, 
+                    groupSeparator: ',', 
+                    digits: 2, 
+                    autoGroup: true, // Agrupar automáticamente los miles
+                    rightAlign: false, // Alinear a la izquierda
+                    allowMinus: false, // No permitir números negativos
+                    placeholder: '0', 
+                    allowPlus: false 
+                });
+            });
+        </script>
     }
 }
 

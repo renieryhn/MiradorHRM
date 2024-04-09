@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Constancia2";
+    var nombre = ViewData["Nombre"];
+    var identidad = ViewData["Identidad"];
+    var salarioBase = ViewData["SalarioBase"];
+
+    var salarioFormateado = string.Format("{0:N}", salarioBase);
+}
+
+<p>
+    <div style="text-align: center;">
+        <img src="/img/ConstanciaTrabajo.png" width="754" height="113" alt="Imagen">
+    </div>
+
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: center; font-size: 25px;"><u>C O N S T A N C I A</u></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: justify; font-size: 25px;">
+
+    La Dirección Operativa de Proyecto Mirador Honduras LLC (La Organización) hace Constar Que:   <strong> @nombre</strong> ,
+    con Documento Nacional de Identificación N.º <strong> @identidad</strong>, con Domicilio en   el Departamento de La Paz,
+    labora para PROYECTO MIRADOR en Santa Barbara, desde el <strong>06 de febrero del 2017</strong>, con ingresos mensuales de
+    Lps.  @salarioFormateado (0 Mil Lempiras exactos).
+
+</p>
+<p>&nbsp;</p>
+<p style="text-align: justify; font-size: 25px;">
+    Para los fines que el interesado estime conveniente se extiende la presente En la ciudad de Santa Bárbara, a los 08 días del mes de Enero del año 2024.
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: center;  font-size: 20px;">__________________________________________</p>
+<p style="text-align: center;  font-size: 20px;"><strong>Vº Bº Elder Stanly Mendoza</strong></p>
+<p style="text-align: center; font-size: 20px;"><strong>Directora Operativo</strong></p>
+<p style="text-align: center; font-size: 20px;"><strong>Proyecto Mirador LLC  (La Organización)</strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><br></p>
+<p><br></p>

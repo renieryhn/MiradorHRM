@@ -58,6 +58,8 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
 }).AddEntityFrameworkStores<PlanillaContext>()
 .AddDefaultTokenProviders();
 
+//builder.Services.AddScoped<UserManager<Usuario>>();
+
 builder.Services.AddTransient<EmailService, EmailService>();
 
 //Utilizar nuestras propias ventanas

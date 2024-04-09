@@ -245,9 +245,10 @@
                                         </div>
 
                                     </div>
+                                    
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
                                             <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
@@ -256,6 +257,48 @@
 
                                     </div>
 
+                                  
+
+                                </div>
+                                <br />
+                                <div class="row">                                 
+
+                                    <div class="col-md-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Descagar pdf
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia1?id=@Model.IdEmpleado">Constancia de Servicios</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia2?id=@Model.IdEmpleado">Constancia de Laboral</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstanciaTrabajo?id=@Model.IdEmpleado">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContrato?id=@Model.IdEmpleado">Contrato</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContratoCorto?id=@Model.IdEmpleado">Contrato Corto</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Ver Documento
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" onclick="pasarIDConstancia1('@Model.IdEmpleado')">Constancia de Servicios </a>
+                                                <a class="dropdown-item" onclick="pasarIDConstancia2('@Model.IdEmpleado')">Constancia de Laboral</a>
+                                                <a class="dropdown-item" onclick="pasarIDConstanciaTrabajo('@Model.IdEmpleado')">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContrato('@Model.IdEmpleado')">Contrato</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContratoCorto('@Model.IdEmpleado')">Contrato Corto</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -326,21 +369,7 @@
             previewImage(event);
         }
 
-        // $(document).ready(function () {
-        //     var url = $("#liMenuDinamico");
-        //     var $table = $('#table');
-        //     $.ajax({
-        //         url: "../ObtenerMenuDinamico",
-        //         type: "GET",
-        //         success: function (data) {
-        //             $("#liMenuDinamico").html(data);
-        //         },
-        //         error: function () {
-        //             console.error("Error al cargar el menú dinámico");
-        //         }
-        //     });
-        // });
-
+       
         function previewImage(event) {
             var input = event.target;
             var reader = new FileReader();
@@ -351,9 +380,91 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+
+
+        // $(document).ready(function () {
+        //     var empleadoId = "@Model.IdEmpleado";
+        //     pasarIDConstancia(empleadoId);
+        // });
+
+
+        function pasarIDConstancia1(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstancia1?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/Constancia1?id=" + id;
+                   
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDConstancia2(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstancia2?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/Constancia2?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDConstanciaTrabajo(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/ConstanciaTrabajo?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDDFContrato(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/FContrato?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDDFContratoCorto(id) {
+            $.ajax({
+                url: "/Empleado/pasarIDDFContratoCorto?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                     window.location.href = "/Constancia/FContratoCorto?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
     </script>
 
-</div>
 
 
 

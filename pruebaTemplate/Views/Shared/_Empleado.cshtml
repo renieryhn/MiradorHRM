@@ -1,12 +1,32 @@
-﻿@using PlanillaPM.Models;
-@model IEnumerable<Empleado>
+﻿@model PlanillaPM.Models.Empleado
 
-<div class="row m-3">
-    <form class="form-inline my-2 my-lg-0">
-        <select id="employeeSelect" class="form-control mr-sm-2 select2bs4 btn-outline-success" style="width:300px;"></select>
-         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Cargar</button>
-    </form>
-</div>
+<form class="form" asp-action="Details">
+
+    <div class="row m-auto">
+        <div class="info-box">
+            <div class="col-auto">
+                <a asp-action="Index" asp-controller="Empleado" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+            <div class="col-auto">
+            </div>
+            <div class="col-auto">
+                <input type="hidden" id="idEmpleado" name="idEmpleado" value="@(ViewBag.IdEmpleado ?? "")" />
+                <span id="nombreEmpleado" class="label label-info">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>
+            </div>
+            <div class="col-auto">
+            </div>
+            <div class="col-auto">
+                <select id="employeeSelect" name="id"  class="form-control mr-sm-2 select2bs4 btn-outline-success" style="width:300px;">
+                    <option value="">Seleccionar Empleado</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Cargar</button>
+            </div>
+        </div>
+    </div>
+
+</form>
 
 <script>
     $(document).ready(function () {
@@ -34,4 +54,21 @@
         });
 
     });
+
+    function cargarEmpleado() {
+        var idEmpleado = $('#employeeSelect').val();
+        var nombreEmpleado = $('#employeeSelect option:selected').text();
+        $.ajax({
+            url: '@Url.Action("Details", "Empleado")',
+            data: { Id: idEmpleado },
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                $('#detalleEmpleado').html(data);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
 </script>

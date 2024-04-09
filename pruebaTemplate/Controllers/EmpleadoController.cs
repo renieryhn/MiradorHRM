@@ -390,10 +390,68 @@ namespace PlanillaPM.Controllers
             return _context.Empleados.Any(e => e.IdEmpleado == id);
         }
         [HttpGet]
+        public IActionResult RenderPartialEmpleados()
+        {
+            var listaDeEmpleados = _context.Empleados.Where(e => e.Activo == true).ToList();
+            return PartialView("_Empleado", listaDeEmpleados);
+        }
+
+        [HttpGet]
         public IActionResult RenderPartialEmpleado(int id)
         {
-            var listaDeEmpleados = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
-            return PartialView("_Empleado", listaDeEmpleados);
+            var emple =  _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefault();
+            if (emple == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var nombreEmpleado = emple.NombreCompleto;
+                ViewBag.NombreEmpleado = nombreEmpleado;
+                ViewBag.IdEmpleado = emple.IdEmpleado;
+                return PartialView("_Empleado", emple);
+            }
+        }
+
+        public async Task<IActionResult> FichaEmpleado(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var emple = await _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefaultAsync();
+            if (emple == null)
+            {
+                return NotFound();
+            }
+
+            if (emple.Fotografia != null)
+            {
+                var base64Image = Convert.ToBase64String(emple.Fotografia);
+                emple.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+            }
+            else
+            {
+                emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
+            }
+
+            var empleado = await _context.Empleados
+                .Include(e => e.IdBancoNavigation)
+                .Include(e => e.IdCargoNavigation)
+                .Include(e => e.IdDepartamentoNavigation)
+                .Include(e => e.IdEncargadoNavigation)
+                .Include(e => e.IdTipoContratoNavigation)
+                .Include(e => e.IdTipoNominaNavigation)
+                .FirstOrDefaultAsync(m => m.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+            var nombreEmpleado = empleado.NombreCompleto;
+            ViewBag.NombreEmpleado = nombreEmpleado;
+            ViewBag.IdEmpleado = empleado.IdEmpleado;
+            return View(empleado);
         }
     }
 

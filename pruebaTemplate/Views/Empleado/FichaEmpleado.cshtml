@@ -1,0 +1,11 @@
+﻿@model PlanillaPM.Models.Empleado;
+
+@{
+    ViewData["Title"] = "Ficha de Empleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+  <partial name="_Empleado" model="Model" />
+  <partial name="Details.cshtml" model="Model" /> 
+</div>

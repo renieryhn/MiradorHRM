@@ -1,11 +1,83 @@
-﻿@model PlanillaPM.Models.Empleado;
+﻿@model PlanillaPM.ViewModel.EmpleadoViewModel;
 
 @{
     ViewData["Title"] = "Ficha de Empleado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-  <partial name="_Empleado" model="Model" />
-  <partial name="Details.cshtml" model="Model" /> 
+<div id="detalleEmpleado" class="container-fluid">
+    <partial name="_Empleado" model="Model" />
+    @if (Model.EmpleadoSeleccionado != null)
+    {
+        <partial name="Details" model="Model.EmpleadoSeleccionado" />
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>¡Atención!</strong> No se ha seleccionado ningún empleado.
+        </div>
+    
+    }
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#employeeSelect').change(function () {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    var accion = "../FichaEmpleado/" + "?id=" + selectedId;
+                    $('#cargarLink').attr('href', accion);
+                } else {
+                    $('#cargarLink').removeAttr('href');
+                }
+            });
+        });
+    </script>
+}
+
+@* @section Scripts {
+    <script>
+        $(document).ready(function () {
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4',
+                placeholder: {
+                    id: '',
+                    text: 'Seleccionar...'
+                },
+                allowClear: true
+            })
+
+            $.ajax({
+                url: '@Url.Action("GetEmpleado", "Empleado")',
+                type: 'GET',
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $('#employeeSelect').append($('<option>', {
+                            value: item.idEmpleado,
+                            text: item.nombreCompleto
+                        }));
+                    });
+                }
+            });
+        });
+
+        function cargarEmpleado() {
+            var idEmpleado = $('#employeeSelect').val();
+            var nombreEmpleado = $('#employeeSelect option:selected').text();
+            $.ajax({
+                url: '/Empleado/FichaEmpleado',
+                data: { Id: idEmpleado },
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                   // $('#detalleEmpleado').html(data);
+                    $('#detalleEmpleado').find('[id="pdet"]').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+} *@

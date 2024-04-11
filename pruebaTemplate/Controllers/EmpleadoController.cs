@@ -21,7 +21,8 @@ using Syncfusion.Pdf;
 using Syncfusion.DocIORenderer;
 using Syncfusion.HtmlConverter;
 using DocumentFormat.OpenXml.Office2010.Excel;
-
+using PlanillaPM.ViewModel;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace PlanillaPM.Controllers
@@ -30,10 +31,12 @@ namespace PlanillaPM.Controllers
     public class EmpleadoController : Controller
     {
         private readonly PlanillaContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoController(PlanillaContext context)
+        public EmpleadoController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
        
@@ -452,11 +455,8 @@ namespace PlanillaPM.Controllers
 
             try
             {
-                empleado.FechaCreacion = DateTime.Now;
-                empleado.CreadoPor = "Admin";
-                empleado.FechaModificacion = DateTime.Now;
-                empleado.ModificadoPor = "Admin";
 
+                SetCamposAuditoria(empleado, true);
                 // Verificar si el IdBanco seleccionado es "Seleccionar" y establecerlo como null
                 if (empleado.IdBanco == 0)
                 {
@@ -480,13 +480,13 @@ namespace PlanillaPM.Controllers
                 }
                 else
                 {
-                   // var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                  //  TempData["Error"] = "Error: " + message;
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["Error"] = "Error: " + message;
                 }
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
+                TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente. " + ex.Message;
                // TempData["error"] = "Error: " + ex.Message;
             }
 
@@ -542,10 +542,11 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile FotoTmp)
         {
             try
             {
+          
                 if (id != empleado.IdEmpleado)
                 {
                     return NotFound();
@@ -553,6 +554,15 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    SetCamposAuditoria(empleado, false);
+                    if (FotoTmp != null && FotoTmp.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await FotoTmp.CopyToAsync(memoryStream);
+                            empleado.Fotografia = memoryStream.ToArray();
+                        }
+                    }
                     _context.Update(empleado);
                     await _context.SaveChangesAsync();
                     TempData["mensaje"] = "Empleado actualizado exitosamente.";
@@ -663,69 +673,100 @@ namespace PlanillaPM.Controllers
         {
             return _context.Empleados.Any(e => e.IdEmpleado == id);
         }
-        [HttpGet]
-        public IActionResult RenderPartialEmpleados()
-        {
-            var listaDeEmpleados = _context.Empleados.Where(e => e.Activo == true).ToList();
-            return PartialView("_Empleado", listaDeEmpleados);
-        }
+        //[HttpGet]
+        //public IActionResult RenderPartialEmpleados()
+        //{
+        //    var listaDeEmpleados = _context.Empleados.Where(e => e.Activo == true).ToList();
+        //    return PartialView("_Empleado", listaDeEmpleados);
+        //}
 
-        [HttpGet]
-        public IActionResult RenderPartialEmpleado(int id)
-        {
-            var emple =  _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefault();
-            if (emple == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                var nombreEmpleado = emple.NombreCompleto;
-                ViewBag.NombreEmpleado = nombreEmpleado;
-                ViewBag.IdEmpleado = emple.IdEmpleado;
-                return PartialView("_Empleado", emple);
-            }
-        }
+        //[HttpGet]
+        //public IActionResult RenderPartialEmpleado(int id)
+        //{
+        //    var emple =  _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefault();
+        //    if (emple == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    else
+        //    {
+        //        var nombreEmpleado = emple.NombreCompleto;
+        //        ViewBag.NombreEmpleado = nombreEmpleado;
+        //        ViewBag.IdEmpleado = emple.IdEmpleado;
+        //        return PartialView("_Empleado", emple);
+        //    }
+        //}
 
         public async Task<IActionResult> FichaEmpleado(int? id)
         {
+            var Empleados = await _context.Empleados.ToListAsync();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var emple = await _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefaultAsync();
-            if (emple == null)
+            var EmpleadoSeleccionado = await _context.Empleados
+           .Include(e => e.IdBancoNavigation)
+           .Include(e => e.IdCargoNavigation)
+           .Include(e => e.IdDepartamentoNavigation)
+           .Include(e => e.IdEncargadoNavigation)
+           .Include(e => e.IdTipoContratoNavigation)
+           .Include(e => e.IdTipoNominaNavigation)
+           .FirstOrDefaultAsync(m => m.IdEmpleado == id);
+
+            if (EmpleadoSeleccionado == null)
             {
                 return NotFound();
             }
 
-            if (emple.Fotografia != null)
+            if (EmpleadoSeleccionado.Fotografia != null)
             {
-                var base64Image = Convert.ToBase64String(emple.Fotografia);
-                emple.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
+                EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
             }
             else
             {
-                emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
 
-            var empleado = await _context.Empleados
-                .Include(e => e.IdBancoNavigation)
-                .Include(e => e.IdCargoNavigation)
-                .Include(e => e.IdDepartamentoNavigation)
-                .Include(e => e.IdEncargadoNavigation)
-                .Include(e => e.IdTipoContratoNavigation)
-                .Include(e => e.IdTipoNominaNavigation)
-                .FirstOrDefaultAsync(m => m.IdEmpleado == id);
-            if (empleado == null)
+            var viewModel = new EmpleadoViewModel
             {
-                return NotFound();
-            }
-            var nombreEmpleado = empleado.NombreCompleto;
+                EmpleadoSeleccionado = EmpleadoSeleccionado,
+                Empleados = Empleados
+            };
+
+            var nombreEmpleado = EmpleadoSeleccionado.NombreCompleto;
             ViewBag.NombreEmpleado = nombreEmpleado;
-            ViewBag.IdEmpleado = empleado.IdEmpleado;
-            return View(empleado);
+            ViewBag.IdEmpleado = EmpleadoSeleccionado.IdEmpleado;
+            return View(viewModel);
+        }
+        private void SetCamposAuditoria(Empleado record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                if (record.FechaCreacion.ToString() == "1/1/0001 00:00:00")
+                {
+                    record.FechaCreacion = now;
+                }
+                if (record.CreadoPor == null)
+                {
+                    record.CreadoPor = CurrentUser;
+                }
+            }
         }
     }
 

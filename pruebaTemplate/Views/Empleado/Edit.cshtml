@@ -12,7 +12,7 @@
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdEmpleado" />
             <div class="card-body">
@@ -47,7 +47,7 @@
                             <div class="form-group">
                                 <label asp-for="Fotografia" class="control-label"></label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="validateImage(event)" />
+                                    <input type="file"  asp-for="FotoTmp" class="custom-file-input" id="customFile" accept="image/*" onchange="validateImage(event)" />
                                     <label class="custom-file-label" for="customFile"></label>
                                     <span asp-validation-for="Fotografia" class="text-danger"></span>
                                 </div>

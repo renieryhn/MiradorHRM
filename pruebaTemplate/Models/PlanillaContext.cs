@@ -261,21 +261,27 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.Property(e => e.ApellidoEmpleado).HasMaxLength(75);
             entity.Property(e => e.CiudadResidencia).HasMaxLength(75);
             entity.Property(e => e.CodigoInterno).HasMaxLength(20);
-            entity.Property(e => e.CreadoPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.CuentaBancaria).HasMaxLength(20);
             entity.Property(e => e.Direccion).HasMaxLength(200);
             entity.Property(e => e.Email).HasMaxLength(200);
-            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
-            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Genero).HasMaxLength(20);
-            entity.Property(e => e.ModificadoPor).HasMaxLength(50);
+            entity.Property(e => e.ModificadoPor)
+            .HasMaxLength(50)
+            .HasDefaultValue("Admin")
+            .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.MotivoInactivacion).HasMaxLength(1000);
             entity.Property(e => e.NombreEmpleado).HasMaxLength(75);
             entity.Property(e => e.NumeroIdentidad).HasMaxLength(20);
             entity.Property(e => e.NumeroLicencia).HasMaxLength(20);
             entity.Property(e => e.NumeroRegistroTributario).HasMaxLength(20);
             entity.Property(e => e.SalarioBase).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Telefono).HasMaxLength(10);
+            entity.Property(e => e.Telefono).HasMaxLength(15);
 
             entity.HasOne(d => d.IdBancoNavigation).WithMany(p => p.Empleados)
                 .HasForeignKey(d => d.IdBanco)

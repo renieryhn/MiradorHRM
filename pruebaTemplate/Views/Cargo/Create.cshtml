@@ -4,6 +4,8 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script src="~/js/ckeditor.js"></script>
+
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
@@ -24,6 +26,19 @@
                             </div>
                             
                         </div>
+
+                        <div class="form-group">
+                            <ejs-calendar id="calendar"></ejs-calendar>
+                            <label asp-for="DescripcionCargo" asp-for="Contenido" class="control-label"></label>
+                            <textarea class="form-control" id="Content" asp-for="DescripcionCargo" rows="5" style="height:200px;"></textarea>
+                            <span asp-validation-for="DescripcionCargo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <ejs-calendar id="calendar"></ejs-calendar>
+                            <label asp-for="FuncionesCargo" asp-for="Contenido" class="control-label"></label>
+                            <textarea class="form-control" id="Content" asp-for="FuncionesCargo" rows="5" style="height:200px;"></textarea>
+                            <span asp-validation-for="FuncionesCargo" class="text-danger"></span>
+                        </div>
                 </div>
             </div>
         </div>
@@ -34,6 +49,19 @@
         </form>
     </div>
 </div>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#Content'), {
+            // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(err => {
+            console.error(err.stack);
+        });
+</script>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

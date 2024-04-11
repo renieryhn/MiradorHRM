@@ -129,7 +129,6 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.HasKey(e => e.IdCargo);
 
             entity.ToTable("Cargo");
-
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)

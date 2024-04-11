@@ -303,7 +303,6 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
-                           @*  @await Html.RenderPartialAsync("~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml", GetEmpleadoContacto()) *@
                             <partial name="~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml" for="@Model.EmpleadoContactos">
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel" aria-labelledby="custom-tabs-two-messages-tab">
@@ -332,22 +331,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-        //     $(document).ready(function () {
-        //     var value = "@Model?.IdEmpleado";
-        //     $.ajax({
-        //         url: '../RenderPartialEmpleado',
-        //         data: { Id: value },
-        //         type: 'GET',
-        //         success: function (data) {
-        //             // Insertar la vista parcial en el div employeeSelection
-        //             $('#employeeSelection').html(data);
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error(error);
-        //         }
-        //     });
-        // });
-
+       
         function validateImage(event) {
             var input = event.target;
             var file = input.files[0];

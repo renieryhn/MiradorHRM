@@ -8,9 +8,16 @@ namespace PlanillaPM.Models;
 public partial class Cargo
 {
     public int IdCargo { get; set; }
+
     [DisplayName("Nombre del Cargo ")]
     [Required(ErrorMessage = "El Nombre del Cargo es obligatorio.")]
     public string NombreCargo { get; set; } = null!;
+
+    [DisplayName("Funciones del Cargo ")]
+    public string FuncionesCargo { get; set; } = null!;
+
+    [DisplayName("Descripción del Cargo ")]
+    public string DescripcionCargo { get; set; } = null!;
 
     public bool Activo { get; set; }
 

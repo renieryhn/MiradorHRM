@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script src="~/js/ckeditor.js"></script>
+
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
@@ -15,12 +17,12 @@
                     <h5>Información General</h5>
                     <br />
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" asp-for="IdCargo" />
                             <div class="form-group">
                                 <label asp-for="NombreCargo" class="control-label"></label>
-                                <input asp-for="NombreCargo" class="form-control" required/>
+                                <input asp-for="NombreCargo" class="form-control" required />
                                 <span asp-validation-for="NombreCargo" class="text-danger"></span>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
@@ -28,13 +30,26 @@
                                     <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
                                 </label>
                             </div>
+                            <div class="form-group">
+                                <ejs-calendar id="calendar"></ejs-calendar>
+                                <label asp-for="DescripcionCargo" asp-for="Contenido" class="control-label"></label>
+                                <textarea class="form-control" id="Content-Des" asp-for="DescripcionCargo" rows="2" style="height:100px;"></textarea>
+                                <span asp-validation-for="DescripcionCargo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <ejs-calendar id="calendar"></ejs-calendar>
+                                <label asp-for="FuncionesCargo" asp-for="Contenido" class="control-label"></label>
+                                <textarea class="form-control" id="Content" asp-for="FuncionesCargo" rows="5"></textarea>
+                                <span asp-validation-for="FuncionesCargo" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
+
                 </div>
-                    <div class="row">
-                        <div class="callout callout-info" style="border-left-color: var(--blue); ">
-                            <h5>Otros</h5>
-                            <br />
+                <div class="row">
+                    <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                        <h5>Otros</h5>
+                        <br />
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -42,23 +57,18 @@
                                     <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
                                     <span asp-validation-for="FechaCreacion" class="text-danger"></span>
                                 </div>
-
-
                                 <div class="form-group">
                                     <label asp-for="FechaModificacion" class="control-label"></label>
                                     <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
                                     <span asp-validation-for="FechaModificacion" class="text-danger"></span>
                                 </div>
                             </div>
-
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label asp-for="CreadoPor" class="control-label"></label>
                                     <input asp-for="CreadoPor" class="form-control" readonly />
                                     <span asp-validation-for="CreadoPor" class="text-danger"></span>
                                 </div>
-
                                 <div class="form-group">
                                     <label asp-for="ModificadoPor" class="control-label"></label>
                                     <input asp-for="ModificadoPor" class="form-control" readonly />
@@ -66,19 +76,29 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
-
+                </div>
             </div>
 
-                <div class="card-footer">
-                    <input type="submit" value="Guardar" class="btn btn-primary" style="background-color: var(--blue);" />
-                    <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
-                </div>
+            <div class="card-footer">
+                <input type="submit" value="Guardar" class="btn btn-primary" style="background-color: var(--blue);" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
         </form>
     </div>
 </div>
-
+<script>
+    ClassicEditor
+        .create(document.querySelector('#Content'), {
+            // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(err => {
+            console.error(err.stack);
+        });
+</script>
 
 @section Scripts {
     @{

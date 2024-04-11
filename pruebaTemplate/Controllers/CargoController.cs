@@ -96,7 +96,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCargo,NombreCargo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Cargo cargo)
+        public async Task<IActionResult> Create([Bind("IdCargo,NombreCargo,DescripcionCargo,FuncionesCargo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Cargo cargo)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCargo,NombreCargo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Cargo cargo)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCargo,NombreCargo,DescripcionCargo,FuncionesCargo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Cargo cargo)
         {
             if (id != cargo.IdCargo)
             {

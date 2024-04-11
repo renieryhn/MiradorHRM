@@ -1,0 +1,102 @@
+﻿@inject Microsoft.AspNetCore.Identity.UserManager<PlanillaPM.Models.Usuario> UserManager
+@model PlanillaPM.Models.ManageUserRolesViewModel
+
+<div class="container-fluid">
+
+    <div class="alert alert-info alert-dismissible" style="background-color: var(--blue);">
+        <h5><i class="icon fas fa-info-circle"></i> Información</h5>
+        <hr>
+        @{
+            // Obtener el usuario correspondiente al UserId
+            var user = await UserManager.FindByIdAsync(Model.UserId);
+            // Verificar si el usuario no es nulo antes de acceder a sus propiedades
+            if (user != null)
+            {
+                <h5><strong>ID:</strong> @Model.UserId </h5>
+                <h5> <strong>Usuario:</strong> @user.Email</h5>
+               
+            }
+        }
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Administrar de Roles</h3>
+                    
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-vertical">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <form asp-controller="userroles" method="post" asp-action="update" asp-route-id="@Model.UserId" class="d-inline">
+                                <input asp-for="@Model.UserId" type="hidden" />
+                                <table class="table table-striped" id="userRolesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Role
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @for (int i = 0; i < Model.UserRoles.Count(); i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input asp-for="@Model.UserRoles[i].RoleName" type="hidden" />
+                                                    @Model.UserRoles[i].RoleName
+                                                </td>
+                                                <td>
+                                                    <div class="form-check m-1">
+                                                        <input asp-for="@Model.UserRoles[i].Selected" class="form-check-input" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div class="col-sm-12" >
+                                    <button style="background-color: var(--blue);"  type="submit" id="save" class="btn btn-success">
+                                        <i class="fa fa-check"></i>
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        
+    }
+}

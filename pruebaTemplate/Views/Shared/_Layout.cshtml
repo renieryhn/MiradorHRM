@@ -121,7 +121,7 @@
                     @{
                         var role = @Url.Action("GetRole", "Usuario");
                     }
-                    <span class="role"><strong>@role</strong></span>
+                    <span class="role"><strong>@role</strong></span>                  
                 </div>
             </div>
 
@@ -328,29 +328,22 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Rol" asp-action="Index">
+                                <a class="nav-link" asp-controller="Users" asp-action="Index">
                                     <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
                                     <p style="color: var(--GrisMenu);">
-                                        Uusuarios
+                                        Usuarios
                                     </p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Division" asp-action="Index">
+                                <a class="nav-link" asp-controller="Roles" asp-action="Index">
                                     <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
                                     <p style="color: var(--GrisMenu);">
                                         Roles
                                     </p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Permiso" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Permisos
-                                    </p>
-                                </a>
-                            </li>
+                           
                         </ul>
                     </li>
             </nav>

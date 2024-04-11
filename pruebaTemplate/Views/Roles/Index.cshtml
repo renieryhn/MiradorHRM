@@ -1,0 +1,154 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model IEnumerable<IdentityRole>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Roles</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-vertical">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <form method="post" asp-action="addrole" asp-controller="roles">
+                                                    <div class="input-group">
+                                                        <input name="roleName" class="form-control w-25">
+                                                        <span class="input-group-btn">
+                                                            <button style="background-color: var(--blue);" class="btn btn-info">Agregar Nuevo Rol</button>
+                                                        </span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table class="table table-striped" id="roleTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Role
+                                            </th>
+                                            <th>
+                                                Id
+                                            </th>
+
+                                            <th style="width:10%">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var role in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @role.Name
+                                                </td>
+                                                <td>
+                                                    @role.Id
+                                                </td>
+                                                <td class="text-right">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <div class="dropdown-menu shadow animated--grow-in">
+                                                            <a class="dropdown-item" asp-controller="Roles" asp-action="Edit" asp-route-roleId="@role.Id">
+                                                                <i class="fas fa-pencil-alt"></i> Edit
+                                                            </a>
+
+                                                            <form id="delete-role-form" class="delete-role-form" asp-action="Delete" asp-controller="Roles" method="post">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" id="roleId" name="roleId" value="" />
+                                                                <button type="submit" class="dropdown-item delete-role-button" data-row-id="@role.Id">
+                                                                    <i class="fa fa-trash"></i> Eliminar Rol
+                                                                </button>
+                                                            </form>
+
+
+
+                                                            @if (role.Name != "SuperAdmin")
+                                                            {
+
+                                                                <a style='margin-right:16px' asp-controller="Permission" asp-action="Index" asp-route-roleId="@role.Id" class="dropdown-item">
+                                                                    <i class="fas fa-wrench"></i> Administrar Permisos
+                                                                </a>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            document.querySelectorAll('.delete-role-button').forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    var roleId = this.getAttribute('data-row-id');
+                    document.getElementById('roleId').value = roleId;
+
+                    var confirmDelete = confirm('¿Estás seguro de que quieres eliminar este rol?');
+
+                    if (confirmDelete) {
+                        console.log('Solicitud de eliminación enviada');
+                        $.ajax({
+                            url: '/Roles/Delete',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            data: $('#delete-role-form').serialize(),
+                            success: function (data) {
+                                console.log('Éxito al eliminar el rol:', data);
+                                toastr.success(data.success); // Mostrar mensaje de éxito con Toastr
+                                setTimeout(function () {
+                                    window.location.href = '/Roles/Index'; // Redirigir a la página Index del controlador Roles después de unos segundos
+                                }, 2000);
+                                
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error al eliminar el rol:', xhr.responseText);
+                                toastr.error(data.error);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    }
+}

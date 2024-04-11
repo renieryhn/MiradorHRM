@@ -1,0 +1,48 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Editar</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="form-vertical">
+                                    <div class="row">
+                                        <div class="row m-1">
+                                            <div class="form-group">
+                                                <form asp-action="Edit" method="post">
+                                                    <input type="hidden" name="roleId" value="@Model.Id" />
+                                                    <div class="form-group">
+                                                        <label asp-for="Name"></label>
+                                                        <input asp-for="Name" class="form-control" required/>
+                                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                                    </div>
+                                                    <button type="submit" style="background-color: var(--blue);" class="btn btn-primary">Guardar</button>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>

@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model IEnumerable<IdentityUser>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Lista de Usuarios</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                       
+                        <div class="row m-1">
+                            <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table class="table table-striped" id="userTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                User
+                                            </th>
+
+                                            <th>
+                                                Email
+                                            </th>
+                                            <th style="width:10%">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm">
+                                                            <a>
+                                                                @user.UserName
+                                                            </a>
+                                                            <br>
+                                                            <small>
+                                                                @user.Id
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a>
+                                                        @user.Email
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <div class="dropdown-menu shadow animated--grow-in">
+                                                            <a style='margin-right:16px' asp-controller="userroles" asp-action="Index" asp-route-userId="@user.Id" class="dropdown-item">
+                                                                <i class="fas fa-wrench"></i> Administrar Roles
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    }
+}

@@ -413,7 +413,6 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.RolAdmin)]
         public async Task<IActionResult> Listado(string mensaje = null)
         {
             var usuarios = await context.Users.Select(u => new Usuario
@@ -428,135 +427,66 @@ namespace PlanillaPM.Controllers
 
         }
 
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> HacerAdmin(string email)
+        public IActionResult Photo()
         {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            string avatarBase64 = string.Empty;
 
-            if (usuario is null)
+            // Verifica si hay una cookie que contenga la imagen del avatar
+            if (Request.Cookies.TryGetValue("AvatarBase64", out avatarBase64))
             {
-                return NotFound();
+                byte[] avatarBytes = Convert.FromBase64String(avatarBase64);
+                return File(avatarBytes, "image/jpeg");
             }
 
-            await userManager.AddToRoleAsync(usuario, Role.RolAdmin);
+            Usuario user = userManager.GetUserAsync(User).Result;
 
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol Admin asignado correctamente a " + email });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> RemoverAdmin(string email)
-        {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
-
-            if (usuario is null)
-            {
-                return NotFound();
-            }
-
-            await userManager.RemoveFromRoleAsync(usuario, Role.RolAdmin);
-
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol Admin removido correctamente a " + email });
-        }
-
-
-        //Rol RRHH
-
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> HacerRRHH(string email)
-        {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
-
-            if (usuario is null)
-            {
-                return NotFound();
-            }
-
-            await userManager.AddToRoleAsync(usuario, Role.RolRRHH);
-
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol RRHH asignado correctamente a " + email });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> RemoverRRHH(string email)
-        {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
-
-            if (usuario is null)
-            {
-                return NotFound();
-            }
-
-            await userManager.RemoveFromRoleAsync(usuario, Role.RolRRHH);
-
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol RRHH removido correctamente a " + email });
-        }
-
-        //Rol Administracion
-
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> Haceradministracion(string email)
-        {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
-
-            if (usuario is null)
-            {
-                return NotFound();
-            }
-
-            await userManager.AddToRoleAsync(usuario, Role.RolAdministracion);
-
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol Administracion asignado correctamente a " + email });
-        }
-
-        [HttpPost]
-        [Authorize(Roles = Role.RolAdmin)]
-        public async Task<IActionResult> Removeradministracion(string email)
-        {
-            var usuario = await context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
-
-            if (usuario is null)
-            {
-                return NotFound();
-            }
-
-            await userManager.RemoveFromRoleAsync(usuario, Role.RolAdministracion);
-
-            return RedirectToAction("Listado",
-                routeValues: new { mensaje = "Rol Administracion removido correctamente a " + email });
-        }
-
-
-        public FileContentResult Photo()
-        {
-            Usuario user = userManager.GetUserAsync(User).Result; // Espera a que la tarea se complete
-
-            //var prefix = "data:image/jpeg;base64;";
             if (user != null && user.Avatar != null)
             {
-                //string avatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
-                //ViewData["Avatar64"] = avatarBase64;
+               
+                avatarBase64 = Convert.ToBase64String(user.Avatar);
+                // Almacena la cadena Base64 en una cookie con opciones adicionales
+                Response.Cookies.Append("AvatarBase64", avatarBase64, new CookieOptions
+                {
+                   
+                    Expires = DateTimeOffset.UtcNow.AddHours(1),
+                    HttpOnly = true,  
+                    Secure = true,                   
+                    SameSite = SameSiteMode.Strict
+                });
+
+                // Devuelve la imagen del avatar
                 return File(user.Avatar, "image/jpeg");
             }
             else
             {
-                //ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
-                // Opcionalmente puedes devolver una imagen predeterminada en lugar de null
-                // byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+                
                 string wwwPath = this.Environment.WebRootPath;
                 byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
                 return File(defaultAvatar, "image/png");
             }
         }
+
+        //public FileContentResult Photo()
+        //{
+        //    Usuario user = userManager.GetUserAsync(User).Result; // Espera a que la tarea se complete
+
+        //    //var prefix = "data:image/jpeg;base64;";
+        //    if (user != null && user.Avatar != null)
+        //    {
+        //        //string avatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
+        //        //ViewData["Avatar64"] = avatarBase64;
+        //        return File(user.Avatar, "image/jpeg");
+        //    }
+        //    else
+        //    {
+        //        //ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
+        //        // Opcionalmente puedes devolver una imagen predeterminada en lugar de null
+        //        // byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+        //        string wwwPath = this.Environment.WebRootPath;
+        //        byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
+        //        return File(defaultAvatar, "image/png");
+        //    }
+        //}
 
         //public string result que devuelve el Rol del usuario actual.
         [HttpGet]

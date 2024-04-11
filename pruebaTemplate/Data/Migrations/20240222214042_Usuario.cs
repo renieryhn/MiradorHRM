@@ -1,11 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-namespace PlanillaPM.Migrations
+namespace PlanillaPM.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class Usuario : Migration
     {
         /// <inheritdoc />

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PlanillaPM.Migrations;
+using PlanillaPM.Data.Migrations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

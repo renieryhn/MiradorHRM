@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\html\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
@@ -29,7 +27,6 @@
 
   <ItemGroup>
     <None Include="Views\Home\contacts.cshtml" />
-    <None Include="Views\Usuario\AgregarRoles.cshtml" />
     <None Include="Views\Usuario\Index.cshtml" />
     <None Include="Views\Usuario\Listado.cshtml" />
     <None Include="Views\Usuario\Login.cshtml" />
@@ -55,6 +52,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="NuGet.Common" Version="6.9.1" />

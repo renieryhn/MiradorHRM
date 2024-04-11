@@ -109,7 +109,7 @@ namespace PlanillaPM.Controllers
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["Error"] = "Error: " + message;
             }
             return View(division);
         }
@@ -216,12 +216,12 @@ namespace PlanillaPM.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {
                     var message = ex.InnerException;
-                    TempData["error"] = "Error: " + message;
+                    TempData["Error"] = "Error: " + message;
                 }
                 return View(division);
             }

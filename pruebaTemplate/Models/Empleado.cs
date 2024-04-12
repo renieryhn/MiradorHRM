@@ -107,10 +107,12 @@ public partial class Empleado
     [Required(ErrorMessage = "El Salario Base es obligatorio.")]
     public decimal SalarioBase { get; set; }
 
-    [DisplayName("Fecha de Creación")]
+    [DisplayName("Fecha de Creación")]   
+    //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy HH:mm}")]
     public DateTime FechaCreacion { get; set; }
 
-    [DisplayName("Fecha de Modificación")]
+    [DisplayName("Fecha de Modificación")]  
+    //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy HH:mm}")]
     public DateTime FechaModificacion { get; set; }
 
     [DisplayName("Creado Por")]

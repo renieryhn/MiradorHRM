@@ -1,34 +1,75 @@
 ﻿@model PlanillaPM.ViewModel.EmpleadoViewModel
 
-<div class="form">
 
-    <div class="row m-auto">
-        <div class="info-box">
-            <div class="col-auto">
-                <a asp-action="Index" asp-controller="Empleado" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-            <div class="col-auto">
-                <img alt="Avatar" height="50px" width="50px" class="table-avatar" src="@Model.EmpleadoSeleccionado.FotografiaBase64">
-            </div>
-            <div class="col-auto">
+<nav class="navbar navbar-expand navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav d-flex align-items-center justify-content-center">
+        <li class="nav-item mr-3">
+            <a style="background-color: var(--blue);"  class="btn btn-primary" asp-action="Index" asp-controller="Empleado"><i class="fa-solid fa-arrow-left"></i></a>
+        </li>
+        
+        <li class="nav-item d-none d-sm-inline-block mr-3">
+            <div class="alert alert-success" style="width: 250px; height: 40px; display: flex; align-items: center; margin: auto;">
+                <img alt="Avatar" class="table-avatar rounded-circle" src="@Model.EmpleadoSeleccionado.FotografiaBase64" style="height: 30px; width: 30px;">
+                <div class="vr" style="margin: 0 10px; width: 2px;"></div>
                 <input type="hidden" id="idEmpleado" name="idEmpleado" value="@(ViewBag.IdEmpleado ?? "")" />
-                <span id="nombreEmpleado" class="label label-info">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>
+                <span id="nombreEmpleado" class="label label-info " style="max-width: 250px;">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>
             </div>
-            <div class="col-auto">
-            </div>
-            <div class="col-auto">
-                <select id="employeeSelect" name="id" class="form-control mr-sm-2 select2bs4 btn-outline-success" style="width:300px;">
+
+        </li>
+
+
+        @* <li class="nav-item d-none d-sm-inline-block mr-3">
+            <input type="hidden" id="idEmpleado" name="idEmpleado" value="@(ViewBag.IdEmpleado ?? "")" />
+            <span id="nombreEmpleado" class="label label-info">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>
+        </li> *@
+       
+        <div class="d-flex justify-content-between">
+        <li class="nav-item d-none d-sm-inline-block mr-3">
+            <div class="d-flex justify-content-between">
+                <select id="employeeSelect" name="id" class="form-control mr-sm-2 select2bs4 btn-outline-success" style="width: 250px;">
                     <option value="0">Seleccionar Empleado</option>
-                    @foreach (var item in Model.Empleados)
-                    {
+                        @foreach (var item in Model.Empleados)
+                        {
                         <option value="@item.IdEmpleado">@item.NombreCompleto</option>
-                    }
+                        }
                 </select>
+                <a id="cargarLink" href="@Url.Action("FichaEmpleado", new { id = 0 })" style="background-color: var(--blue);" class="btn btn-primary mx-0 my-sm-0" href="#"> <i class="fas fa-search mx-2"></i>Cargar</a>
             </div>
-            <div class="col-auto">
-                <input type="hidden" id="HiddenidEmpleado" name="idEmpleado" value="" />
-                <a id="cargarLink" href="@Url.Action("FichaEmpleado", new { id = 0 })" class="btn btn-outline-success my-2 my-sm-0" href="#">Cargar</a>
-            </div>
+
+        </li>
+       
         </div>
-    </div>
-</div>
+
+    </ul>
+
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+        <!-- Navbar Search -->
+        <li class="nav-item">
+            <a class="nav-link" data-widget="navbar-search" data-target="#navbar-search1" href="#" role="button">
+                <i class="fas fa-search"></i>
+            </a>
+            <div class="navbar-search-block" id="navbar-search1">
+                <form class="form-inline">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </li>
+
+       
+    </ul>
+</nav>
+
+<br />

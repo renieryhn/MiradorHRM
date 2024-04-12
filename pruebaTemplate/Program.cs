@@ -16,6 +16,9 @@ using Syncfusion.Licensing;
 using System.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using PlanillaPM.Constants;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +28,6 @@ SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJxS0d+X1RPd11dXmJWd1p/T
 var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
     .RequireAuthenticatedUser()
     .Build();
-
-
-
 
 //Roles
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -41,7 +41,24 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
 .AddDefaultUI()
 .AddDefaultTokenProviders();
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo(Config.enUSCulture),
+        new CultureInfo("es")
+    };
 
+    options.DefaultRequestCulture = new RequestCulture(culture: Config.enUSCulture, uiCulture: Config.enUSCulture);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
+    {
+        // My custom request culture logic
+        return await Task.FromResult(new ProviderCultureResult("es"));
+    }));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(opciones =>

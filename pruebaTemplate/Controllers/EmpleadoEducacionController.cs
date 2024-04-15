@@ -115,9 +115,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se creó exitosamente.";
-
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "El registro se creó exitosamente.";
+                  
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
@@ -133,7 +133,7 @@ namespace PlanillaPM.Controllers
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 
@@ -175,9 +175,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se actualizó exitosamente.";
-
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "El registro se actualizó exitosamente.";
+                  
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
@@ -192,8 +192,7 @@ namespace PlanillaPM.Controllers
                
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar actualizar el registro. Por favor, intente nuevamente.";
-
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 
@@ -230,17 +229,17 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se eliminó exitosamente.";
+                    TempData["success"] = "El registro se eliminó exitosamente.";
                 }
-
-                return RedirectToAction(nameof(Index));
+             
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
             }
             catch (Exception ex)
             {
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar eliminar el registro. Por favor, intente nuevamente.";
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 

@@ -113,9 +113,10 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se creó exitosamente.";
+                    TempData["success"] = "El registro se creó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoExperiencium.IdEmpleado}?tab=Experiencium");
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
@@ -170,9 +171,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se actualizó exitosamente.";
+                    TempData["success"] = "El registro se actualizó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoExperiencium.IdEmpleado}?tab=Experiencium");
                 }
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);
@@ -220,10 +221,10 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se eliminó exitosamente.";
+                    TempData["success"] = "El registro se eliminó exitosamente.";
                 }
 
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoExperiencium.IdEmpleado}?tab=Experiencium");
             }
             catch (Exception ex)
             {
@@ -231,7 +232,7 @@ namespace PlanillaPM.Controllers
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar eliminar el registro. Por favor, intente nuevamente.";
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 

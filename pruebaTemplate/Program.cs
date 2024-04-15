@@ -66,6 +66,7 @@ builder.Services.AddControllersWithViews(opciones =>
     opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
 });
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<PlanillaContext>(opciones =>
     opciones.UseSqlServer("name=sDBConnection"));

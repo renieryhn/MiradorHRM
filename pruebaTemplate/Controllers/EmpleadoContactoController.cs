@@ -66,7 +66,7 @@ namespace PlanillaPM.Controllers
             return View(data);
 
 
-        }
+        }     
 
         public ActionResult Download()
         {
@@ -131,9 +131,13 @@ namespace PlanillaPM.Controllers
                     _context.Add(empleadoContacto);
                     await _context.SaveChangesAsync();
 
-                    TempData["mensaje"] = "Se ha agregado un nuevo Empleado Contacto exitosamente";
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "Se ha agregado un nuevo Empleado Contacto exitosamente";
+                   
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+
+
                 }
+
             }
             catch (Exception ex)
             {
@@ -184,7 +188,7 @@ namespace PlanillaPM.Controllers
                     _context.Update(empleadoContacto);
                     await _context.SaveChangesAsync();
 
-                    TempData["mensaje"] = "Empleado Contacto actualizado exitosamente.";
+                    TempData["success"] = "Empleado Contacto actualizado exitosamente.";
                     //volver a la pagina que invocó el edit 
 
                     if (!string.IsNullOrEmpty(returnUrl))
@@ -193,7 +197,8 @@ namespace PlanillaPM.Controllers
                     }
                     else
                     {
-                        return RedirectToAction(nameof(Index));
+                        //return RedirectToAction(nameof(Index));
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
                     }
                 }
 
@@ -243,6 +248,7 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+           
             try
             {
                 var empleadoContacto = await _context.EmpleadoContactos.FindAsync(id);
@@ -252,7 +258,8 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
 
-                    TempData["mensaje"] = "Empleado Contacto eliminado exitosamente.";
+                    TempData["success"] = "Empleado Contacto eliminado exitosamente.";
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
                 }
                 else
                 {
@@ -265,8 +272,9 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Hubo un error durante la operación de eliminación. Por favor, intenta nuevamente.";
             }
 
-
+            
             return RedirectToAction(nameof(Index));
+           
         }
 
         private bool EmpleadoContactoExists(int id)

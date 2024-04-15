@@ -92,7 +92,7 @@
             <form asp-action="Delete">
                 <input type="hidden" asp-for="IdEmpleadoExperiencia" />
                 <input type="submit" value="Delete" class="btn btn-danger" /> 
-                <a asp-action="Index"  class="btn btn-secondary">Regresar a la Lista</a>
+                <a onclick="history.back();" class="btn btn-secondary">Regresar a la Lista</a>
             </form>
           </div>
     </div>

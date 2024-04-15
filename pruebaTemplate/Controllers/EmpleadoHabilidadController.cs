@@ -113,8 +113,8 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Mensaje de éxito
-                    TempData["mensaje"] = "La habilidad del empleado se creó exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "La habilidad del empleado se creó exitosamente.";
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
                 }
             }
             catch (Exception ex)
@@ -166,8 +166,8 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Mensaje de éxito
-                    TempData["mensaje"] = "La habilidad del empleado se ha actualizado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "La habilidad del empleado se ha actualizado exitosamente.";
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -221,7 +221,8 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Mensaje de éxito
-                    TempData["mensaje"] = "La habilidad del empleado se ha eliminado exitosamente.";
+                    TempData["success"] = "La habilidad del empleado se ha eliminado exitosamente.";
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
                 }
             }
             catch (Exception ex)
@@ -231,7 +232,7 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Ha ocurrido un error al intentar eliminar la habilidad del empleado. Por favor, inténtelo de nuevo.";
             }
 
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
         private bool EmpleadoHabilidadExists(int id)

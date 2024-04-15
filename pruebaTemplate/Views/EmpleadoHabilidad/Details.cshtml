@@ -95,7 +95,7 @@
         </div>
          <div class="card-footer">
              <a asp-action="Edit" asp-route-id="@Model.IdEmpleadoHabilidad" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
-             <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            <a onclick="history.back();" class="btn btn-secondary">Regresar a la Lista</a>
           </div>
     </div>
 </div>

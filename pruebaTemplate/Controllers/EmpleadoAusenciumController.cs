@@ -120,9 +120,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se creó exitosamente.";
+                    TempData["success"] = "El registro se creó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
                 }
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
                 ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
@@ -140,7 +140,7 @@ namespace PlanillaPM.Controllers
 
                 // Log.Error($"Error al crear el registro: {ex.Message}", ex);
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 
@@ -184,9 +184,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se actualizó exitosamente.";
+                    TempData["success"] = "El registro se actualizó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
@@ -205,7 +205,7 @@ namespace PlanillaPM.Controllers
 
                 // Log.Error($"Error al editar el registro: {ex.Message}", ex);
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 
@@ -243,10 +243,10 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se eliminó exitosamente.";
+                    TempData["success"] = "El registro se eliminó exitosamente.";
                 }
 
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
             }
             catch (Exception ex)
             {
@@ -255,7 +255,7 @@ namespace PlanillaPM.Controllers
 
                 // Log.Error($"Error al eliminar el registro: {ex.Message}", ex);
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 

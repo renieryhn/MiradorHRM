@@ -32,14 +32,16 @@ namespace PlanillaPM.Controllers
     {
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmpleadoController(PlanillaContext context, UserManager<Usuario> userManager)
+        public EmpleadoController(PlanillaContext context, UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
+             
 
-       
 
         [HttpPost]
         public async Task<IActionResult> PasarIDConstancia1(int id)
@@ -409,6 +411,7 @@ namespace PlanillaPM.Controllers
             {
                 var base64Image = Convert.ToBase64String(emple.Fotografia);
                 emple.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                //emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
             else
             {
@@ -416,13 +419,15 @@ namespace PlanillaPM.Controllers
                 emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
 
+            
+
             var empleado = await _context.Empleados
                 .Include(e => e.IdBancoNavigation)
                 .Include(e => e.IdCargoNavigation)
                 .Include(e => e.IdDepartamentoNavigation)
                 .Include(e => e.IdEncargadoNavigation)
                 .Include(e => e.IdTipoContratoNavigation)
-                .Include(e => e.IdTipoNominaNavigation)
+                .Include(e => e.IdTipoNominaNavigation)           
                 .FirstOrDefaultAsync(m => m.IdEmpleado == id);
             if (empleado == null)
             {
@@ -705,7 +710,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+           
             var EmpleadoSeleccionado = await _context.Empleados
            .Include(e => e.IdBancoNavigation)
            .Include(e => e.IdCargoNavigation)
@@ -713,6 +718,13 @@ namespace PlanillaPM.Controllers
            .Include(e => e.IdEncargadoNavigation)
            .Include(e => e.IdTipoContratoNavigation)
            .Include(e => e.IdTipoNominaNavigation)
+           .Include(e => e.EmpleadoContactos)
+           .Include(e => e.EmpleadoContratos)
+           .Include(e => e.EmpleadoEducacions)
+           .Include(e => e.EmpleadoExperiencia)
+           .Include(e => e.EmpleadoHabilidads)
+           .Include(e => e.EmpleadoAusencia)
+           .Include(e => e.EmpleadoActivos)
            .FirstOrDefaultAsync(m => m.IdEmpleado == id);
 
             if (EmpleadoSeleccionado == null)

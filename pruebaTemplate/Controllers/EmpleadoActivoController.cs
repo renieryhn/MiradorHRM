@@ -110,7 +110,7 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoActivo);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
             }
             else
             {
@@ -177,7 +177,7 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
             }            
             else
             {
@@ -223,12 +223,12 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoActivos.Remove(empleadoActivo);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
                 }
             }
             catch (DbUpdateException ex)

@@ -1,8 +1,8 @@
-﻿@model IEnumerable<PlanillaPM.Models.EmpleadoContacto>
+﻿@model IEnumerable<PlanillaPM.Models.EmpleadoHabilidad>
 @using PlanillaPM.Models;
 
 @{
-    ViewData["Title"] = "_EmpleadoContactoIndex";
+    ViewData["Title"] = "_EmpleadoHabilidadIndex";
     Pager pager = new Pager();
     int PageNo = 0;
     if (ViewBag.Pager != null)
@@ -16,47 +16,30 @@
         <div class="col-12">
             <div class="">
                 <div class="card-header" >
-                    <h3 class="card-title">Contactos de Emergencia</h3>
+                    <h3 class="card-title">Empleado Habilidad</h3>
                     <div class="card-tools">
-                       
+                        
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="m-2">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="form-vertical">
-                                    <div class="row ">
-                                        <div class="col-sm-9 pl-4">
+                                    <div class="row">
+                                        <div class="col-sm-6">
                                             <div class="form-group">
                                                 <form id="fSearch" method="post" asp-action="Index">
                                                     <div class="row">
-                                                       @*  <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <select name="IdEmpleado" class="form-control select2 select2bs4" asp-items="ViewBag.IdEmpleado">
-                                                                <option value="">Seleccionar Empleado</option>
-                                                                @foreach (var empleado in ViewBag.IdEmpleado)
-                                                                {
-                                                                    bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
-                                                                    if (isSelected)
-                                                                    {
-                                                                        <option value="@empleado.Value" selected>@empleado.Text</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@empleado.Value">@empleado.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </div> *@
-                                                        <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
+                                                        <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
                                                             <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                         </div>
-                                                        <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
+                                                        <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
-                                                                @* <a asp-controller="EmpleadoContacto" asp-action="_EmpleadoContactoIndex" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                @* <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
+                                                                <a asp-controller="EmpleadoHabilidad" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoHabilidad" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -74,21 +57,34 @@
                                         <tr>
                                             <th data-sortable="true">No.</th>
                                             <th></th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.NombreContacto)
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
                                             </th>
                                             <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Relacion)
+                                                @Html.DisplayNameFor(model => model.Habilidad)
                                             </th>
                                             <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Celular)
+                                                @Html.DisplayNameFor(model => model.ExperienciaYears)
                                             </th>
                                             <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.TelefonoFijo)
+                                                @Html.DisplayNameFor(model => model.Comentarios)
                                             </th>
-                                            <th data-sortable="true">
+                                            <th>
                                                 @Html.DisplayNameFor(model => model.Activo)
                                             </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.FechaCreacion)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.FechaModificacion)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.CreadoPor)
+                                            </th>
+                                            <th data-sortable="true">
+                                                @Html.DisplayNameFor(model => model.ModificadoPor)
+                                            </th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -102,23 +98,25 @@
                                                 <th scope="row">@count</th>
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia" ><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        <a asp-controller="EmpleadoHabilidad" asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoHabilidad"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        @* <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoHabilidad"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
+                                                        <a asp-controller="EmpleadoHabilidad" asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoHabilidad"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.NombreContacto)
+                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.Relacion)
+                                                    @Html.DisplayFor(modelItem => item.Habilidad)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.Celular)
+                                                    @Html.DisplayFor(modelItem => item.ExperienciaYears)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.TelefonoFijo)
+                                                    @Html.DisplayFor(modelItem => item.Comentarios)
                                                 </td>
                                                 <td>
+                                                    @* @Html.DisplayFor(modelItem => item.Activo) *@
                                                     @if (item.Activo)
                                                     {
                                                         <span class="badge badge-success">Activo</span>
@@ -127,7 +125,21 @@
                                                     {
                                                         <span class="badge badge-danger">Inactivo</span>
                                                     }
+
                                                 </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.FechaCreacion)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.FechaModificacion)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.CreadoPor)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.ModificadoPor)
+                                                </td>
+
                                             </tr>
                                         }
                                     </tbody>
@@ -136,17 +148,14 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="m-4">
                     <partial name="_Pager" model="@pager" />
                 </div>
-                
             </div>
         </div>
     </div>
     <br />
 </div>
-
 
 @section Scripts {
     @{

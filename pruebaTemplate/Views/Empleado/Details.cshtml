@@ -26,6 +26,18 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill" href="#custom-tabs-two-settings" role="tab" aria-controls="custom-tabs-two-settings" aria-selected="false">Educación</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-Experiencium-tab" data-toggle="pill" href="#custom-tabs-two-Experiencium" role="tab" aria-controls="custom-tabs-two-Experiencium" aria-selected="false">Experiencia</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-Habilidad-tab" data-toggle="pill" href="#custom-tabs-two-Habilidad" role="tab" aria-controls="custom-tabs-two-Habilidad" aria-selected="false">Habilidad</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-Ausencias-tab" data-toggle="pill" href="#custom-tabs-two-Ausencias" role="tab" aria-controls="custom-tabs-two-Ausencias" aria-selected="false">Ausencias</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-Empleado-tab" data-toggle="pill" href="#custom-tabs-two-Empleado" role="tab" aria-controls="custom-tabs-two-Empleado" aria-selected="false">Empleado Activo</a>
+                </li>
             </ul>
         </div>
 
@@ -308,10 +320,23 @@
                             <partial name="~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml" for="@Model.EmpleadoContactos">
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel" aria-labelledby="custom-tabs-two-messages-tab">
-                            @* <partial name="~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml" for="@Model.EmpleadoContratos"> *@
+                            <partial name="~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml" for="@Model.EmpleadoContratos">
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
-                            Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
+                            <partial name="~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml" for="@Model.EmpleadoEducacions">
+                            
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-Experiencium" role="tabpanel" aria-labelledby="custom-tabs-two-Experiencium-tab">
+                            <partial name="~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml" for="@Model.EmpleadoExperiencia">
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-Habilidad" role="tabpanel" aria-labelledby="custom-tabs-two-Habilidad-tab">
+                            <partial name="~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml" for="@Model.EmpleadoHabilidads">
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-Ausencias" role="tabpanel" aria-labelledby="custom-tabs-two-Ausencias-tab">
+                            <partial name="~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml" for="@Model.EmpleadoAusencia">
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-Empleado" role="tabpanel" aria-labelledby="custom-tabs-two-Empleado-tab">
+                            <partial name="~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml" for="@Model.EmpleadoActivos">
                         </div>
                     </div>
 
@@ -447,6 +472,37 @@
             });
         }
 
+
+
+    $(document).ready(function () {
+        var tab = getParameterByName('tab');
+        if (tab === 'profile') {
+            $('#custom-tabs-two-profile-tab').tab('show');
+        } else if (tab === 'messages') {
+            $('#custom-tabs-two-messages-tab').tab('show');
+        } else if (tab === 'settings') {
+            $('#custom-tabs-two-settings-tab').tab('show');
+        } else if (tab === 'Experiencium') {
+            $('#custom-tabs-two-Experiencium-tab').tab('show');
+        } else if (tab === 'Habilidad') {
+            $('#custom-tabs-two-Habilidad-tab').tab('show');
+        } else if (tab === 'Ausencias') {
+            $('#custom-tabs-two-Ausencias-tab').tab('show');
+        } else if (tab === 'Empleado') {
+            $('#custom-tabs-two-Empleado-tab').tab('show');
+        }
+    });
+
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
     </script>
 
 
@@ -455,6 +511,7 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+       
     }
 }
 

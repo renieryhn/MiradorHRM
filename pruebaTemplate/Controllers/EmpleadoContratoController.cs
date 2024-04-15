@@ -124,9 +124,9 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se creó exitosamente.";
-
-                    return RedirectToAction(nameof(Index));
+                    TempData["success"] = "El registro se creó exitosamente.";
+                
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
                 }
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
@@ -191,9 +191,10 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["mensaje"] = "El registro se actualizó exitosamente.";
+                    TempData["success"] = "El registro se actualizó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+                   
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
                 }
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
@@ -250,15 +251,16 @@ namespace PlanillaPM.Controllers
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
-                    TempData["Success"] = "El registro se eliminó exitosamente.";
+                    TempData["success"] = "El registro se eliminó exitosamente.";
 
-                    return RedirectToAction(nameof(Index));
+                   
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
                 }
 
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "No se encontró el registro que intenta eliminar. Por favor, verifique.";
 
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
             }
             catch (Exception ex)
             {
@@ -268,7 +270,7 @@ namespace PlanillaPM.Controllers
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar eliminar el registro. Por favor, intente nuevamente.";
 
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 

@@ -46,26 +46,31 @@ namespace PlanillaPM.Controllers
             var IdProductoNavigation = await _context.Productos.ToListAsync();
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<EmpleadoActivo>? data = null;
-             if (data == null)
-             {
-                data = _context.EmpleadoActivos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "EmpleadoActivos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        public ActionResult Download(int id)
+        {
+            // Filtrar los contactos de empleado por el id recibido
+            List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();
+
+            // Convertir la lista de contactos en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = $"EmpleadoActivo{id}.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+
+                    // Devolver el archivo como una descarga de archivo Excel
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
         // GET: EmpleadoActivo/Details/5
         public async Task<IActionResult> Details(int? id)
         {

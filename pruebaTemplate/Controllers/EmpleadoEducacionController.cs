@@ -52,22 +52,27 @@ namespace PlanillaPM.Controllers
 
         }
 
-        public ActionResult Download()
+        public ActionResult Download(int id)
         {
+            // Filtrar los contactos de empleado por el id recibido
+            List<EmpleadoEducacion> data = _context.EmpleadoEducacions.Where(ec => ec.IdEmpleado == id).ToList();
+
+            // Convertir la lista de contactos en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoEducacion>? data = null;
-            if (data == null)
-            {
-                data = _context.EmpleadoEducacions.ToList();
-            }
             DataTable table = converter.ToDataTable(data);
-            string fileName = "EmpleadoEducacion.xlsx";
+
+            // Nombre del archivo de Excel
+            string fileName = $"EmpleadoEducacion_{id}.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table);
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
+
+                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }

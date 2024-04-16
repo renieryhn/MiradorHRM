@@ -9,8 +9,10 @@
     {
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
-    }
+    }   
+    
 }
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -31,23 +33,10 @@
                                             <div class="form-group">
                                                 <form id="fSearch" method="post" asp-action="Index">
                                                     <div class="row">
-                                                       @*  <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <select name="IdEmpleado" class="form-control select2 select2bs4" asp-items="ViewBag.IdEmpleado">
-                                                                <option value="">Seleccionar Empleado</option>
-                                                                @foreach (var empleado in ViewBag.IdEmpleado)
-                                                                {
-                                                                    bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
-                                                                    if (isSelected)
-                                                                    {
-                                                                        <option value="@empleado.Value" selected>@empleado.Text</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@empleado.Value">@empleado.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </div> *@
+                                                        <div class="col-sm-4 btn-group btn-group-justified" role="group">
+                                                            <div id="employeeSelection">
+                                                            </div>
+                                                        </div>
                                                         <div class="col-sm-4 btn-group btn-group-justified" role="group">
                                                             <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
                                                             <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
@@ -56,7 +45,7 @@
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-controller="EmpleadoContacto" asp-action="_EmpleadoContactoIndex" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
                                                                 <a asp-controller="EmpleadoContacto" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -152,6 +141,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
+
+
             $(document).ready(function () {
                 var url = $("#liMenuDinamico");
                 var $table = $('#table');

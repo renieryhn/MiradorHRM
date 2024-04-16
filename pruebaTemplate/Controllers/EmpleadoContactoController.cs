@@ -45,7 +45,9 @@ namespace PlanillaPM.Controllers
 
             List<EmpleadoContacto> registros;
             registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
-            
+
+           
+
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -62,32 +64,90 @@ namespace PlanillaPM.Controllers
             {
                 ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-          
+
+           
             return View(data);
 
 
-        }     
+        }
 
-        public ActionResult Download()
+
+        public async Task<IActionResult> Filtros()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoContacto>? data = null;
-            if (data == null)
+            try
             {
-                data = _context.EmpleadoContactos.ToList();
+                // Obtener todos los empleados de la base de datos
+                var empleados = await _context.Empleados.ToListAsync();
+
+                // Verificar si se encontraron empleados
+                if (empleados != null && empleados.Any())
+                {
+                    // Pasar la lista de empleados a la vista usando ViewBag
+                    ViewBag.Empleados = empleados;
+
+                    // O si prefieres, pasar la lista de empleados al modelo
+                    // TuModelo.Empleados = empleados;
+
+                    return View();
+                }
+                else
+                {
+                    
+                    return RedirectToAction("Error");
+                }
             }
+            catch (Exception ex)
+            {           
+                return RedirectToAction("Error");
+            }
+        }
+
+        public ActionResult Download(int id)
+        {
+            // Filtrar los contactos de empleado por el id recibido
+            List<EmpleadoContacto> data = _context.EmpleadoContactos.Where(ec => ec.IdEmpleado == id).ToList();
+
+            // Convertir la lista de contactos en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
-            string fileName = "EmpleadoContacto.xlsx";
+
+            // Nombre del archivo de Excel
+            string fileName = $"EmpleadoContacto_{id}.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table);
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
+
+                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
+
+        //public ActionResult Download()
+        //{
+        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
+        //    List<EmpleadoContacto>? data = null;
+        //    if (data == null)
+        //    {
+        //        data = _context.EmpleadoContactos.ToList();
+        //    }
+        //    DataTable table = converter.ToDataTable(data);
+        //    string fileName = "EmpleadoContacto.xlsx";
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        wb.Worksheets.Add(table);
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(stream);
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //        }
+        //    }
+        //}
 
         // GET: EmpleadoContacto/Details/5
         public async Task<IActionResult> Details(int? id)

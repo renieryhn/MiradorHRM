@@ -18,6 +18,7 @@
                         <div class="col-md-4">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <input type="hidden" asp-for="IdEmpleadoContrato" />
+                            <input type="hidden" name="numero" value="@ViewBag.Numero" />
                                 <div class="form-group">
                                     <label asp-for="IdEmpleado" class="control-label"></label>
                             <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>

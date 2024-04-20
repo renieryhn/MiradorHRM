@@ -76,6 +76,27 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoHabilidad>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoHabilidads.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoHabilidad.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: EmpleadoHabilidad/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -107,7 +128,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad, int? id)
         {
             try
             {
@@ -119,7 +140,24 @@ namespace PlanillaPM.Controllers
 
                     // Mensaje de éxito
                     TempData["success"] = "La habilidad del empleado se creó exitosamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                    
+                    if (id.HasValue)
+                    {
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             catch (Exception ex)
@@ -134,7 +172,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoHabilidad/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -146,6 +184,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Numero = numero;
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoHabilidad.IdEmpleado);
             return View(empleadoHabilidad);
         }
@@ -155,7 +194,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoHabilidad,IdEmpleado,Habilidad,ExperienciaYears,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoHabilidad empleadoHabilidad, string? numero)
         {
             try
             {
@@ -172,7 +211,16 @@ namespace PlanillaPM.Controllers
 
                     // Mensaje de éxito
                     TempData["success"] = "La habilidad del empleado se ha actualizado exitosamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                    
+
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -194,7 +242,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoHabilidad/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -208,14 +256,14 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Numero = numero;
             return View(empleadoHabilidad);
         }
 
         // POST: EmpleadoHabilidad/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
             try
             {
@@ -227,7 +275,15 @@ namespace PlanillaPM.Controllers
 
                     // Mensaje de éxito
                     TempData["success"] = "La habilidad del empleado se ha eliminado exitosamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                    
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoHabilidad.IdEmpleado}?tab=Habilidad");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             catch (Exception ex)

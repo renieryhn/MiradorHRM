@@ -78,6 +78,27 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoEducacion>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoEducacions.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoEducacion.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: EmpleadoEducacion/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -109,7 +130,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion, int? id)
         {
             try
             {
@@ -122,7 +143,25 @@ namespace PlanillaPM.Controllers
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se creó exitosamente.";
                   
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                   
+                    if (id.HasValue)
+                    {
+
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
@@ -143,7 +182,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoEducacion/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -155,6 +194,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Numero = numero;
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
             return View(empleadoEducacion);
         }
@@ -164,7 +204,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoEducacion,IdEmpleado,Institucion,TituloObtenido,FechaDesde,FechaHasta,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoEducacion empleadoEducacion, string? numero)
         {
             try
             {
@@ -181,8 +221,16 @@ namespace PlanillaPM.Controllers
 
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";
-                  
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                                 
+
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoEducacion.IdEmpleado);
@@ -202,7 +250,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoEducacion/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -216,14 +264,14 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Numero = numero;
             return View(empleadoEducacion);
         }
 
         // POST: EmpleadoEducacion/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
             try
             {
@@ -237,7 +285,15 @@ namespace PlanillaPM.Controllers
                     TempData["success"] = "El registro se eliminó exitosamente.";
                 }
              
-                return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                
+                if (numero == "1")
+                {
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoEducacion.IdEmpleado}?tab=settings");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
@@ -246,6 +302,7 @@ namespace PlanillaPM.Controllers
 
                 return View();
             }
+            return View();
         }
 
         private bool EmpleadoEducacionExists(int id)

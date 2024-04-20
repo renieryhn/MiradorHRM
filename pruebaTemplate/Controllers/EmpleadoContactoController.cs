@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using ClosedXML.Excel;
 using static PlanillaPM.cGeneralFun;
 using System.Data;
+using PlanillaPM.ViewModel;
 
 namespace PlanillaPM.Controllers
 {
@@ -27,7 +28,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContacto
-        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
             IQueryable<EmpleadoContacto> query = _context.EmpleadoContactos;
 
@@ -39,9 +40,22 @@ namespace PlanillaPM.Controllers
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
             }
+            if (estado.HasValue)
+            {
+                if (estado == 1) 
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0) 
+                {
+                    query = query.Where(r => r.Activo == true); 
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
 
             ViewBag.CurrentFilter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentEstado = estado; 
 
             List<EmpleadoContacto> registros;
             registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
@@ -71,37 +85,6 @@ namespace PlanillaPM.Controllers
 
         }
 
-
-        public async Task<IActionResult> Filtros()
-        {
-            try
-            {
-                // Obtener todos los empleados de la base de datos
-                var empleados = await _context.Empleados.ToListAsync();
-
-                // Verificar si se encontraron empleados
-                if (empleados != null && empleados.Any())
-                {
-                    // Pasar la lista de empleados a la vista usando ViewBag
-                    ViewBag.Empleados = empleados;
-
-                    // O si prefieres, pasar la lista de empleados al modelo
-                    // TuModelo.Empleados = empleados;
-
-                    return View();
-                }
-                else
-                {
-                    
-                    return RedirectToAction("Error");
-                }
-            }
-            catch (Exception ex)
-            {           
-                return RedirectToAction("Error");
-            }
-        }
-
         public ActionResult Download(int id)
         {
             // Filtrar los contactos de empleado por el id recibido
@@ -112,7 +95,7 @@ namespace PlanillaPM.Controllers
             DataTable table = converter.ToDataTable(data);
 
             // Nombre del archivo de Excel
-            string fileName = $"EmpleadoContacto_{id}.xlsx";
+            string fileName = $"EmpleadoContacto{id}.xlsx";
 
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
@@ -127,8 +110,82 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoContacto>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoContactos.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoContacto.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
 
-       
+
+        public async Task<IActionResult> FichaEmpleado(int? id)
+        {
+            var Empleados = await _context.Empleados.ToListAsync();           
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var EmpleadoSeleccionado = await _context.Empleados
+           .Include(e => e.IdBancoNavigation)
+           .Include(e => e.IdCargoNavigation)
+           .Include(e => e.IdDepartamentoNavigation)
+           .Include(e => e.IdEncargadoNavigation)
+           .Include(e => e.IdTipoContratoNavigation)
+           .Include(e => e.IdTipoNominaNavigation)
+           .Include(e => e.EmpleadoContactos)
+           .Include(e => e.EmpleadoContratos)
+           .Include(e => e.EmpleadoEducacions)
+           .Include(e => e.EmpleadoExperiencia)
+           .Include(e => e.EmpleadoHabilidads)
+           .Include(e => e.EmpleadoAusencia)
+           .Include(e => e.EmpleadoActivos)
+           .FirstOrDefaultAsync(m => m.IdEmpleado == id);
+
+            if (EmpleadoSeleccionado == null)
+            {
+                return NotFound();
+            }
+
+            if (EmpleadoSeleccionado.Fotografia != null)
+            {
+                var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
+                EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+            }
+            else
+            {
+                EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
+            }
+
+            var viewModel = new EmpleadoViewModel
+            {
+                EmpleadoSeleccionado = EmpleadoSeleccionado,
+                Empleados = Empleados,
+                
+            };
+
+            var nombreEmpleado = EmpleadoSeleccionado.NombreCompleto;
+            ViewBag.NombreEmpleado = nombreEmpleado;
+            ViewBag.IdEmpleado = EmpleadoSeleccionado.IdEmpleado;
+            return View(viewModel);
+        }
+
+
 
         // GET: EmpleadoContacto/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -162,7 +219,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto)
+        public async Task<IActionResult> Create([Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto, int? id)
         {
             try
             {
@@ -174,8 +231,25 @@ namespace PlanillaPM.Controllers
 
                     TempData["success"] = "Se ha agregado un nuevo Empleado Contacto exitosamente";
                    
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+                   
+                    if (id.HasValue)
+                    {
 
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        return RedirectToAction("Index");
+                    }
 
                 }
 
@@ -191,20 +265,21 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContacto/Edit/5
-        public async Task<IActionResult> Edit(int? id, string returnUrl)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
 
             if (id == null)
             {
                 return NotFound();
             }
-            ViewBag.ReturnUrl = returnUrl;
+           ;
             var empleadoContacto = await _context.EmpleadoContactos.FindAsync(id);
 
             if (empleadoContacto == null)
             {
                 return NotFound();
             }
+            ViewBag.Numero = numero;
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoContacto.IdEmpleado);
             return View(empleadoContacto);
         }
@@ -214,7 +289,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto, string returnUrl)
+        public async Task<IActionResult> Edit(int id, [Bind("IdContactoEmergencia,IdEmpleado,NombreContacto,Relacion,Celular,TelefonoFijo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContacto empleadoContacto, string? numero)
         {
             if (id != empleadoContacto.IdContactoEmergencia)
             {
@@ -229,17 +304,15 @@ namespace PlanillaPM.Controllers
                     _context.Update(empleadoContacto);
                     await _context.SaveChangesAsync();
 
-                    TempData["success"] = "Empleado Contacto actualizado exitosamente.";
-                    //volver a la pagina que invocó el edit 
+                    TempData["success"] = "Empleado Contacto actualizado exitosamente.";                   
 
-                    if (!string.IsNullOrEmpty(returnUrl))
+                    if (numero == "1")
                     {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        //return RedirectToAction(nameof(Index));
                         return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
                     }
                 }
 
@@ -261,12 +334,12 @@ namespace PlanillaPM.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Hubo un error durante la operación de actualización. Por favor, intenta nuevamente.";
-                return RedirectToAction(nameof(Index));
+                return View();
             }
         }
 
         // GET: EmpleadoContacto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -281,13 +354,14 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
             return View(empleadoContacto);
         }
 
         // POST: EmpleadoContacto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
            
             try
@@ -300,7 +374,15 @@ namespace PlanillaPM.Controllers
 
 
                     TempData["success"] = "Empleado Contacto eliminado exitosamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+                   
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoContacto.IdEmpleado}?tab=profile");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
                 else
                 {
@@ -313,8 +395,8 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Hubo un error durante la operación de eliminación. Por favor, intenta nuevamente.";
             }
 
-            
-            return RedirectToAction(nameof(Index));
+
+            return View();
            
         }
 

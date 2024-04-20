@@ -79,6 +79,27 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+        
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoAusencium>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoAusencia.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoAusencia.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
         // GET: EmpleadoAusencium/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -113,7 +134,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoAusencia,IdEmpleado,IdTipoAusencia,DiaCompleto,Estado,FechaDesde,FechaHasta,HoraDesde,HoraHasta,AprobadoPor,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoAusencium empleadoAusencium)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoAusencia,IdEmpleado,IdTipoAusencia,DiaCompleto,Estado,FechaDesde,FechaHasta,HoraDesde,HoraHasta,AprobadoPor,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoAusencium empleadoAusencium, int? id)
         {
             try
             {
@@ -126,7 +147,25 @@ namespace PlanillaPM.Controllers
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se creó exitosamente.";
 
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                   
+                    if (id.HasValue)
+                    {
+
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        return RedirectToAction("Index");
+                    }
                 }
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
                 ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
@@ -149,7 +188,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoAusencium/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -161,6 +200,8 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Numero = numero;
             ViewBag.EstadoAusencia = Enum.GetValues(typeof(EmpleadoAusencium.EstadoAusencia));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
             ViewData["IdTipoAusencia"] = new SelectList(_context.TipoAusencia, "IdTipoAusencia", "NombreTipoAusencia", empleadoAusencium.IdTipoAusencia);
@@ -172,7 +213,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoAusencia,IdEmpleado,IdTipoAusencia,DiaCompleto,Estado,FechaDesde,FechaHasta,HoraDesde,HoraHasta,AprobadoPor,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoAusencium empleadoAusencium)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoAusencia,IdEmpleado,IdTipoAusencia,DiaCompleto,Estado,FechaDesde,FechaHasta,HoraDesde,HoraHasta,AprobadoPor,Comentarios,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoAusencium empleadoAusencium, string? numero)
         {
             try
             {
@@ -189,8 +230,15 @@ namespace PlanillaPM.Controllers
 
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";
-
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                 
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoAusencium.IdEmpleado);
@@ -214,7 +262,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoAusencium/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -230,13 +278,15 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
+
             return View(empleadoAusencium);
         }
 
         // POST: EmpleadoAusencium/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
             try
             {
@@ -250,7 +300,14 @@ namespace PlanillaPM.Controllers
                     TempData["success"] = "El registro se eliminó exitosamente.";
                 }
 
-                return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                if (numero == "1")
+                {
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoAusencium.IdEmpleado}?tab=Ausencias");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
@@ -261,6 +318,7 @@ namespace PlanillaPM.Controllers
 
                 return View();
             }
+            return View();
         }
 
         private bool EmpleadoAusenciumExists(int id)

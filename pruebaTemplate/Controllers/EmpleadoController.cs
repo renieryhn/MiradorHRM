@@ -23,6 +23,7 @@ using Syncfusion.HtmlConverter;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using PlanillaPM.ViewModel;
 using Microsoft.AspNetCore.Identity;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 
 namespace PlanillaPM.Controllers
@@ -702,9 +703,10 @@ namespace PlanillaPM.Controllers
         //    }
         //}
 
-        public async Task<IActionResult> FichaEmpleado(int? id)
+        public async Task<IActionResult> FichaEmpleado(int? id, bool? estado)
         {
             var Empleados = await _context.Empleados.ToListAsync();
+            var empleadosActivos = await _context.Empleados.Where(e => e.Activo == true).ToListAsync();
 
             if (id == null)
             {
@@ -745,11 +747,13 @@ namespace PlanillaPM.Controllers
             var viewModel = new EmpleadoViewModel
             {
                 EmpleadoSeleccionado = EmpleadoSeleccionado,
-                Empleados = Empleados
-            };
+                Empleados = Empleados,
+                EmpleadosActivos = empleadosActivos
+
+        };
 
             var nombreEmpleado = EmpleadoSeleccionado.NombreCompleto;
-            ViewBag.NombreEmpleado = nombreEmpleado;
+            ViewBag.NombreEmpleado = nombreEmpleado;             
             ViewBag.IdEmpleado = EmpleadoSeleccionado.IdEmpleado;
             return View(viewModel);
         }

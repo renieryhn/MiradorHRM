@@ -33,10 +33,7 @@
                                             <div class="form-group">
                                                 <form id="fSearch" method="post" asp-action="Index">
                                                     <div class="row">
-                                                        <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <div id="employeeSelection">
-                                                            </div>
-                                                        </div>
+                                                        
                                                         <div class="col-sm-4 btn-group btn-group-justified" role="group">
                                                             <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
                                                             <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
@@ -44,7 +41,7 @@
                                                         <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-controller="EmpleadoContacto" asp-action="_EmpleadoContactoIndex" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoContacto" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
                                                                 <a asp-controller="EmpleadoContacto" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
@@ -91,8 +88,8 @@
                                                 <th scope="row">@count</th>
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia" ><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        <a asp-action="Edit" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        <a asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-controller="EmpleadoContacto" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -123,13 +120,9 @@
                                 </table>
                             </div>
                         </div>
+                       
                     </div>
-                </div>
-
-                <div class="m-4">
-                    <partial name="_Pager" model="@pager" />
-                </div>
-                
+                </div>  
             </div>
         </div>
     </div>
@@ -156,7 +149,12 @@
                         console.error("Error al cargar el menú dinámico");
                     }
                 });
+
+                cargarEmpleados();
             });
+
+           
+
 
             document.addEventListener('DOMContentLoaded', function () {
                 var mensaje = '@Html.Raw(TempData["mensaje"])';
@@ -167,8 +165,33 @@
                 var error = '@Html.Raw(TempData["Error"])';
                 if (error) {
                     toastr.error(error);
-                }
+                }}
+
+                      
+
             });
+
+            function cargarEmpleados() {
+                $.ajax({
+                    url: '/EmpleadoContacto/Filtros', // URL del método Filtros en el controlador EmpleadoContactoController
+                    type: 'GET',
+                    success: function (data) {
+                        // Aquí manejas la respuesta del servidor, que contendrá la lista de empleados
+                        // Actualiza las opciones del select con los datos recibidos
+                        $.each(data, function (index, empleado) {
+                            $('#IdEmpleado').append($('<option>', {
+                                value: empleado.value,
+                                text: empleado.text
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Maneja cualquier error que ocurra durante la solicitud AJAX
+                        console.error('Error al cargar los empleados:', error);
+                    }
+                });
+            }
+
         </script>
     }
 }

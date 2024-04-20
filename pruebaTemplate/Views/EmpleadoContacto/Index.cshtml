@@ -14,6 +14,61 @@
 
 
 <div class="container-fluid">
+    <div class="alert alert-info alert-dismissible" style="background-color: var(--blue);">
+         <form id="fSearch" method="post" asp-action="Index">        
+                                                    <div class="row">
+                <h3 style="color: #ffffff;">
+                                                            <label >Filtros</label>
+                                                        </h3>
+                                                       
+                                                    </div>
+                                                   
+                                                    <div class="row">                                                    
+                                                        <div class="col-sm-2">
+                                                            <select name="IdEmpleado" class="form-control select2 select2bs4" asp-items="ViewBag.IdEmpleado">
+                                                                <option value="">Seleccionar Empleado</option>
+                                                                @foreach (var empleado in ViewBag.IdEmpleado)
+                                                                {
+                                                                    bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
+                                                                    if (isSelected)
+                                                                    {
+                                                                        <option value="@empleado.Value" selected>@empleado.Text</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@empleado.Value">@empleado.Text</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <div class="form-group">                                                              
+                                                                <select id="estado" name="estado" class="form-control">
+                                                                    <option value="">Todos</option>
+                                                                    <option value="0">Activos</option>
+                                                                    <option value="1">Inactivos</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <div class="btn-group btn-group-justified" role="group">
+                                                                <input type="hidden" name="filter" value="@ViewBag.CurrentFilter">
+                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                                <button class="btn " style="background-color: var(--colorTable)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="col-sm-6">
+                                                            <div class="btn-group btn-group-justified" role="group">
+                                                                <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                <a asp-action="Create" asp-route-id="2" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="card card-primary">
@@ -31,40 +86,9 @@
                             <div class="panel-body">
                                 <div class="form-vertical">
                                     <div class="row">
-                                        <div class="col-sm-10 pl-4">
+                                        <div class="col-sm-11 pl-4">
                                             <div class="form-group">
-                                                <form id="fSearch" method="post" asp-action="Index">
-                                                    <div class="row">
-                                                        <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <select name="IdEmpleado" class="form-control select2 select2bs4" asp-items="ViewBag.IdEmpleado">
-                                                                <option value="">Seleccionar Empleado</option>
-                                                                @foreach (var empleado in ViewBag.IdEmpleado)
-                                                                {
-                                                                    bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
-                                                                    if (isSelected)
-                                                                    {
-                                                                        <option value="@empleado.Value" selected>@empleado.Text</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@empleado.Value">@empleado.Text</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
-                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
-                                                        </div>
-                                                        <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
-                                                            <div class="btn-group btn-group-justified" role="group">
-                                                                <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -121,9 +145,9 @@
                                                 <th scope="row">@count</th>
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        <a asp-action="Edit" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-pencil" style="color: white;"></i></a>
                                                         <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        <a asp-action="Delete" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -171,7 +195,10 @@
                                 </table>
                             </div>
                         </div>
-                        <partial name="_Pager" model="@pager" />
+                        <div class="m-3">
+                            <partial name="_Pager" model="@pager" />
+                        </div>
+                       
                     </div>
                 </div>
 
@@ -198,7 +225,8 @@
                         console.error("Error al cargar el menú dinámico");
                     }
                 });
-            });
+                
+            });          
 
             document.addEventListener('DOMContentLoaded', function () {
                 var mensaje = '@Html.Raw(TempData["mensaje"])';
@@ -209,6 +237,19 @@
                 var error = '@Html.Raw(TempData["Error"])';
                 if (error) {
                     toastr.error(error);
+                }
+
+
+
+                var estado = "@ViewBag.CurrentEstado"; // Obtener el valor del ViewBag en JavaScript
+
+                // Seleccionar la opción correspondiente al estado actual
+                var selectElement = document.getElementById("estado");
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options[i].value === estado) {
+                        selectElement.options[i].selected = true;
+                        break;
+                    }
                 }
             });
         </script>

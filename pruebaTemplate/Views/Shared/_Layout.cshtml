@@ -139,6 +139,15 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item active">
+                        <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Home" asp-action="Index">
+                            <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
+                            <p style="color: var(--GrisMenu);">
+                                <strong>Inicio</strong>
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item active">
                         <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Empleado" asp-action="Index">
                             <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
                             <p style="color: var(--GrisMenu);">

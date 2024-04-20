@@ -28,7 +28,7 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="form-vertical">
-                                    <div class="row">
+                                    <div class="row m-1">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <form id="fSearch" method="post" asp-action="Index">
@@ -40,7 +40,7 @@
                                                         <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoAusencium" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoAusencium" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
                                                                 <a asp-controller="EmpleadoAusencium" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
@@ -82,19 +82,7 @@
                                             </th>
                                             <th data-sortable="true">
                                                 @Html.DisplayNameFor(model => model.Comentarios)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.FechaCreacion)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.FechaModificacion)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.CreadoPor)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.ModificadoPor)
-                                            </th>
+                                            </th>                                          
                                             <th>
                                                 @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
                                             </th>
@@ -114,9 +102,9 @@
                                                 <th scope="row">@count</th>
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-controller="EmpleadoAusencium" asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        @* <a asp-controller="EmpleadoAusencium" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
-                                                        <a asp-controller="EmpleadoAusencium" asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        <a asp-action="Edit" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                        <a asp-action="Delete" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -152,18 +140,7 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.Comentarios)
                                                 </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaCreacion)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaModificacion)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.CreadoPor)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.ModificadoPor)
-                                                </td>
+                                               
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                 </td>
@@ -177,9 +154,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="m-3">
-                    <partial name="_Pager" model="@pager" />
                 </div>
             </div>
         </div>

@@ -115,7 +115,8 @@
          <div class="card-footer">
             <form asp-action="Delete">
                 <input type="hidden" asp-for="IdEmpleadoContrato" />
-                <input type="submit" value="Delete" class="btn btn-danger" /> 
+                <input type="hidden" name="numero" value="@ViewBag.Numero" />
+                <input type="submit" value="Delete" class="btn btn-danger" />      
                 <a onclick="history.back();" class="btn btn-secondary">Regresar a la Lista</a>
             </form>
           </div>

@@ -1,6 +1,11 @@
 ﻿@model PlanillaPM.ViewModel.EmpleadoViewModel
 
 
+@{
+    ViewData["Title"] = "Empleado";
+   
+}
+
 <nav class="navbar navbar-expand navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav d-flex align-items-center justify-content-center">
@@ -17,14 +22,8 @@
             </div>
 
         </li>
-
-
-        @* <li class="nav-item d-none d-sm-inline-block mr-3">
-            <input type="hidden" id="idEmpleado" name="idEmpleado" value="@(ViewBag.IdEmpleado ?? "")" />
-            <span id="nombreEmpleado" class="label label-info">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>
-        </li> *@
-       
-        <div class="d-flex justify-content-between">
+ 
+    <div class="d-flex justify-content-between">
         <li class="nav-item d-none d-sm-inline-block mr-3">
             <div class="d-flex justify-content-between">
                 <select id="employeeSelect" name="id" class="form-control mr-sm-2 select2bs4 btn-outline-success" style="width: 250px;">
@@ -39,7 +38,10 @@
 
         </li>
        
-        </div>
+    </div>
+
+   
+
 
     </ul>
 

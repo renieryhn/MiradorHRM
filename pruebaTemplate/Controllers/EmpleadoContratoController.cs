@@ -83,6 +83,27 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoContrato>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoContratos.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoContrato.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: EmpleadoContrato/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -118,7 +139,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato, int? id)
         {
             try
             {
@@ -131,7 +152,25 @@ namespace PlanillaPM.Controllers
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se creó exitosamente.";
                 
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                    
+                    if (id.HasValue)
+                    {
+
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
@@ -150,13 +189,22 @@ namespace PlanillaPM.Controllers
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
 
-                return RedirectToAction(nameof(Index));
+                if (id == 1)
+                {
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                }
+                if (id == 2)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                return View();
             }
         }
 
 
         // GET: EmpleadoContrato/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -168,6 +216,8 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Numero = numero;
             ViewBag.EstadoContrato = Enum.GetValues(typeof(EmpleadoContrato.EstadoContrato));
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleadoContrato.IdTipoContrato);
@@ -180,7 +230,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoContrato,IdEmpleado,CodigoContrato,IdTipoContrato,IdCargo,Estado,VigenciaMeses,FechaInicio,FechaFin,Salario,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoContrato empleadoContrato, string? numero)
         {
             try
             {
@@ -198,8 +248,15 @@ namespace PlanillaPM.Controllers
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";
 
-                   
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleadoContrato.IdCargo);
@@ -216,13 +273,20 @@ namespace PlanillaPM.Controllers
 
                 // Agregar un mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar actualizar el registro. Por favor, intente nuevamente.";
-
-                return RedirectToAction(nameof(Index));
+                if (numero == "1")
+                {
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+                return View(empleadoContrato);
             }
         }
 
         // GET: EmpleadoContrato/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -237,14 +301,14 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Numero = numero;
             return View(empleadoContrato);
         }
 
         // POST: EmpleadoContrato/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
             try
             {
@@ -259,7 +323,16 @@ namespace PlanillaPM.Controllers
                     TempData["success"] = "El registro se eliminó exitosamente.";
 
                    
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                   
+
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 // Agregar mensaje de error a TempData
@@ -274,6 +347,7 @@ namespace PlanillaPM.Controllers
 
                 // Agregar mensaje de error a TempData
                 TempData["Error"] = "Hubo un problema al intentar eliminar el registro. Por favor, intente nuevamente.";
+
 
                 return View();
             }

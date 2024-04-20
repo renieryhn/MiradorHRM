@@ -71,6 +71,27 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
+        public ActionResult DownloadAll()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            List<EmpleadoActivo>? data = null;
+            if (data == null)
+            {
+                data = _context.EmpleadoActivos.ToList();
+            }
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoActivo.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
         // GET: EmpleadoActivo/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -106,7 +127,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoActivo,IdEmpleado,IdProducto,Model,NumeroSerie,Estado,Cantidad,PrecioEstimado,FechaAsignacion,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoActivo empleadoActivo)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoActivo,IdEmpleado,IdProducto,Model,NumeroSerie,Estado,Cantidad,PrecioEstimado,FechaAsignacion,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoActivo empleadoActivo, int? id)
         {
             if (ModelState.IsValid)
             {
@@ -115,7 +136,26 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoActivo);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+
+
+                if (id.HasValue)
+                {
+                    
+                    if (id == 1)
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                    }
+                    if (id == 2)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                }
+                else
+                {
+                    TempData["error"] = "Error no se encontro el valor de la direccion";
+                    return RedirectToAction("Index");
+                }
             }
             else
             {
@@ -128,7 +168,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoActivo/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
 
             if (id == null)
@@ -144,7 +184,7 @@ namespace PlanillaPM.Controllers
             }
 
             ViewBag.EstadoActual = Enum.GetValues(typeof(EmpleadoActivo.EstadoActual));
-
+            ViewBag.Numero = numero;
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoActivo.IdEmpleado);
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", empleadoActivo.IdProducto);
             return View(empleadoActivo);
@@ -155,7 +195,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoActivo,IdEmpleado,IdProducto,Model,NumeroSerie,Estado,Cantidad,PrecioEstimado,FechaAsignacion,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoActivo empleadoActivo)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoActivo,IdEmpleado,IdProducto,Model,NumeroSerie,Estado,Cantidad,PrecioEstimado,FechaAsignacion,Descripcion,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoActivo empleadoActivo,string? numero)
         {
             if (id != empleadoActivo.IdEmpleadoActivo)
             {
@@ -182,20 +222,32 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+
+
+                if (numero == "1")
+                {
+                    return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+
+
             }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "ApellidoEmpleado", empleadoActivo.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoActivo.IdEmpleado);
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", empleadoActivo.IdProducto);
+
             return View(empleadoActivo);
         }
 
         // GET: EmpleadoActivo/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -211,13 +263,15 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
+
             return View(empleadoActivo);
         }
 
         // POST: EmpleadoActivo/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
              var empleadoActivo = await _context.EmpleadoActivos.FindAsync(id);
             try
@@ -228,12 +282,26 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoActivos.Remove(empleadoActivo);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                    if (numero == "1")
+                    {
+                        return Redirect($"/Empleado/FichaEmpleado/{empleadoActivo.IdEmpleado}?tab=Empleado");
+                    }
+                    if (numero == "2")
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             catch (DbUpdateException ex)
@@ -250,6 +318,7 @@ namespace PlanillaPM.Controllers
                 return View(empleadoActivo);
             }
 
+            return View(empleadoActivo);
         }
 
         private bool EmpleadoActivoExists(int id)

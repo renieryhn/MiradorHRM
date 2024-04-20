@@ -1,0 +1,39 @@
+﻿@model PlanillaPM.ViewModel.EmpleadoViewModel;
+
+@{
+    ViewData["Title"] = "Ficha de Empleado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="detalleEmpleado" class="container-fluid">
+    <partial name="_Empleado" model="Model" />
+   
+    @if (Model.EmpleadoSeleccionado != null)
+    {
+        <partial name="Details" model="Model.EmpleadoSeleccionado" />
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>¡Atención!</strong> No se ha seleccionado ningún empleado.
+        </div>
+
+    }
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#employeeSelect').change(function () {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    var accion = "../FichaEmpleado/" + "?id=" + selectedId;
+                    $('#cargarLink').attr('href', accion);
+                } else {
+                    $('#cargarLink').removeAttr('href');
+                }
+            });
+
+        });
+
+    </script>
+}

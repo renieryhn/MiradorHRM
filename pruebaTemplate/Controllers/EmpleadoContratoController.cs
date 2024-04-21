@@ -27,19 +27,39 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContrato
-        public async Task<IActionResult> Index(int pg, string? filter)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
-            
+
+            IQueryable<EmpleadoContrato> query = _context.EmpleadoContratos;
+
+            if (!String.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.Descripcion.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentEstado = estado;
 
             List<EmpleadoContrato> registros;
-            if (filter != null)
-            {
-                registros = await _context.EmpleadoContratos.Where(r => r.CodigoContrato.ToLower().Contains(filter.ToLower())).ToListAsync();
-            }
-            else
-            {
-                registros = await _context.EmpleadoContratos.ToListAsync();
-            }
+            registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
+
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -48,8 +68,18 @@ namespace PlanillaPM.Controllers
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
 
-            var IdCargoNavigation = await _context.Cargos.ToListAsync();
             var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+            }
+            else
+            {
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
+            }
+
+            var IdCargoNavigation = await _context.Cargos.ToListAsync();
+            //var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
             var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
 
             return View(data);

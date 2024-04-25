@@ -36,7 +36,9 @@ public partial class EmpleadoContrato
     public DateOnly FechaFin { get; set; }
     [Display(Name = "Salario")]
     [Required(ErrorMessage = "El Salario es obligatorio.")]
+    [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "El campo Salario debe ser un número.")]
     public decimal Salario { get; set; }
+
     [Display(Name = "Descripción")]
     public string? Descripcion { get; set; }
 

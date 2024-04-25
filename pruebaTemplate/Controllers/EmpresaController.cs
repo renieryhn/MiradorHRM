@@ -46,6 +46,7 @@ namespace PlanillaPM.Controllers
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
             var planillaContext = _context.Empresas.Include(e => e.IdMonedaNavigation);
+           
             return View(data);
         }
          public ActionResult Download()

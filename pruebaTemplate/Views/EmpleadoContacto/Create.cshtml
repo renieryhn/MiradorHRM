@@ -37,12 +37,12 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="Celular" class="control-label" ></label>
-                                <input asp-for="Celular" class="form-control" required />
-                                <span asp-validation-for="Celular" class="text-danger"></span>
+                                <input asp-for="Celular" class="form-control" type="number" required />
+                                <span asp-validation-for="Celular" class="text-danger" ></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="TelefonoFijo" class="control-label">Telefono Fijo</label>
-                                <input asp-for="TelefonoFijo" class="form-control" />
+                                <input asp-for="TelefonoFijo" class="form-control" type="number" />
                                 <span asp-validation-for="TelefonoFijo" class="text-danger"></span>
                             </div>
                             
@@ -52,7 +52,7 @@
         </div>
         <div class="card-footer">
             <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
-                <a  onclick="history.back();" class="btn btn-secondary">Regresar a la Lista</a>
+                <a onclick="goBack()" class="btn btn-secondary">Regresar a la Lista</a>
          </div>
         </form>
     </div>
@@ -70,6 +70,22 @@
                     toastr.error(error);
                 }
             });
+
+            function goBack() {
+                // Obtener la URL actual
+                var currentUrl = window.location.href;
+
+                // Verificar si la URL contiene "_index"
+                if (currentUrl.includes("_index")) {
+                    // Estás en la página _index, puedes hacer algo específico aquí
+                    console.log("Estás en la página _index");
+                    // Por ejemplo, redirigir a otra página
+                    window.location.href = "/otra-pagina";
+                } else {
+                    // No estás en la página _index, retrocede en la historia
+                    history.back();
+                }
+            }
         </script>
     }
 }

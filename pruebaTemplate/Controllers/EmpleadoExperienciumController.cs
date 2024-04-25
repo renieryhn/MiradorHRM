@@ -171,12 +171,8 @@ namespace PlanillaPM.Controllers
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se creó exitosamente.";
 
-
-                    
-
                     if (id.HasValue)
                     {
-
                         if (id == 1)
                         {
                             return Redirect($"/Empleado/FichaEmpleado/{empleadoExperiencium.IdEmpleado}?tab=Experiencium");
@@ -185,11 +181,10 @@ namespace PlanillaPM.Controllers
                         {
                             return RedirectToAction("Index");
                         }
-
                     }
                     else
                     {
-                        TempData["error"] = "Error no se encontro el valor de la direccion";
+                        TempData["error"] = "Error no se encontró el valor de la dirección";
                         return RedirectToAction("Index");
                     }
                 }
@@ -200,8 +195,9 @@ namespace PlanillaPM.Controllers
             catch (Exception ex)
             {
 
+                TempData["Error"] = ex.ToString();
                 // Agregar mensaje de error a TempData
-                TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
+                //TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente.";
 
                 ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoExperiencium.IdEmpleado);
                 return View(empleadoExperiencium);

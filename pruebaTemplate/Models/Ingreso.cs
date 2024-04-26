@@ -8,16 +8,22 @@ namespace PlanillaPM.Models;
 public partial class Ingreso
 {
     public string IdIngreso { get; set; } = null!;
+
     [Display(Name = "Nombre de Ingreso")]
     public string NombreIngreso { get; set; } = null!;
 
     /// <summary>
     /// Fijo, Fórmula o Porcentaje
     /// </summary>
+    /// Salario, Por Hora, Jornal, Comisión, Horas Extra, Paga Doble, Vacaciones, Enfermedad, Días Libre, Bono, Incentivo, Otro
     [Display(Name = "Tipo de Ingreso")]
     public string Tipo { get; set; } = null!;
     [Display(Name = "Monto")]
     public decimal? Monto { get; set; }
+    //Semanal, Quincenal, Mensual, Trimestral, Semestral, Anual, Diario
+    [Display(Name = "Período")]
+    public int Periodo { get; set; }
+    //Basdo en pago: y factor de pago porcentade de basado en .
     [Display(Name = "Fórmula")]
     public string? Formula { get; set; }
     [Display(Name = "Es Grabable")]
@@ -26,6 +32,12 @@ public partial class Ingreso
     public int Orden { get; set; }
     [Display(Name = "Activo")]
     public bool Activo { get; set; }
+
+    [DisplayName("Fecha Inicial")]
+    public DateTime FechaInicial { get; set; }
+
+    [DisplayName("Fecha Final")]
+    public DateTime FechaFinal { get; set; }
 
     [DisplayName("Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }

@@ -83,6 +83,8 @@ namespace PlanillaPM.Controllers
        
         public ActionResult Download(int id)
         {
+
+           
             // Filtrar los contactos de empleado por el id recibido
             List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();
 

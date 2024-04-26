@@ -7,42 +7,40 @@
 
 <div id="detalleEmpleadoDetails" class="container-fluid">
     <div id="employeeSelection">
-    </div>
+    </div> 
     <!-- general form elements -->
     <div class="card card-primary card-tabs">
         <div class="card-header p-0 pt-1" style="background-color: var(--blue);">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                 <li class="pt-2 px-3"><h3 class="card-title">@Html.DisplayFor(model => model.NombreCompleto)</h3></li>
                 <li class="nav-item">
-                    <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" href="#custom-tabs-two-home" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Generales</a>
+                    <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" onclick="LoadTabData(this);"  href="#custom-tabs-two-home" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Generales</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Contactos</a>
+                    <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Contactos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill" href="#custom-tabs-two-messages" role="tab" aria-controls="custom-tabs-two-messages" aria-selected="false">Contratos</a>
+                    <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-messages" role="tab" aria-controls="custom-tabs-two-messages" aria-selected="false">Contratos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill" href="#custom-tabs-two-settings" role="tab" aria-controls="custom-tabs-two-settings" aria-selected="false">Educación</a>
+                    <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-settings" role="tab" aria-controls="custom-tabs-two-settings" aria-selected="false">Educación</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-Experiencium-tab" data-toggle="pill" href="#custom-tabs-two-Experiencium" role="tab" aria-controls="custom-tabs-two-Experiencium" aria-selected="false">Experiencia</a>
+                    <a class="nav-link" id="custom-tabs-two-Experiencium-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-Experiencium" role="tab" aria-controls="custom-tabs-two-Experiencium" aria-selected="false">Experiencia</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-Habilidad-tab" data-toggle="pill" href="#custom-tabs-two-Habilidad" role="tab" aria-controls="custom-tabs-two-Habilidad" aria-selected="false">Habilidad</a>
+                    <a class="nav-link" id="custom-tabs-two-Habilidad-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-Habilidad" role="tab" aria-controls="custom-tabs-two-Habilidad" aria-selected="false">Habilidad</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-Ausencias-tab" data-toggle="pill" href="#custom-tabs-two-Ausencias" role="tab" aria-controls="custom-tabs-two-Ausencias" aria-selected="false">Ausencias</a>
+                    <a class="nav-link" id="custom-tabs-two-Ausencias-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-Ausencias" role="tab" aria-controls="custom-tabs-two-Ausencias" aria-selected="false">Ausencias</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-Empleado-tab" data-toggle="pill" href="#custom-tabs-two-Empleado" role="tab" aria-controls="custom-tabs-two-Empleado" aria-selected="false">Empleado Activo</a>
+                    <a class="nav-link" id="custom-tabs-two-Empleado-tab" data-toggle="pill" onclick="LoadTabData(this);" href="#custom-tabs-two-Empleado" role="tab" aria-controls="custom-tabs-two-Empleado" aria-selected="false">Empleado Activo</a>
                 </li>
             </ul>
         </div>
 
-
-       
-                
+ 
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-two-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
@@ -314,29 +312,29 @@
                                 </div>
                                 </div>
                         </div>
-                       
-                        <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
-                             <partial name="~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml" for="@Model.EmpleadoContactos" >
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel" aria-labelledby="custom-tabs-two-messages-tab">
-                            <partial name="~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml" for="@Model.EmpleadoContratos">
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
-                            <partial name="~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml" for="@Model.EmpleadoEducacions">
-                            
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-Experiencium" role="tabpanel" aria-labelledby="custom-tabs-two-Experiencium-tab">
-                            <partial name="~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml" for="@Model.EmpleadoExperiencia">
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-Habilidad" role="tabpanel" aria-labelledby="custom-tabs-two-Habilidad-tab">
-                            <partial name="~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml" for="@Model.EmpleadoHabilidads">
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-Ausencias" role="tabpanel" aria-labelledby="custom-tabs-two-Ausencias-tab">
-                            <partial name="~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml" for="@Model.EmpleadoAusencia">
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-Empleado" role="tabpanel" aria-labelledby="custom-tabs-two-Empleado-tab">
-                            <partial name="~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml" for="@Model.EmpleadoActivos">
-                        </div>
+                <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"  aria-labelledby="custom-tabs-two-profile-tab">
+                    <partial name="~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml" for="@Model.EmpleadoContactos">
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"  aria-labelledby="custom-tabs-two-messages-tab">
+                    <partial name="~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml" for="@Model.EmpleadoContratos">
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
+                    <partial name="~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml" for="@Model.EmpleadoEducacions">
+
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-Experiencium" role="tabpanel" aria-labelledby="custom-tabs-two-Experiencium-tab">
+                    <partial name="~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml" for="@Model.EmpleadoExperiencia">
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-Habilidad" role="tabpanel" aria-labelledby="custom-tabs-two-Habilidad-tab">
+                    <partial name="~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml" for="@Model.EmpleadoHabilidads">
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-Ausencias" role="tabpanel" aria-labelledby="custom-tabs-two-Ausencias-tab">
+                    <partial name="~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml" for="@Model.EmpleadoAusencia">
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-Empleado" role="tabpanel" aria-labelledby="custom-tabs-two-Empleado-tab">
+                    <partial name="~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml" for="@Model.EmpleadoActivos">
+                </div>
+                               
                     </div>
 
                 </div>
@@ -355,6 +353,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script type="text/javascript">
+  
        
         function validateImage(event) {
             var input = event.target;
@@ -476,22 +475,28 @@
     $(document).ready(function () {
         var tab = getParameterByName('tab');
         if (tab === 'profile') {
-            $('#custom-tabs-two-profile-tab').tab('show');
+            $('#custom-tabs-two-profile-tab').tab('show');  
+            LoadTabData($('#custom-tabs-two-profile-tab')[0]);
         } else if (tab === 'messages') {
             $('#custom-tabs-two-messages-tab').tab('show');
-        } else if (tab === 'settings') {
+            LoadTabData($('#custom-tabs-two-messages-tab')[0]);
+        } else if (tab === 'settings') {4
             $('#custom-tabs-two-settings-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-settings-tab')[0]);
         } else if (tab === 'Experiencium') {
             $('#custom-tabs-two-Experiencium-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-Experiencium-tab')[0]);
         } else if (tab === 'Habilidad') {
             $('#custom-tabs-two-Habilidad-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-Habilidad-tab')[0]);
         } else if (tab === 'Ausencias') {
             $('#custom-tabs-two-Ausencias-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-Ausencias-tab')[0]);
         } else if (tab === 'Empleado') {
             $('#custom-tabs-two-Empleado-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-Empleado-tab')[0]);
         }
     });
-
 
     function getParameterByName(name, url = window.location.href) {
         name = name.replace(/[\[\]]/g, '\\$&');
@@ -501,6 +506,68 @@
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
+
+
+    function LoadTabData(obj) {
+        var tab = obj.id;
+        var sfuncion = "";
+
+        if (tab === 'custom-tabs-two-profile-tab') {
+            sfuncion = "LoadContactos";
+        } else if (tab === 'custom-tabs-two-messages-tab') {
+            sfuncion = "LoadContratos";
+        } else if (tab === 'custom-tabs-two-settings-tab') {
+            sfuncion = "LoadEducacion";          
+        } else if (tab === 'custom-tabs-two-Experiencium-tab') {
+            sfuncion = "LoadExperiencia";
+        } else if (tab === 'custom-tabs-two-Habilidad-tab') {
+            sfuncion = "LoadHabilidad";
+        } else if (tab === 'custom-tabs-two-Ausencias-tab') {
+            sfuncion = "LoadAusencias";
+        } else if (tab === 'custom-tabs-two-Empleado-tab') {
+            sfuncion = "LoadEmpleado";
+        }
+
+        var surl = '/Empleado/' + sfuncion + '?id=@Model.IdEmpleado'
+
+        $.ajax({
+            url: surl,
+            method: 'GET',
+            success: function (data) {
+                if (tab === 'custom-tabs-two-profile-tab') {
+                    $('#custom-tabs-two-profile').html(data);
+                }
+                else if (tab === 'custom-tabs-two-messages-tab') {
+                    $('#custom-tabs-two-messages').html(data);
+                }
+                else if (tab === 'custom-tabs-two-settings-tab') {
+                    $('#custom-tabs-two-settings').html(data);
+                }
+                else if (tab === 'custom-tabs-two-Experiencium-tab') {
+                    $('#custom-tabs-two-Experiencium').html(data);
+                }
+                else if (tab === 'custom-tabs-two-Habilidad-tab') {
+                    $('#custom-tabs-two-Habilidad').html(data);
+                }
+                else if (tab === 'custom-tabs-two-Ausencias-tab') {
+                    $('#custom-tabs-two-Ausencias').html(data);
+                }
+                else if (tab === 'custom-tabs-two-Empleado-tab') {
+                    $('#custom-tabs-two-Empleado').html(data);
+                }
+
+            },
+            error: function (xhr, status, error) {
+                // Maneja el error si la solicitud AJAX falla
+                console.error(error);
+            }
+        });
+    }
+
+
+   
+
+   
 
     </script>
 

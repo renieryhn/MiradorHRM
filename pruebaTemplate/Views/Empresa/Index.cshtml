@@ -13,6 +13,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid">
+   
     <div class="row">
         <div class="col-12">
             <div class="card card-primary">
@@ -177,7 +178,7 @@
                                                 <td>
                                                     @if (item.IdMonedaNavigation != null)
                                                     {
-                                                        @Html.DisplayFor(modelItem => item.IdMonedaNavigation != null ? item.IdMonedaNavigation.NombreMoneda : "N/A")
+                                                        @Html.DisplayFor(modelItem => item.IdMonedaNavigation.NombreMoneda)
                                                     }
 
                                                 </td>

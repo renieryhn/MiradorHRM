@@ -533,7 +533,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
         {
             entity.HasKey(e => e.IdEmpleadoExperiencia);
 
-            entity.Property(e => e.IdEmpleadoExperiencia).ValueGeneratedNever();
+           
             entity.Property(e => e.Cargo).HasMaxLength(70);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)

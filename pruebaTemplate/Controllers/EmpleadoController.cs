@@ -24,6 +24,8 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using PlanillaPM.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.IdentityModel.Tokens;
+
 
 
 namespace PlanillaPM.Controllers
@@ -34,15 +36,15 @@ namespace PlanillaPM.Controllers
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+       
 
         public EmpleadoController(PlanillaContext context, UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+           
         }
-             
-
 
         [HttpPost]
         public async Task<IActionResult> PasarIDConstancia1(int id)
@@ -307,7 +309,6 @@ namespace PlanillaPM.Controllers
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Contrato Corto.pdf");
             }
         }
-
 
 
         // GET: Empleado
@@ -712,7 +713,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-           
+
             var EmpleadoSeleccionado = await _context.Empleados
            .Include(e => e.IdBancoNavigation)
            .Include(e => e.IdCargoNavigation)
@@ -720,13 +721,13 @@ namespace PlanillaPM.Controllers
            .Include(e => e.IdEncargadoNavigation)
            .Include(e => e.IdTipoContratoNavigation)
            .Include(e => e.IdTipoNominaNavigation)
-           .Include(e => e.EmpleadoContactos)
-           .Include(e => e.EmpleadoContratos)
-           .Include(e => e.EmpleadoEducacions)
-           .Include(e => e.EmpleadoExperiencia)
-           .Include(e => e.EmpleadoHabilidads)
-           .Include(e => e.EmpleadoAusencia)
-           .Include(e => e.EmpleadoActivos)
+           //.Include(e => e.EmpleadoContactos)
+           //.Include(e => e.EmpleadoContratos)
+           //.Include(e => e.EmpleadoEducacions)
+           //.Include(e => e.EmpleadoExperiencia)
+           //.Include(e => e.EmpleadoHabilidads)
+           //.Include(e => e.EmpleadoAusencia)
+           //.Include(e => e.EmpleadoActivos)
            .FirstOrDefaultAsync(m => m.IdEmpleado == id);
 
             if (EmpleadoSeleccionado == null)
@@ -750,13 +751,110 @@ namespace PlanillaPM.Controllers
                 Empleados = Empleados,
                 EmpleadosActivos = empleadosActivos
 
-        };
+            };
 
             var nombreEmpleado = EmpleadoSeleccionado.NombreCompleto;
-            ViewBag.NombreEmpleado = nombreEmpleado;             
+            ViewBag.NombreEmpleado = nombreEmpleado;
             ViewBag.IdEmpleado = EmpleadoSeleccionado.IdEmpleado;
             return View(viewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadContactos(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoContactos.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadContratos(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoContratos.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadEducacion(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoEducacions.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadExperiencia(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoExperiencia.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadHabilidad(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadAusencias(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadEmpleado(int id)
+        {
+            try
+            {
+                var registros = await _context.EmpleadoActivos.Where(e => e.IdEmpleado == id).ToListAsync();
+                return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+
         private void SetCamposAuditoria(Empleado record, bool bNewRecord)
         {
             var now = DateTime.Now;

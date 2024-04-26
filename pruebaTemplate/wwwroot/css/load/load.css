@@ -1,0 +1,23 @@
+﻿.loader {
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 30px;
+    color: #818290;
+    animation: l1 1s linear infinite alternate;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -10%);
+}
+
+    .loader:before {
+        content: "Proyecto Mirador....";
+    }
+
+@keyframes l1 {
+    to {
+        opacity: 0;
+    }
+}
+
+

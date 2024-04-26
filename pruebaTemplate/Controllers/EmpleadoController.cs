@@ -25,6 +25,7 @@ using PlanillaPM.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.IdentityModel.Tokens;
+using System.IO;
 
 
 
@@ -534,6 +535,9 @@ namespace PlanillaPM.Controllers
                 empleado.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
 
+
+            
+
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(Empleado.EstadoCivilEmpleado));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo", empleado.IdCargo);
@@ -551,6 +555,8 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile FotoTmp)
         {
+
+
             try
             {
           
@@ -564,12 +570,13 @@ namespace PlanillaPM.Controllers
                     SetCamposAuditoria(empleado, false);
                     if (FotoTmp != null && FotoTmp.Length > 0)
                     {
+                        // Si se proporciona un nuevo archivo de imagen, guarda ese archivo.
                         using (var memoryStream = new MemoryStream())
                         {
                             await FotoTmp.CopyToAsync(memoryStream);
                             empleado.Fotografia = memoryStream.ToArray();
                         }
-                    }
+                    }                  
                     _context.Update(empleado);
                     await _context.SaveChangesAsync();
                     TempData["mensaje"] = "Empleado actualizado exitosamente.";
@@ -764,6 +771,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoContactos.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml", registros);
             }
@@ -778,6 +786,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoContratos.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml", registros);
             }
@@ -791,6 +800,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoEducacions.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml", registros);
             }
@@ -804,6 +814,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoExperiencia.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml", registros);
             }
@@ -817,6 +828,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml", registros);
             }
@@ -830,6 +842,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml", registros);
             }
@@ -843,6 +856,7 @@ namespace PlanillaPM.Controllers
         {
             try
             {
+                ViewBag.IdEmpleado = id;
                 var registros = await _context.EmpleadoActivos.Where(e => e.IdEmpleado == id).ToListAsync();
                 return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
             }

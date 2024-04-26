@@ -312,27 +312,27 @@
                                 </div>
                                 </div>
                         </div>
+              
                 <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"  aria-labelledby="custom-tabs-two-profile-tab">
-                    <partial name="~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml" for="@Model.EmpleadoContactos">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"  aria-labelledby="custom-tabs-two-messages-tab">
-                    <partial name="~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml" for="@Model.EmpleadoContratos">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
-                    <partial name="~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml" for="@Model.EmpleadoEducacions">
-
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-Experiencium" role="tabpanel" aria-labelledby="custom-tabs-two-Experiencium-tab">
-                    <partial name="~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml" for="@Model.EmpleadoExperiencia">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-Habilidad" role="tabpanel" aria-labelledby="custom-tabs-two-Habilidad-tab">
-                    <partial name="~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml" for="@Model.EmpleadoHabilidads">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-Ausencias" role="tabpanel" aria-labelledby="custom-tabs-two-Ausencias-tab">
-                    <partial name="~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml" for="@Model.EmpleadoAusencia">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                 <div class="tab-pane fade" id="custom-tabs-two-Empleado" role="tabpanel" aria-labelledby="custom-tabs-two-Empleado-tab">
-                    <partial name="~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml" for="@Model.EmpleadoActivos">
+                    <div id="loading-spinner" class="loader" role="status" style="display: none;"></div>
                 </div>
                                
                     </div>
@@ -353,7 +353,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-  
+       
+       
        
         function validateImage(event) {
             var input = event.target;
@@ -479,8 +480,8 @@
             LoadTabData($('#custom-tabs-two-profile-tab')[0]);
         } else if (tab === 'messages') {
             $('#custom-tabs-two-messages-tab').tab('show');
-            LoadTabData($('#custom-tabs-two-messages-tab')[0]);
-        } else if (tab === 'settings') {4
+             LoadTabData($('#custom-tabs-two-messages-tab')[0]);
+        } else if (tab === 'settings') {
             $('#custom-tabs-two-settings-tab').tab('show');
             LoadTabData($('#custom-tabs-two-settings-tab')[0]);
         } else if (tab === 'Experiencium') {
@@ -512,6 +513,8 @@
         var tab = obj.id;
         var sfuncion = "";
 
+        $('#loading-spinner').show();
+
         if (tab === 'custom-tabs-two-profile-tab') {
             sfuncion = "LoadContactos";
         } else if (tab === 'custom-tabs-two-messages-tab') {
@@ -528,7 +531,8 @@
             sfuncion = "LoadEmpleado";
         }
 
-        var surl = '/Empleado/' + sfuncion + '?id=@Model.IdEmpleado'
+        var empleadoId = '@Model.IdEmpleado';
+        var surl = '/Empleado/' + sfuncion + '?id=' + empleadoId;
 
         $.ajax({
             url: surl,
@@ -556,10 +560,13 @@
                     $('#custom-tabs-two-Empleado').html(data);
                 }
 
+                $('#loading-spinner').hide();
             },
             error: function (xhr, status, error) {
                 // Maneja el error si la solicitud AJAX falla
                 console.error(error);
+
+                $('#loading-spinner').hide();
             }
         });
     }

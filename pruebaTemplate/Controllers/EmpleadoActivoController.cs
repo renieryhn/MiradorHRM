@@ -52,6 +52,7 @@ namespace PlanillaPM.Controllers
             ViewBag.CurrentFilter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
+            //ViewBag.CurrentEstado = estado;
 
             List<EmpleadoActivo> registros;
             registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
@@ -74,16 +75,15 @@ namespace PlanillaPM.Controllers
                 ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
 
-            var planillaContext = _context.EmpleadoActivos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdProductoNavigation);
-            //var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            var planillaContext = _context.EmpleadoActivos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdProductoNavigation);           
             var IdProductoNavigation = await _context.Productos.ToListAsync();
             return View(data);
         }
 
-       
+
+        [HttpGet]
         public ActionResult Download(int id)
         {
-
            
             // Filtrar los contactos de empleado por el id recibido
             List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();

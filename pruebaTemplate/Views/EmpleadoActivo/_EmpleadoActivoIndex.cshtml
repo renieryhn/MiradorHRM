@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<PlanillaPM.Models.EmpleadoActivo>
+
 @using PlanillaPM.Models;
+
 
 @{
     ViewData["Title"] = "_EmpleadoActivoIndex";
@@ -40,7 +42,7 @@
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
                                                                 <a asp-controller="EmpleadoActivo" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoActivo" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoActivo" asp-action="Download" asp-route-id="@ViewBag.IdEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
                                                     </div>

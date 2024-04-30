@@ -36,7 +36,7 @@
                                                     <div class="row">
                                                         <div class="col-sm-6 btn-group btn-group-justified" role="group">
                                                             <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
-                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            <button id="btnBuscar" class="btn" style="background-color: var(--blue)" type="button"><i class="fa fa-search" style="color: white;"></i></button>
                                                         </div>
                                                         <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
@@ -98,59 +98,68 @@
                                         @{
                                             int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
                                         }
-                                        @foreach (var item in Model)
+                                         @if (Model.Any())
                                         {
-                                            count = (count + 1);
-                                            <tr>
-                                                <th scope="row">@count</th>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">                                                      
-                                                        <a id="editButton" asp-controller="EmpleadoActivo" asp-action="Edit" class="btn " asp-route-numero="1" style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        @* <a asp-controller="EmpleadoActivo" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
-                                                        <a asp-controller="EmpleadoActivo" asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Model)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.NumeroSerie)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdProductoNavigation.NombreProducto)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Estado)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Cantidad)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.PrecioEstimado)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaAsignacion)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Descripcion)
-                                                </td>
-                                                <td>
-                                                    @* @Html.DisplayFor(modelItem => item.Activo) *@
-                                                    @if (item.Activo)
-                                                    {
-                                                        <span class="badge badge-success">Activo</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge badge-danger">Inactivo</span>
-                                                    }
+                                            @foreach (var item in Model)
+                                            {
+                                                count = (count + 1);
+                                                <tr>
+                                                    <th scope="row">@count</th>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">                                                      
+                                                            <a id="editButton" asp-controller="EmpleadoActivo" asp-action="Edit" class="btn " asp-route-numero="1" style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            @* <a asp-controller="EmpleadoActivo" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
+                                                            <a asp-controller="EmpleadoActivo" asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoActivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Model)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.NumeroSerie)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdProductoNavigation.NombreProducto)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Estado)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Cantidad)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.PrecioEstimado)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FechaAsignacion)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Descripcion)
+                                                    </td>
+                                                    <td>
+                                                        @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                        @if (item.Activo)
+                                                        {
+                                                            <span class="badge badge-success">Activo</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge badge-danger">Inactivo</span>
+                                                        }
 
-                                                </td>
+                                                    </td>
                                                 
 
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="13" class="text-center">No hay datos</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -184,7 +193,28 @@
                 });
             });
 
+            // $(document).ready(function () {
+            //     $('#btnBuscar').on('click', function () {
+            //         // Obtiene el valor del campo de entrada
+            //         var filtro = $('#inNombre').val();
+            //         var idEmpleado = '@ViewBag.IdEmpleado'; // Obtener el id desde ViewBag
 
+            //         // Realiza la solicitud AJAX
+            //         $.ajax({
+            //             url: '@Url.Action("loadContacto", "Empleado")',
+            //             method: 'POST',
+            //             data: { filter: filtro, id: idEmpleado }, 
+            //             success: function (response) {
+                            
+            //                 console.log(response);
+            //             },
+            //             error: function (xhr, status, error) {
+                            
+            //                 console.error(error);
+            //             }
+            //         });
+            //     });
+            // });
         </script>
     }
 }

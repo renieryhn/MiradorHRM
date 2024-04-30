@@ -537,7 +537,8 @@
         }
 
         var empleadoId = '@Model.IdEmpleado';
-        var surl = '/Empleado/' + sfuncion + '?id=' + empleadoId;
+        var filter = "";
+        var surl = '/Empleado/' + sfuncion + '?id=' + empleadoId + '&filter=' + filter;
 
         $.ajax({
             url: surl,

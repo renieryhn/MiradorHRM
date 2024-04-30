@@ -86,7 +86,9 @@
                                         @{
                                             int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
                                         }
-                                        @foreach (var item in Model)
+                                         @if (Model.Any())
+                                        {
+                                             @foreach (var item in Model)
                                         {
                                             count = (count + 1);
                                             <tr>
@@ -129,6 +131,13 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                 </td>
+                                            </tr>
+                                        }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="13" class="text-center">No hay datos</td>
                                             </tr>
                                         }
                                     </tbody>

@@ -94,60 +94,69 @@
                                         @{
                                             int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
                                         }
-                                        @foreach (var item in Model)
+                                         @if (Model.Any())
                                         {
-                                            count = (count + 1);
-                                            <tr>
-                                                <th scope="row">@count</th>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-controller="EmpleadoContrato" asp-action="Edit" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoContrato"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        <a asp-controller="EmpleadoContrato" asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoContrato"><i class="fa fa-trash-o" style="color: white;"></i></a>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.CodigoContrato)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdTipoContratoNavigation.NombreTipoContrato)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Estado)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.VigenciaMeses)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaFin)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Salario)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Descripcion)
-                                                </td>
-                                                <td>
-                                                    @* @Html.DisplayFor(modelItem => item.Activo) *@
-                                                    @if (item.Activo)
-                                                    {
-                                                        <span class="badge badge-success">Activo</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge badge-danger">Inactivo</span>
-                                                    }
+                                            @foreach (var item in Model)
+                                            {
+                                                count = (count + 1);
+                                                <tr>
+                                                    <th scope="row">@count</th>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                            <a asp-controller="EmpleadoContrato" asp-action="Edit" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoContrato"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoContrato" asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoContrato"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.CodigoContrato)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdTipoContratoNavigation.NombreTipoContrato)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Estado)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.VigenciaMeses)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FechaInicio)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FechaFin)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Salario)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Descripcion)
+                                                    </td>
+                                                    <td>
+                                                        @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                        @if (item.Activo)
+                                                        {
+                                                            <span class="badge badge-success">Activo</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge badge-danger">Inactivo</span>
+                                                        }
 
-                                                </td>
+                                                    </td>
                                                
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdCargoNavigation.NombreCargo)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdCargoNavigation.NombreCargo)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="13" class="text-center">No hay datos</td>
                                             </tr>
                                         }
                                     </tbody>

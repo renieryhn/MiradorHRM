@@ -31,12 +31,11 @@
                                     <div class="row ">
                                         <div class="col-sm-9 pl-4">
                                             <div class="form-group">
-                                                <form id="fSearch" method="post" asp-action="Index">
+                                                <div id="fSearch">
                                                     <div class="row">
-                                                        
                                                         <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
-                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            <input type="text" style="width: 300px;" id="inNombreContacto" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
+                                                            <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadContactos','inNombreContacto');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                         </div>
                                                         <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
@@ -46,7 +45,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

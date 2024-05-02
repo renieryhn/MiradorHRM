@@ -471,32 +471,25 @@
 
     $(document).ready(function () {
         var tab = getParameterByName('tab');
-        if (tab === 'profile') {
-            
+        if (tab === 'profile') {          
             $('#custom-tabs-two-profile-tab').tab('show');
             LoadTabData($('#custom-tabs-two-profile-tab')[0], 'loading-spinner-profile');
-        } else if (tab === 'messages') {
-            
+        } else if (tab === 'messages') {           
             $('#custom-tabs-two-messages-tab').tab('show');
             LoadTabData($('#custom-tabs-two-messages-tab')[0], 'loading-spinner-messages');
-        } else if (tab === 'settings') {
-            
+        } else if (tab === 'settings') {           
             $('#custom-tabs-two-settings-tab').tab('show');
             LoadTabData($('#custom-tabs-two-settings-tab')[0], 'loading-spinner-settings');
-        } else if (tab === 'Experiencium') {
-          
+        } else if (tab === 'Experiencium') {        
             $('#custom-tabs-two-Experiencium-tab').tab('show');
             LoadTabData($('#custom-tabs-two-Experiencium-tab')[0], 'loading-spinner-Experiencium');
-        } else if (tab === 'Habilidad') {
-          
+        } else if (tab === 'Habilidad') {        
             $('#custom-tabs-two-Habilidad-tab').tab('show');
             LoadTabData($('#custom-tabs-two-Habilidad-tab')[0], 'loading-spinner-Habilidad');
-        } else if (tab === 'Ausencias') {
-            
+        } else if (tab === 'Ausencias') {        
             $('#custom-tabs-two-Ausencias-tab').tab('show');
             LoadTabData($('#custom-tabs-two-Ausencias-tab')[0], 'loading-spinner-Ausencias');
-        } else if (tab === 'Empleado') {
-           
+        } else if (tab === 'Empleado') {         
             $('#custom-tabs-two-Empleado-tab').tab('show');
             LoadTabData($('#custom-tabs-two-Empleado-tab')[0], 'loading-spinner-Empleado');
         }
@@ -612,6 +605,47 @@
     });
 
 
+    function Buscar(sfuncion, sCampofiltro) {
+
+        var filterValue = document.getElementById(sCampofiltro).value;
+        var surl = '/Empleado/' + sfuncion + '?id=' + @Model.IdEmpleado + '&filter=' + filterValue;
+        $.ajax({
+            url: surl,
+            type: 'GET',
+            success: function (result) {
+                switch (sfuncion) {
+                    case 'LoadContactos':
+                        $('#custom-tabs-two-profile').html(result);
+                        break;
+                    case 'LoadContratos':
+                        $('#custom-tabs-two-messages').html(result);
+                        break;
+                    case 'LoadEducacion':
+                        $('#custom-tabs-two-settings').html(result);
+                        break;
+                    case 'LoadExperiencia':
+                        $('#custom-tabs-two-Experiencium').html(result);
+                        break;
+                    case 'LoadHabilidad':
+                        $('#custom-tabs-two-Habilidad').html(result);
+                        break;
+                    case 'LoadAusencias':
+                        $('#custom-tabs-two-Ausencias').html(result);
+                        break;
+                    case 'LoadEmpleado':
+                        $('#custom-tabs-two-Empleado').html(result);
+                        break;
+                    default:
+                        // Acción por defecto si sfuncion no coincide con ningún caso
+                        console.error('Función no reconocida:', sfuncion);
+                        break;
+                } 
+            },
+            error: function (xhr, status, error) {
+                console.error('Error al realizar la búsqueda:', error);
+            }
+        });
+    }
 
 
 

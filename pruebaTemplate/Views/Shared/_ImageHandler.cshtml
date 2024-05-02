@@ -1,0 +1,28 @@
+﻿@model ImageHandler
+
+<div class="image-preview">
+    @if (!string.IsNullOrEmpty(Model.FilePath))
+    {
+        <img src="@Model.FilePath" class="rounded-circle img-thumbnail" alt="@Model.FileName" />
+    }
+    else
+    {
+        <img src="~/images/Employee.png" class="rounded-circle img-thumbnail" alt="Default Image" />
+    }
+</div>
+
+<input type="file" id="fileInput" onchange="previewImage(event)" accept="image/*" />
+
+@section Scripts {
+    <script>
+        function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var imgElement = document.querySelector('.image-preview img');
+                imgElement.src = reader.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
+}

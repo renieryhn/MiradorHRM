@@ -51,6 +51,11 @@ public partial class Empleado
     [NotMapped]
     [DisplayName("Fotografía")]
     public IFormFile? FotoTmp { get; set; }
+
+    public string? FotografiaNombre { get; set; }
+
+    public string? FotografiaPath { get; set; }
+
     [NotMapped]
     public string? FotografiaBase64 { get; set; } = null!;
 

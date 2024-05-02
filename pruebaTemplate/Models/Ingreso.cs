@@ -15,7 +15,7 @@ public partial class Ingreso
     /// <summary>
     /// Fijo, Fórmula o Porcentaje
     /// </summary>
-    /// Salario, Por Hora, Jornal, Comisión, Horas Extra, Paga Doble, Vacaciones, Enfermedad, Días Libre, Bono, Incentivo, Otro
+    /// Salario, Por Hora, Jornal, Comisión, Horas Extra, Paga Doble, Vacaciones, Enfermedad, Días Libre, Bonificación, Incentivo, Otro
     [Display(Name = "Tipo de Ingreso")]
     public string Tipo { get; set; } = null!;
     [Display(Name = "Monto")]

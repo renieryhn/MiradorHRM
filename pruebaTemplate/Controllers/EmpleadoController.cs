@@ -767,12 +767,20 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadContactos(int id)
+        public async Task<IActionResult> LoadContactos(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoContactos.Where(e => e.IdEmpleado == id).ToListAsync();
+               
+                var query = _context.EmpleadoContactos.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.NombreContacto.Contains(filter)); 
+                }
+
+                var registros = await query.ToListAsync();
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml", registros);
             }
             catch (Exception)
@@ -782,26 +790,48 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadContratos(int id)
+        public async Task<IActionResult> LoadContratos(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoContratos.Where(e => e.IdEmpleado == id).ToListAsync();
+
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdCargoNavigation = await _context.Cargos.ToListAsync();
+                var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+
+                var query = _context.EmpleadoContratos.Where(e => e.IdEmpleado == id && e.Activo == true);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                   query = query.Where(e => e.IdCargoNavigation.EmpleadoContratos.Any(ec => ec.IdTipoContratoNavigation.NombreTipoContrato.Contains(filter)));
+                }
+
+                var registros = await query.ToListAsync();
+
                 return PartialView("~/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml", registros);
+
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
         [HttpGet]
-        public async Task<IActionResult> LoadEducacion(int id)
+        public async Task<IActionResult> LoadEducacion(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoEducacions.Where(e => e.IdEmpleado == id).ToListAsync();
+                var query = _context.EmpleadoEducacions.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.Institucion.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();             
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml", registros);
             }
             catch (Exception)
@@ -810,12 +840,19 @@ namespace PlanillaPM.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> LoadExperiencia(int id)
+        public async Task<IActionResult> LoadExperiencia(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoExperiencia.Where(e => e.IdEmpleado == id).ToListAsync();
+                var query = _context.EmpleadoExperiencia.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.Empresa.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();            
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml", registros);
             }
             catch (Exception)
@@ -824,12 +861,20 @@ namespace PlanillaPM.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> LoadHabilidad(int id)
+        public async Task<IActionResult> LoadHabilidad(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id).ToListAsync();
+
+                var query = _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.Habilidad.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml", registros);
             }
             catch (Exception)
@@ -838,12 +883,23 @@ namespace PlanillaPM.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> LoadAusencias(int id)
+        public async Task<IActionResult> LoadAusencias(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id).ToListAsync();
+
+
+                var query = _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id && e.Activo == true);
+
+                if (!string.IsNullOrEmpty(filter))
+                {                  
+                    query = query.Where(e => e.IdTipoAusenciaNavigation.EmpleadoAusencia.Any(ec => ec.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter)));
+                }
+
+                var registros = await query.ToListAsync();
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdTipoAusenciaNavigation = await _context.TipoAusencia.ToListAsync();
                 return PartialView("~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml", registros);
             }
             catch (Exception)
@@ -852,12 +908,20 @@ namespace PlanillaPM.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> LoadEmpleado(int id)
+        public async Task<IActionResult> LoadEmpleado(int id, string filter)
         {
             try
             {
                 ViewBag.IdEmpleado = id;
-                var registros = await _context.EmpleadoActivos.Where(e => e.IdEmpleado == id).ToListAsync();
+                var query = _context.EmpleadoActivos.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.IdProductoNavigation.EmpleadoActivos.Any(ec => ec.IdProductoNavigation.NombreProducto.Contains(filter)));
+                }
+
+                var registros = await query.ToListAsync();            
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdProductoNavigation = await _context.Productos.ToListAsync();
                 return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
             }
             catch (Exception)

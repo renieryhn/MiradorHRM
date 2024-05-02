@@ -85,37 +85,7 @@ namespace PlanillaPM.Controllers
 
         }
 
-        public async Task<IActionResult> _EmpleadoContactoIndex(int pg, string? filter)
-        {
-            IQueryable<EmpleadoContacto> query = _context.EmpleadoContactos;
-
-            if (!String.IsNullOrEmpty(filter))
-            {
-                query = query.Where(r => r.NombreContacto.ToLower().Contains(filter.ToLower()));
-            }
-           
-
-            ViewBag.CurrentFilter = filter;
-            
-
-            List<EmpleadoContacto> registros;
-            registros = await query.Include(e => e.IdEmpleadoNavigation).ToListAsync();
-
-
-
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-
-
-            return View(data);
-
-
-        }
+       
 
         public ActionResult Download(int id)
         {

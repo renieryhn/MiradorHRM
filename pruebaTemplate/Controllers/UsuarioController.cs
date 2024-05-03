@@ -663,18 +663,18 @@ namespace PlanillaPM.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> UpdatePersonalDataAsync(string mensaje = null)
-        {
-            if (mensaje is not null)
-            {
-                ViewData["mensaje"] = mensaje;
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> UpdatePersonalDataAsync(string mensaje = null)
+        //{
+        //    if (mensaje is not null)
+        //    {
+        //        ViewData["mensaje"] = mensaje;
+        //    }
 
            
 
-            return View();
-        }
+        //    return View();
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -718,14 +718,17 @@ namespace PlanillaPM.Controllers
                         System.IO.File.Delete(previous_path);
                     }
                 }
-                model.AvatarPath = fileName;
-                model.AvatarName = "/images/" + fileName;
+                model.AvatarPath = user.AvatarPath;
+                model.AvatarName = user.AvatarName;
             } else
             {
                 user.AvatarName = model.AvatarName;
                 user.AvatarPath = model.AvatarPath;
             }
-
+            if (model.AvatarPath == null)
+            {
+                model.AvatarPath = "/Images/Employee.png";
+            }
             user.UserName = model.UserName;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;

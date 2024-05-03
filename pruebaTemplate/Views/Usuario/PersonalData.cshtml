@@ -71,8 +71,8 @@
                         <div class="col-md-4 d-flex align-items-center justify-content-center">
                             <div class="form-group text-center">
                                 <div id="image-drop-area" style="cursor: pointer;">
-                                    <img id="profile-img" class="img-thumbnail rounded-circle" src="@Model.AvatarPath" alt="User profile picture" style="width: 300px; height: 300px; object-fit: cover;">
-                                    <span class="btn btn-danger btn-circle btn-sm position-absolute" style="top: 5px; right: 55px;" onclick="QuitarImagen(event)">
+                                    <img id="profile-img" class="img-thumbnail rounded-circle" src="@Model.AvatarPath" alt="User profile picture" style="width: 250px; height: 250px; object-fit: cover;">
+                                    <span class="btn btn-danger btn-circle-outline btn-sm position-absolute" style="top: 10px; right: 85px;" onclick="QuitarImagen(event)">
                                         <i class="fas fa-times"></i> <!-- Font Awesome icon for "x" -->
                                     </span>
                                 </div>
@@ -122,7 +122,6 @@
                     console.error("Error al cargar el menú dinámico");
                 }
             });
-            $("#input-b5").fileinput({ showCaption: false, dropZoneEnabled: false });
         });
         function validateImage(event) {
             console.log(event);

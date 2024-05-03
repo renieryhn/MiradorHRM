@@ -43,7 +43,7 @@ namespace PlanillaPM.Controllers
             var pager = new Pager(recsCount, pg, pageSize);
             int recSkip = (pg - 1) * pageSize;
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
+            this.ViewBag.Pager = pager;         
             return View(data);
         }
          public ActionResult Download()

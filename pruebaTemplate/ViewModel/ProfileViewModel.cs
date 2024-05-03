@@ -25,6 +25,10 @@ namespace PlanillaPM.ViewModel
         public byte[]? Avatar { get; set; } = null!;
 
 
+        public string? AvatarName { get; set; }
+
+        public string? AvatarPath { get; set; }
+
         [NotMapped]
         public string? AvatarBase64 { get; set; } = null!;
     }

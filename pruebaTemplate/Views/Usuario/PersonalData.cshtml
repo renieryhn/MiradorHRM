@@ -1,7 +1,10 @@
-﻿@using PlanillaPM.ViewModel;
-@model PersonalDataViewModel
+﻿@using PlanillaPM.Components
+@using PlanillaPM.ViewModel;
+@model PersonalDataViewModel;
+@using PlanillaPM.Models;
 
 @{
+    // UploadImageModel imghnd = new UploadImageModel();
     ViewData["Title"] = "Datos Personales";
     Layout = "../shared/_layout";
 }
@@ -38,48 +41,53 @@
                 <div class="callout callout-info" style="border-left-color: var(--blue);">
                     <h5>Aquí puedes actualizar tu información</h5>
                     <br />
-                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label asp-for="UserName"></label>
-                            <input asp-for="UserName" class="form-control" readonly />
-                            <span asp-validation-for="UserName" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="UserName"></label>
+                                <input asp-for="UserName" class="form-control" readonly />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" class="form-control" readonly />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber"></label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+
+
+                            </div>
+                            <br />
+                            <h3></h3>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="Email"></label>
-                            <input asp-for="Email" class="form-control" readonly />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="PhoneNumber"></label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label asp-for="Avatar" class="control-label"></label>
-                                <input type="file" asp-for="Avatar" class="form-control" class="form-control" accept="image/*" />
-                            <span asp-validation-for="Avatar" class="text-danger"></span>
-                        </div>
-                        <br />
-                        <h3></h3>
-                </div>
-                   
                         <div class="col-md-4 d-flex align-items-center justify-content-center">
                             <div class="form-group text-center">
                                 <div id="image-drop-area" style="cursor: pointer;">
-                                    <img id="profile-img" class="img-thumbnail" src="@Model.AvatarBase64" alt="User profile picture" style="width: 300px; height: 300px; object-fit: cover;">
+                                    <img id="profile-img" class="img-thumbnail rounded-circle" src="@Model.AvatarPath" alt="User profile picture" style="width: 300px; height: 300px; object-fit: cover;">
+                                    <span class="btn btn-danger btn-circle btn-sm position-absolute" style="top: 5px; right: 55px;" onclick="QuitarImagen(event)">
+                                        <i class="fas fa-times"></i> <!-- Font Awesome icon for "x" -->
+                                    </span>
                                 </div>
-                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="btn btn-success btn-rounded btn-block" for="avfile">Seleccionar</label>
+                                        <input type="file" id="avfile" asp-for="Avatar" class="btn btn-primary d-none" accept="image/*" onchange="validateImage(event)" />
+                                    </div>
+                                   
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                 
-                 </div>
-            </div>
-               
                 <br />
 
             </div>
@@ -87,13 +95,13 @@
 
             <div class="card-footer">
                 <input type="submit" value="Guardar Cambios" class="btn btn-primary" style="background-color: var(--blue);" />
-               
+
             </div>
         </form>
     </div>
     <!-- /.card -->
 
-    
+
 </div>
 
 
@@ -114,7 +122,48 @@
                     console.error("Error al cargar el menú dinámico");
                 }
             });
+            $("#input-b5").fileinput({ showCaption: false, dropZoneEnabled: false });
         });
+        function validateImage(event) {
+            console.log(event);
+            var input = event.target;
+            var file = input.files[0];
+            var fileSize = file.size / 1024; // tamaño del archivo en kilobytes
+            console.log(input);
+            // Límite máximo de tamaño de archivo en kilobytes (1 MB)
+            var maxSizeKB = 1024;
+
+            if (fileSize > maxSizeKB) {
+                // Restablecer el valor del campo de entrada de archivo
+                input.value = '';
+                // Mostrar mensaje de error al usuario
+                toastr.warning('La imagen es demasiado grande. Por favor, seleccione una imagen más pequeña.');
+
+                return false; // Detener la carga del archivo
+            }
+            // Si pasa la validación, mostrar la vista previa de la imagen
+            previewImage(event);
+        }
+
+        function previewImage(event) {
+            var input = event.target;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var dataURL = reader.result;
+                    var output = document.getElementById('profile-img');
+                    output.src = dataURL;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function QuitarImagen(event) {
+            var output = document.getElementById('profile-img');
+            var ofile = document.getElementById('avfile');
+            ofile.value = '';
+            output.src = "/images/Employee.png";
+        }
     </script>
 }
 

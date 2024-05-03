@@ -1,0 +1,78 @@
+﻿@namespace PlanillaPM.Components
+@using System.IO;
+@using Microsoft.AspNetCore.Components.Forms;
+@using PlanillaPM.Models;
+
+<h5>Cargar Imagen</h5>
+
+<InputFile @ref="fileInput" OnChange="HandleFileSelected" />
+<input type="file" asp-for="Avatar" class="form-control" accept="image/*" onchange="mostrarVistaPrevia(this)" />
+
+<button @onclick="UploadMyImage">Subir Imagen</button>
+
+@if (!string.IsNullOrEmpty(uploadedImage))
+{
+    <div>
+        <img src="@uploadedImage" alt="Imagen cargada" />
+        <button @onclick="DeleteImage">Eliminar Imagen</button>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public UploadImageModel Model { get; set; }
+
+    InputFile fileInput;
+    string uploadedImage;
+    IBrowserFile selectedFile;
+
+    async Task UploadMyImage()
+    {
+        if (selectedFile != null)
+        {
+            var file = selectedFile;
+
+            var imagePath = "images/" + file.Name; // Ruta donde se guardará la imagen en el servidor
+                                                   // Guardar la imagen en el servidor
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await file.OpenReadStream().CopyToAsync(stream);
+            }
+            // Insertar la ruta y nombre de la imagen en el modelo UploadImageModel
+            Model.UploadedImagePath = imagePath;
+            // Actualizar uploadedImage con la ruta de la imagen cargada
+            uploadedImage = imagePath;
+        }
+    }
+
+    async Task DeleteImage()
+    {
+        // Eliminar la imagen del servidor
+        if (File.Exists(uploadedImage))
+        {
+            File.Delete(uploadedImage);
+        }
+        // Eliminar la ruta y nombre de la imagen del modelo UploadImageModel
+        Model.UploadedImagePath = null;
+        // Actualizar uploadedImage a null
+        uploadedImage = null;
+    }
+
+    void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+}
+<script>
+    function mostrarVistaPrevia(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imagen-preview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

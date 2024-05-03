@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using NuGet.Packaging;
 using PlanillaPM.Models;
 using PlanillaPM.Services;
 using PlanillaPM.Servicio;
@@ -427,66 +429,57 @@ namespace PlanillaPM.Controllers
 
         }
 
-        public IActionResult Photo()
-        {
-            string avatarBase64 = string.Empty;
-
-            // Verifica si hay una cookie que contenga la imagen del avatar
-            if (Request.Cookies.TryGetValue("AvatarBase64", out avatarBase64))
-            {
-                byte[] avatarBytes = Convert.FromBase64String(avatarBase64);
-                return File(avatarBytes, "image/jpeg");
-            }
-
-            Usuario user = userManager.GetUserAsync(User).Result;
-
-            if (user != null && user.Avatar != null)
-            {
-               
-                avatarBase64 = Convert.ToBase64String(user.Avatar);
-                // Almacena la cadena Base64 en una cookie con opciones adicionales
-                Response.Cookies.Append("AvatarBase64", avatarBase64, new CookieOptions
-                {
-                   
-                    Expires = DateTimeOffset.UtcNow.AddHours(1),
-                    HttpOnly = true,  
-                    Secure = true,                   
-                    SameSite = SameSiteMode.Strict
-                });
-
-                // Devuelve la imagen del avatar
-                return File(user.Avatar, "image/jpeg");
-            }
-            else
-            {
-                
-                string wwwPath = this.Environment.WebRootPath;
-                byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
-                return File(defaultAvatar, "image/png");
-            }
-        }
-
-        //public FileContentResult Photo()
+        //public IActionResult Photo()
         //{
-        //    Usuario user = userManager.GetUserAsync(User).Result; // Espera a que la tarea se complete
+        //    string avatarBase64 = string.Empty;
 
-        //    //var prefix = "data:image/jpeg;base64;";
+        //    // Verifica si hay una cookie que contenga la imagen del avatar
+        //    if (Request.Cookies.TryGetValue("AvatarBase64", out avatarBase64))
+        //    {
+        //        byte[] avatarBytes = Convert.FromBase64String(avatarBase64);
+        //        return File(avatarBytes, "image/jpeg");
+        //    }
+
+        //    Usuario user = userManager.GetUserAsync(User).Result;
+
         //    if (user != null && user.Avatar != null)
         //    {
-        //        //string avatarBase64 = prefix + Convert.ToBase64String(user.Avatar);
-        //        //ViewData["Avatar64"] = avatarBase64;
+
+        //        avatarBase64 = Convert.ToBase64String(user.Avatar);
+        //        // Almacena la cadena Base64 en una cookie con opciones adicionales
+        //        Response.Cookies.Append("AvatarBase64", avatarBase64, new CookieOptions
+        //        {
+
+        //            Expires = DateTimeOffset.UtcNow.AddHours(1),
+        //            HttpOnly = true,  
+        //            Secure = true,                   
+        //            SameSite = SameSiteMode.Strict
+        //        });
+
+        //        // Devuelve la imagen del avatar
         //        return File(user.Avatar, "image/jpeg");
         //    }
         //    else
         //    {
-        //        //ViewData["Avatar64"] = Url.Content("~/img/avatar.png");
-        //        // Opcionalmente puedes devolver una imagen predeterminada en lugar de null
-        //        // byte[] defaultAvatar = System.IO.File.ReadAllBytes("~/img/avatar.png");
+
         //        string wwwPath = this.Environment.WebRootPath;
         //        byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
         //        return File(defaultAvatar, "image/png");
         //    }
         //}
+        [HttpGet]
+        public string Photo()
+        {
+            Usuario user = userManager.GetUserAsync(User).Result; // Espera a que la tarea se complete
+            if (user != null && user.AvatarPath != null)
+            {
+                return (user.AvatarPath.ToString());
+            }
+            else
+            {
+                return ( "/images/Employee.png");
+            }
+        }
 
         //public string result que devuelve el Rol del usuario actual.
         [HttpGet]
@@ -531,25 +524,18 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            if (user.Avatar != null)
+            if (user.AvatarName == null)
             {
-                var base64Image = Convert.ToBase64String(user.Avatar);
-                user.AvatarBase64 = "data:image/jpeg;base64," + base64Image;
-            }
-            else
-            {
-                // emple.FotografiaBase64 = "img/Employee.png";
-                user.AvatarBase64 = Url.Content("~/img/usuario.png");
+                user.AvatarPath = Url.Content("~/images/Employee.png");
             }
             var model = new PersonalDataViewModel
             {
                 UserName = user.UserName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Avatar = user.Avatar,AvatarBase64 = user.AvatarBase64
+                AvatarName = user.AvatarName,
+                AvatarPath = user.AvatarPath
             };
-
-
             return View(model);
         }
         public IActionResult ObtenerMenuDinamico()
@@ -705,14 +691,39 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-
+            string previous_path="";
+           
+            if (user.AvatarName != null)
+            {
+                previous_path = System.IO.Path.Combine(Environment.WebRootPath, "images", user.AvatarName);
+            }
             if (avatar != null && avatar.Length > 0)
             {
-                using (var memoryStream = new MemoryStream())
+                // Genera un nombre único para el archivo de imagen
+                var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(avatar.FileName);
+                // Obtiene la ruta del directorio wwwroot/images
+                var imagePath = System.IO.Path.Combine(Environment.WebRootPath, "images", fileName);
+                // Copia el contenido del archivo a la ubicación en el servidor
+                using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
-                    await avatar.CopyToAsync(memoryStream);
-                    user.Avatar = memoryStream.ToArray(); // Asignar los bytes de la imagen al campo Avatar del modelo de usuario
+                    await avatar.CopyToAsync(stream);
                 }
+                user.AvatarName= fileName;
+                user.AvatarPath= "/images/" + fileName;
+                //elimina la imagen anterior
+                if (!string.IsNullOrEmpty(previous_path))
+                {
+                    if (System.IO.File.Exists(previous_path))
+                    {
+                        System.IO.File.Delete(previous_path);
+                    }
+                }
+                model.AvatarPath = fileName;
+                model.AvatarName = "/images/" + fileName;
+            } else
+            {
+                user.AvatarName = model.AvatarName;
+                user.AvatarPath = model.AvatarPath;
             }
 
             user.UserName = model.UserName;

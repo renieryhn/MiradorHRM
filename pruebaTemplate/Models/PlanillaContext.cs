@@ -19,8 +19,11 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     [Display(Name = "Cargo de Empleados")]
     public virtual DbSet<Cargo> Cargos { get; set; }
     [Display(Name = "Clase e Empleado")]
+
     public virtual DbSet<ClaseEmpleado> ClaseEmpleados { get; set; }
+
     public DbSet<IdentityRoleClaim<string>> AspNetRoleClaims { get; set; }
+
     public virtual DbSet<Deduccion> Deduccions { get; set; }
 
     public virtual DbSet<Departamento> Departamentos { get; set; }

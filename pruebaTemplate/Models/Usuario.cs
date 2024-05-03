@@ -13,9 +13,12 @@ namespace PlanillaPM.Models
         [DisplayName("Fotografía")]
 
         public byte[]? Avatar { get; set; } = null!;
+        public string? AvatarName { get; set; } = null!;
+        public string? AvatarPath { get; set; } = null!;
 
         [NotMapped]
         public string? AvatarBase64 { get; set; } = null!;
+
 
     }
 }

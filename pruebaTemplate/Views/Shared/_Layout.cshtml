@@ -129,12 +129,9 @@
         <div class="sidebar">
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="profile">
-                    <img src="@Url.Action("Photo", "Usuario")" alt="Image" class="profile-user-img img-fluid img-circle">
-                    <h5 class="name"><strong>@User.Identity.Name</strong></h5>
-                    @{
-                        var role = @Url.Action("GetRole", "Usuario");
-                    }
-                    <span class="role"><strong>@role</strong></span>                  
+                    <img id="iFotoPerfil" src="" class="profile-user-img img-fluid img-circle">
+                    <h5 class="name"><strong>@User.Identity.Name</strong></h5>             
+                    <strong><span id="srol" class="role">Administrador</span></strong>
                 </div>
             </div>
 
@@ -439,6 +436,9 @@
 
 
         <script>
+            $(document).ready(function () {
+                LoadUsrData()
+            });
 
             $('[data-mask]').inputmask()
 
@@ -471,7 +471,31 @@
             $(function () {
                 bsCustomFileInput.init();
             });
-
+            function LoadUsrData() {
+                
+                $.ajax({
+                    url: '/Usuario/Photo',
+                    type: 'GET',
+                    success: function (result) {
+                        $('#iFotoPerfil').attr('src', result);
+                    },
+                    error: function () {
+                        // Manejo de errores si es necesario
+                    }
+                });
+                $.ajax({
+                    url: '/Usuario/GetRole',
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+                        var miSpan = document.getElementById("srol");
+                        miSpan.innerText = result;
+                    },
+                    error: function () {
+                        // Manejo de errores si es necesario
+                    }
+                });
+            }
         </script>
 
 

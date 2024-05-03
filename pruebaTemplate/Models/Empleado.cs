@@ -52,7 +52,7 @@ public partial class Empleado
     [DisplayName("Fotografía")]
     public IFormFile? FotoTmp { get; set; }
 
-    public string? FotografiaNombre { get; set; }
+    public string? FotografiaName { get; set; }
 
     public string? FotografiaPath { get; set; }
 

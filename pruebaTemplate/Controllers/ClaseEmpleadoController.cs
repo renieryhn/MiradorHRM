@@ -46,6 +46,7 @@ namespace PlanillaPM.Controllers
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
             var planillaContext = _context.ClaseEmpleados.Include(c => c.IdHorarioNavigation);
+            var IdHorarioNavigation = await _context.Horarios.ToListAsync();
             return View(data);
         }
          public ActionResult Download()

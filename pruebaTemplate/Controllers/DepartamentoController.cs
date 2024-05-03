@@ -45,7 +45,10 @@ namespace PlanillaPM.Controllers
             int recSkip = (pg - 1) * pageSize;
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
+
             var planillaContext = _context.Departamentos.Include(d => d.IdDivisionNavigation);
+
+            var IdDivisionNavigation = await _context.Divisions.ToListAsync();
             return View(data);
         }
          public ActionResult Download()

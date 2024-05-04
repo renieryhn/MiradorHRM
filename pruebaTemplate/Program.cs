@@ -45,18 +45,17 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
     {
-        new CultureInfo(Config.enUSCulture),
-        new CultureInfo("es")
+        new CultureInfo(Config.enUSCulture)
     };
 
-    options.DefaultRequestCulture = new RequestCulture(culture: Config.enUSCulture, uiCulture: Config.enUSCulture);
+    options.DefaultRequestCulture = new RequestCulture(Config.enUSCulture);
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 
     options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
     {
         // My custom request culture logic
-        return await Task.FromResult(new ProviderCultureResult("es"));
+        return await Task.FromResult(new ProviderCultureResult(Config.enUSCulture));
     }));
 });
 
@@ -166,4 +165,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

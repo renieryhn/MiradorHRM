@@ -2,6 +2,6 @@
 {
     public class Config
     {
-        public const string enUSCulture = "en-HN";
+        public const string enUSCulture = "es-HN";
     }
 }

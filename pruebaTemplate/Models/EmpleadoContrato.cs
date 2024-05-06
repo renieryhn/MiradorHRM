@@ -28,12 +28,16 @@ public partial class EmpleadoContrato
     [Display(Name = "Vegencia del Contrato (Meses)")]
     [Required(ErrorMessage = "El campo Vegencia del Contrato es obligatorio.")]
     public int VigenciaMeses { get; set; }
+
     [Display(Name = "Fecha de Inicio")]
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     [Required(ErrorMessage = "La Fecha de Inicio es obligatorio.")]
     public DateOnly FechaInicio { get; set; }
     [Display(Name = "Fecha de Finalización")]
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     [Required(ErrorMessage = "La Fecha de Finalización es obligatorio.")]
     public DateOnly FechaFin { get; set; }
+
     [Display(Name = "Salario")]
     [Required(ErrorMessage = "El Salario es obligatorio.")]
     [RegularExpression(@"^\d+(\.\d+)?$", ErrorMessage = "El campo Salario debe ser un número.")]

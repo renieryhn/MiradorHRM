@@ -11,5 +11,6 @@ namespace PlanillaPM.Models
         public int CantidadCargos { get; set; }
         public List<Empleado> ProximosCumpleañeros { get; set; }
         public List<Empleado> LicenciasPorVencer { get; set; }
+        public List<EmpleadoContrato> ContratosPorVencer { get; set; }
     }
 }

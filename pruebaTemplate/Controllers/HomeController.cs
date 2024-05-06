@@ -76,6 +76,7 @@ namespace pruebaTemplate.Controllers
 
             var proximosCumpleañeros = await ObtenerProximosCumpleañeros();
             var licenciasPorVencer = await ObtenerLicenciasPorVencer();
+            var contratosPorVencer = await ObtenerContratosPorVencer();
 
             var user = await _userManager.GetUserAsync(User);
 
@@ -93,8 +94,13 @@ namespace pruebaTemplate.Controllers
                 CantidadPerfilesCompletos = cantidadPerfilesCompletos,
                 CantidadCargos = cantidadCargos,
                 ProximosCumpleañeros = proximosCumpleañeros,
-                LicenciasPorVencer = licenciasPorVencer
+                LicenciasPorVencer = licenciasPorVencer,
+                ContratosPorVencer = contratosPorVencer
             };
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            var IdTipoContratoNavigation = await _context.EmpleadoContratos.ToListAsync();
+
 
             return View(viewModel);
         }
@@ -143,7 +149,31 @@ namespace pruebaTemplate.Controllers
             return licenciasPorVencer;
         }
 
-        
+        private async Task<List<EmpleadoContrato>> ObtenerContratosPorVencer()
+        {
+            // Obtener la fecha de hoy
+            DateTime hoy = DateTime.Today;
+
+            // Calcular la fecha de hace 50 días
+            DateTime haceCincuentaDias = hoy.AddDays(50);
+
+            // Convertir hoy a DateOnly
+            var hoyDateOnly = DateOnly.FromDateTime(DateTime.Today);
+
+            // Convertir haceCincuentaDias a DateOnly
+            var haceCincuentaDiasDateOnly = DateOnly.FromDateTime(haceCincuentaDias);
+
+            var contratosPorVencer = await _context.EmpleadoContratos
+                .Where(e => e.Activo &&
+                    e.FechaFin >= hoyDateOnly && e.FechaFin <= haceCincuentaDiasDateOnly)
+                .OrderBy(e => e.FechaFin)
+                .ToListAsync();
+
+            return contratosPorVencer;
+        }
+
+
+
 
 
 

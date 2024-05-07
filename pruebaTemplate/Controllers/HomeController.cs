@@ -35,8 +35,7 @@ namespace pruebaTemplate.Controllers
             _userManager = userManager;
         }
         public async Task<IActionResult> IndexAsync()
-        {
-            
+        {          
 
             // Consulta para contar la cantidad de empleados
             var cantidadEmpleados = await _context.Empleados.Where(e => e.Activo).CountAsync();
@@ -52,7 +51,7 @@ namespace pruebaTemplate.Controllers
              //&& !string.IsNullOrEmpty(e.NumeroLicencia)
              //&& e.FechaVencimientoLicencia != null
              && !string.IsNullOrEmpty(e.Genero)
-             && e.Fotografia != null
+             //&& e.Fotografia != null
              && !string.IsNullOrEmpty(e.Direccion)
              && !string.IsNullOrEmpty(e.Telefono)
              && !string.IsNullOrEmpty(e.CiudadResidencia)
@@ -87,7 +86,7 @@ namespace pruebaTemplate.Controllers
                     UserName = user.UserName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    Avatar = user.Avatar
+                   
                 },
                 CantidadEmpleados = cantidadEmpleados,
                 CantidadUsuarios = cantidadUsuarios,
@@ -174,10 +173,6 @@ namespace pruebaTemplate.Controllers
 
 
 
-
-
-
-
         public IActionResult Privacy()
         {
             return View();
@@ -194,37 +189,7 @@ namespace pruebaTemplate.Controllers
 
    
 
-        [HttpPost]
-        public IActionResult ConvertirWordAPdf(IFormFile file)
-        {
-            if (file != null && file.Length > 0)
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    // Copiar el archivo cargado a un MemoryStream
-                    file.CopyTo(ms);
-
-                    // Convertir el documento de Word a PDF
-                    using (DocIORenderer renderer = new DocIORenderer())
-                    {
-                        // Renderizar el documento de Word a PDF
-                        PdfDocument pdfDocument = renderer.ConvertToPDF(ms);
-
-                        // Guardar el PDF en MemoryStream
-                        MemoryStream pdfStream = new MemoryStream();
-                        pdfDocument.Save(pdfStream);
-
-                        // Devolver el PDF como descarga al navegador
-                        return File(pdfStream.ToArray(), "application/pdf", "documento.pdf");
-                    }
-                }
-            }
-            else
-            {
-                // Si no se selecciona ningún archivo, redirigir a la página de inicio
-                return RedirectToAction("Index");
-            }
-        }
+       
 
 
     }

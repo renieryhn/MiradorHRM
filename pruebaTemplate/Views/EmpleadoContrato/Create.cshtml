@@ -45,21 +45,20 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            
-                                        
+                                                             
                             <div class="form-group">
                                 <label asp-for="VigenciaMeses" class="control-label"></label>
-                                <input asp-for="VigenciaMeses" class="form-control" required />
+                                <input asp-for="VigenciaMeses" class="form-control" id="ivigencia" required onchange="calcular_ffin()" />
                                 <span asp-validation-for="VigenciaMeses" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaInicio" class="control-label"></label>
-                                <input asp-for="FechaInicio" class="form-control" type="date" required />
+                                <input asp-for="FechaInicio" class="form-control" type="date" id="fini" required onchange="calcular_ffin()" />
                                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaFin" class="control-label"></label>
-                                <input asp-for="FechaFin" class="form-control" type="date" required />
+                                <input id="ffin" asp-for="FechaFin" class="form-control"  readonly required />
                                 <span asp-validation-for="FechaFin" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -115,6 +114,23 @@
                     e.preventDefault();
                 }
             });
+
+            function calcular_ffin() {
+                var fechaInicio = new Date($("#fini").val());
+                var vigencia = parseInt($("#ivigencia").val());
+                var fechaFin = new Date(fechaInicio.setMonth(fechaInicio.getMonth() + vigencia));
+
+                var dia = fechaFin.getDate();
+                var mes = fechaFin.getMonth() + 1; // Sumar 1 para obtener el mes real
+                var anio = fechaFin.getFullYear();
+
+                // Agregar ceros a la izquierda si es necesario
+                var diaStr = (dia < 10) ? '0' + dia : dia;
+                var mesStr = (mes < 10) ? '0' + mes : mes;
+
+                var fecha = diaStr + "/" + mesStr + "/" + anio;
+                $("#ffin").val(fecha);
+            }
         </script>
     }
 }

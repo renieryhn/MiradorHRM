@@ -30,7 +30,7 @@ public partial class EmpleadoContrato
     public int VigenciaMeses { get; set; }
 
     [Display(Name = "Fecha de Inicio")]
-    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+    //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     [Required(ErrorMessage = "La Fecha de Inicio es obligatorio.")]
     public DateOnly FechaInicio { get; set; }
     [Display(Name = "Fecha de Finalización")]

@@ -9,6 +9,8 @@
     <h5 >Dashboard - Recursos Humanos</h5>
     <section class="content">
         <div class="container-fluid">
+
+
             <!-- Small boxes (Stat box) -->
             <div class="row">
                 <div class="col-lg-3 col-6">                 
@@ -72,6 +74,222 @@
                 <!-- ./col -->
             </div>
             <!-- /.row -->
+            <div class="row">
+                <section class="col-lg-4 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Próximos  Cumpleañeros</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-bars"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Fecha Nacimiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var empleado in Model.ProximosCumpleañeros)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => empleado.NombreCompleto)</td>
+                                            <td>
+                                                @{
+                                                    // Obtener la fecha de nacimiento del empleado y convertirla a DateTime?
+                                                    DateTime? fechaNacimiento = empleado.FechaNacimiento.ToDateTime(TimeOnly.MinValue);
+
+                                                    if (fechaNacimiento.HasValue)
+                                                    {
+                                                        // Calcular la diferencia en días entre la fecha de nacimiento y la fecha actual
+                                                        int diasRestantes = (fechaNacimiento.Value.AddYears(DateTime.Today.Year - fechaNacimiento.Value.Year) - DateTime.Today).Days;
+
+                                                        // Determinar el tipo de etiqueta de advertencia según los días restantes
+                                                        string claseEtiqueta = "";
+                                                        string etiqueta = "";
+                                                        if (diasRestantes <= 5)
+                                                        {
+                                                            claseEtiqueta = "badge bg-danger";
+                                                            etiqueta = "Clumpleañero";
+                                                        }
+                                                        else if (diasRestantes <= 10)
+                                                        {
+                                                            claseEtiqueta = "badge bg-warning";
+                                                            etiqueta = "Próximo";
+                                                        }
+                                                        else if (diasRestantes <= 20)
+                                                        {
+                                                            claseEtiqueta = "badge bg-info";
+                                                            etiqueta = "Importante";
+                                                        }
+                                                        else
+                                                        {
+                                                            claseEtiqueta = "badge bg-success";
+                                                            etiqueta = "Normal";
+                                                        }
+
+                                                        // Mostrar la etiqueta de advertencia y la fecha de nacimiento
+                                                        <span class="@claseEtiqueta">@etiqueta</span> @fechaNacimiento.Value.ToShortDateString()
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section class="col-lg-4 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Licencias por Vencer</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-bars"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Numero Licencia</th>
+                                        <th>Fecha de Vencimiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var empleado in Model.LicenciasPorVencer)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => empleado.NombreCompleto)</td>
+                                            <td>@Html.DisplayFor(modelItem => empleado.NumeroLicencia)</td>
+                                            <td>
+                                                @{
+                                                    // Convertir empleado.FechaVencimientoLicencia a DateTime antes de la resta
+                                                    DateTime fechaVencimiento = empleado.FechaVencimientoLicencia.HasValue ? new DateTime(empleado.FechaVencimientoLicencia.Value.Year, empleado.FechaVencimientoLicencia.Value.Month, empleado.FechaVencimientoLicencia.Value.Day) : DateTime.MinValue;
+
+                                                    // Calcular la diferencia en días entre la fecha de vencimiento y la fecha actual
+                                                    int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
+
+                                                    // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
+                                                    string etiqueta = string.Empty;
+                                                    string claseEtiqueta = string.Empty;
+                                                    if (diasRestantes <= 10)
+                                                    {
+                                                        etiqueta = "Urgente";
+                                                        claseEtiqueta = "badge bg-danger";
+                                                    }
+                                                    else if (diasRestantes <= 20)
+                                                    {
+                                                        etiqueta = "Importante";
+                                                        claseEtiqueta = "badge bg-warning";
+                                                    }
+                                                    else if (diasRestantes <= 30)
+                                                    {
+                                                        etiqueta = "Próximo";
+                                                        claseEtiqueta = "badge bg-info";
+                                                    }
+                                                }
+
+                                                <!-- Mostrar la etiqueta de advertencia -->
+                                                <span class="badge @claseEtiqueta">@etiqueta</span>
+
+                                                <!-- Mostrar la fecha de vencimiento -->
+                                                @Html.DisplayFor(modelItem => empleado.FechaVencimientoLicencia)
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section class="col-lg-4 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Contratos por Vencer</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    <i class="fas fa-bars"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Tipo de contrato</th>
+                                        <th>Fecha de Vencimiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var contrato in Model.ContratosPorVencer)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
+                                            <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
+                                            <td>
+                                                @{
+                                                    // Crear un nuevo objeto DateTime usando el año, mes y día de la fecha de vencimiento del contrato
+                                                    DateTime fechaVencimiento = new DateTime(contrato.FechaFin.Year, contrato.FechaFin.Month, contrato.FechaFin.Day);
+
+                                                    // Calcular la diferencia en días entre la fecha de vencimiento del contrato y la fecha actual
+                                                    int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
+
+
+                                                    // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
+                                                    string etiqueta = string.Empty;
+                                                    string claseEtiqueta = string.Empty;
+                                                    if (diasRestantes <= 10)
+                                                    {
+                                                        etiqueta = "Urgente";
+                                                        claseEtiqueta = "badge bg-danger";
+                                                    }
+                                                    else if (diasRestantes <= 20)
+                                                    {
+                                                        etiqueta = "Importante";
+                                                        claseEtiqueta = "badge bg-warning";
+                                                    }
+                                                    else if (diasRestantes <= 30)
+                                                    {
+                                                        etiqueta = "Próximo";
+                                                        claseEtiqueta = "badge bg-info";
+                                                    }
+                                                }
+
+                                                <!-- Mostrar la etiqueta de advertencia -->
+                                                <span class="badge @claseEtiqueta">@etiqueta</span>
+
+                                                <!-- Mostrar la fecha de vencimiento del contrato -->
+                                                @Html.DisplayFor(modelItem => contrato.FechaFin)
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
@@ -161,234 +379,10 @@
                 <!-- right col -->
             </div>
             <!-- /.row (main row) -->
-            <div class="row">
-                <section class="col-lg-5 connectedSortable">
-                    <div class="card">
-              <div class="card-header border-0">
-                    <h3 class="card-title">Próximos  Cumpleañeros</h3>
-                <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-sm">
-                    <i class="fas fa-download"></i>
-                  </a>
-                  <a href="#" class="btn btn-tool btn-sm">
-                    <i class="fas fa-bars"></i>
-                  </a>
-                </div>
-              </div>
-              <div class="card-body table-responsive p-0">
-                <table class="table table-striped table-valign-middle">
-                  <thead>
-                  <tr>
-                    <th>Nombre Completo</th>                 
-                    <th>Fecha Nacimiento</th>                  
-                  </tr>
-                  </thead>
-                  <tbody>
-                            @foreach (var empleado in Model.ProximosCumpleañeros)
-                            {
-                                <tr>
-                                    <td>@Html.DisplayFor(modelItem => empleado.NombreCompleto)</td>
-                                            <td>
-                                                @{
-                                                    // Obtener la fecha de nacimiento del empleado y convertirla a DateTime?
-                                                    DateTime? fechaNacimiento = empleado.FechaNacimiento.ToDateTime(TimeOnly.MinValue);
-
-                                                    if (fechaNacimiento.HasValue)
-                                                    {
-                                                        // Calcular la diferencia en días entre la fecha de nacimiento y la fecha actual
-                                                        int diasRestantes = (fechaNacimiento.Value.AddYears(DateTime.Today.Year - fechaNacimiento.Value.Year) - DateTime.Today).Days;
-
-                                                        // Determinar el tipo de etiqueta de advertencia según los días restantes
-                                                        string claseEtiqueta = "";
-                                                        string etiqueta = "";
-                                                        if (diasRestantes <= 5)
-                                                        {
-                                                            claseEtiqueta = "badge bg-danger";
-                                                            etiqueta = "Clumpleañero";
-                                                        }
-                                                        else if (diasRestantes <= 10)
-                                                        {
-                                                            claseEtiqueta = "badge bg-warning";
-                                                            etiqueta = "Próximo";
-                                                        }
-                                                        else if (diasRestantes <= 20)
-                                                        {
-                                                            claseEtiqueta = "badge bg-info";
-                                                            etiqueta = "Importante";
-                                                        }
-                                                        else
-                                                        {
-                                                            claseEtiqueta = "badge bg-success";
-                                                            etiqueta = "Normal";
-                                                        }
-
-                                                        // Mostrar la etiqueta de advertencia y la fecha de nacimiento
-                                                        <span class="@claseEtiqueta">@etiqueta</span> @fechaNacimiento.Value.ToShortDateString()
-                                                    }
-                                                }
-                                            </td>
-                                </tr>
-                            }
-                  </tbody>
-                </table>
-              </div>
-            </div>
-                </section>
-                <section class="col-lg-7 connectedSortable">
-                    <div class="card">
-                        <div class="card-header border-0">
-                            <h3 class="card-title">Licencias por Vencer</h3>
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-striped table-valign-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre Completo</th>
-                                        <th>Numero Licencia</th>
-                                        <th>Fecha de Vencimiento</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var empleado in Model.LicenciasPorVencer)
-                                    {
-                                        <tr>
-                                            <td>@Html.DisplayFor(modelItem => empleado.NombreCompleto)</td>
-                                            <td>@Html.DisplayFor(modelItem => empleado.NumeroLicencia)</td>
-                                            <td>
-                                                @{
-                                                    // Convertir empleado.FechaVencimientoLicencia a DateTime antes de la resta
-                                                    DateTime fechaVencimiento = empleado.FechaVencimientoLicencia.HasValue ? new DateTime(empleado.FechaVencimientoLicencia.Value.Year, empleado.FechaVencimientoLicencia.Value.Month, empleado.FechaVencimientoLicencia.Value.Day) : DateTime.MinValue;
-
-                                                    // Calcular la diferencia en días entre la fecha de vencimiento y la fecha actual
-                                                    int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
-
-                                                    // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
-                                                    string etiqueta = string.Empty;
-                                                    string claseEtiqueta = string.Empty;
-                                                    if (diasRestantes <= 10)
-                                                    {
-                                                        etiqueta = "Urgente";
-                                                        claseEtiqueta = "badge bg-danger";
-                                                    }
-                                                    else if (diasRestantes <= 20)
-                                                    {
-                                                        etiqueta = "Importante";
-                                                        claseEtiqueta = "badge bg-warning";
-                                                    }
-                                                    else if (diasRestantes <= 30)
-                                                    {
-                                                        etiqueta = "Próximo";
-                                                        claseEtiqueta = "badge bg-info";
-                                                    }
-                                                }
-
-                                                <!-- Mostrar la etiqueta de advertencia -->
-                                                <span class="badge @claseEtiqueta">@etiqueta</span>
-
-                                                <!-- Mostrar la fecha de vencimiento -->
-                                                @Html.DisplayFor(modelItem => empleado.FechaVencimientoLicencia)
-                                            </td>
-
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-                <section class="col-lg-7 connectedSortable">
-                    <div class="card">
-                        <div class="card-header border-0">
-                            <h3 class="card-title">Contratos por Vencer</h3>
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-striped table-valign-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre Completo</th>
-                                        <th>Tipo de contrato</th>
-                                        <th>Fecha de Vencimiento</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var contrato in Model.ContratosPorVencer)
-                                    {
-                                        <tr>
-                                            <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
-                                            <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
-                                            <td>
-                                                @{
-                                                    // Crear un nuevo objeto DateTime usando el año, mes y día de la fecha de vencimiento del contrato
-                                                    DateTime fechaVencimiento = new DateTime(contrato.FechaFin.Year, contrato.FechaFin.Month, contrato.FechaFin.Day);
-
-                                                    // Calcular la diferencia en días entre la fecha de vencimiento del contrato y la fecha actual
-                                                    int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
-         
-
-                                                    // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
-                                                    string etiqueta = string.Empty;
-                                                    string claseEtiqueta = string.Empty;
-                                                    if (diasRestantes <= 10)
-                                                    {
-                                                        etiqueta = "Urgente";
-                                                        claseEtiqueta = "badge bg-danger";
-                                                    }
-                                                    else if (diasRestantes <= 20)
-                                                    {
-                                                        etiqueta = "Importante";
-                                                        claseEtiqueta = "badge bg-warning";
-                                                    }
-                                                    else if (diasRestantes <= 30)
-                                                    {
-                                                        etiqueta = "Próximo";
-                                                        claseEtiqueta = "badge bg-info";
-                                                    }
-                                                }
-
-                                                <!-- Mostrar la etiqueta de advertencia -->
-                                                <span class="badge @claseEtiqueta">@etiqueta</span>
-
-                                                <!-- Mostrar la fecha de vencimiento del contrato -->
-                                                @Html.DisplayFor(modelItem => contrato.FechaFin)
-                                            </td>
-                                        </tr>
-                                    }
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
             
-            </div>
         </div><!-- /.container-fluid -->
     </section>
 </div>
-
-
-<form asp-controller="Home" asp-action="ConvertirWordAPdf" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="file">Seleccionar archivo de Word:</label>
-        <input type="file" name="file" id="file" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Convertir a PDF</button>
-</form>
 
 
 

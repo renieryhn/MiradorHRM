@@ -164,14 +164,24 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            //if (EmpleadoSeleccionado.Fotografia != null)
+            //{
+            //    var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
+            //    EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+            //}
+            //else
+            //{
+            //    EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
+            //}
+
             if (EmpleadoSeleccionado.Fotografia != null)
             {
-                var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
-                EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var nombreArchivo = EmpleadoSeleccionado.FotografiaName;
             }
             else
             {
-                EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                // emple.FotografiaBase64 = "img/Employee.png";
+                EmpleadoSeleccionado.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
             }
 
             var viewModel = new EmpleadoViewModel

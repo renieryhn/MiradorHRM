@@ -21,12 +21,21 @@
                     <h5>Informacion Personal</h5>
                     <br />
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="text-center" id="image-drop-area" style="cursor: pointer;">
-                                    <img id="profile-img" class="profile-user-img img-fluid img-circle" src="~/img/Employee.png" alt="User profile picture">
+                        <div class="col-md-4 ">
+                            <div class="form-group text-center">
+                                <div id="image-drop-area" style="cursor: pointer;">
+                                    <img id="profile-img" class="img-thumbnail rounded-circle" src="/EmpleadoImg/Employee.png" alt="User profile picture" style="width: 250px; height: 250px; object-fit: cover;">
+                                    <span class="btn btn-danger btn-circle-outline btn-sm position-absolute" style="top: 10px; right: 85px;" onclick="QuitarImagen(event)">
+                                        <i class="fas fa-times"></i> <!-- Font Awesome icon for "x" -->
+                                    </span>
                                 </div>
-                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="btn btn-success btn-rounded btn-block" for="avfile">Seleccionar</label>
+                                        <input type="file" id="avfile" asp-for="Fotografia" class="btn btn-primary d-none" accept="image/*" onchange="validateImage(event)" />
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
 
@@ -43,18 +52,7 @@
                                 <input asp-for="ApellidoEmpleado" class="form-control" required />
                                 <span asp-validation-for="ApellidoEmpleado" class="text-danger"></span>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Fotografia" class="control-label"></label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="customFile" asp-for="FotoTmp" accept="image/*" onchange="validateImage(event)" />
-                                    <label class="custom-file-label" for="customFile"></label>
-                                    <span asp-validation-for="Fotografia" class="text-danger"></span>
-                                </div>
-                                <span asp-validation-for="Fotografia" class="text-danger"></span>
-                            </div>
-                        </div>
+                        </div>                    
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="CodigoInterno" class="control-label"></label>
@@ -320,15 +318,25 @@
             previewImage(event);
         }
 
+
         function previewImage(event) {
             var input = event.target;
-            var reader = new FileReader();
-            reader.onload = function () {
-                var dataURL = reader.result;
-                var output = document.getElementById('profile-img');
-                output.src = dataURL;
-            };
-            reader.readAsDataURL(input.files[0]);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var dataURL = reader.result;
+                    var output = document.getElementById('profile-img');
+                    output.src = dataURL;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function QuitarImagen(event) {
+            var output = document.getElementById('profile-img');
+            var ofile = document.getElementById('avfile');
+            ofile.value = '';
+            output.src = "/EmpleadoImg/Employee.png";
         }
     </script>
 </div>

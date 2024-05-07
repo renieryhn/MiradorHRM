@@ -729,6 +729,9 @@ namespace PlanillaPM.Controllers
             {
                 model.AvatarPath = "/Images/Employee.png";
             }
+
+
+
             user.UserName = model.UserName;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;

@@ -15,7 +15,7 @@
         
         <li class="nav-item d-none d-sm-inline-block mr-3">
             <div class="alert alert-success" style="width: 250px; height: 40px; display: flex; align-items: center; margin: auto;">
-                <img alt="Avatar" class="table-avatar rounded-circle" src="@Model.EmpleadoSeleccionado.FotografiaBase64" style="height: 30px; width: 30px;">
+                <img alt="Avatar" class="table-avatar rounded-circle" src="@Model.EmpleadoSeleccionado.FotografiaPath" style="height: 30px; width: 30px;">
                 <div class="vr" style="margin: 0 10px; width: 2px;"></div>
                 <input type="hidden" id="idEmpleado" name="idEmpleado" value="@(ViewBag.IdEmpleado ?? "")" />
                 <span id="nombreEmpleado" class="label label-info " style="max-width: 250px;">@(ViewBag.NombreEmpleado ?? "Seleccionar Empleado")</span>

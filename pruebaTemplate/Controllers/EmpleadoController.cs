@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.Identity;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
+using Microsoft.AspNet.Identity;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 
 
@@ -35,16 +37,19 @@ namespace PlanillaPM.Controllers
     public class EmpleadoController : Controller
     {
         private readonly PlanillaContext _context;
-        private readonly UserManager<Usuario> _userManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<Usuario> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-       
+        private IWebHostEnvironment Environment;
 
-        public EmpleadoController(PlanillaContext context, UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor)
+
+        public EmpleadoController(PlanillaContext context, Microsoft.AspNetCore.Identity.UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment environment)
         {
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
-           
+            Environment = environment;
+        
+
         }
 
         [HttpPost]
@@ -337,14 +342,14 @@ namespace PlanillaPM.Controllers
 
             foreach (var empleado in registros)
             {
-                if (empleado.Fotografia != null)
+                if (empleado.FotografiaName != null)
                 {
-                    var base64Image = Convert.ToBase64String(empleado.Fotografia);
-                    empleado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                    var nombreArchivo = empleado.FotografiaPath;
+
                 }
                 else
                 {
-                    empleado.FotografiaBase64 = "img/Employee.png";
+                    empleado.FotografiaPath = "EmpleadoImg/Employee.png";
                 }
             }
             var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
@@ -412,14 +417,13 @@ namespace PlanillaPM.Controllers
 
             if (emple.Fotografia != null)
             {
-                var base64Image = Convert.ToBase64String(emple.Fotografia);
-                emple.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var nombreArchivo = emple.FotografiaName;
                 //emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
             }
             else
             {
                 // emple.FotografiaBase64 = "img/Employee.png";
-                emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                emple.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
             }
 
             
@@ -443,6 +447,7 @@ namespace PlanillaPM.Controllers
         // GET: Empleado/Create
         public IActionResult Create()
         {
+            
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(EstadoCivilEmpleado));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco");
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo");
@@ -458,7 +463,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile FotoTmp)
+        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile Fotografia)
         {
 
             try
@@ -473,16 +478,29 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    if (FotoTmp != null && FotoTmp.Length > 0)
+
+                    if (Fotografia != null && Fotografia.Length > 0)
                     {
-                        using (var memoryStream = new MemoryStream())
+                        // Genera un nombre único para el archivo de imagen
+                        var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Fotografia.FileName);
+                        // Obtiene la ruta del directorio wwwroot/images
+                        var imagePath = System.IO.Path.Combine(Environment.WebRootPath, "EmpleadoImg", fileName);
+                        // Copia el contenido del archivo a la ubicación en el servidor
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
                         {
-                            await FotoTmp.CopyToAsync(memoryStream);
-                            empleado.Fotografia = memoryStream.ToArray();
+                            await Fotografia.CopyToAsync(stream);
                         }
+                        empleado.FotografiaName = fileName;
+                        empleado.FotografiaPath = "/EmpleadoImg/" + fileName;
+                    }
+                    else
+                    {
+                        empleado.FotografiaName = "Employee.png"; // Establece un nombre de imagen predeterminado si no se proporciona ninguna imagen
+                        empleado.FotografiaPath = "/EmpleadoImg/" + empleado.FotografiaName; // Establece la ruta de la imagen predeterminada
                     }
                     _context.Add(empleado);
                     await _context.SaveChangesAsync();
+
                     TempData["mensaje"] = "Empleado creado exitosamente.";
                     return RedirectToAction(nameof(Index));
                 }
@@ -526,13 +544,13 @@ namespace PlanillaPM.Controllers
 
             if (empleado.Fotografia != null)
             {
-                var base64Image = Convert.ToBase64String(empleado.Fotografia);
-                empleado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var nombreArchivo = empleado.FotografiaName;
+
             }
             else
             {
                 // emple.FotografiaBase64 = "img/Employee.png";
-                empleado.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                empleado.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
             }
 
 
@@ -553,7 +571,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Fotografia,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile FotoTmp)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,AvatarName,AvatarPath,Avatar,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia)
         {
 
 
@@ -568,15 +586,20 @@ namespace PlanillaPM.Controllers
                 if (ModelState.IsValid)
                 {
                     SetCamposAuditoria(empleado, false);
-                    if (FotoTmp != null && FotoTmp.Length > 0)
+                    if (Fotografia != null && Fotografia.Length > 0)
                     {
-                        // Si se proporciona un nuevo archivo de imagen, guarda ese archivo.
-                        using (var memoryStream = new MemoryStream())
+                        // Genera un nombre único para el archivo de imagen
+                        var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Fotografia.FileName);
+                        // Obtiene la ruta del directorio wwwroot/images
+                        var imagePath = System.IO.Path.Combine(Environment.WebRootPath, "EmpleadoImg", fileName);
+                        // Copia el contenido del archivo a la ubicación en el servidor
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
                         {
-                            await FotoTmp.CopyToAsync(memoryStream);
-                            empleado.Fotografia = memoryStream.ToArray();
+                            await Fotografia.CopyToAsync(stream);
                         }
-                    }                  
+                        empleado.FotografiaName = fileName;
+                        empleado.FotografiaPath = "/EmpleadoImg/" + fileName;
+                    }
                     _context.Update(empleado);
                     await _context.SaveChangesAsync();
                     TempData["mensaje"] = "Empleado actualizado exitosamente.";
@@ -622,17 +645,16 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            
             if (emple.Fotografia != null)
             {
-                var base64Image = Convert.ToBase64String(emple.Fotografia);
-                emple.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var nombreArchivo = emple.FotografiaName;
             }
             else
             {
                 // emple.FotografiaBase64 = "img/Employee.png";
-                emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                emple.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
             }
-
             var empleado = await _context.Empleados
                 .Include(e => e.IdBancoNavigation)
                 .Include(e => e.IdCargoNavigation)
@@ -742,15 +764,17 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            if (EmpleadoSeleccionado.Fotografia != null)
+            
+            if (EmpleadoSeleccionado.FotografiaName != null)
             {
-                var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
-                EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
+                var nombreArchivo = EmpleadoSeleccionado.FotografiaPath;
             }
             else
             {
-                EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
+                // emple.FotografiaBase64 = "img/Employee.png";
+                EmpleadoSeleccionado.FotografiaPath = Url.Content("~/EmpleadoImg/Employee.png");
             }
+
 
             var viewModel = new EmpleadoViewModel
             {

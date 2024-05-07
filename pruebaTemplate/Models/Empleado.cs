@@ -45,19 +45,20 @@ public partial class Empleado
     [Required(ErrorMessage = "El género es obligatorio.")]
     public string? Genero { get; set; }
 
-    [DisplayName("Fotografía")]
-    public byte[]? Fotografia { get; set; } = null!;
+    //[DisplayName("Fotografía")]
+    //public byte[]? Fotografia { get; set; } = null!;
 
     [NotMapped]
     [DisplayName("Fotografía")]
-    public IFormFile? FotoTmp { get; set; }
+    public byte[] Fotografia { get; set; } = null!;
+
 
     public string? FotografiaName { get; set; }
 
     public string? FotografiaPath { get; set; }
 
     [NotMapped]
-    public string? FotografiaBase64 { get; set; } = null!;
+    //public string? FotografiaBase64 { get; set; } = null!;
 
     [DisplayName("Dirección")]
     public string? Direccion { get; set; }

@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using static PlanillaPM.cGeneralFun;
 using Microsoft.AspNetCore.Identity;
 using PlanillaPM.ViewModel;
-
+using System.Text;
+using System.Text.Encodings.Web;
 using PlanillaPM.Models;
 
 namespace PlanillaPM.Controllers
@@ -19,11 +20,13 @@ namespace PlanillaPM.Controllers
     {
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
+        private IWebHostEnvironment Environment;
 
-        public EmpresaController(PlanillaContext context, UserManager<Usuario> userManager)
+        public EmpresaController(PlanillaContext context, UserManager<Usuario> userManager, IWebHostEnvironment environment)
         {
             _context = context;
             _userManager = userManager;
+            Environment = environment;
         }
 
         // GET: Empresa
@@ -101,12 +104,30 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpresa,NombreEmpresa,IdMoneda,Logo,Direccion,Telefono,Email,Rtn,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,NombreContacto,TelefonoContacto")] Empresa empresa)
+        public async Task<IActionResult> Create([Bind("NombreEmpresa,IdMoneda,Direccion,Telefono,Email,Rtn,Comentarios,Activo,CreadoPor,ModificadoPor,NombreContacto,TelefonoContacto")] Empresa empresa, IFormFile Logo)
         {
+            SetCamposAuditoria(empresa, true);
             if (ModelState.IsValid)
             {
-                
-                SetCamposAuditoria(empresa, true);
+              if (Logo != null && Logo.Length > 0)
+                {
+                    // Genera un nombre único para el archivo de imagen
+                    var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Logo.FileName);
+                    // Obtiene la ruta del directorio wwwroot/images
+                    var imagePath = System.IO.Path.Combine(Environment.WebRootPath, "img", fileName);
+                    // Copia el contenido del archivo a la ubicación en el servidor
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await Logo.CopyToAsync(stream);
+                    }
+                    empresa.LogoName = fileName;
+                    empresa.LogoPath = "/img/" + fileName;
+                }
+
+                if (empresa.LogoPath == null)
+                {
+                    empresa.LogoPath = "/img/MiEmpresa.jpeg";
+                }
                 _context.Add(empresa);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
@@ -134,6 +155,10 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
+            if (empresa.LogoName == null)
+            {
+                empresa.LogoPath = Url.Content("~/img/MiEmpresa.jpeg");
+            }
             ViewData["IdMoneda"] = new SelectList(_context.Moneda, "IdMoneda", "NombreMoneda", empresa.IdMoneda);
             return View(empresa);
         }
@@ -143,18 +168,52 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpresa,NombreEmpresa,IdMoneda,Logo,Direccion,Telefono,Email,Rtn,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,NombreContacto,TelefonoContacto")] Empresa empresa)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpresa,NombreEmpresa,IdMoneda,Direccion,Telefono,Email,Rtn,Comentarios,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,NombreContacto,TelefonoContacto")] Empresa empresa, IFormFile Logo)
         {
             if (id != empresa.IdEmpresa)
             {
                 return NotFound();
             }
-
+            string previous_path = "";
+            SetCamposAuditoria(empresa, false);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    SetCamposAuditoria(empresa, false);
+                   
+                    if (empresa.LogoName != null)
+                    {
+                        previous_path = System.IO.Path.Combine(Environment.WebRootPath, "img", empresa.LogoName);
+                    }
+
+                    if (Logo != null && Logo.Length > 0)
+                    {
+                        // Genera un nombre único para el archivo de imagen
+                        var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Logo.FileName);
+                        // Obtiene la ruta del directorio wwwroot/images
+                        var imagePath = System.IO.Path.Combine(Environment.WebRootPath, "img", fileName);
+                        // Copia el contenido del archivo a la ubicación en el servidor
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
+                        {
+                            await Logo.CopyToAsync(stream);
+                        }
+                        empresa.LogoName = fileName;
+                        empresa.LogoPath = "/img/" + fileName;
+                        //elimina la imagen anterior
+                        if (!string.IsNullOrEmpty(previous_path))
+                        {
+                            if (System.IO.File.Exists(previous_path))
+                            {
+                                System.IO.File.Delete(previous_path);
+                            }
+                        }
+                    }
+
+                    if (empresa.LogoPath == null)
+                    {
+                        empresa.LogoPath = "/img/MiEmpresa.jpeg";
+                    }
+
                     _context.Update(empresa);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha actualizado exitosamente.";
@@ -246,8 +305,8 @@ namespace PlanillaPM.Controllers
         private void SetCamposAuditoria(Empresa record, bool bNewRecord)
         {
             var now = DateTime.Now;
-            var CurrentUser =  _userManager.GetUserName(User);
-           
+            var CurrentUser = _userManager.GetUserName(User);
+
             if (bNewRecord)
             {
                 record.FechaCreacion = now;
@@ -260,6 +319,14 @@ namespace PlanillaPM.Controllers
             {
                 record.FechaModificacion = now;
                 record.ModificadoPor = CurrentUser;
+                if (record.FechaCreacion.ToString() == "1/1/0001 00:00:00")
+                {
+                    record.FechaCreacion = now;
+                }
+                if (record.CreadoPor == null)
+                {
+                    record.CreadoPor = CurrentUser;
+                }
             }
         }        
     }

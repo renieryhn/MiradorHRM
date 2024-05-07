@@ -48,6 +48,9 @@ public partial class Empresa
     public string? NombreContacto { get; set; }
     [Display(Name = "Teléfono de Contacto")]
     public string? TelefonoContacto { get; set; }
- 
+
+    public string? LogoName { get; set; } = null!;
+    public string? LogoPath { get; set; } = null!;
+
     public virtual Monedum IdMonedaNavigation { get; set; } = null!;
 }

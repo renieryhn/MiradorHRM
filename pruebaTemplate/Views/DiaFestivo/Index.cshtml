@@ -40,14 +40,14 @@
                                                                 <div class="form-group">
                                                                     <form id="fSearch" method="post" asp-action="Index">
                                                                         <div class="row">
-                                                                            <div class="col-sm-3 btn-group btn-group-justified" role="group">
+                                                                            <div class="col-sm-3 btn-group btn-group-justified btn-group-sm " role="group">
                                                                                 <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
                                                                                 <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                                             </div>
                                                                         </div>
                                                                         <br />
                                                                         <div class="row">
-                                                                            <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
+                                                                            <div class="col-sm-3 btn-toolbar btn-group-sm" role="toolbar" id="toolbar">
                                                                                 <div class="btn-group btn-group-justified" role="group">
                                                                                     <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
                                                                                     <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
@@ -67,14 +67,13 @@
                                                     <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
                                                         <thead class="thead-light">
                                                             <tr>
-                                                               
-                                                                <th></th>
                                                                 <th data-sortable="true">
                                                                     @Html.DisplayNameFor(model => model.NombreDiaFestivo)
                                                                 </th>
                                                                 <th data-sortable="true">
                                                                     @Html.DisplayNameFor(model => model.Color)
                                                                 </th>
+                                                                <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -85,21 +84,20 @@
                                                             {
                                                                 count = (count + 1);
                                                                 <tr>
-                                                                   
                                                                     <td>
-                                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        @Html.DisplayFor(modelItem => item.NombreDiaFestivo)
+                                                                        <a asp-action="Edit" asp-route-id="@item.IdDiaFestivo">@Html.DisplayFor(modelItem => item.NombreDiaFestivo)</a>
+                                                                        <div class="text-muted" style="font-size:smaller"><p> @Html.DisplayFor(modelItem => item.FechaDesde)- @Html.DisplayFor(modelItem => item.FechaHasta)</p></div>
                                                                     </td>
                                                                     <td>
                                                                         <div style="width: 20px; height: 20px; background-color: @item.Color;"></div>
                                                                     </td>
-
+                                                                    <td>
+                                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                                            @* <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-pencil" style="color: white;"></i></a> *@
+                                                                            @* <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
+                                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                                        </div>
+                                                                    </td>
                                                                 </tr>
                                                             }
                                                         </tbody>

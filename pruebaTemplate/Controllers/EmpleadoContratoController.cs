@@ -306,40 +306,50 @@ namespace PlanillaPM.Controllers
                     SetCamposAuditoria(empleadoContrato, false);
 
 
-                    //var consultaContratosActivos = await _context.EmpleadoContratos
-                    // .Where(c => c.IdEmpleado == empleadoContrato.IdEmpleado && c.Activo)
-                    // .ToListAsync();
+                    var consultaContratosActivos = await _context.EmpleadoContratos
+                     .Where(c => c.IdEmpleado == empleadoContrato.IdEmpleado && c.Activo)
+                     .ToListAsync();
 
-                    //// Verificar si hay contratos activos
-                    //if (consultaContratosActivos.Any() && empleadoContrato.Estado != EstadoContrato.Borrador)
-                    //{
-                    //    TempData["Error"] = "No se puede actualizar porque ya que se encuentra un contrato activo.";
+                    // Verificar si hay contratos activos
+                    if (consultaContratosActivos.Any() && empleadoContrato.Estado != EstadoContrato.Borrador)
+                    {
+                        TempData["Error"] = "No se puede actualizar porque ya que se encuentra un contrato activo.";
 
-                    //    if (numero == "1")
-                    //    {
-                    //        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
-                    //    }
-                    //    if (numero == "2")
-                    //    {
-                    //        return RedirectToAction("Index");
-                    //    }
-                    //}
-                    //else if (empleadoContrato.Estado == EstadoContrato.Borrador && empleadoContrato.Activo)
-                    //{
-                    //    TempData["Error"] = "No se puede activar un contrato en estado 'Borrador'.";
+                        if (numero == "1")
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                        }
+                        if (numero == "2")
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+                    else if ((empleadoContrato.Estado == EstadoContrato.Finalizado || empleadoContrato.Estado == EstadoContrato.Cancelado || empleadoContrato.Estado == EstadoContrato.Borrador) && empleadoContrato.Activo)
+                    {
+                        TempData["Error"] = "No se puede activar un contrato en estado 'Borrador/Cancelado/Finalizado'.";
 
-                    //    if (numero == "1")
-                    //    {
-                    //        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
-                    //    }
-                    //    if (numero == "2")
-                    //    {
-                    //        return RedirectToAction("Index");
-                    //    }
-                    //}
+                        if (numero == "1")
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                        }
+                        if (numero == "2")
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
 
+                    // Obtener el contrato existente
+                    var existingContrato = await _context.EmpleadoContratos.FindAsync(id);
+                    if (existingContrato == null)
+                    {
+                        return NotFound();
+                    }
 
-                    _context.Update(empleadoContrato);
+                    // Actualizar las propiedades del contrato existente con las nuevas
+                    _context.Entry(existingContrato).CurrentValues.SetValues(empleadoContrato);
+
+                    //_context.Update(empleadoContrato);
+                    //_context.Entry(empleadoContrato).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";

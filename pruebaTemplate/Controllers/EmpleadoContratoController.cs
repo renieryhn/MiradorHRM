@@ -177,7 +177,38 @@ namespace PlanillaPM.Controllers
                 if (ModelState.IsValid)
                 {
                     SetCamposAuditoria(empleadoContrato, true);
-                    _context.Add(empleadoContrato);
+
+                    // Buscar contratos activos del usuario
+                    var contratosActivos = await _context.EmpleadoContratos
+                        .Where(c => c.IdEmpleado == empleadoContrato.IdEmpleado && c.Activo)
+                        .ToListAsync();
+
+                    // Verificar si hay contratos activos
+                    if (contratosActivos.Any() && empleadoContrato.Estado != EstadoContrato.Borrador)
+                    {
+                        TempData["Error"] = "No se puede guardar porque ya que se encuentra un contrato activo.";
+
+                        if (id == 1)
+                        {
+                            return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                        }
+                        if (id == 2)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+
+                    if (empleadoContrato.Estado == EstadoContrato.Aprobado && empleadoContrato.Activo)
+                    {
+                        _context.Add(empleadoContrato);
+                    }
+                    else if ((empleadoContrato.Estado == EstadoContrato.Finalizado || empleadoContrato.Estado == EstadoContrato.Cancelado || empleadoContrato.Estado == EstadoContrato.Borrador) && empleadoContrato.Activo)
+                    {
+                        empleadoContrato.Activo = false;
+                        _context.Add(empleadoContrato);
+                    }
+
+
                     await _context.SaveChangesAsync();
 
                     // Agregar mensaje de éxito a TempData
@@ -273,9 +304,43 @@ namespace PlanillaPM.Controllers
                 if (ModelState.IsValid)
                 {
                     SetCamposAuditoria(empleadoContrato, false);
+
+
+                    //var consultaContratosActivos = await _context.EmpleadoContratos
+                    // .Where(c => c.IdEmpleado == empleadoContrato.IdEmpleado && c.Activo)
+                    // .ToListAsync();
+
+                    //// Verificar si hay contratos activos
+                    //if (consultaContratosActivos.Any() && empleadoContrato.Estado != EstadoContrato.Borrador)
+                    //{
+                    //    TempData["Error"] = "No se puede actualizar porque ya que se encuentra un contrato activo.";
+
+                    //    if (numero == "1")
+                    //    {
+                    //        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                    //    }
+                    //    if (numero == "2")
+                    //    {
+                    //        return RedirectToAction("Index");
+                    //    }
+                    //}
+                    //else if (empleadoContrato.Estado == EstadoContrato.Borrador && empleadoContrato.Activo)
+                    //{
+                    //    TempData["Error"] = "No se puede activar un contrato en estado 'Borrador'.";
+
+                    //    if (numero == "1")
+                    //    {
+                    //        return Redirect($"/Empleado/FichaEmpleado/{empleadoContrato.IdEmpleado}?tab=messages");
+                    //    }
+                    //    if (numero == "2")
+                    //    {
+                    //        return RedirectToAction("Index");
+                    //    }
+                    //}
+
+
                     _context.Update(empleadoContrato);
                     await _context.SaveChangesAsync();
-
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";
 

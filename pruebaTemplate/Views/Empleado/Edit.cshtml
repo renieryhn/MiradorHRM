@@ -19,7 +19,7 @@
                 <div class="callout callout-info" style="border-left-color: var(--blue);; ">
                     <h5>Informacion Personal</h5>
                     <br />
-                    <div class="row">
+                    <div class="row align-items-end">
                         <div class="col-md-4 ">
                             <div class="form-group text-center">
                                 <div id="image-drop-area" style="cursor: pointer;">
@@ -27,14 +27,7 @@
                                     <span class="btn btn-danger btn-circle-outline btn-sm position-absolute" style="top: 10px; right: 85px;" onclick="QuitarImagen(event)">
                                         <i class="fas fa-times"></i> <!-- Font Awesome icon for "x" -->
                                     </span>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="btn btn-success btn-rounded btn-block" for="avfile">Seleccionar</label>
-                                        <input type="file" id="avfile" asp-for="Fotografia" class="btn btn-primary d-none" accept="image/*" onchange="validateImage(event)" />
-                                    </div>
-
-                                </div>
+                                </div>                              
                             </div>
                         </div>
 
@@ -50,6 +43,12 @@
                                 <label asp-for="ApellidoEmpleado" class="control-label"></label>
                                 <input asp-for="ApellidoEmpleado" class="form-control" required />
                                 <span asp-validation-for="ApellidoEmpleado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="btn btn-success btn-rounded btn-block" for="avfile">Seleccionar</label>
+                                <input type="file" id="avfile" asp-for="Fotografia" class="btn btn-primary d-none" accept="image/*" onchange="validateImage(event)" />
                             </div>
                         </div>
                        

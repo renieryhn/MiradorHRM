@@ -349,7 +349,7 @@ namespace PlanillaPM.Controllers
                     _context.Entry(existingContrato).CurrentValues.SetValues(empleadoContrato);
 
                     //_context.Update(empleadoContrato);
-                    //_context.Entry(empleadoContrato).State = EntityState.Modified;
+                    
                     await _context.SaveChangesAsync();
                     // Agregar mensaje de éxito a TempData
                     TempData["success"] = "El registro se actualizó exitosamente.";

@@ -80,6 +80,8 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
     public virtual DbSet<TipoNomina> TipoNominas { get; set; }
 
+    public virtual DbSet<Ubicacion> Ubicaciones { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:sDBConnection");
 
@@ -284,6 +286,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.Property(e => e.NumeroRegistroTributario).HasMaxLength(20);
             entity.Property(e => e.SalarioBase).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.Telefono).HasMaxLength(15);
+            //entity.Property(e => e.NumeroSeguroSocial).HasMaxLength(20);
 
             entity.HasOne(d => d.IdBancoNavigation).WithMany(p => p.Empleados)
                 .HasForeignKey(d => d.IdBanco)
@@ -316,6 +319,11 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasForeignKey(d => d.IdTipoNomina)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Empleado_TipoNomina");
+
+            entity.HasOne(d => d.IdUbicacionNavigation).WithMany(p => p.Empleados)
+                .HasForeignKey(d => d.IdUbicacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Empleado_Ubicacion");
         });
 
         modelBuilder.Entity<EmpleadoActivo>(entity =>
@@ -916,8 +924,30 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.Property(e => e.PagadaCadaNdias).HasColumnName("PagadaCadaNDias");
         });
 
+        modelBuilder.Entity<Ubicacion>(entity =>
+        {
+            entity.HasKey(e => e.IdUbicacion);
+
+            entity.ToTable("Ubicacion");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.NombreUbicacion)
+                .HasMaxLength(100)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Telefono)
+               .HasMaxLength(20)
+               .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

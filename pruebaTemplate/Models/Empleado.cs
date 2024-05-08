@@ -91,10 +91,12 @@ public partial class Empleado
 
     [DisplayName("Tipo de Nómina")]
     [Required(ErrorMessage = "El Tipo de Nómina es obligatorio.")]
-    public int IdTipoNomina { get; set; }
+    public int? IdTipoNomina { get; set; }
+
+    [DisplayName("Ubicación")]
+    public int? IdUbicacion { get; set; }
 
     [DisplayName("Encargado")]
-
     public int? IdEncargado { get; set; } = null!;
 
     [DisplayName("Fecha de Inicio")]
@@ -102,6 +104,9 @@ public partial class Empleado
 
     [DisplayName("Banco")]
     public int? IdBanco { get; set; } = null!;
+
+    [DisplayName("Tipo de Cuenta")]
+    public TipoCuenta? TipoCuentaBancaria { get; set; }
 
     [DisplayName("No. de Cuenta")]
     public string? CuentaBancaria { get; set; }
@@ -112,6 +117,9 @@ public partial class Empleado
     [DisplayName("Salario Base")]
     [Required(ErrorMessage = "El Salario Base es obligatorio.")]
     public decimal SalarioBase { get; set; }
+
+    [DisplayName("No. Seguro Social")]
+    public string? NumeroSeguroSocial { get; set; }
 
     [DisplayName("Fecha de Creación")]   
     //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy HH:mm}")]
@@ -187,6 +195,9 @@ public partial class Empleado
 
     public virtual ClaseEmpleado? IdClaseEmpleadoNavigation { get; set; }
 
+    [DisplayName("Ubicación")]
+    public virtual Ubicacion? IdUbicacionNavigation { get; set; } = null!;
+
     public virtual ICollection<Empleado> InverseIdEncargadoNavigation { get; set; } = new List<Empleado>();
 
     [DisplayName("Edad")]
@@ -216,5 +227,9 @@ public partial class Empleado
         Viudo = 4,
         UnionLibre = 5
     }
-
+    public enum TipoCuenta
+    {
+        Ahorro = 1,
+        Cheque = 2
+    }
 }

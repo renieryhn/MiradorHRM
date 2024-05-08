@@ -16,6 +16,7 @@ using Syncfusion.DocIORenderer;
 using Syncfusion.HtmlConverter;
 using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 
 
@@ -35,7 +36,7 @@ namespace pruebaTemplate.Controllers
             _userManager = userManager;
         }
         public async Task<IActionResult> IndexAsync()
-        {          
+        {
 
             // Consulta para contar la cantidad de empleados
             var cantidadEmpleados = await _context.Empleados.Where(e => e.Activo).CountAsync();
@@ -76,36 +77,49 @@ namespace pruebaTemplate.Controllers
             var proximosCumpleañeros = await ObtenerProximosCumpleañeros();
             var licenciasPorVencer = await ObtenerLicenciasPorVencer();
             var contratosPorVencer = await ObtenerContratosPorVencer();
-
+            InicioFiltros viewModel=null;
             var user = await _userManager.GetUserAsync(User);
-
-            var viewModel = new InicioFiltros
+            try
             {
-                Profile = new ProfileViewModel
+                viewModel = new InicioFiltros
                 {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                   
-                },
-                CantidadEmpleados = cantidadEmpleados,
-                CantidadUsuarios = cantidadUsuarios,
-                CantidadPerfilesCompletos = cantidadPerfilesCompletos,
-                CantidadCargos = cantidadCargos,
-                ProximosCumpleañeros = proximosCumpleañeros,
-                LicenciasPorVencer = licenciasPorVencer,
-                ContratosPorVencer = contratosPorVencer
-            };
+                    Profile = new ProfileViewModel
+                    {
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
 
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-            var IdTipoContratoNavigation = await _context.EmpleadoContratos.ToListAsync();
-
-
-            return View(viewModel);
+                    },
+                    CantidadEmpleados = cantidadEmpleados,
+                    CantidadUsuarios = cantidadUsuarios,
+                    CantidadPerfilesCompletos = cantidadPerfilesCompletos,
+                    CantidadCargos = cantidadCargos,
+                    ProximosCumpleañeros = proximosCumpleañeros,
+                    LicenciasPorVencer = licenciasPorVencer,
+                    ContratosPorVencer = contratosPorVencer
+                };
+                if (viewModel == null)
+                {
+                    return NotFound();
+                } else
+                {
+                  //  var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                    //var IdTipoContratoNavigation = await _context.EmpleadoContratos.ToListAsync();
+                    return View(viewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return NotFound();
+            }
         }
 
         private async Task<List<Empleado>> ObtenerProximosCumpleañeros()
         {
+            int id = 0;
+            List<Empleado> proximosCumpleañeros = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
+
             // Obtener la fecha de hoy
             DateTime hoy = DateTime.Today;
 
@@ -114,15 +128,21 @@ namespace pruebaTemplate.Controllers
 
             // Obtener los próximos cumpleañeros activos en los próximos 7 días
             // Obtener los próximos cumpleañeros activos en los próximos 20 días
-            var proximosCumpleañeros = await _context.Empleados
+            try
+            {
+                proximosCumpleañeros = await _context.Empleados
                 .Where(e => e.Activo &&
                     (e.FechaNacimiento.DayOfYear >= hoy.DayOfYear && e.FechaNacimiento.DayOfYear <= haceVeinteDias.DayOfYear))
                 .OrderBy(e => e.FechaNacimiento)
                 .Take(10)
                 .ToListAsync();
-
-
-            return proximosCumpleañeros;
+                return proximosCumpleañeros;
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return proximosCumpleañeros;
+            }
         }
 
         private async Task<List<Empleado>> ObtenerLicenciasPorVencer()
@@ -138,14 +158,29 @@ namespace pruebaTemplate.Controllers
 
             // Convertir haceVeinteDias a DateOnly
             var haceVeinteDiasDateOnly = DateOnly.FromDateTime(haceVeinteDias);
-
-            var licenciasPorVencer = await _context.Empleados
+            int id = 0;
+            List<Empleado> licenciasPorVencer = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
+            try
+            {
+                licenciasPorVencer = await _context.Empleados
                 .Where(e => e.Activo &&
                     e.FechaVencimientoLicencia >= hoyDateOnly && e.FechaVencimientoLicencia <= haceVeinteDiasDateOnly)
                 .OrderBy(e => e.FechaVencimientoLicencia)
                 .ToListAsync();
-
-            return licenciasPorVencer;
+                if (licenciasPorVencer == null)
+                {
+                    return licenciasPorVencer;
+                }
+                else
+                {
+                    return licenciasPorVencer;
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return licenciasPorVencer;
+            }
         }
 
         private async Task<List<EmpleadoContrato>> ObtenerContratosPorVencer()
@@ -167,30 +202,25 @@ namespace pruebaTemplate.Controllers
                     e.FechaFin >= hoyDateOnly && e.FechaFin <= haceCincuentaDiasDateOnly)
                 .OrderBy(e => e.FechaFin)
                 .ToListAsync();
-
-            return contratosPorVencer;
+            if(contratosPorVencer == null)
+            {
+                return null;
+            }
+            else
+            {
+                return contratosPorVencer;
+            }
         }
-
-
 
         public IActionResult Privacy()
         {
             return View();
         }
 
-      
-
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-   
-
-       
-
-
     }
 }

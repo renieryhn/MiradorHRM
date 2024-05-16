@@ -1,0 +1,196 @@
+﻿@model PlanillaPM.Models.Impuesto
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Editar Impuesto</h3>
+        </div>
+        <form asp-action="Edit">
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: var(--blue);">
+                    <h5>Información General</h5>
+                    <br />
+                    <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="IdImpuesto" value="@Model.IdImpuesto" />
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NombreImpuesto" class="control-label"></label>
+                                <input asp-for="NombreImpuesto" class="form-control" required />
+                                <span asp-validation-for="NombreImpuesto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Tipo">Tipo:</label>
+                                @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoImpuesto), "Seleccione un impuesto", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="Tipo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Monto" class="control-label"></label>
+                                <input asp-for="Monto" class="form-control" required />
+                                <span asp-validation-for="Monto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Formula" class="control-label"></label>
+                                <input asp-for="Formula" class="form-control" />
+                                <span asp-validation-for="Formula" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Grabable" /> @Html.DisplayNameFor(model => model.Grabable)
+                                </label>
+                            </div>
+                            <button id="botonTabla" type="button" data-toggle="modal" data-target="#modal-xl" class="btn btn-default" style="background-color: var(--blue);" disabled>
+                                <i class="fas fa-table" style="color: white;"></i> Tabla
+                            </button>
+                            
+                        </div>
+
+                    </div>
+                </div>
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Otros</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaCreacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="FechaModificacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CreadoPor" class="control-label"></label>
+                                <input asp-for="CreadoPor" class="form-control" readonly />
+                                <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ModificadoPor" class="control-label"></label>
+                                <input asp-for="ModificadoPor" class="form-control" readonly />
+                                <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <input type="submit" value="Guardar" class="btn btn-primary" style="background-color: var(--blue);" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-xl">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">          
+            <div class="modal-body">
+
+                <div id="modalContent"></div>
+
+            </div>         
+        </div>
+
+    </div>
+</div>
+<!-- /.modal -->
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                // Obtener los elementos DOM
+                var tipoImpuestoDropdown = $('#Tipo');
+                var montoInput = $('#Monto');
+                var formulaInput = $('#Formula');
+                var botonTabla = $('#botonTabla');
+
+                // Función para activar o desactivar campos según el tipo seleccionado
+                function toggleCamposSegunTipo() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+
+                    // Desactivar campos y limpiar valores
+                    montoInput.prop('disabled', true);
+                    formulaInput.prop('disabled', true).val('');
+
+                    if (selectedTipo === 'Fijo') {
+                        montoInput.prop('disabled', false);
+                    } else if (selectedTipo === 'Fórmula') {
+                        formulaInput.prop('disabled', false);
+                        montoInput.val('0');
+                    }
+                }
+
+                // Función para activar o desactivar el botón según el tipo seleccionado
+                function toggleBotonTabla() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+                    if (selectedTipo === 'Tabla') {
+                        botonTabla.prop('disabled', false);
+                    } else {
+                        botonTabla.prop('disabled', true);
+                    }
+                }
+
+                // Llamar a las funciones al cargar la página
+                toggleCamposSegunTipo();
+                toggleBotonTabla();
+
+                // Evento change para el dropdown de Tipo para actualizar campos y botón
+                tipoImpuestoDropdown.change(function () {
+                    toggleCamposSegunTipo();
+                    toggleBotonTabla();
+                });
+            });
+
+
+             $(document).ready(function () {
+                $('#botonTabla').click(function () {
+                    var impuestoId = $('#IdImpuesto').val();
+                    cargarModalImpuestoTabla(impuestoId);
+                });            
+
+                });
+
+            function cargarModalImpuestoTabla(impuestoId) {
+                $.ajax({
+                    url: '@Url.Action("MostrarModalImpuestoTabla", "Impuesto")',
+                    type: 'GET',
+                    data: { impuestoId: impuestoId },
+                    success: function (data) {
+                        $('#modalContent').html(data);
+                        $('#modal-xl').modal('show');
+                    }
+  
+                });
+            }
+          
+        </script>
+
+
+    }
+}

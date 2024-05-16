@@ -743,9 +743,9 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
         modelBuilder.Entity<Impuesto>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Impuesto");
+            entity.HasKey(e => e.IdImpuesto);
+
+            entity.ToTable("Impuesto");
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
@@ -758,11 +758,10 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
             entity.Property(e => e.NombreImpuesto).HasMaxLength(50);
-            entity.Property(e => e.Tipo)
-                .HasMaxLength(20)
-                .HasDefaultValue("Fijo")
-                .HasComment("Fijo, Fórmula, Porcentaje o Tabla");
+           
+
         });
+
 
         modelBuilder.Entity<ImpuestoTabla>(entity =>
         {

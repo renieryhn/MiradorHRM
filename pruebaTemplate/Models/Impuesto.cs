@@ -7,15 +7,13 @@ namespace PlanillaPM.Models;
 
 public partial class Impuesto
 {
-    public string IdImpuesto { get; set; } = null!;
+    public int IdImpuesto { get; set; } 
     [Display(Name = "Nombre de Impuesto")]
     public string NombreImpuesto { get; set; } = null!;
 
-    /// <summary>
-    /// Fijo, Fórmula, Porcentaje o Tabla
-    /// </summary>
     [Display(Name = "Tipo de Impuesto")]
-    public string Tipo { get; set; } = null!;
+    public TipoImpuesto Tipo { get; set; }
+
     [Display(Name = "Monto")]
     public decimal? Monto { get; set; }
     [Display(Name = "Fórmula")]
@@ -42,6 +40,7 @@ public partial class Impuesto
     {
         Fijo,
         Fórmula,
-        Porcentaje
+        Porcentaje,
+        Tabla
     }
 }

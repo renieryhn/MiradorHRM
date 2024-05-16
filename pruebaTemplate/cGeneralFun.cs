@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System.Net.Http;
-using Microsoft.AspNet.Identity;
+
 
 namespace PlanillaPM
 {

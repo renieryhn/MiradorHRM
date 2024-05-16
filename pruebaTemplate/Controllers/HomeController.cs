@@ -3,18 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using PlanillaPM.ViewModel;
 using pruebaTemplate.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PlanillaPM.Models;
 using Newtonsoft.Json;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-
 using Syncfusion.Pdf;
 using Syncfusion.DocIORenderer;
 using Syncfusion.HtmlConverter;
-using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 using DocumentFormat.OpenXml.Office2010.Excel;
 

@@ -1,0 +1,109 @@
+﻿@model PlanillaPM.Models.Ubicacion
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Editar Ubicacion</h3>
+        </div>
+        <form asp-action="Edit">
+            <div class="card-body">            
+                <div class="callout callout-info" style="border-left-color: var(--blue);">
+                    <h5 class="mx-auto">Información General</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="IdUbicacion" />
+                            <div class="form-group">
+                                <label asp-for="NombreUbicacion" class="control-label"></label>
+                                <input asp-for="NombreUbicacion" class="form-control" required />
+                                <span asp-validation-for="NombreUbicacion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Ciudad" class="control-label"></label>
+                                <input asp-for="Ciudad" class="form-control"  />
+                                <span asp-validation-for="Ciudad" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Direccion" class="control-label"></label>
+                                <input asp-for="Direccion" class="form-control" />
+                                <span asp-validation-for="Direccion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input asp-for="Telefono" class="form-control" required />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                               
+
+                </div>
+                <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Otros</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaCreacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="FechaModificacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CreadoPor" class="control-label"></label>
+                                <input asp-for="CreadoPor" class="form-control" readonly />
+                                <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ModificadoPor" class="control-label"></label>
+                                <input asp-for="ModificadoPor" class="form-control" readonly />
+                                <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <input type="submit" value="Guardar" class="btn btn-primary" style="background-color: var(--blue);" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

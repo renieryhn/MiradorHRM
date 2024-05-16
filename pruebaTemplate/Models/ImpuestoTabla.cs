@@ -9,7 +9,7 @@ public partial class ImpuestoTabla
 {
     public int IdImpuestoTabla { get; set; }
     [Display(Name = "Impuesto")]
-    public string IdImpuesto { get; set; } = null!;
+    public int IdImpuesto { get; set; } 
     [Display(Name = "Desde")]
     public decimal Desde { get; set; }
     [Display(Name = "Hasta")]

@@ -1,8 +1,8 @@
-﻿@model PlanillaPM.Models.ImpuestoTabla
+﻿@model PlanillaPM.Models.ImpuestoTablaListaYModelo
 
 
 <form asp-controller="ImpuestoTabla" asp-route-bModal="true" asp-action="Create" method="post">
-    <input type="hidden" asp-for="IdImpuesto" class="form-control" value="@ViewBag.ImpuestoId" />
+    <input type="hidden" asp-for="ImpuestoTabla.IdImpuesto" class="form-control" value="@ViewBag.ImpuestoId" />
     <div class="modal-header">
         <h4 class="modal-title">Crear Nueva Tabla de Impuestos</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -12,24 +12,24 @@
     <div class="modal-body">
         <!-- Campos para crear ImpuestoTabla -->
         <div class="form-group">
-            <label asp-for="Desde" class="control-label"></label>
-            <input asp-for="Desde" class="form-control" />
-            <span asp-validation-for="Desde" class="text-danger"></span>
+            <label asp-for="ImpuestoTabla.Desde" class="control-label"></label>
+            <input asp-for="ImpuestoTabla.Desde" class="form-control" />
+            <span asp-validation-for="ImpuestoTabla.Desde" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Hasta" class="control-label"></label>
-            <input asp-for="Hasta" class="form-control" />
-            <span asp-validation-for="Hasta" class="text-danger"></span>
+            <label asp-for="ImpuestoTabla.Hasta" class="control-label"></label>
+            <input asp-for="ImpuestoTabla.Hasta" class="form-control" />
+            <span asp-validation-for="ImpuestoTabla.Hasta" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Monto" class="control-label"></label>
-            <input asp-for="Monto" class="form-control" />
-            <span asp-validation-for="Monto" class="text-danger"></span>
+            <label asp-for="ImpuestoTabla.Monto" class="control-label"></label>
+            <input asp-for="ImpuestoTabla.Monto" class="form-control" />
+            <span asp-validation-for="ImpuestoTabla.Monto" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Porcentaje" class="control-label"></label>
-            <input asp-for="Porcentaje" class="form-control" />
-            <span asp-validation-for="Porcentaje" class="text-danger"></span>
+            <label asp-for="ImpuestoTabla.Porcentaje" class="control-label"></label>
+            <input asp-for="ImpuestoTabla.Porcentaje" class="form-control" />
+            <span asp-validation-for="ImpuestoTabla.Porcentaje" class="text-danger"></span>
         </div>
         <!-- Otros campos de ImpuestoTabla -->
     </div>

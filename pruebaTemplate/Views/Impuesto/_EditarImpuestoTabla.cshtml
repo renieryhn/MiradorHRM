@@ -2,50 +2,29 @@
 @using PlanillaPM.Models;
 
 @* <style>
-    .table-content {
-        width: 450px;
-        margin: 50px auto;
-        text-align: center;
-    }
-    td {
-        width: 100px;
+    .hidden-col {
+        display: none;
     }
 </style> *@
 
-<form asp-controller="ImpuestoTabla" asp-action="Edit" method="post">
-   
-    <div class="modal-header">
-        <h4 class="modal-title">Editar Tabla de Impuestos</h4>      
-    </div>
-    <div class="modal-body">
-        <!-- Campos para editar ImpuestoTabla -->
-        <input type="hidden" asp-for="ImpuestoTabla.IdImpuesto" value="@Model.ImpuestoTabla.IdImpuesto" />
-        <input type="hidden" asp-for="ImpuestoTabla.IdImpuestoTabla" value="@Model.ImpuestoTabla.IdImpuestoTabla" />
-        <div class="form-group">
-            <label asp-for="ImpuestoTabla.Desde" class="control-label"></label>
-            <input asp-for="ImpuestoTabla.Desde" class="form-control" />
-            <span asp-validation-for="ImpuestoTabla.Desde" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ImpuestoTabla.Hasta" class="control-label"></label>
-            <input asp-for="ImpuestoTabla.Hasta" class="form-control" />
-            <span asp-validation-for="ImpuestoTabla.Hasta" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ImpuestoTabla.Monto" class="control-label"></label>
-            <input asp-for="ImpuestoTabla.Monto" class="form-control" />
-            <span asp-validation-for="ImpuestoTabla.Monto" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ImpuestoTabla.Porcentaje" class="control-label"></label>
-            <input asp-for="ImpuestoTabla.Porcentaje" class="form-control" />
-            <span asp-validation-for="ImpuestoTabla.Porcentaje" class="text-danger"></span>
-        </div>
 
+
+<div class="modal-header">
+    <h4 class="modal-title">Editar Tabla de Impuestos</h4>
+    <button class="btn btn-info" id="add"><span class="glyphicon glyphicon-plus-sign"></span>Agregar Nuevo Elemento</button>
+</div>
+
+<div class="modal-body">
+    <!-- Campos para editar ImpuestoTabla -->
+    <input type="hidden" asp-for="ImpuestoTabla.IdImpuesto" value="@Model.ImpuestoTabla.IdImpuesto" />
+    <input type="hidden" asp-for="ImpuestoTabla.IdImpuestoTabla" value="@Model.ImpuestoTabla.IdImpuestoTabla" />
+
+    <form asp-controller="ImpuestoTabla" asp-action="Edit" method="post">
         <div id="resultados" class="table-responsive table-striped table-sm ">
             <table class="table table-striped projects " cellspacing="0" data-toggle="table" id="table-list">
                 <thead class="thead-light">
-                    <tr>                      
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.ImpuestoTabla.IdImpuestoTabla)</th>
                         <th>@Html.DisplayNameFor(model => model.ImpuestoTabla.Desde)</th>
                         <th>@Html.DisplayNameFor(model => model.ImpuestoTabla.Hasta)</th>
                         <th>@Html.DisplayNameFor(model => model.ImpuestoTabla.Monto)</th>
@@ -55,33 +34,33 @@
                 <tbody>
                     @foreach (var item in Model.ListaImpuestoTabla)
                     {
-                       
+
                         <tr>
-                           
+                            <td class="readonly">@item.IdImpuestoTabla</td>
                             <td>@item.Desde</td>
                             <td>@item.Hasta</td>
                             <td>@item.Monto</td>
                             <td>@item.Porcentaje</td>
-                            
+
                         </tr>
                     }
                 </tbody>
             </table>
-            <button class="btn btn-info" id="add"><span class="glyphicon glyphicon-plus-sign"></span>Add New Members</button>
+
         </div>
-      
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </div>
-</form>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+    </form>
+</div>
+
+
 
 <script>
-    
     "use strict";
     //Global variables
-    var params = null;  		//Parameters
+    var params = null;
     var colsEdi = null;
     var newColHtml = '<div class="btn-group pull-right">' +
         '<button id="bEdit" type="button" class="btn btn-sm btn-default" onclick="rowEdit(this);">' +
@@ -102,7 +81,7 @@
 
     $.fn.SetEditable = function (options) {
         var defaults = {
-            columnsEd: null,         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
+            columnsEd: "1,2,4,5",     //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
             $addButton: null,        //Jquery object of "Add" button
             onEdit: function () { },   //Called after edition
             onBeforeDelete: function () { }, //Called before deletion
@@ -110,7 +89,7 @@
             onAdd: function () { }     //Called when added a new row
         };
         params = $.extend(defaults, options);
-        this.find('thead tr').append('<th name="buttons">Acciones</th>');     
+        this.find('thead tr').append('<th name="buttons">Acciones</th>');
         this.find('tbody tr').append(colEdicHtml);
         var $tabedi = this;   //Read reference to the current table, to resolve "this" here.
         //Process "addButton" parameter
@@ -122,26 +101,24 @@
         }
         //Process "columnsEd" parameter
         if (params.columnsEd != null) {
-            //Extract felds
+            //Extract fields
             colsEdi = params.columnsEd.split(',');
         }
     };
+
     function IterarCamposEdit($cols, tarea) {
-        //Itera por los campos editables de una fila
         var n = 0;
         $cols.each(function () {
             n++;
             if ($(this).attr('name') == 'buttons') return;  //excluye columna de botones
-            if (!EsEditable(n - 1)) return;   //noe s campo editable
+            if (!EsEditable(n - 1)) return;   //no es campo editable
             tarea($(this));
         });
 
         function EsEditable(idx) {
-            //Indica si la columna pasada está configurada para ser editable
             if (colsEdi == null) {  //no se definió
-                return true;  //todas son editable
+                return true;  //todas son editables
             } else {  //hay filtro de campos
-                //alert('verificando: ' + idx);
                 for (var i = 0; i < colsEdi.length; i++) {
                     if (idx == colsEdi[i]) return true;
                 }
@@ -149,6 +126,9 @@
             }
         }
     }
+
+ 
+
     function FijModoNormal(but) {
         $(but).parent().find('#bAcep').hide();
         $(but).parent().find('#bCanc').hide();
@@ -157,6 +137,7 @@
         var $row = $(but).parents('tr');  //accede a la fila
         $row.attr('id', '');  //quita marca
     }
+
     function FijModoEdit(but) {
         $(but).parent().find('#bAcep').show();
         $(but).parent().find('#bCanc').show();
@@ -165,77 +146,115 @@
         var $row = $(but).parents('tr');  //accede a la fila
         $row.attr('id', 'editing');  //indica que está en edición
     }
+
     function ModoEdicion($row) {
-        if ($row.attr('id') == 'editing') {
-            return true;
-        } else {
-            return false;
-        }
+        return $row.attr('id') == 'editing';
     }
+
     function rowAcep(but) {
-        //Acepta los cambios de la edición
-        var $row = $(but).parents('tr');  //accede a la fila
-        var $cols = $row.find('td');  //lee campos
-        if (!ModoEdicion($row)) return;  //Ya está en edición
-        //Está en edición. Hay que finalizar la edición
-        IterarCamposEdit($cols, function ($td) {  //itera por la columnas
-            var cont = $td.find('input').val(); //lee contenido del input
-            $td.html(cont);  //fija contenido y elimina controles
+        var $row = $(but).parents('tr');  // accede a la fila
+        var $cols = $row.find('td');  // lee campos
+        if (!ModoEdicion($row)) return;  // Ya está en edición
+
+        // Recopila los datos de la fila
+        var data = {};
+        IterarCamposEdit($cols, function ($td, index) {
+            var input = $td.find('input');
+            if (input.length > 0) {
+                var fieldName = input.attr('name');
+                data[fieldName] = input.val();
+            }
         });
-        FijModoNormal(but);
-        params.onEdit($row);
+
+        // Muestra la data en consola
+        console.log("Data a enviar:");
+        for (var prop in data) {
+            if (data.hasOwnProperty(prop)) {
+                console.log(prop + ": " + data[prop]);
+            }
+        }
+
+        var isEdit = data['IdImpuestoTabla'] && data['IdImpuestoTabla'].trim() !== '';
+
+        // Determina la URL a llamar
+        var url;
+        if (isEdit) {
+            url = '/ImpuestoTabla/Edit';
+        } else {
+            url = '/ImpuestoTabla/Create';
+        }
+
+        // Llama a la función AJAX
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                // Actualiza la UI o muestra un mensaje de éxito
+                $cols.each(function () {
+                    var cont = $(this).find('input').val(); // lee contenido del input
+                    $(this).html(cont);  // fija contenido y elimina controles
+                });
+                FijModoNormal(but);
+                params.onEdit($row);
+            },
+            error: function (xhr, status, error) {
+                // Maneja el error
+                console.error("Error al guardar los cambios: " + error);
+            }
+        });
     }
+
+
+
     function rowCancel(but) {
-        //Rechaza los cambios de la edición
         var $row = $(but).parents('tr');  //accede a la fila
         var $cols = $row.find('td');  //lee campos
         if (!ModoEdicion($row)) return;  //Ya está en edición
-        //Está en edición. Hay que finalizar la edición
-        IterarCamposEdit($cols, function ($td) {  //itera por la columnas
+        IterarCamposEdit($cols, function ($td) {
             var cont = $td.find('div').html(); //lee contenido del div
             $td.html(cont);  //fija contenido y elimina controles
         });
         FijModoNormal(but);
     }
+
     function rowEdit(but) {  //Inicia la edición de una fila
         var $row = $(but).parents('tr');  //accede a la fila
         var $cols = $row.find('td');  //lee campos
         if (ModoEdicion($row)) return;  //Ya está en edición
-        //Pone en modo de edición
-        IterarCamposEdit($cols, function ($td) {  //itera por la columnas
+        IterarCamposEdit($cols, function ($td) {
             var cont = $td.html(); //lee contenido
             var div = '<div style="display: none;">' + cont + '</div>';  //guarda contenido
-            var input = '<input class="form-control input-sm"  value="' + cont + '">';
+            var input = '<input class="form-control input-sm" name="' + $td.attr('data-field') + '" value="' + cont + '">';
             $td.html(div + input);  //fija contenido
         });
         FijModoEdit(but);
     }
+
     function rowElim(but) {  //Elimina la fila actual
         var $row = $(but).parents('tr');  //accede a la fila
         params.onBeforeDelete($row);
         $row.remove();
         params.onDelete();
     }
+
     function rowAddNew(tabId) {  //Agrega fila a la tabla indicada.
         var $tab_en_edic = $("#" + tabId);  //Table to edit
         var $filas = $tab_en_edic.find('tbody tr');
         if ($filas.length == 0) {
-            //No hay filas de datos. Hay que crearlas completas
             var $row = $tab_en_edic.find('thead tr');  //encabezado
             var $cols = $row.find('th');  //lee campos
-            //construye html
             var htmlDat = '';
             $cols.each(function () {
                 if ($(this).attr('name') == 'buttons') {
-                    //Es columna de botones
                     htmlDat = htmlDat + colEdicHtml;  //agrega botones
                 } else {
-                    htmlDat = htmlDat + '<td></td>';
+                    htmlDat = htmlDat + '<td data-field="' + $(this).attr('data-field') + '"></td>';
                 }
             });
             $tab_en_edic.find('tbody').append('<tr>' + htmlDat + '</tr>');
         } else {
-            //Hay otras filas, podemos clonar la última fila, para copiar los botones
             var $ultFila = $tab_en_edic.find('tr:last');
             $ultFila.clone().appendTo($ultFila.parent());
             $ultFila = $tab_en_edic.find('tr:last');
@@ -249,16 +268,14 @@
             });
         }
         params.onAdd();
-        return false;
+        return false;  // Evita el comportamiento predeterminado del botón
     }
-
 
     function TableToCSV(tabId, separator) {  //Convierte tabla a CSV
         var datFil = '';
         var tmp = '';
         var $tab_en_edic = $("#" + tabId);  //Table source
         $tab_en_edic.find('tbody tr').each(function () {
-            //Termina la edición si es que existe
             if (ModoEdicion($(this))) {
                 $(this).find('#bAcep').click();  //acepta edición
             }
@@ -280,7 +297,10 @@
     }
 
     //apply
-    $("#table-list").SetEditable({
-        $addButton: $('#add')
-    });
+        $("#table-list").SetEditable({
+            $addButton: $('#add')
+        });
+   
 </script>
+
+

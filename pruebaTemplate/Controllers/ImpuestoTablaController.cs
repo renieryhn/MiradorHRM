@@ -24,7 +24,6 @@ namespace PlanillaPM.Controllers
         // GET: ImpuestosController/Create
         public ActionResult Create()
         {
-
             return View();
         }
 

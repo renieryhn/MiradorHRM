@@ -32,28 +32,37 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEdit([FromBody] ImpuestoTabla impuestoTabla)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (impuestoTabla.IdImpuestoTabla > 0)
+                if (ModelState.IsValid)
                 {
-                    SetCamposAuditoria(impuestoTabla, false);
-                    _context.Update(impuestoTabla);
+                    if (impuestoTabla.IdImpuestoTabla > 0)
+                    {
+                        SetCamposAuditoria(impuestoTabla, false);
+                        _context.Update(impuestoTabla);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        SetCamposAuditoria(impuestoTabla, true);
+                        _context.Add(impuestoTabla);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return Json(new { success = true });
                 }
                 else
                 {
-                    SetCamposAuditoria(impuestoTabla, true);
-                    _context.Add(impuestoTabla);
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["Error"] = "Error: " + message;
+                    return Json(new { success = false, error = message });
                 }
-
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return Json(new { success = true });
             }
-            else
+            catch (Exception ex)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["Error"] = "Error: " + message;
-                return Json(new { success = false, error = message });
+                TempData["Error"] = "Error: " + ex.Message;
+                return Json(new { success = false, error = ex.Message });
             }
         }
 

@@ -35,7 +35,7 @@
                     {
 
                         <tr>
-                            <td data-field="IdImpuestoTabla" class="readonly">@item.IdImpuestoTabla</td>
+                            <td data-field="IdImpuestoTabla" id="idImpuestoTabla" class="readonly">@item.IdImpuestoTabla</td>
                             <td data-field="IdImpuesto" class="readonly">@item.IdImpuesto</td>
                             <td data-field="Desde">@item.Desde</td>
                             <td data-field="Hasta">@item.Hasta</td>
@@ -240,6 +240,48 @@
     function rowElim(but) {  //Elimina la fila actual
         var $row = $(but).parents('tr');  //accede a la fila
         params.onBeforeDelete($row);
+        var $cols = $row.find('td');
+
+        var rowData2 = [];
+
+        $row.find('td').each(function () {
+            var cellContent = $(this).text();
+            if (cellContent.trim() !== '') { // Verifica si la celda no está vacía
+                rowData2.push(cellContent);
+            }
+        });
+      
+        const data = {
+            IdImpuestoTabla: rowData2[0],
+            IdImpuesto: rowData2[1],
+            Desde: rowData2[2],
+            Hasta: rowData2[3],
+            Monto: rowData2[4],
+            Porcentaje: rowData2[5]
+        };
+
+        if (confirm('¿Está seguro que desea eliminar este registro?')) {
+            $.ajax({
+                url: "/ImpuestoTabla/DeleteConfirmed",
+                contentType: 'application/json',
+                type: 'POST',
+                data: JSON.stringify(data),
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert('El registro ha sido eliminado exitosamente.');
+                    } else {
+                        alert('Error: ' + response.error);``
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        }
+
         $row.remove();
         params.onDelete();
     }

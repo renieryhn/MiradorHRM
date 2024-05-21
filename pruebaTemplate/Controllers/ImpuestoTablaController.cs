@@ -132,11 +132,11 @@ namespace PlanillaPM.Controllers
             return View(impuestoTabla);
         }
 
-        // POST: ImpuestosController/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([FromBody] ImpuestoTabla impuestoTablae)
         {
+            var id = impuestoTablae.IdImpuestoTabla;
             var impuestoTabla = await _context.ImpuestoTablas.FindAsync(id);
             try
             {

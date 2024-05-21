@@ -63,7 +63,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddControllersWithViews(opciones =>
 {
     opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-});
+}).AddRazorRuntimeCompilation(); 
 
 builder.Services.AddHttpContextAccessor();
 

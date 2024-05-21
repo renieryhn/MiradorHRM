@@ -27,10 +27,10 @@ namespace PlanillaPM.Controllers
             return View();
         }
 
-        // POST: ImpuestosController/Create
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdImpuestoTabla,IdImpuesto,Desde,Hasta,Monto,Porcentaje,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] ImpuestoTabla impuestoTabla)
+        public async Task<IActionResult> Create([FromBody] ImpuestoTabla impuestoTabla)
         {
             if (ModelState.IsValid)
             {
@@ -38,18 +38,15 @@ namespace PlanillaPM.Controllers
                 _context.Add(impuestoTabla);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-
-                return Redirect(Request.Headers["Referer"].ToString());
-
+                return Json(new { success = true });
             }
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
+                return Json(new { success = false, error = message });
             }
-            return View(impuestoTabla);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -172,6 +169,8 @@ namespace PlanillaPM.Controllers
 
         private void SetCamposAuditoria(ImpuestoTabla record, bool bNewRecord)
         {
+            if (record == null) return;
+
             var now = DateTime.Now;
             var CurrentUser = _userManager.GetUserName(User);
 

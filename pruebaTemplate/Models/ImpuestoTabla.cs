@@ -7,6 +7,7 @@ namespace PlanillaPM.Models;
 
 public partial class ImpuestoTabla
 {
+
     [Display(Name = "Id")]
     public int IdImpuestoTabla { get; set; }
     [Display(Name = "Impuesto")]

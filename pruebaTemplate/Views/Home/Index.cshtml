@@ -243,8 +243,13 @@
                                     @foreach (var contrato in Model.ContratosPorVencer)
                                     {
                                         <tr>
-                                            <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
+                                            @if (contrato.IdEmpleadoNavigation != null){
+                                                <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
+                                            }
+                                            @if (contrato.IdTipoContratoNavigation != null)
+                                            {
                                             <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
+                                            }
                                             <td>
                                                 @{
                                                     // Crear un nuevo objeto DateTime usando el año, mes y día de la fecha de vencimiento del contrato

@@ -183,17 +183,18 @@
     function enviarDatos(rowData2) {
         // Crear un objeto con los datos de la fila
         const data = {
-            IdImpuesto: rowData2[0],
-            Desde: rowData2[1],
-            Hasta: rowData2[2],
-            Monto: rowData2[3],
-            Porcentaje: rowData2[4]
+            IdImpuestoTabla: rowData2[0],
+            IdImpuesto: rowData2[1],
+            Desde: rowData2[2],
+            Hasta: rowData2[3],
+            Monto: rowData2[4],
+            Porcentaje: rowData2[5]
         };
         //escribir en la consola los valores a enviar
         console.log('Datos a enviar:', data);
          
         $.ajax({
-            url: "/ImpuestoTabla/Create",
+            url: "/ImpuestoTabla/CreateEdit",
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -273,7 +274,7 @@
                 if ($(this).attr('name') != 'buttons') {
                     switch (field) {
                         case 'IdImpuestoTabla':
-                            $(this).html('');  // Deja "IdImpuestoTabla" vacío
+                            $(this).html('0');  // Deja "IdImpuestoTabla" vacío
                             break;
                         case 'Monto':
                             $(this).html('0.00');  // Pone "Monto" en 0

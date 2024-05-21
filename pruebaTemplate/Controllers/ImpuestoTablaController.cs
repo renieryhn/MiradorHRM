@@ -30,12 +30,21 @@ namespace PlanillaPM.Controllers
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromBody] ImpuestoTabla impuestoTabla)
+        public async Task<IActionResult> CreateEdit([FromBody] ImpuestoTabla impuestoTabla)
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(impuestoTabla, true);
-                _context.Add(impuestoTabla);
+                if (impuestoTabla.IdImpuestoTabla > 0)
+                {
+                    SetCamposAuditoria(impuestoTabla, false);
+                    _context.Update(impuestoTabla);
+                }
+                else
+                {
+                    SetCamposAuditoria(impuestoTabla, true);
+                    _context.Add(impuestoTabla);
+                }
+
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
                 return Json(new { success = true });

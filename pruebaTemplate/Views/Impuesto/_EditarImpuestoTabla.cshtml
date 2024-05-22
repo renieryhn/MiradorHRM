@@ -1,9 +1,5 @@
 ﻿@model IEnumerable<PlanillaPM.Models.ImpuestoTabla>
-@* <style>
-    .hidden-col {
-        display: none;
-    }
-</style> *@
+
 
 
 
@@ -13,10 +9,7 @@
 </div>
 
 <div class="modal-body">
-    <!-- Campos para editar ImpuestoTabla -->
-   @*  <input type="hidden" asp-for="IdImpuesto" value="@Model.IdImpuesto" />
-    <input type="hidden" asp-for="IdImpuestoTabla" value="@Model.IdImpuestoTabla" /> *@
-
+   
     <form asp-controller="ImpuestoTabla" asp-action="Edit" method="post">
         <div id="resultados" class="table-responsive table-striped table-sm ">
             <table class="table table-striped projects " cellspacing="0" data-toggle="table" id="table-list">
@@ -47,10 +40,6 @@
                 </tbody>
             </table>
 
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </div>
     </form>
 </div>
@@ -127,8 +116,6 @@
         }
     }
 
- 
-
     function FijModoNormal(but) {
         $(but).parent().find('#bAcep').hide();
         $(but).parent().find('#bCanc').hide();
@@ -136,6 +123,17 @@
         $(but).parent().find('#bElim').show();
         var $row = $(but).parents('tr');  //accede a la fila
         $row.attr('id', '');  //quita marca
+
+        // Mostrar mensajes de Toastr después de completar la edición
+        var mensaje = '@Html.Raw(TempData["success"])';
+        if (mensaje) {
+            toastr.success(mensaje);
+        }
+
+        var error = '@Html.Raw(TempData["Error"])';
+        if (error) {
+            toastr.error(error);
+        }
     }
 
     function FijModoEdit(but) {
@@ -151,19 +149,41 @@
         return $row.attr('id') == 'editing';
     }
 
-
     function rowAcep(but) {
         // Acepta los cambios de la edición
         var $row = $(but).parents('tr');  // accede a la fila
         var $cols = $row.find('td');  // lee campos
         if (!ModoEdicion($row)) return;  // Ya está en edición
         var rowData = [];
+        var isValid = true; // Variable para verificar la validez de los inputs
+
         // Está en edición. Hay que finalizar la edición
         IterarCamposEdit($cols, function ($td) {  // itera por las columnas
-            var cont = $td.find('input').val(); // lee contenido del input
-            $td.html(cont);  // fija contenido y elimina controles
-            rowData.push(cont);
+            var $input = $td.find('input');
+            if ($input.length) { // Verificar si hay un input en la celda
+                var cont = $input.val(); // lee contenido del input
+
+                // Validar si el contenido es un número
+                if (isNaN(cont) || cont.trim() === '') {
+                    isValid = false;
+                    alert("Por favor ingrese solo números válidos.");
+                    return false; // Detener la iteración si se encuentra un valor no válido
+                }
+
+                $td.html(cont);  // fija contenido y elimina controles
+                rowData.push(cont);
+            } else {
+                // Si no hay input, simplemente tomar el contenido de la celda
+                var cont = $td.text().trim();
+                rowData.push(cont);
+            }
         });
+
+        // Si alguno de los inputs no es válido, detener el proceso
+        if (!isValid) {
+            return;
+        }
+
         console.log('Datos de la fila:', rowData);
 
         var rowData2 = [];
@@ -177,19 +197,27 @@
         enviarDatos(rowData2);
         FijModoNormal(but);
         params.onEdit($row);
+
+       
     }
-  
 
     function enviarDatos(rowData2) {
         // Crear un objeto con los datos de la fila
         const data = {
-            IdImpuestoTabla: rowData2[0],
-            IdImpuesto: rowData2[1],
-            Desde: rowData2[2],
-            Hasta: rowData2[3],
-            Monto: rowData2[4],
-            Porcentaje: rowData2[5]
+            IdImpuestoTabla: parseInt(rowData2[0]),
+            IdImpuesto: parseInt(rowData2[1]),
+            Desde: parseFloat(rowData2[2]),
+            Hasta: parseFloat(rowData2[3]),
+            Monto: rowData2[4] ? parseFloat(rowData2[4]) : null,
+            Porcentaje: rowData2[5] ? parseFloat(rowData2[5]) : null
         };
+
+        // Validate the percentage value
+        if (data.Porcentaje !== null && (data.Porcentaje < -999.99 || data.Porcentaje > 9999.99)) {
+            alert("El porcentaje debe estar entre -999.99 y 9999.99.");
+            return;
+        }
+
         //escribir en la consola los valores a enviar
         console.log('Datos a enviar:', data);
          
@@ -205,6 +233,16 @@
                 console.log('Éxito:', response);
                 // Puedes agregar más lógica aquí para manejar la respuesta exitosa
             },
+            success: function (response) {
+                console.log('Éxito:', response);
+                if (response.success) {
+                    toastr.success(response.message);                
+                    var impuestoId = $('#IdImpuesto').val();
+                    cargarModalImpuestoTabla(impuestoId);
+                } else {
+                    toastr.error(response.error);
+                }
+            },
             error: function (xhr, status, error) {
                 console.log('Error:', error);
                 console.log('Estado:', status);
@@ -213,6 +251,18 @@
         });
     }
 
+    function cargarModalImpuestoTabla(impuestoId) {
+        $.ajax({
+            url: '@Url.Action("MostrarModalImpuestoTabla", "Impuesto")',
+            type: 'GET',
+            data: { impuestoId: impuestoId },
+            success: function (data) {
+                $('#modalContent').html(data);
+                $('#modal-xl').modal('show');
+            }
+
+        });
+    }
     function rowCancel(but) {
         var $row = $(but).parents('tr');  //accede a la fila
         var $cols = $row.find('td');  //lee campos
@@ -237,8 +287,8 @@
         FijModoEdit(but);
     }
 
-    function rowElim(but) {  //Elimina la fila actual
-        var $row = $(but).parents('tr');  //accede a la fila
+    function rowElim(but) {
+        var $row = $(but).parents('tr');
         params.onBeforeDelete($row);
         var $cols = $row.find('td');
 
@@ -246,11 +296,11 @@
 
         $row.find('td').each(function () {
             var cellContent = $(this).text();
-            if (cellContent.trim() !== '') { // Verifica si la celda no está vacía
+            if (cellContent.trim() !== '') {
                 rowData2.push(cellContent);
             }
         });
-      
+
         const data = {
             IdImpuestoTabla: rowData2[0],
             IdImpuesto: rowData2[1],
@@ -260,6 +310,7 @@
             Porcentaje: rowData2[5]
         };
 
+        // Mostrar un mensaje de confirmación utilizando Toastr
         if (confirm('¿Está seguro que desea eliminar este registro?')) {
             $.ajax({
                 url: "/ImpuestoTabla/DeleteConfirmed",
@@ -271,21 +322,19 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert('El registro ha sido eliminado exitosamente.');
+                        toastr.success('El registro ha sido eliminado exitosamente.');
+                        $row.remove();
+                        params.onDelete();
                     } else {
-                        alert('Error: ' + response.error);``
+                        toastr.error('Error al eliminar el registro: ' + response.error);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Error: ' + error);
+                    toastr.error('Error al eliminar el registro: ' + error);
                 }
             });
         }
-
-        $row.remove();
-        params.onDelete();
     }
-
 
     function rowAddNew(tabId) {
         var $tab_en_edic = $("#" + tabId);
@@ -346,6 +395,7 @@
         params.onAdd();
         return false;  // Evita el comportamiento predeterminado del botón
     }
+
 
 
     function TableToCSV(tabId, separator) {  //Convierte tabla a CSV

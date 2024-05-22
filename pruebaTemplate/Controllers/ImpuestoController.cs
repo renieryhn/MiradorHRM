@@ -122,28 +122,9 @@ namespace PlanillaPM.Controllers
             ViewBag.ImpuestoId = impuestoId;
             List<ImpuestoTabla> impuestoTabla;
             impuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList();
-            //if (impuestoTabla == null)
-            //{
-            //    // Si no se encuentra ImpuestoTabla asociado, puedes crear uno nuevo o manejarlo según sea necesario
-            //    impuestoTabla = new ImpuestoTabla();
-            //}
-
-            //var viewModel = new ImpuestoTabla
-            //{
-            //    ImpuestoTabla = impuestoTabla,
-            //    //ListaImpuestoTabla = _context.ImpuestoTablas.ToList()
-            //     ListaImpuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList()
-            //};
-
+           
             return PartialView("_EditarImpuestoTabla", impuestoTabla);
-            //if (impuestoTabla.IdImpuestoTabla == 0)
-            //{
-            //    return PartialView("_CrearImpuestoTabla", impuestoTabla);
-            //}
-            //else
-            //{
-            //    return PartialView("_EditarImpuestoTabla", impuestoTabla);
-            //}
+           
         }
 
 

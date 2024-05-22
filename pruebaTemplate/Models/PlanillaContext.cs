@@ -783,7 +783,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
-            entity.Property(e => e.Porcentaje).HasColumnType("numeric(3, 2)");
+            entity.Property(e => e.Porcentaje).HasColumnType("numeric(6, 2)");
         });
 
         modelBuilder.Entity<Ingreso>(entity =>

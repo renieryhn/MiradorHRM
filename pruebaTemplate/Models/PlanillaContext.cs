@@ -792,7 +792,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
             entity.ToTable("Ingreso");
 
-            entity.Property(e => e.IdIngreso).HasMaxLength(20);
+            //entity.Property(e => e.IdIngreso).HasMaxLength(20);
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)
@@ -803,10 +803,10 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
             entity.Property(e => e.NombreIngreso).HasMaxLength(50);
-            entity.Property(e => e.Tipo)
-                .HasMaxLength(20)
-                .HasDefaultValue("Fijo")
-                .HasComment("Fijo, Fórmula o Porcentaje");
+            //entity.Property(e => e.Tipo)
+            //    .HasMaxLength(20)
+            //    .HasDefaultValue("Fijo")
+            //    .HasComment("Fijo, Fórmula o Porcentaje");
         });
 
         modelBuilder.Entity<Monedum>(entity =>

@@ -302,13 +302,21 @@
         });
 
         const data = {
-            IdImpuestoTabla: rowData2[0],
+           // IdImpuestoTabla: rowData2[0],
+            IdImpuestoTabla: parseInt(rowData2[0]),
             IdImpuesto: rowData2[1],
             Desde: rowData2[2],
             Hasta: rowData2[3],
             Monto: rowData2[4],
             Porcentaje: rowData2[5]
         };
+
+         // Verificar si IdImpuestoTabla es mayor que cero
+    if (data.IdImpuestoTabla <= 0) {
+            $row.remove();
+            params.onDelete();
+        return;
+    }
 
         // Mostrar un mensaje de confirmación utilizando Toastr
         if (confirm('¿Está seguro que desea eliminar este registro?')) {

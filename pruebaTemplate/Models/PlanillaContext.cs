@@ -178,7 +178,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
             entity.ToTable("Deduccion");
 
-            entity.Property(e => e.IdDeduccion).HasMaxLength(20);
+            
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.BasadoEnTodo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
@@ -190,10 +190,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
             entity.Property(e => e.NombreDeduccion).HasMaxLength(50);
-            entity.Property(e => e.Tipo)
-                .HasMaxLength(20)
-                .HasDefaultValue("Fijo")
-                .HasComment("Fijo, Fórmula o Porcentaje");
+           
         });
 
         modelBuilder.Entity<Departamento>(entity =>

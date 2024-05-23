@@ -6,7 +6,8 @@ namespace PlanillaPM.Models;
 
 public partial class Deduccion
 {
-    public string IdDeduccion { get; set; } = null!;
+    public int IdDeduccion { get; set; } 
+
     [DisplayName("Nombre de Deducción")]
     public string NombreDeduccion { get; set; } = null!;
 
@@ -14,7 +15,7 @@ public partial class Deduccion
     /// Fijo, Fórmula o Porcentaje
     /// </summary>
     [DisplayName("Tipo")]
-    public string Tipo { get; set; } = null!;
+    public TipoDeduccion Tipo { get; set; }
 
     [DisplayName("Monto")]
     public decimal? Monto { get; set; }

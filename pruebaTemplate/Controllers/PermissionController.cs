@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PlanillaPM.Controllers
 {
-    //[Authorize(Roles = "SuperAdmin")]
+    ///[Authorize(Roles = "SuperAdmin")]
     public class PermissionController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

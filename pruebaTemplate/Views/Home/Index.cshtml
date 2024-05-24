@@ -295,6 +295,61 @@
                 </section>
 
             </div>
+            <div class="row">
+                <section class="col-lg-4 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Ausencias</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Motivo</th>
+                                        <th>Fecha Desde</th>
+                                        <th>Fecha Hasta</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var empleado in Model.EmpleadoAusencias)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => empleado.IdEmpleadoNavigation.NombreCompleto)</td>
+                                            <td>@Html.DisplayFor(modelItem => empleado.IdTipoAusenciaNavigation.NombreTipoAusencia)</td>
+                                            <td>@Html.DisplayFor(modelItem => empleado.FechaDesde)</td>
+                                            <td>@Html.DisplayFor(modelItem => empleado.FechaHasta)</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Acciones
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <button class="dropdown-item" onclick="actualizarEstado(@empleado.IdEmpleadoAusencia, 2)">
+                                                            <i class="fas fa-check-circle mr-1 text-success"></i> Aprobar
+                                                        </button>
+                                                        <button class="dropdown-item" onclick="actualizarEstado(@empleado.IdEmpleadoAusencia, 3)">
+                                                            <i class="fas fa-times-circle mr-1 text-danger"></i> Rechazar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+
+
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+              
+
+            </div>
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
@@ -388,6 +443,34 @@
         </div><!-- /.container-fluid -->
     </section>
 </div>
+
+
+<script>
+    function actualizarEstado(id, nuevoEstado) {
+        if (confirm('¿Está seguro que desea cambiar el estado de esta ausencia?')) {
+            $.ajax({
+                url: '@Url.Action("ActualizarEstado", "Home")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ Id: id, NuevoEstado: nuevoEstado }),
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        location.reload(); // Refrescar la página
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error al actualizar el estado: ' + error);
+                }
+            });
+        }
+    }
+</script>
 
 
 

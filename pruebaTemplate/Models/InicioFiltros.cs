@@ -1,4 +1,5 @@
 ﻿using PlanillaPM.ViewModel;
+using static PlanillaPM.Models.EmpleadoAusencium;
 
 namespace PlanillaPM.Models
 {
@@ -12,5 +13,11 @@ namespace PlanillaPM.Models
         public List<Empleado> ProximosCumpleañeros { get; set; }
         public List<Empleado> LicenciasPorVencer { get; set; }
         public List<EmpleadoContrato> ContratosPorVencer { get; set; }
+        public List<EmpleadoAusencium> EmpleadoAusencias { get; set; }
+
+        public int Id { get; set; }
+        public EstadoAusencia NuevoEstado { get; set; }
+       
+        
     }
 }

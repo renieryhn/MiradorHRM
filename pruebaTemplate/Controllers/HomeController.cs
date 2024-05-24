@@ -14,6 +14,7 @@ using Syncfusion.DocIORenderer;
 using Syncfusion.HtmlConverter;
 using Microsoft.EntityFrameworkCore;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using static PlanillaPM.Models.EmpleadoAusencium;
 
 
 
@@ -74,6 +75,8 @@ namespace pruebaTemplate.Controllers
             var proximosCumpleañeros = await ObtenerProximosCumpleañeros();
             var licenciasPorVencer = await ObtenerLicenciasPorVencer();
             var contratosPorVencer = await ObtenerContratosPorVencer();
+            var empleadoAusencias = await AusenciasTomarAccion();
+
             InicioFiltros viewModel=null;
             var user = await _userManager.GetUserAsync(User);
             try
@@ -93,7 +96,8 @@ namespace pruebaTemplate.Controllers
                     CantidadCargos = cantidadCargos,
                     ProximosCumpleañeros = proximosCumpleañeros,
                     LicenciasPorVencer = licenciasPorVencer,
-                    ContratosPorVencer = contratosPorVencer
+                    ContratosPorVencer = contratosPorVencer,
+                    EmpleadoAusencias = empleadoAusencias
                 };
                 if (viewModel == null)
                 {
@@ -156,7 +160,9 @@ namespace pruebaTemplate.Controllers
             // Convertir haceVeinteDias a DateOnly
             var haceVeinteDiasDateOnly = DateOnly.FromDateTime(haceVeinteDias);
             int id = 0;
-            List<Empleado> licenciasPorVencer = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
+            List<Empleado> licenciasPorVencer = _context.Empleados
+                .Include(e => e.IdClaseEmpleadoNavigation)               
+                .Where(e => e.IdEmpleado == id).ToList();
             try
             {
                 licenciasPorVencer = await _context.Empleados
@@ -195,6 +201,8 @@ namespace pruebaTemplate.Controllers
             var haceCincuentaDiasDateOnly = DateOnly.FromDateTime(haceCincuentaDias);
 
             var contratosPorVencer = await _context.EmpleadoContratos
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdTipoContratoNavigation)
                 .Where(e => e.Activo &&
                     e.FechaFin >= hoyDateOnly && e.FechaFin <= haceCincuentaDiasDateOnly)
                 .OrderBy(e => e.FechaFin)
@@ -208,6 +216,91 @@ namespace pruebaTemplate.Controllers
                 return contratosPorVencer;
             }
         }
+
+        private async Task<List<EmpleadoAusencium>> AusenciasTomarAccion()
+        {
+            var empleadoAusencias = await _context.EmpleadoAusencia
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdTipoAusenciaNavigation)
+                .Where(e => e.Activo && e.Estado == EstadoAusencia.Solicitada)
+                .ToListAsync();
+
+            return empleadoAusencias;
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarEstado([FromBody] InicioFiltros request)
+        {
+            var empleadoAusencia = await _context.EmpleadoAusencia.FindAsync(request.Id);
+            if (empleadoAusencia == null)
+            {
+                return Json(new { success = false, message = "Ausencia no encontrada." });
+            }
+
+            // Acceder al usuario actual
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            if (usuarioActual == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            // Actualizar el estado y el usuario que aprueba la ausencia
+            empleadoAusencia.Estado = request.NuevoEstado;
+            empleadoAusencia.AprobadoPor = usuarioActual.Email; // Asignar directamente el usuario actual
+
+            // Establecer campos de auditoría
+            SetCamposAuditoria(empleadoAusencia, false); // false indica que no es un nuevo registro
+
+            _context.Update(empleadoAusencia);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Estado actualizado correctamente." });
+        }
+
+        private void SetCamposAuditoria(EmpleadoAusencium record, bool bNewRecord)
+        {
+            var now = DateTime.Now;
+            var CurrentUser = _userManager.GetUserName(User);
+
+            if (bNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = CurrentUser;
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+                record.Activo = true;
+            }
+            else
+            {
+                record.FechaModificacion = now;
+                record.ModificadoPor = CurrentUser;
+            }
+        }
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ActualizarEstado([FromBody] InicioFiltros request)
+        //{
+        //    var empleadoAusencia = await _context.EmpleadoAusencia.FindAsync(request.Id);
+        //    if (empleadoAusencia == null)
+        //    {
+        //        return Json(new { success = false, message = "Ausencia no encontrada." });
+        //    }
+
+        //    empleadoAusencia.Estado = request.NuevoEstado;
+        //    _context.Update(empleadoAusencia);
+        //    await _context.SaveChangesAsync();
+
+        //    return Json(new { success = true, message = "Estado actualizado correctamente." });
+        //}
+
+
+
+
 
         public IActionResult Privacy()
         {

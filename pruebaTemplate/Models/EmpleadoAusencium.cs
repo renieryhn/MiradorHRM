@@ -42,7 +42,7 @@ public partial class EmpleadoAusencium
     public TimeOnly? HoraHasta { get; set; }
 
     [Display(Name = "Aprobado Por")] 
-    [Required(ErrorMessage = "El campo Aprobado Por es obligatorio.")]
+    
     public string? AprobadoPor { get; set; }
 
     [Display(Name = "Comentarios")]

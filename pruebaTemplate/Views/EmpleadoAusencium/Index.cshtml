@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<PlanillaPM.Models.EmpleadoAusencium>
 @using PlanillaPM.Models;
+@using static PlanillaPM.Models.EmpleadoAusencium
 
         @{
         ViewData["Title"] = "Index";
@@ -165,22 +166,32 @@
                                                         <a asp-action="Delete" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
                                                     </td>
-                                                        <td>
-                                                            @* @Html.DisplayFor(modelItem => item.Activo) *@
+                                                        <td class="text-center">
                                                             @if (item.DiaCompleto)
                                                             {
-                                                                <span class="badge badge-success">Activo</span>
+                                                                <i class="fas fa-toggle-on text-success"></i> <!-- Icono de toggle on en color verde para "Activo" -->
                                                             }
                                                             else
                                                             {
-                                                                <span class="badge badge-danger">Inactivo</span>
+                                                                <i class="fas fa-toggle-off text-danger"></i> <!-- Icono de toggle off en color rojo para "Inactivo" -->
                                                             }
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if (item.Estado == EstadoAusencia.Solicitada)
+                                                            {
+                                                                <i class="fas fa-clock text-warning"></i> 
+                                                            }
+                                                            else if (item.Estado == EstadoAusencia.Aprobada)
+                                                            {
+                                                                <i class="fas fa-check text-success"></i> 
+                                                            }
+                                                            else if (item.Estado == EstadoAusencia.Rechazada)
+                                                            {
+                                                                <i class="fas fa-times text-danger"></i> 
+                                                            }
+                                                        </td>
 
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Estado)
-                                                        </td>
-                                                        <td>
+                                                        <td class="text-center">
                                                             @if (item.Activo)
                                                             {
                                                                 <span class="badge badge-success">Activo</span>
@@ -230,6 +241,7 @@
                                             }
                                         </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </div>

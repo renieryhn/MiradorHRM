@@ -6,38 +6,34 @@ using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
 using System.Data;
 using static PlanillaPM.cGeneralFun;
-using static PlanillaPM.Models.EmpleadoContrato;
-using static PlanillaPM.Models.Impuesto;
+using static PlanillaPM.Models.Deduccion;
+using static PlanillaPM.Models.Ingreso;
 
 namespace PlanillaPM.Controllers
 {
-    public class ImpuestoController : Controller
+    public class DeduccionController : Controller
     {
-
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
-        public ImpuestoController(PlanillaContext context, UserManager<Usuario> userManager)
+        public DeduccionController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-
-        // GET: ImpuestosController
+        // GET: DeduccionController
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            List<Impuesto> registros;
+            List<Deduccion> registros;
             if (filter != null)
             {
-                registros = await _context.Impuestos.Where(r => r.NombreImpuesto.ToLower().Contains(filter.ToLower())).ToListAsync();
+                registros = await _context.Deduccions.Where(r => r.NombreDeduccion.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
             {
-                registros = await _context.Impuestos.ToListAsync();
+                registros = await _context.Deduccions.ToListAsync();
             }
-           
-
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -51,13 +47,13 @@ namespace PlanillaPM.Controllers
         public ActionResult Download()
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Impuesto>? data = null;
+            List<Deduccion>? data = null;
             if (data == null)
             {
-                data = _context.Impuestos.ToList();
+                data = _context.Deduccions.ToList();
             }
             DataTable table = converter.ToDataTable(data);
-            string fileName = "Impuestos.xlsx";
+            string fileName = "Deducciones.xlsx";
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table);
@@ -69,7 +65,7 @@ namespace PlanillaPM.Controllers
             }
         }
 
-        // GET: ImpuestosController/Details/5
+        // GET: DeduccionController/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -77,33 +73,32 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var impuesto = await _context.Impuestos
-                .FirstOrDefaultAsync(m => m.IdImpuesto == id);
-            if (impuesto == null)
+            var deduccion = await _context.Deduccions
+                .FirstOrDefaultAsync(m => m.IdDeduccion == id);
+            if (deduccion == null)
             {
                 return NotFound();
             }
 
-            return View(impuesto);
+            return View(deduccion);
         }
 
-        // GET: ImpuestosController/Create
+        // GET: DeduccionController/Create
         public ActionResult Create()
         {
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
-
+            ViewBag.TipoDeduccion = Enum.GetValues(typeof(TipoDeduccion));
             return View();
         }
 
-        // POST: ImpuestosController/Create
+        // POST: DeduccionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,Tipo,Monto,Formula,DeducibleImpuesto,BasadoEnTodo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(impuesto, true);
-                _context.Add(impuesto);
+                SetCamposAuditoria(deduccion, true);
+                _context.Add(deduccion);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
                 return RedirectToAction(nameof(Index));
@@ -113,63 +108,49 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            return View(impuesto);
+            return View(deduccion);
         }
 
-        [HttpGet]
-        public IActionResult MostrarModalImpuestoTabla(int impuestoId)
-        {
-            ViewBag.ImpuestoId = impuestoId;
-            List<ImpuestoTabla> impuestoTabla;
-            impuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList();
-           
-            return PartialView("_EditarImpuestoTabla", impuestoTabla);
-           
-        }
-
-
-        // GET: ImpuestosController/Edit/5
+        // GET: DeduccionController/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var impuesto = await _context.Impuestos.FindAsync(id);
-            if (impuesto == null)
+
+            var deduccion = await _context.Deduccions.FindAsync(id);
+            if (deduccion == null)
             {
                 return NotFound();
             }
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
-
-            return View(impuesto);
+            ViewBag.TipoDeduccion = Enum.GetValues(typeof(TipoDeduccion));
            
+            return View(deduccion);
         }
 
-        // POST: ImpuestosController/Edit/5
+        // POST: DeduccionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdDeduccion,NombreDeduccion,Tipo,Monto,Formula,DeducibleImpuesto,BasadoEnTodo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
         {
-
-            if (id != impuesto.IdImpuesto)
+            if (id != deduccion.IdDeduccion)
             {
                 return NotFound();
             }
-
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    SetCamposAuditoria(impuesto, false);
-                    _context.Update(impuesto);
+                    SetCamposAuditoria(deduccion, false);
+                    _context.Update(deduccion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha actualizado exitosamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ImpuestoExists(impuesto.IdImpuesto))
+                    if (!DeduccionExists(deduccion.IdDeduccion))
                     {
                         return NotFound();
                     }
@@ -185,10 +166,10 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            return View(impuesto);
+            return View(deduccion);
         }
 
-        // GET: ImpuestosController/Delete/5
+        // GET: Ingreso/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -196,28 +177,29 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var impuesto = await _context.Impuestos
-                .FirstOrDefaultAsync(m => m.IdImpuesto == id);
-            if (impuesto == null)
+            var deduccion = await _context.Deduccions
+                .FirstOrDefaultAsync(m => m.IdDeduccion == id);
+            if (deduccion == null)
             {
                 return NotFound();
             }
 
-            return View(impuesto);
+            return View(deduccion);
         }
 
-        // POST: ImpuestosController/Delete/5
+
+        // POST: DeduccionController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var impuesto = await _context.Impuestos.FindAsync(id);
+            var deduccion = await _context.Deduccions.FindAsync(id);
             try
             {
 
-                if (impuesto != null)
+                if (deduccion != null)
                 {
-                    _context.Impuestos.Remove(impuesto);
+                    _context.Deduccions.Remove(deduccion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
@@ -232,23 +214,24 @@ namespace PlanillaPM.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {
                     var message = ex.InnerException;
-                    TempData["error"] = "Error: " + message;
+                    TempData["Error"] = "Error: " + message;
                 }
-                return View(impuesto);
+                return View(deduccion);
             }
 
         }
 
-        private bool ImpuestoExists(int id)
+        private bool DeduccionExists(int id)
         {
-            return _context.Impuestos.Any(e => e.IdImpuesto == id);
+            return _context.Deduccions.Any(e => e.IdDeduccion == id);
         }
-        private void SetCamposAuditoria(Impuesto record, bool bNewRecord)
+
+        private void SetCamposAuditoria(Deduccion record, bool bNewRecord)
         {
             var now = DateTime.Now;
             var CurrentUser = _userManager.GetUserName(User);

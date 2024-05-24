@@ -21,107 +21,61 @@ namespace PlanillaPM.Controllers
         }
 
 
-        // GET: ImpuestosController/Create
-        public ActionResult Create()
+    // GET: ImpuestosController/Create
+    public ActionResult Create()
         {
             return View();
         }
-
        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEdit([FromBody] ImpuestoTabla impuestoTabla)
         {
-            try
+            
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    if (impuestoTabla.IdImpuestoTabla > 0)
-                    {
-                        SetCamposAuditoria(impuestoTabla, false);
-                        _context.Update(impuestoTabla);
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        SetCamposAuditoria(impuestoTabla, true);
-                        _context.Add(impuestoTabla);
-                        await _context.SaveChangesAsync();
-                    }
 
-                    TempData["success"] = "El registro ha sido creado exitosamente.";
-                    return Json(new { success = true });
+                // Adjust validation for the Porcentaje field
+                if (impuestoTabla.Porcentaje.HasValue && (impuestoTabla.Porcentaje < -999.99m || impuestoTabla.Porcentaje > 9999.99m))
+                {
+                    ModelState.AddModelError("Porcentaje", "El porcentaje debe estar entre -999.99 y 9999.99.");
                 }
-                else
+                if (!ModelState.IsValid)
                 {
                     var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                     TempData["Error"] = "Error: " + message;
                     return Json(new { success = false, error = message });
                 }
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Error: " + ex.Message;
-                return Json(new { success = false, error = ex.Message });
-            }
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var impuestoTabla = await _context.ImpuestoTablas.FindAsync(id);
-            if (impuestoTabla == null)
-            {
-                return NotFound();
-            }
-
-            var viewModel = new ImpuestoTablaListaYModelo
-            {
-                ImpuestoTabla = impuestoTabla,
-                ListaImpuestoTabla = await _context.ImpuestoTablas.ToListAsync()
-            };
-
-            return View(viewModel);
-        }
-
-
-        // POST: ImpuestosController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdImpuestoTabla,IdImpuesto,Desde,Hasta,Monto,Porcentaje,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] ImpuestoTablaListaYModelo impuestoTablaListaYModelo)
-        {         
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (impuestoTabla.IdImpuestoTabla > 0)
                 {
-                    SetCamposAuditoria(impuestoTablaListaYModelo.ImpuestoTabla, false);
-                    _context.Update(impuestoTablaListaYModelo.ImpuestoTabla);
+                    SetCamposAuditoria(impuestoTabla, false);
+                    _context.Update(impuestoTabla);
                     await _context.SaveChangesAsync();
-                    TempData["success"] = "El registro ha actualizado exitosamente.";
-
-                    return Redirect(Request.Headers["Referer"].ToString());
+                    TempData["success"] = "El registro ha sido Actualizado exitosamente.";
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ImpuestoTablaExists(impuestoTablaListaYModelo.ImpuestoTabla.IdImpuestoTabla))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    SetCamposAuditoria(impuestoTabla, true);
+                    _context.Add(impuestoTabla);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
                 }
-                
+
+
+              
+               return Json(new { success = true, message = TempData["success"] });
             }
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
+                return Json(new { success = false, error = message });
             }
-            return Redirect(Request.Headers["Referer"].ToString());
         }
+
+       
 
         // GET: ImpuestosController/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -141,43 +95,46 @@ namespace PlanillaPM.Controllers
             return View(impuestoTabla);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed([FromBody] ImpuestoTabla impuestoTablae)
+        public async Task<IActionResult> DeleteConfirmed([FromBody] ImpuestoTabla impuestoTabla)
         {
-            var id = impuestoTablae.IdImpuestoTabla;
-            var impuestoTabla = await _context.ImpuestoTablas.FindAsync(id);
             try
             {
+                var id = impuestoTabla.IdImpuestoTabla;
+                var impuesto = await _context.ImpuestoTablas.FindAsync(id);
 
-                if (impuestoTabla != null)
+                if (impuesto == null)
                 {
-                    _context.ImpuestoTablas.Remove(impuestoTabla);
-                    await _context.SaveChangesAsync();
-                    TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    TempData["Error"] = "Hubo un error al intentar eliminar el impuesto. El registro no se encontró.";
+                    return Json(new { success = false, error = "Registro no encontrado." });
                 }
-                else
-                {
-                    TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return RedirectToAction(nameof(Index));
-                }
+
+                _context.ImpuestoTablas.Remove(impuesto);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "El registro ha sido eliminado exitosamente.";
+                return Json(new { success = true, message = "El registro ha sido eliminado exitosamente." });
             }
             catch (DbUpdateException ex)
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["Error"] = "Error: No se puede eliminar el registro actual porque está relacionado con otro registro.";
+                    return Json(new { success = false, error = "No se puede eliminar el registro porque está relacionado con otro registro." });
                 }
                 else
                 {
-                    var message = ex.InnerException;
-                    TempData["error"] = "Error: " + message;
+                    TempData["Error"] = "Error: " + ex.Message;
+                    return Json(new { success = false, error = ex.Message });
                 }
-                return View(impuestoTabla);
             }
-
         }
+
+
+
+        
 
         private bool ImpuestoTablaExists(int id)
         {

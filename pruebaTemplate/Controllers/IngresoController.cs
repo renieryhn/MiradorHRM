@@ -4,40 +4,37 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanillaPM.Models;
+using Syncfusion.DocIO.DLS;
 using System.Data;
 using static PlanillaPM.cGeneralFun;
-using static PlanillaPM.Models.EmpleadoContrato;
 using static PlanillaPM.Models.Impuesto;
+using static PlanillaPM.Models.Ingreso;
 
 namespace PlanillaPM.Controllers
 {
-    public class ImpuestoController : Controller
+    public class IngresoController : Controller
     {
 
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
-        public ImpuestoController(PlanillaContext context, UserManager<Usuario> userManager)
+        public IngresoController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-
-
-        // GET: ImpuestosController
+        // GET: Ingreso
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            List<Impuesto> registros;
+            List<Ingreso> registros;
             if (filter != null)
             {
-                registros = await _context.Impuestos.Where(r => r.NombreImpuesto.ToLower().Contains(filter.ToLower())).ToListAsync();
+                registros = await _context.Ingresos.Where(r => r.NombreIngreso.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
             {
-                registros = await _context.Impuestos.ToListAsync();
+                registros = await _context.Ingresos.ToListAsync();
             }
-           
-
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -51,13 +48,13 @@ namespace PlanillaPM.Controllers
         public ActionResult Download()
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Impuesto>? data = null;
+            List<Ingreso>? data = null;
             if (data == null)
             {
-                data = _context.Impuestos.ToList();
+                data = _context.Ingresos.ToList();
             }
             DataTable table = converter.ToDataTable(data);
-            string fileName = "Impuestos.xlsx";
+            string fileName = "Ingresos.xlsx";
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table);
@@ -69,7 +66,7 @@ namespace PlanillaPM.Controllers
             }
         }
 
-        // GET: ImpuestosController/Details/5
+        // GET: Ingreso/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -77,33 +74,34 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var impuesto = await _context.Impuestos
-                .FirstOrDefaultAsync(m => m.IdImpuesto == id);
-            if (impuesto == null)
+            var ingreso = await _context.Ingresos
+                .FirstOrDefaultAsync(m => m.IdIngreso == id);
+            if (ingreso == null)
             {
                 return NotFound();
             }
 
-            return View(impuesto);
+            return View(ingreso);
         }
 
-        // GET: ImpuestosController/Create
+        // GET: Ingreso/Create
         public ActionResult Create()
         {
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
-
+            ViewBag.TipoIngreso = Enum.GetValues(typeof(TipoIngreso));
+            ViewBag.TipoPeriodo = Enum.GetValues(typeof(TipoPeriodo));
+            
             return View();
         }
 
-        // POST: ImpuestosController/Create
+        // POST: Ingreso/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,Tipo,Monto,Formula,Grabable,Periodo,FechaInicial,FechaFinal,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ingreso ingreso)
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(impuesto, true);
-                _context.Add(impuesto);
+                SetCamposAuditoria(ingreso, true);
+                _context.Add(ingreso);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
                 return RedirectToAction(nameof(Index));
@@ -113,63 +111,50 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            return View(impuesto);
+            return View(ingreso);
         }
 
-        [HttpGet]
-        public IActionResult MostrarModalImpuestoTabla(int impuestoId)
-        {
-            ViewBag.ImpuestoId = impuestoId;
-            List<ImpuestoTabla> impuestoTabla;
-            impuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList();
-           
-            return PartialView("_EditarImpuestoTabla", impuestoTabla);
-           
-        }
-
-
-        // GET: ImpuestosController/Edit/5
+        // GET: Ingreso/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var impuesto = await _context.Impuestos.FindAsync(id);
-            if (impuesto == null)
+
+            var ingreso = await _context.Ingresos.FindAsync(id);
+            if (ingreso == null)
             {
                 return NotFound();
             }
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
-
-            return View(impuesto);
-           
+            ViewBag.TipoIngreso = Enum.GetValues(typeof(TipoIngreso));
+            ViewBag.TipoPeriodo = Enum.GetValues(typeof(TipoPeriodo));
+            return View(ingreso);
         }
 
-        // POST: ImpuestosController/Edit/5
+
+        // POST: Ingreso/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdIngreso,NombreIngreso,Tipo,Monto,Formula,Grabable,Periodo,FechaInicial,FechaFinal,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ingreso ingreso)
         {
-
-            if (id != impuesto.IdImpuesto)
+            if (id != ingreso.IdIngreso)
             {
                 return NotFound();
             }
-
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    SetCamposAuditoria(impuesto, false);
-                    _context.Update(impuesto);
+                    SetCamposAuditoria(ingreso, false);
+                    _context.Update(ingreso);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha actualizado exitosamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ImpuestoExists(impuesto.IdImpuesto))
+                    if (!IngresoExists(ingreso.IdIngreso))
                     {
                         return NotFound();
                     }
@@ -185,10 +170,10 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            return View(impuesto);
+            return View(ingreso);
         }
 
-        // GET: ImpuestosController/Delete/5
+        // GET: Ingreso/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -196,28 +181,28 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var impuesto = await _context.Impuestos
-                .FirstOrDefaultAsync(m => m.IdImpuesto == id);
-            if (impuesto == null)
+            var ingreso = await _context.Ingresos
+                .FirstOrDefaultAsync(m => m.IdIngreso == id);
+            if (ingreso == null)
             {
                 return NotFound();
             }
 
-            return View(impuesto);
+            return View(ingreso);
         }
 
-        // POST: ImpuestosController/Delete/5
+        // POST: Ingreso/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var impuesto = await _context.Impuestos.FindAsync(id);
+            var ingreso = await _context.Ingresos.FindAsync(id);
             try
             {
 
-                if (impuesto != null)
+                if (ingreso != null)
                 {
-                    _context.Impuestos.Remove(impuesto);
+                    _context.Ingresos.Remove(ingreso);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
@@ -232,23 +217,24 @@ namespace PlanillaPM.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {
                     var message = ex.InnerException;
-                    TempData["error"] = "Error: " + message;
+                    TempData["Error"] = "Error: " + message;
                 }
-                return View(impuesto);
+                return View(ingreso);
             }
 
         }
 
-        private bool ImpuestoExists(int id)
+        private bool IngresoExists(int id)
         {
-            return _context.Impuestos.Any(e => e.IdImpuesto == id);
+            return _context.Ingresos.Any(e => e.IdIngreso == id);
         }
-        private void SetCamposAuditoria(Impuesto record, bool bNewRecord)
+
+        private void SetCamposAuditoria(Ingreso record, bool bNewRecord)
         {
             var now = DateTime.Now;
             var CurrentUser = _userManager.GetUserName(User);
@@ -267,5 +253,7 @@ namespace PlanillaPM.Controllers
                 record.ModificadoPor = CurrentUser;
             }
         }
+
+
     }
 }

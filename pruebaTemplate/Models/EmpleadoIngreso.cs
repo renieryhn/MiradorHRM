@@ -7,7 +7,7 @@ namespace PlanillaPM.Models;
 
 public partial class EmpleadoIngreso
 {
-    public string IdIngreso { get; set; } = null!;
+    public int IdIngreso { get; set; } 
     [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
 

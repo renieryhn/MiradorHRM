@@ -4,13 +4,13 @@
 
 @{
     ViewData["Title"] = "Home Page";
-  
+
     var colors = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a", "#FF5733", "#C70039", "#900C3F", "#581845" };
     var colors2 = new[] { "#3c8dbc", "#ff6384" }; // Azul y rosa
     var colors3 = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a" };
     var ubicaciones = Model.EmpleadosPorUbicacion.Keys.ToList();
     var cantidades = Model.EmpleadosPorUbicacion.Values.ToList();
-  
+
 }
 
 <script src="~/plugins/chart.js/chart.bundle.min.js"></script>
@@ -19,14 +19,13 @@
 <script src="~/plugins/chart.js/chart.js"></script>
 
 <div class="container-flui">
-   
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Dashboard - Recursos Humanos</h1>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -34,21 +33,20 @@
         <div class="container-fluid">
 
 
-            <!-- Small boxes (Stat box) -->
             <div class="row">
-                <div class="col-lg-3 col-6">                 
-                        <div class="card card-primary card-outline small-box">
-                            <div class="card-body">                              
-                                <div class="inner">
-                                <h7>Empleados Registrados</h7>                              
+                <div class="col-lg-3 col-6">
+                    <div class="card card-primary card-outline small-box">
+                        <div class="card-body">
+                            <div class="inner">
+                                <h7>Empleados Registrados</h7>
                                 <h3>@Model.CantidadEmpleados</h3>
-                                </div>
+                            </div>
                             <div class="icon">
                                 <i class="fas fa-users"></i> <!-- Icono de usuarios -->
                             </div>
                         </div>
-                        </div><!-- /.card -->    
-                </div>         
+                    </div><!-- /.card -->
+                </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
 
@@ -59,10 +57,10 @@
                                 <h3>@Model.CantidadPerfilesCompletos<sup style="font-size: 20px">%</sup></h3>
                             </div>
                             <div class="icon">
-                                <i class="fas fa-check-circle"></i>                           
+                                <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-                    </div>                  
+                    </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
@@ -92,7 +90,7 @@
                                 <i class="fas fa-briefcase"></i>
                             </div>
                         </div>
-                    </div>                  
+                    </div>
                 </div>
                 <!-- ./col -->
             </div>
@@ -266,12 +264,13 @@
                                     @foreach (var contrato in Model.ContratosPorVencer)
                                     {
                                         <tr>
-                                            @if (contrato.IdEmpleadoNavigation != null){
+                                            @if (contrato.IdEmpleadoNavigation != null)
+                                            {
                                                 <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
                                             }
                                             @if (contrato.IdTipoContratoNavigation != null)
                                             {
-                                            <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
+                                                <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
                                             }
                                             <td>
                                                 @{
@@ -427,8 +426,6 @@
             </div>
             <!-- Main row -->
             <div class="row">
-               
-
                 <section class="col-lg-6 connectedSortable">
                     <!-- PIE CHART -->
                     <div class="card card-primary card-outline">
@@ -448,23 +445,16 @@
                         </div>
                         <!-- /.card-body-->
                     </div>
-<<<<<<< HEAD
-                    <!-- /.card -->
-                    <div style="width:600px;height:400px;">
-                        <canvas id="genderChart"></canvas>
-                    </div>
-
-=======
->>>>>>> rediseño Dashboard
                 </section>
 
                 <section class="col-lg-6 connectedSortable">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            
+
                             <h3 class="card-title">
                                 <i class="far fa-chart-bar"></i>
-                                Cantidad de Hombres y Mujeres</h3>
+                                Cantidad de Hombres y Mujeres
+                            </h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
@@ -496,17 +486,13 @@
                     </div>
                 </section>
 
-              
-                   
-               
-
             </div>
-             
-               
+
+
         </div>
-            <!-- /.row (main row) -->
-            
-  
+        <!-- /.row (main row) -->
+
+
     </section>
 </div>
 
@@ -574,44 +560,6 @@
                 data: pieData,
                 options: pieOptions
             });
-<<<<<<< HEAD
-        }
-    }
-
-    var ctx = document.getElementById('genderChart').getContext('2d');
-    var GenderPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Hombres', 'Mujeres'],
-            datasets: [{
-                label: 'Cantidad de Personas por Sexo',
-                data: [@Model.TotalHombres, @Model.TotalMujeres],
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 99, 132, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Distribución por Sexo'
-                }
-            }
-        }
-    });
-</script>
-=======
 
             // Datos para el gráfico de pie ubicacion
             var pieData2 = {
@@ -653,13 +601,12 @@
         });
 
 
-    
 
-       
+
+
 
     </script>
 }
->>>>>>> rediseño Dashboard
 
 
 

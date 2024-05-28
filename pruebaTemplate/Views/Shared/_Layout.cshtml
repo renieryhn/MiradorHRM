@@ -1,6 +1,9 @@
 ﻿@using PlanillaPM.Models;
 ﻿@using Microsoft.AspNetCore.Identity
+
+
 @inject SignInManager<Usuario> SignInManager
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +24,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css">
     <!-- Bootstrap Color Picker -->
@@ -435,6 +440,21 @@
         <script src="~/plugins/inputmask/jquery.inputmask.min.js"></script>
         <!-- AdminLTE App -->
         <script src="~/js/adminlte.min.js"></script>
+
+
+        <!-- FLOT CHARTS -->
+        <script src="~/plugins/flot/jquery.flot.js"></script>
+        <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+        <script src="~/plugins/flot/plugins/jquery.flot.resize.js"></script>
+        <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+        <script src="~/plugins/flot/plugins/jquery.flot.pie.js"></script>
+
+        <!-- JQVMap -->
+        <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+        <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+        <!-- jQuery Knob Chart -->
+        <script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+
         <!-- bootstrap color picker -->
         <script src="~/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
         <!-- fullCalendar 2.2.5 -->
@@ -447,10 +467,13 @@
         <script src="~/js/site.js" asp-append-version="true"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="~/js/demo.js"></script>
-       
 
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         <script>
+
+          
+            
             $(document).ready(function () {
                 LoadUsrData();
 
@@ -512,6 +535,13 @@
                     }
                 });
             }
+
+
+           
+
+           
+
+           
         </script>
 
 

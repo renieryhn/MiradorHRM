@@ -31,7 +31,7 @@
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Monto" class="control-label"></label>
+                                <label asp-for="Monto" id="lblMonto" class="control-label"></label>
                                 <input asp-for="Monto" class="form-control" required />
                                 <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
@@ -139,7 +139,7 @@
                     montoInput.prop('disabled', true);
                     formulaInput.prop('disabled', true).val('');
 
-                    if (selectedTipo === 'Fijo') {
+                    if (selectedTipo === 'Fijo' || selectedTipo === 'Porcentaje') {
                         montoInput.prop('disabled', false);
                     } else if (selectedTipo === 'Fórmula') {
                         formulaInput.prop('disabled', false);

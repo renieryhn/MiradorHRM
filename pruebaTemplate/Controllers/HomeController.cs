@@ -76,6 +76,8 @@ namespace pruebaTemplate.Controllers
             var licenciasPorVencer = await ObtenerLicenciasPorVencer();
             var contratosPorVencer = await ObtenerContratosPorVencer();
             var empleadoAusencias = await AusenciasTomarAccion();
+            var totalHombres = await _context.Empleados.CountAsync(e => e.Genero == "Masculino");
+            var totalMujeres = await _context.Empleados.CountAsync(e => e.Genero == "Femenino");
 
             InicioFiltros viewModel=null;
             var user = await _userManager.GetUserAsync(User);
@@ -97,7 +99,9 @@ namespace pruebaTemplate.Controllers
                     ProximosCumpleañeros = proximosCumpleañeros,
                     LicenciasPorVencer = licenciasPorVencer,
                     ContratosPorVencer = contratosPorVencer,
-                    EmpleadoAusencias = empleadoAusencias
+                    EmpleadoAusencias = empleadoAusencias,
+                    TotalHombres = totalHombres,
+                    TotalMujeres = totalMujeres
                 };
                 if (viewModel == null)
                 {
@@ -297,9 +301,6 @@ namespace pruebaTemplate.Controllers
 
         //    return Json(new { success = true, message = "Estado actualizado correctamente." });
         //}
-
-
-
 
 
         public IActionResult Privacy()

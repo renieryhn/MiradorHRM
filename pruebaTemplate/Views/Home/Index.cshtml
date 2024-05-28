@@ -5,6 +5,11 @@
     ViewData["Title"] = "Home Page";
 }
 
+<script src="~/plugins/chart.js/chart.bundle.min.js"></script>
+<script src="~/plugins/chart.js/chart.bundle.js"></script>
+<script src="~/plugins/chart.js/chart.min.js"></script>
+<script src="~/plugins/chart.js/chart.js"></script>
+
 <div class="container-flui">
     <h5 >Dashboard - Recursos Humanos</h5>
     <section class="content">
@@ -386,7 +391,10 @@
                         </div><!-- /.card-body -->
                     </div>
                     <!-- /.card -->
-                   
+                    <div style="width:600px;height:400px;">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+
                 </section>
                 <!-- /.Left col -->
                 <!-- right col (We are only adding the ID to make the widgets sortable)-->
@@ -470,6 +478,39 @@
             });
         }
     }
+
+    var ctx = document.getElementById('genderChart').getContext('2d');
+    var GenderPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Hombres', 'Mujeres'],
+            datasets: [{
+                label: 'Cantidad de Personas por Sexo',
+                data: [@Model.TotalHombres, @Model.TotalMujeres],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Distribución por Sexo'
+                }
+            }
+        }
+    });
 </script>
 
 

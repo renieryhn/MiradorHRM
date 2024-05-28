@@ -24,28 +24,27 @@
                                 <label asp-for="NombreImpuesto" class="control-label"></label>
                                 <input asp-for="NombreImpuesto" class="form-control" required />
                                 <span asp-validation-for="NombreImpuesto" class="text-danger"></span>
-                            </div>                          
-                            <div class="form-group">
-                                <label asp-for="Monto" class="control-label"></label>
-                                <input asp-for="Monto" type="number" class="form-control" required />
-                                <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
-                            
                             <div class="form-group">
                                 <label asp-for="Tipo">Tipo:</label>
                                 @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoImpuesto), "Seleccione un impuesto", new { @class = "form-control select2bs4 is-invalid" })
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
+                                <label asp-for="Monto" class="control-label"></label>
+                                <input asp-for="Monto" type="number" class="form-control" required />
+                                <span asp-validation-for="Monto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="Formula" class="control-label"></label>
                                 <input asp-for="Formula"  class="form-control" />
                                 <span asp-validation-for="Formula" class="text-danger"></span>
                             </div>
-                            <div class="form-group form-check form-switch ml-4">
+                            @* <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
                                     <input class="form-check-input" asp-for="Grabable" /> @Html.DisplayNameFor(model => model.Grabable)
                                 </label>
-                            </div>
+                            </div> *@
                         </div>
                         
                             
@@ -66,10 +65,77 @@
 </div>
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        // await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
-            var $table = $('#table');
+            $(document).ready(function () {
+                // Obtener los elementos DOM
+                var tipoImpuestoDropdown = $('#Tipo');
+                var montoInput = $('#Monto');
+                var formulaInput = $('#Formula');
+                var botonTabla = $('#botonTabla');
+
+                // Función para activar o desactivar campos según el tipo seleccionado
+                function toggleCamposSegunTipo() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+
+                    // Desactivar campos y limpiar valores
+                    montoInput.prop('disabled', true);
+                    formulaInput.prop('disabled', true).val('');
+
+                    if (selectedTipo === 'Fijo' || selectedTipo === 'Porcentaje') {
+                        montoInput.prop('disabled', false);
+                    } else if (selectedTipo === 'Fórmula') {
+                        formulaInput.prop('disabled', false);
+                        montoInput.val('0');
+                    }
+                }
+
+                // Función para activar o desactivar el botón según el tipo seleccionado
+                function toggleBotonTabla() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+                    if (selectedTipo === 'Tabla') {
+                        botonTabla.prop('disabled', false);
+                    } else {
+                        botonTabla.prop('disabled', true);
+                    }
+                }
+
+                // Llamar a las funciones al cargar la página
+                toggleCamposSegunTipo();
+                toggleBotonTabla();
+
+                // Evento change para el dropdown de Tipo para actualizar campos y botón
+                tipoImpuestoDropdown.change(function () {
+                    toggleCamposSegunTipo();
+                    toggleBotonTabla();
+                });
+            });
+
+
+            $(document).ready(function () {
+                $('#botonTabla').click(function () {
+                    var impuestoId = $('#IdImpuesto').val();
+                    cargarModalImpuestoTabla(impuestoId);
+                });
+
+            });
+
+            function cargarModalImpuestoTabla(impuestoId) {
+                $.ajax({
+                    url: '@Url.Action("MostrarModalImpuestoTabla", "Impuesto")',
+                    type: 'GET',
+                    data: { impuestoId: impuestoId },
+                    success: function (data) {
+                        $('#modalContent').html(data);
+                        $('#modal-xl').modal('show');
+                    }
+
+                });
+            }
 
         </script>
+
+
     }
 }
+

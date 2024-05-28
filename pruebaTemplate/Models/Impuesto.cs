@@ -14,10 +14,11 @@ public partial class Impuesto
     [Display(Name = "Tipo de Impuesto")]
     public TipoImpuesto Tipo { get; set; }
 
-    [Display(Name = "Monto")]
+    [Display(Name = "Valor")]
     public decimal? Monto { get; set; }
     [Display(Name = "Fórmula")]
     public string? Formula { get; set; }
+
     [Display(Name = "Es Grabable")]
     public bool Grabable { get; set; }
 

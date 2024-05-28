@@ -17,7 +17,8 @@ namespace PlanillaPM.Models
 
         public int Id { get; set; }
         public EstadoAusencia NuevoEstado { get; set; }
-       
-        
+
+        public int TotalHombres { get; set; }
+        public int TotalMujeres { get; set; }
     }
 }

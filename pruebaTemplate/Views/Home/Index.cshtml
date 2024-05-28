@@ -1,8 +1,16 @@
-﻿@model PlanillaPM.Models.InicioFiltros
+﻿@using Newtonsoft.Json
+@model PlanillaPM.Models.InicioFiltros
 
-<!-- Tu código HTML aquí utilizando el modelo @Model -->
+
 @{
     ViewData["Title"] = "Home Page";
+  
+    var colors = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a", "#FF5733", "#C70039", "#900C3F", "#581845" };
+    var colors2 = new[] { "#3c8dbc", "#ff6384" }; // Azul y rosa
+    var colors3 = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a" };
+    var ubicaciones = Model.EmpleadosPorUbicacion.Keys.ToList();
+    var cantidades = Model.EmpleadosPorUbicacion.Values.ToList();
+  
 }
 
 <script src="~/plugins/chart.js/chart.bundle.min.js"></script>
@@ -11,7 +19,17 @@
 <script src="~/plugins/chart.js/chart.js"></script>
 
 <div class="container-flui">
-    <h5 >Dashboard - Recursos Humanos</h5>
+   
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Dashboard - Recursos Humanos</h1>
+                </div>
+                
+            </div>
+        </div>
+    </div>
     <section class="content">
         <div class="container-fluid">
 
@@ -301,7 +319,7 @@
 
             </div>
             <div class="row">
-                <section class="col-lg-4 connectedSortable">
+                <section class="col-lg-6 connectedSortable">
                     <div class="card">
                         <div class="card-header border-0">
                             <h3 class="card-title">Ausencias</h3>
@@ -352,130 +370,211 @@
                     </div>
                 </section>
 
-              
+                <div class="col-md-6">
+                    <!-- USERS LIST -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Accesos Directos</h3>
+
+                            <div class="card-tools">
+
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <ul class="users-list clearfix">
+                                <li>
+                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                        <img src="~/img/contactoemergenciaAD.png" alt="User Image">
+                                    </a>
+                                    <span class="users-list-name">Contacto de Emergencia</span>
+                                </li>
+                                <li>
+                                    <a asp-controller="EmpleadoAusencium" asp-action="Index">
+                                        <img src="~/img/ausenciaAD.png" alt="User Image">
+                                    </a>
+                                    <span class="users-list-name">Ausencia</span>
+                                </li>
+                                <li>
+                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                        <img src="~/img/contratoAD.png" alt="User Image">
+                                    </a>
+                                    <a class="users-list-name" href="#">Contratos</a>
+
+                                </li>
+                                <li>
+                                    <a asp-controller="Empleado" asp-action="Index">
+                                        <img src="~/img/EmpleadoAD.png" alt="User Image">
+                                    </a>
+                                    <a class="users-list-name" href="#">Empleado</a>
+
+                                </li>
+
+
+                            </ul>
+                            <!-- /.users-list -->
+                        </div>
+                        <!-- /.card-body -->
+
+                    </div>
+                    <!--/.card -->
+                </div>
 
             </div>
             <!-- Main row -->
             <div class="row">
-                <!-- Left col -->
-                <section class="col-lg-7 connectedSortable">
-                    <!-- Custom tabs (Charts with tabs)-->
-                    <div class="card">
+               
+
+                <section class="col-lg-6 connectedSortable">
+                    <!-- PIE CHART -->
+                    <div class="card card-primary card-outline">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-chart-pie mr-1"></i>
-                                Sales
+                                <i class="far fa-chart-bar"></i>
+                                Empleados por Departamento
                             </h3>
                             <div class="card-tools">
-                                <ul class="nav nav-pills ml-auto">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                                    </li>
-                                </ul>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
                             </div>
-                        </div><!-- /.card-header -->
+                        </div>
                         <div class="card-body">
-                            <div class="tab-content p-0">
-                                <!-- Morris chart - Sales -->
-                                <div class="chart tab-pane active" id="revenue-chart"
-                                     style="position: relative; height: 300px;">
-                                    <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                </div>
-                                <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                                </div>
-                            </div>
-                        </div><!-- /.card-body -->
+                            <canvas id="pieChart3" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                        </div>
+                        <!-- /.card-body-->
                     </div>
+<<<<<<< HEAD
                     <!-- /.card -->
                     <div style="width:600px;height:400px;">
                         <canvas id="genderChart"></canvas>
                     </div>
 
+=======
+>>>>>>> rediseño Dashboard
                 </section>
-                <!-- /.Left col -->
-                <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                <section class="col-lg-5 connectedSortable">
 
-                    <!-- Map card -->
-                    <div class="card bg-gradient-primary">
-                        <div class="card-header border-0">
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            
                             <h3 class="card-title">
-                                <i class="fas fa-map-marker-alt mr-1"></i>
-                                Visitors
-                            </h3>
-                            <!-- card tools -->
+                                <i class="far fa-chart-bar"></i>
+                                Cantidad de Hombres y Mujeres</h3>
                             <div class="card-tools">
-                                <button type="button" class="btn btn-primary btn-sm daterange" title="Date range">
-                                    <i class="far fa-calendar-alt"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
                                 </button>
                             </div>
-                            <!-- /.card-tools -->
                         </div>
                         <div class="card-body">
-                            <div id="world-map" style="height: 250px; width: 100%;"></div>
-                        </div>
-                        <!-- /.card-body-->
-                        <div class="card-footer bg-transparent">
-                            <div class="row">
-                                <div class="col-4 text-center">
-                                    <div id="sparkline-1"></div>
-                                    <div class="text-white">Visitors</div>
-                                </div>
-                                <!-- ./col -->
-                                <div class="col-4 text-center">
-                                    <div id="sparkline-2"></div>
-                                    <div class="text-white">Online</div>
-                                </div>
-                                <!-- ./col -->
-                                <div class="col-4 text-center">
-                                    <div id="sparkline-3"></div>
-                                    <div class="text-white">Sales</div>
-                                </div>
-                                <!-- ./col -->
-                            </div>
-                            <!-- /.row -->
+                            <canvas id="pieChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
                         </div>
                     </div>
                 </section>
-                <!-- right col -->
+
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="far fa-chart-bar"></i>
+                                Empleados por Ubicación
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="pieChart2" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+              
+                   
+               
+
             </div>
+             
+               
+        </div>
             <!-- /.row (main row) -->
             
-        </div><!-- /.container-fluid -->
+  
     </section>
 </div>
 
 
-<script>
-    function actualizarEstado(id, nuevoEstado) {
-        if (confirm('¿Está seguro que desea cambiar el estado de esta ausencia?')) {
-            $.ajax({
-                url: '@Url.Action("ActualizarEstado", "Home")',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ Id: id, NuevoEstado: nuevoEstado }),
-                headers: {
-                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
-                },
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        location.reload(); // Refrescar la página
-                    } else {
-                        toastr.error(response.message);
+@section scripts {
+    <script>
+
+
+        function actualizarEstado(id, nuevoEstado) {
+            if (confirm('¿Está seguro que desea cambiar el estado de esta ausencia?')) {
+                $.ajax({
+                    url: '@Url.Action("ActualizarEstado", "Home")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ Id: id, NuevoEstado: nuevoEstado }),
+                    headers: {
+                        'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            location.reload(); // Refrescar la página
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Error al actualizar el estado: ' + error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error('Error al actualizar el estado: ' + error);
+                });
+            }
+        }
+
+
+        $(document).ready(function () {
+            // Datos para el gráfico de pie M/F
+            var pieData = {
+                labels: ['Hombres', 'Mujeres'],
+                datasets: [{
+                    label: 'Cantidad de Personas por Sexo',
+                    data: [@Model.TotalHombres, @Model.TotalMujeres],
+                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
+                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
+                    borderWidth: 1
+                }]
+            };
+
+            var pieOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribución por Sexo'
+                    }
                 }
+            };
+
+            var pieChartCanvas = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieChartCanvas, {
+                type: 'pie',
+                data: pieData,
+                options: pieOptions
             });
+<<<<<<< HEAD
         }
     }
 
@@ -512,6 +611,55 @@
         }
     });
 </script>
+=======
+
+            // Datos para el gráfico de pie ubicacion
+            var pieData2 = {
+                labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Keys)),
+                datasets: [{
+                    label: 'Empleados por Ubicación',
+                    data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Values)),
+                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
+                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
+                    borderWidth: 1
+                }]
+            };
+
+            var pieChartCanvas2 = document.getElementById('pieChart2').getContext('2d');
+            new Chart(pieChartCanvas2, {
+                type: 'pie',
+                data: pieData2,
+                options: pieOptions
+            });
+
+            // Datos para el gráfico de pie departamentos
+            var pieData3 = {
+                labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.NombreDepartamento))),
+                datasets: [{
+                    label: 'Empleados por Departamento',
+                    data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.Count))),
+                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
+                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
+                    borderWidth: 1
+                }]
+            };
+
+            var pieChartCanvas3 = document.getElementById('pieChart3').getContext('2d');
+            new Chart(pieChartCanvas3, {
+                type: 'pie',
+                data: pieData3,
+                options: pieOptions
+            });
+        });
+
+
+    
+
+       
+
+    </script>
+}
+>>>>>>> rediseño Dashboard
 
 
 

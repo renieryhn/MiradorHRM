@@ -22,6 +22,8 @@ public partial class Impuesto
     [Display(Name = "Es Grabable")]
     public bool Grabable { get; set; }
 
+
+
     [Display(Name = "Activo")]
     public bool Activo { get; set; }
 

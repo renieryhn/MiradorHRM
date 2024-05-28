@@ -232,4 +232,24 @@ public partial class Empleado
         Ahorro = 1,
         Cheque = 2
     }
+
+    public static List<Empleado> empleados = new List<Empleado>();
+
+    public static Dictionary<string, int> ObtenerTotalEmpleadosPorUbicacion()
+    {
+        // Agrupar los empleados por IdUbicacion y contar la cantidad de empleados en cada ubicación
+        var empleadosPorUbicacion = empleados
+            .Where(e => e.IdUbicacionNavigation != null)
+            .GroupBy(e => e.IdUbicacionNavigation.NombreUbicacion)
+            .Select(group => new
+            {
+                Ubicacion = group.Key,
+                TotalEmpleados = group.Count()
+            })
+            .ToDictionary(x => x.Ubicacion, x => x.TotalEmpleados);
+
+        return empleadosPorUbicacion;
+    }
 }
+
+

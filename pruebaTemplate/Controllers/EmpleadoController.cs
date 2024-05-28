@@ -121,7 +121,6 @@ namespace PlanillaPM.Controllers
             return RedirectToAction("FContratoCorto", "Constancia", new { id = id });
         }
 
-
         [AllowAnonymous]
         public IActionResult ExportToPDFConstancia1(int id)
         {

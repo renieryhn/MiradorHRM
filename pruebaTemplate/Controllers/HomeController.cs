@@ -76,21 +76,33 @@ namespace pruebaTemplate.Controllers
             var licenciasPorVencer = await ObtenerLicenciasPorVencer();
             var contratosPorVencer = await ObtenerContratosPorVencer();
             var empleadoAusencias = await AusenciasTomarAccion();
+            var empleadoDepartamento = await EmpleadoDepartamento();
+
             var totalHombres = await _context.Empleados.CountAsync(e => e.Genero == "Masculino");
             var totalMujeres = await _context.Empleados.CountAsync(e => e.Genero == "Femenino");
 
-            InicioFiltros viewModel=null;
-            var user = await _userManager.GetUserAsync(User);
+            var empleados = await _context.Empleados.Include(e => e.IdUbicacionNavigation).ToListAsync();
+            var empleadosPorUbicacion = empleados
+                .Where(e => e.IdUbicacionNavigation != null)
+                .GroupBy(e => e.IdUbicacionNavigation.NombreUbicacion)
+                .Select(group => new
+                {
+                    Ubicacion = group.Key,
+                    TotalEmpleados = group.Count()
+                })
+                .ToDictionary(x => x.Ubicacion, x => x.TotalEmpleados);
+
             try
             {
-                viewModel = new InicioFiltros
+                var user = await _userManager.GetUserAsync(User);
+
+                var viewModel = new InicioFiltros
                 {
                     Profile = new ProfileViewModel
                     {
                         UserName = user.UserName,
                         Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
-
                     },
                     CantidadEmpleados = cantidadEmpleados,
                     CantidadUsuarios = cantidadUsuarios,
@@ -100,18 +112,13 @@ namespace pruebaTemplate.Controllers
                     LicenciasPorVencer = licenciasPorVencer,
                     ContratosPorVencer = contratosPorVencer,
                     EmpleadoAusencias = empleadoAusencias,
+                    EmpleadoDepartamento = empleadoDepartamento,
                     TotalHombres = totalHombres,
-                    TotalMujeres = totalMujeres
+                    TotalMujeres = totalMujeres,
+                    EmpleadosPorUbicacion = empleadosPorUbicacion
                 };
-                if (viewModel == null)
-                {
-                    return NotFound();
-                } else
-                {
-                  //  var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                    //var IdTipoContratoNavigation = await _context.EmpleadoContratos.ToListAsync();
-                    return View(viewModel);
-                }
+
+                return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -232,6 +239,24 @@ namespace pruebaTemplate.Controllers
             return empleadoAusencias;
         }
 
+        private async Task<List<InicioFiltros>> EmpleadoDepartamento()
+        {
+            var departamentoCount = await _context.Empleados
+                .Include(e => e.IdDepartamentoNavigation)
+                .Where(e => e.Activo)
+                .GroupBy(e => e.IdDepartamentoNavigation.NombreDepartamento)
+                .Select(g => new InicioFiltros
+                {
+                    NombreDepartamento = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            return departamentoCount;
+        }
+
+      
+    
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -283,24 +308,6 @@ namespace pruebaTemplate.Controllers
             }
         }
 
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ActualizarEstado([FromBody] InicioFiltros request)
-        //{
-        //    var empleadoAusencia = await _context.EmpleadoAusencia.FindAsync(request.Id);
-        //    if (empleadoAusencia == null)
-        //    {
-        //        return Json(new { success = false, message = "Ausencia no encontrada." });
-        //    }
-
-        //    empleadoAusencia.Estado = request.NuevoEstado;
-        //    _context.Update(empleadoAusencia);
-        //    await _context.SaveChangesAsync();
-
-        //    return Json(new { success = true, message = "Estado actualizado correctamente." });
-        //}
 
 
         public IActionResult Privacy()

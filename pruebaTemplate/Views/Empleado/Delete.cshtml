@@ -52,8 +52,8 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="Fotografia" class="control-label"></label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" />
+                                <div class="custom-file" >
+                                    <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" disabled />
                                     <label class="custom-file-label" for="customFile"></label>                                 
                                 </div>
                                 
@@ -199,14 +199,61 @@
                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaVencimientoLicencia)" disabled>                               
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdUbicacion" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdUbicacionNavigation.NombreUbicacion)" disabled>
 
-                    <div class="row">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdClaseEmpleado" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdClaseEmpleadoNavigation.NombreClaseEmpleado)" disabled>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroSeguroSocial" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroSeguroSocial)" disabled>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Comentarios)" disabled>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Observaciones" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Observaciones)" disabled>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaInactivacion" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInactivacion)" disabled>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="MotivoInactivacion" class="control-label"></label>
+                                <input type="text" class="form-control" value="@Html.DisplayFor(model => model.MotivoInactivacion)" disabled>
+
+                            </div>
+                        </div>
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdTipoContrato" class="control-label"></label>
                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoContrato)" disabled>
-                               
+
                             </div>
 
                         </div>
@@ -215,7 +262,7 @@
                             <div class="form-group">
                                 <label asp-for="IdTipoNomina" class="control-label"></label>
                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoNomina)" disabled>
-                               
+
                             </div>
 
                         </div>
@@ -223,7 +270,7 @@
                             <div class="form-group">
                                 <label asp-for="IdBanco" class="control-label"></label>
                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdBanco)" disabled>
-                               
+
                             </div>
 
                         </div>
@@ -231,10 +278,12 @@
                             <div class="form-group">
                                 <label asp-for="CuentaBancaria" class="control-label"></label>
                                 <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CuentaBancaria)" disabled>
- 
+
                             </div>
                         </div>
                     </div>
+
+                   
                     <div class="row">
                         <div class="col-md-6">
                             <div class="custom-control custom-switch">

@@ -432,7 +432,9 @@ namespace PlanillaPM.Controllers
                 .Include(e => e.IdDepartamentoNavigation)
                 .Include(e => e.IdEncargadoNavigation)
                 .Include(e => e.IdTipoContratoNavigation)
-                .Include(e => e.IdTipoNominaNavigation)           
+                .Include(e => e.IdTipoNominaNavigation)
+                .Include(e => e.IdClaseEmpleadoNavigation)
+                .Include(e => e.IdUbicacionNavigation)
                 .FirstOrDefaultAsync(m => m.IdEmpleado == id);
             if (empleado == null)
             {
@@ -447,12 +449,15 @@ namespace PlanillaPM.Controllers
         {
             
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(EstadoCivilEmpleado));
+            ViewBag.TipoCuentaBancaria = Enum.GetValues(typeof(TipoCuenta));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco");
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo");
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento");
             ViewData["IdEncargado"] = new SelectList(_context.Empleados.Where(r => r.Activo), "IdEmpleado", "NombreCompleto");
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos.Where(r => r.Activo), "IdTipoContrato", "NombreTipoContrato");
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas.Where(r => r.Activo), "IdTipoNomina", "NombreTipoNomina");
+            ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion");
+            ViewData["IdClaseEmpleado"] = new SelectList(_context.ClaseEmpleados.Where(r => r.Activo), "IdClaseEmpleado", "NombreClaseEmpleado");
             return View();
         }
 
@@ -461,7 +466,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase")] Empleado empleado, IFormFile Fotografia)
+        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion")]Empleado empleado, IFormFile Fotografia)
         {
 
             try
@@ -521,6 +526,8 @@ namespace PlanillaPM.Controllers
             ViewData["IdEncargado"] = new SelectList(_context.Empleados.Where(r => r.Activo), "IdEmpleado", "NombreCompleto");
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos.Where(r => r.Activo), "IdTipoContrato", "NombreTipoContrato");
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas.Where(r => r.Activo), "IdTipoNomina", "NombreTipoNomina");
+            ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion");
+            ViewData["IdClaseEmpleado"] = new SelectList(_context.ClaseEmpleados.Where(r => r.Activo), "IdClaseEmpleado", "NombreClaseEmpleado");
             return View(empleado);
         }
 
@@ -555,12 +562,15 @@ namespace PlanillaPM.Controllers
             
 
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(Empleado.EstadoCivilEmpleado));
+            ViewBag.TipoCuentaBancaria = Enum.GetValues(typeof(TipoCuenta));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo", empleado.IdCargo);
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento", empleado.IdDepartamento);
             ViewData["IdEncargado"] = new SelectList(_context.Empleados.Where(r => r.Activo), "IdEmpleado", "NombreEmpleado", empleado.IdEncargado);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos.Where(r => r.Activo), "IdTipoContrato", "NombreTipoContrato", empleado.IdTipoContrato);
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas.Where(r => r.Activo), "IdTipoNomina", "NombreTipoNomina", empleado.IdTipoNomina);
+            ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion", empleado.IdUbicacion);
+            ViewData["IdClaseEmpleado"] = new SelectList(_context.ClaseEmpleados.Where(r => r.Activo), "IdClaseEmpleado", "NombreClaseEmpleado", empleado.IdClaseEmpleado);
             return View(empleado);
         }
 
@@ -569,7 +579,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,AvatarName,AvatarPath,Avatar,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,EstadoCivil,FechaInicio,IdBanco,CuentaBancaria,NumeroRegistroTributario,SalarioBase,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia)
         {
 
 
@@ -624,6 +634,8 @@ namespace PlanillaPM.Controllers
             ViewData["IdEncargado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreEmpleado", empleado.IdEncargado);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleado.IdTipoContrato);
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina", empleado.IdTipoNomina);
+            ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion", empleado.IdUbicacion);
+            ViewData["IdClaseEmpleado"] = new SelectList(_context.ClaseEmpleados.Where(r => r.Activo), "IdClaseEmpleado", "NombreClaseEmpleado", empleado.IdClaseEmpleado);
             return View(empleado);
         }
 

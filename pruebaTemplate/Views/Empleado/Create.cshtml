@@ -222,9 +222,66 @@
                                 <span asp-validation-for="FechaVencimientoLicencia" class="text-danger"></span>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdUbicacion" class="control-label"></label>
+                                <select asp-for="IdUbicacion" class="form-select select2bs4" asp-items="ViewBag.IdUbicacion">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdUbicacion" class="text-danger"></span>
+                            </div>
+                        </div>
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdClaseEmpleado" class="control-label"></label>
+                                <select asp-for="IdClaseEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdClaseEmpleado" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdClaseEmpleado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="NumeroSeguroSocial" class="control-label"></label>
+                                <input asp-for="NumeroSeguroSocial" class="form-control" />
+                                <span asp-validation-for="NumeroSeguroSocial" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" />
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>
+                        </div>
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Observaciones" class="control-label"></label>
+                                <input asp-for="Observaciones" class="form-control" />
+                                <span asp-validation-for="Observaciones" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaInactivacion" class="control-label"></label>
+                                <input asp-for="FechaInactivacion" class="form-control" type="date"/>
+                                <span asp-validation-for="FechaInactivacion" class="text-danger"></span>
+                            </div>
+                        </div>
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="MotivoInactivacion" class="control-label"></label>
+                                <input asp-for="MotivoInactivacion" class="form-control" />
+                                <span asp-validation-for="MotivoInactivacion" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdTipoContrato" class="control-label"></label>
@@ -233,9 +290,7 @@
                                 </select>
                                 <span asp-validation-for="IdTipoContrato" class="text-danger"></span>
                             </div>
-
                         </div>
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdTipoNomina" class="control-label"></label>
@@ -244,7 +299,6 @@
                                 </select>
                                 <span asp-validation-for="IdTipoContrato" class="text-danger"></span>
                             </div>
-
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -253,7 +307,6 @@
                                 <span asp-validation-for="EstadoCivil" class="text-danger"></span>
                             </div>
                         </div>
-                       
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdBanco" class="control-label"></label>
@@ -265,13 +318,21 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label asp-for="TipoCuentaBancaria"></label>
+                                @Html.DropDownListFor(model => model.TipoCuentaBancaria, new SelectList(ViewBag.TipoCuentaBancaria), "Seleccione el Tipo de Cuenta Bancaria", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="TipoCuentaBancaria" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label asp-for="CuentaBancaria" class="control-label"></label>
-                                <input asp-for="CuentaBancaria" class="form-control"  />
+                                <input asp-for="CuentaBancaria" class="form-control" />
                                 <span asp-validation-for="CuentaBancaria" class="text-danger"></span>
                             </div>
-
                         </div>
+                        
                     </div>
+                
                     <div class="row">
                         <div class="col-md-6">
                             <div class="custom-control custom-switch">

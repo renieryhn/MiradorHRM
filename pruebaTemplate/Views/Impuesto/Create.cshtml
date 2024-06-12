@@ -2,140 +2,63 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="container-fluid">
-    <div class="card card-primary ">
+    <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
             <h3 class="card-title">Crear Impuesto</h3>
         </div>
-        <form asp-action="Create" class="w-100">
-
-            <div class="card-body">
-                <div class="callout callout-info" style="border-left-color: var(--blue);">
-
-                    <h5 class="mx-auto">Información General</h5>
-                    <br />
-                    <div class="row">
-
+         <form asp-action="Create">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="col-md-4">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>                          
                             <div class="form-group">
                                 <label asp-for="NombreImpuesto" class="control-label"></label>
-                                <input asp-for="NombreImpuesto" class="form-control" required />
+                                <input asp-for="NombreImpuesto" class="form-control" required/>
                                 <span asp-validation-for="NombreImpuesto" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Tipo">Tipo:</label>
-                                @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoImpuesto), "Seleccione un impuesto", new { @class = "form-control select2bs4 is-invalid" })
+                                <label asp-for="Tipo"></label>
+                                @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoImpuesto), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Monto" class="control-label"></label>
-                                <input asp-for="Monto" type="number" class="form-control" required />
+                                <input asp-for="Monto" class="form-control" />
                                 <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Formula" class="control-label"></label>
-                                <input asp-for="Formula"  class="form-control" />
+                                <input asp-for="Formula" class="form-control" />
                                 <span asp-validation-for="Formula" class="text-danger"></span>
                             </div>
-                            @* <div class="form-group form-check form-switch ml-4">
+                            <div class="form-group">
+                                <label asp-for="Orden" class="control-label"></label>
+                                <input asp-for="Orden" class="form-control" value="@ViewBag.NextOrden" readonly />
+                                <span asp-validation-for="Orden" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" asp-for="Grabable" /> @Html.DisplayNameFor(model => model.Grabable)
+                                    <input class="form-check-input" asp-for="AsignacionAutomatica" /> @Html.DisplayNameFor(model => model.AsignacionAutomatica)
                                 </label>
-                            </div> *@
+                            </div>
                         </div>
-                        
-                            
-                          
-                       
-                    </div>
+                           
                 </div>
-
             </div>
-
-            <div class="card-footer">
-                <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
-                <a onclick="history.back();" class="btn btn-secondary">Regresar a la Lista</a>
-            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
         </form>
-
     </div>
 </div>
 @section Scripts {
-    @{
-        // await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            $(document).ready(function () {
-                // Obtener los elementos DOM
-                var tipoImpuestoDropdown = $('#Tipo');
-                var montoInput = $('#Monto');
-                var formulaInput = $('#Formula');
-                var botonTabla = $('#botonTabla');
-
-                // Función para activar o desactivar campos según el tipo seleccionado
-                function toggleCamposSegunTipo() {
-                    var selectedTipo = tipoImpuestoDropdown.val();
-
-                    // Desactivar campos y limpiar valores
-                    montoInput.prop('disabled', true);
-                    formulaInput.prop('disabled', true).val('');
-
-                    if (selectedTipo === 'Fijo' || selectedTipo === 'Porcentaje') {
-                        montoInput.prop('disabled', false);
-                    } else if (selectedTipo === 'Fórmula') {
-                        formulaInput.prop('disabled', false);
-                        montoInput.val('0');
-                    }
-                }
-
-                // Función para activar o desactivar el botón según el tipo seleccionado
-                function toggleBotonTabla() {
-                    var selectedTipo = tipoImpuestoDropdown.val();
-                    if (selectedTipo === 'Tabla') {
-                        botonTabla.prop('disabled', false);
-                    } else {
-                        botonTabla.prop('disabled', true);
-                    }
-                }
-
-                // Llamar a las funciones al cargar la página
-                toggleCamposSegunTipo();
-                toggleBotonTabla();
-
-                // Evento change para el dropdown de Tipo para actualizar campos y botón
-                tipoImpuestoDropdown.change(function () {
-                    toggleCamposSegunTipo();
-                    toggleBotonTabla();
-                });
-            });
-
-
-            $(document).ready(function () {
-                $('#botonTabla').click(function () {
-                    var impuestoId = $('#IdImpuesto').val();
-                    cargarModalImpuestoTabla(impuestoId);
-                });
-
-            });
-
-            function cargarModalImpuestoTabla(impuestoId) {
-                $.ajax({
-                    url: '@Url.Action("MostrarModalImpuestoTabla", "Impuesto")',
-                    type: 'GET',
-                    data: { impuestoId: impuestoId },
-                    success: function (data) {
-                        $('#modalContent').html(data);
-                        $('#modal-xl').modal('show');
-                    }
-
-                });
-            }
-
-        </script>
-
-
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-

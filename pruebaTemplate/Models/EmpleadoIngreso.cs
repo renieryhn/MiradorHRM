@@ -7,26 +7,49 @@ namespace PlanillaPM.Models;
 
 public partial class EmpleadoIngreso
 {
-    public int IdIngreso { get; set; } 
+    [Key]
+    public int IdEmpleadoIngreso { get; set; }
+
+    [Display(Name = "Ingreso")]
+    [Required(ErrorMessage = "El Id de Ingreso es requerido")]
+    public int IdIngreso { get; set; }
+
     [Display(Name = "Empleado")]
+    [Required(ErrorMessage = "El Id de Empleado es requerido")]
     public int IdEmpleado { get; set; }
 
-    [DisplayName("Activo")]
+    [Display(Name = "Tipo")]
+    [Required(ErrorMessage = "El tipo es requerido")]
+    public TipoEstado Tipo { get; set; }
+
+    [Display(Name = "Monto")]
+    public decimal? Monto { get; set; }
+
+    [Display(Name = "Fórmula")]
+    public string? Formula { get; set; }
+
+    [Display(Name = "Orden")]
+    public int Orden { get; set; }
+
+    [Display(Name = "Activo")]
+    [Required(ErrorMessage = "El campo Activo es requerido")]
     public bool Activo { get; set; }
 
-    [DisplayName("Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }
 
-    [DisplayName("Fecha de Modificación")]
     public DateTime FechaModificacion { get; set; }
 
-    [DisplayName("Creado Por")]
-    public string? CreadoPor { get; set; }
+    public string CreadoPor { get; set; } = null!;
 
-    [DisplayName("Modificado Por")]
-    public string? ModificadoPor { get; set; }
+    public string ModificadoPor { get; set; } = null!;
 
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
 
     public virtual Ingreso IdIngresoNavigation { get; set; } = null!;
+    public enum TipoEstado
+    {
+        Fijo = 1,
+        Fórmula = 2,
+        Porcentaje = 3
+    }
 }

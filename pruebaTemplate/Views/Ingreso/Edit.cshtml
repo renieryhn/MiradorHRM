@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Editar Division</h3>
+            <h3 class="card-title">Editar Ingreso</h3>
         </div>
          <form asp-action="Edit">
         <div class="card-body">
@@ -17,26 +17,37 @@
                 <div class="row">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <input type="hidden" asp-for="IdIngreso" />
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="NombreIngreso" class="control-label"></label>
-                                <input asp-for="NombreIngreso" class="form-control" required />
+                                <input asp-for="NombreIngreso" class="form-control" required/>
                                 <span asp-validation-for="NombreIngreso" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Tipo">Tipo:</label>
-                                @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoIngreso), "Seleccione un ingreso", new { @class = "form-control select2bs4 is-invalid" })
-                                <span asp-validation-for="Tipo" class="text-danger"></span>
+                                <label asp-for="TipoIngreso"></label>
+                                @Html.DropDownListFor(model => model.TipoIngreso, (List<SelectListItem>)ViewBag.TipoIngresoEstado, "Seleccione un Tipo de Deducción", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="TipoIngreso" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TipoCalculo"></label>
+                                @Html.DropDownListFor(model => model.TipoCalculo, new SelectList(ViewBag.TipoCalculoEstado), "Seleccione un Tipo Calculo", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="TipoCalculo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Monto" class="control-label"></label>
-                                <input asp-for="Monto" class="form-control" type="number" />
+                                <input asp-for="Monto" class="form-control" />
                                 <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Formula" class="control-label"></label>
-                                <input asp-for="Formula" class="form-control" type="number" />
+                                <input asp-for="Formula" class="form-control" />
                                 <span asp-validation-for="Formula" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
@@ -45,35 +56,41 @@
                             </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                    <input class="form-check-input" asp-for="AsignacionAutomatica" /> @Html.DisplayNameFor(model => model.AsignacionAutomatica)
                                 </label>
                             </div>
                         </div>
+                                
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="Orden" class="control-label"></label>
-                                <input asp-for="Orden" class="form-control" required />
+                                <input asp-for="Orden" class="form-control" readonly />
                                 <span asp-validation-for="Orden" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Tipo">Tipo:</label>
-                                @Html.DropDownListFor(model => model.Periodo, new SelectList(ViewBag.TipoPeriodo), "Seleccione un ingreso", new { @class = "form-control select2bs4 is-invalid" })
-                                <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
                                 <label asp-for="FechaInicial" class="control-label"></label>
-                                <input asp-for="FechaInicial" class="form-control" type="date" required />
+                                <input asp-for="FechaInicial" class="form-control" />
                                 <span asp-validation-for="FechaInicial" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaFinal" class="control-label"></label>
-                                <input asp-for="FechaFinal" class="form-control" type="date" required />
+                                <input asp-for="FechaFinal" class="form-control" />
                                 <span asp-validation-for="FechaFinal" class="text-danger"></span>
                             </div>
+                            <div class="form-group">
+                                <label asp-for="Periodo" class="control-label"></label>
+                                <input asp-for="Periodo" class="form-control" required />
+                                <span asp-validation-for="Periodo" class="text-danger"></span>
+                            </div>
                         </div>
+                                
 
-                </div>
+
+                      
+
+                    </div>
             </div>
             <div class="callout callout-info" style="border-left-color: var(--blue); ">
                     <h5>Otros</h5>

@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalle de Division</h3>
+            <h3 class="card-title">Detalle de Impuesto</h3>
         </div>
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
@@ -22,55 +22,55 @@
                                     <label class="control-label">@Html.DisplayNameFor(model => model.NombreImpuesto)</label>
                                 </div>
                                 <div class="col-md-8">
-                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.NombreImpuesto)"/>
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.NombreImpuesto)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Tipo)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Tipo)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Monto)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Monto)"/>
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Formula)</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.Formula)"/>
                                 </div>
                        </div>
                     <div class="form-group row">
                         <div class="col-md-2">
-                            <label class="control-label">@Html.DisplayNameFor(model => model.Tipo)</label>
+                            <label class="control-label">@Html.DisplayNameFor(model => model.AsignacionAutomatica)</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.Tipo)" />
+                            @Html.DisplayFor(model => model.AsignacionAutomatica)
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="control-label">@Html.DisplayNameFor(model => model.Monto)</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.Monto)" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="control-label">@Html.DisplayNameFor(model => model.Formula)</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.Formula)" />
-                        </div>
-                    </div>
-                        <div class="form-group row">
-                            <div class="col-md-2">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.Activo)</label>
-                            </div>
-                            <div class="col-md-8 form-group form-check form-switch ml-4">
-                                <input class="form-check-input" asp-for="Activo" disabled />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-2">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.Grabable)</label>
-                            </div>
-                            <div class="col-md-8 form-group form-check form-switch ml-4">
-                                <input class="form-check-input" asp-for="Grabable" disabled />
-                            </div>
-                        </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Activo)</label>
+                                </div>
+                                <div class="col-md-8">
+                                         @Html.DisplayFor(model => model.Activo)
+                                </div>
+                       </div> 
                         <div class="form-group row">
                                 <div class="col-md-2">
                                     <label class="control-label">@Html.DisplayNameFor(model => model.FechaCreacion)</label>
                                 </div>
                                 <div class="col-md-8">
-                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.FechaCreacion)"/>
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaCreacion)"/>
                                 </div>
                        </div> 
                         <div class="form-group row">
@@ -78,7 +78,7 @@
                                     <label class="control-label">@Html.DisplayNameFor(model => model.FechaModificacion)</label>
                                 </div>
                                 <div class="col-md-8">
-                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.FechaModificacion)"/>
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.FechaModificacion)"/>
                                 </div>
                        </div> 
                         <div class="form-group row">
@@ -86,7 +86,7 @@
                                     <label class="control-label">@Html.DisplayNameFor(model => model.CreadoPor)</label>
                                 </div>
                                 <div class="col-md-8">
-                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.CreadoPor)"/>
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.CreadoPor)"/>
                                 </div>
                        </div> 
                         <div class="form-group row">
@@ -94,8 +94,10 @@
                                     <label class="control-label">@Html.DisplayNameFor(model => model.ModificadoPor)</label>
                                 </div>
                                 <div class="col-md-8">
-                                        <input type="text" class="form-control" readonly value="@Html.DisplayFor(model => model.ModificadoPor)"/>
+                                    <input  type="text" class="form-control" disabled value="@Html.DisplayFor(model => model.ModificadoPor)"/>
                                 </div>
+                       </div> 
+                        <div class="form-group row">
                        </div> 
                         <div class="form-group row">
                        </div> 

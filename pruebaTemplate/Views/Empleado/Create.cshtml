@@ -410,19 +410,19 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
-            // Obtener el separador decimal del navegador
-            var sep = (1.1).toLocaleString().substring(1, 2);
+            var sep = '.';
 
             $(document).ready(function () {
+                // Inicializa el plugin inputmask con el separador decimal definido
                 $('#SalarioBase').inputmask('decimal', {
-                    radixPoint: sep, 
-                    groupSeparator: ',', 
-                    digits: 2, 
+                    radixPoint: sep,
+                    groupSeparator: ',',
+                    digits: 2,
                     autoGroup: true, // Agrupar automáticamente los miles
                     rightAlign: false, // Alinear a la izquierda
                     allowMinus: false, // No permitir números negativos
-                    placeholder: '0', 
-                    allowPlus: false 
+                    placeholder: '0',
+                    allowPlus: false
                 });
             });
         </script>

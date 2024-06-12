@@ -1,13 +1,18 @@
-﻿using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+using ClosedXML.Excel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using PlanillaPM.Models;
-using System.Data;
 using static PlanillaPM.cGeneralFun;
+using Microsoft.AspNetCore.Identity;
+using PlanillaPM.ViewModel;
+
+using PlanillaPM.Models;
 using static PlanillaPM.Models.Deduccion;
-using static PlanillaPM.Models.Ingreso;
 
 namespace PlanillaPM.Controllers
 {
@@ -22,7 +27,7 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
         }
 
-        // GET: DeduccionController
+        // GET: Deduccion
         public async Task<IActionResult> Index(int pg, string? filter)
         {
             List<Deduccion> registros;
@@ -31,8 +36,8 @@ namespace PlanillaPM.Controllers
                 registros = await _context.Deduccions.Where(r => r.NombreDeduccion.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
-            {
-                registros = await _context.Deduccions.ToListAsync();
+            {              
+                registros = await _context.Deduccions.OrderBy(r => r.Orden).ToListAsync();
             }
             const int pageSize = 10;
             if (pg < 1) pg = 1;
@@ -43,29 +48,27 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-
-        public ActionResult Download()
-        {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Deduccion>? data = null;
-            if (data == null)
-            {
+         public ActionResult Download()
+         {
+             ListtoDataTableConverter converter = new ListtoDataTableConverter();
+             List<Deduccion>? data = null;
+             if (data == null)
+             {
                 data = _context.Deduccions.ToList();
-            }
-            DataTable table = converter.ToDataTable(data);
-            string fileName = "Deducciones.xlsx";
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(table);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
-        }
-
-        // GET: DeduccionController/Details/5
+             }
+             DataTable table = converter.ToDataTable(data);
+             string fileName = "Deduccions.xlsx";
+             using (XLWorkbook wb = new XLWorkbook())
+             {
+                 wb.Worksheets.Add(table);
+                 using (MemoryStream stream = new MemoryStream())
+                 {
+                     wb.SaveAs(stream);
+                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                 }
+             }
+        }    
+        // GET: Deduccion/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -83,17 +86,44 @@ namespace PlanillaPM.Controllers
             return View(deduccion);
         }
 
-        // GET: DeduccionController/Create
-        public ActionResult Create()
+        // GET: Deduccion/Create
+        public IActionResult Create()
         {
-            ViewBag.TipoDeduccion = Enum.GetValues(typeof(TipoDeduccion));
+            // Obtener el último valor del campo Orden
+            int maxOrden = _context.Deduccions.Max(i => (int?)i.Orden) ?? 0;
+
+            // Asignar el próximo valor de Orden al ViewBag
+            ViewBag.NextOrden = maxOrden + 1;
+
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado));
+            // Obtener lista de MetodoCalculoEstado
+            ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
+                                              .Cast<MetodoCalculoEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName()
+                                              })
+                                              .ToList();
+
+            // Obtener lista de TipoDeduccionEstado
+            ViewBag.TipoDeduccionEstado = Enum.GetValues(typeof(TipoDeduccionEstado))
+                                              .Cast<TipoDeduccionEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName()
+                                              })
+                                              .ToList();
             return View();
         }
 
-        // POST: DeduccionController/Create
+        // POST: Deduccion/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,Tipo,Monto,Formula,DeducibleImpuesto,BasadoEnTodo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
+        public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
         {
             if (ModelState.IsValid)
             {
@@ -106,12 +136,12 @@ namespace PlanillaPM.Controllers
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["Error"] = "Error: " + message;
+                TempData["error"] = "Error: " + message;
             }
             return View(deduccion);
         }
 
-        // GET: DeduccionController/Edit/5
+        // GET: Deduccion/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -124,15 +154,54 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewBag.TipoDeduccion = Enum.GetValues(typeof(TipoDeduccion));
-           
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(Deduccion.TipoCalculoEstado));
+            // Obtener lista de MetodoCalculoEstado
+            ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
+                                              .Cast<MetodoCalculoEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName(),
+                                                  Selected = e == deduccion.MetodoCalculo // Seleccionar el valor actual
+                                              })
+                                              .ToList();
+
+            // Obtener lista de TipoDeduccionEstado
+            ViewBag.TipoDeduccionEstado = Enum.GetValues(typeof(TipoDeduccionEstado))
+                                              .Cast<TipoDeduccionEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName(),
+                                                  Selected = e == deduccion.TipoDeduccion // Seleccionar el valor actual
+                                              })
+                                              .ToList();
             return View(deduccion);
         }
 
-        // POST: DeduccionController/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(int[] order)
+        {
+            for (int i = 0; i < order.Length; i++)
+            {
+                var deduccion = await _context.Deduccions.FindAsync(order[i]);
+                if (deduccion != null)
+                {
+                    deduccion.Orden = i + 1; // Actualiza el campo Orden según el nuevo orden
+                    _context.Entry(deduccion).State = EntityState.Modified;
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+        // POST: Deduccion/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdDeduccion,NombreDeduccion,Tipo,Monto,Formula,DeducibleImpuesto,BasadoEnTodo,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
         {
             if (id != deduccion.IdDeduccion)
             {
@@ -160,16 +229,39 @@ namespace PlanillaPM.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
+
+            // Re-populate the ViewBag lists in case of a model state error
+            ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
+                                              .Cast<MetodoCalculoEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName(),
+                                                  Selected = e == deduccion.MetodoCalculo // Seleccionar el valor actual
+                                              })
+                                              .ToList();
+
+            ViewBag.TipoDeduccionEstado = Enum.GetValues(typeof(TipoDeduccionEstado))
+                                              .Cast<TipoDeduccionEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName(),
+                                                  Selected = e == deduccion.TipoDeduccion // Seleccionar el valor actual
+                                              })
+                                              .ToList();
+
+
             return View(deduccion);
         }
 
-        // GET: Ingreso/Delete/5
+        // GET: Deduccion/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -187,23 +279,22 @@ namespace PlanillaPM.Controllers
             return View(deduccion);
         }
 
-
-        // POST: DeduccionController/Delete/5
+        // POST: Deduccion/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var deduccion = await _context.Deduccions.FindAsync(id);
+             var deduccion = await _context.Deduccions.FindAsync(id);
             try
             {
-
+               
                 if (deduccion != null)
                 {
                     _context.Deduccions.Remove(deduccion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
-                }
+                } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
@@ -214,12 +305,12 @@ namespace PlanillaPM.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {
                     var message = ex.InnerException;
-                    TempData["Error"] = "Error: " + message;
+                    TempData["error"] = "Error: " + message;
                 }
                 return View(deduccion);
             }
@@ -230,12 +321,12 @@ namespace PlanillaPM.Controllers
         {
             return _context.Deduccions.Any(e => e.IdDeduccion == id);
         }
-
+        
         private void SetCamposAuditoria(Deduccion record, bool bNewRecord)
         {
             var now = DateTime.Now;
-            var CurrentUser = _userManager.GetUserName(User);
-
+            var CurrentUser =  _userManager.GetUserName(User);
+           
             if (bNewRecord)
             {
                 record.FechaCreacion = now;
@@ -249,6 +340,6 @@ namespace PlanillaPM.Controllers
                 record.FechaModificacion = now;
                 record.ModificadoPor = CurrentUser;
             }
-        }
+        }        
     }
 }

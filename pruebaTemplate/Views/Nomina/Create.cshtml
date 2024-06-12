@@ -1,0 +1,102 @@
+﻿@model PlanillaPM.Models.Nomina
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Nomina</h3>
+        </div>
+         <form asp-action="Create">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdTipoNomina" class="control-label"></label>
+                                <select asp-for="IdTipoNomina" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoNomina"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Comentarios" class="control-label"></label>
+                                <input asp-for="Comentarios" class="form-control" required/>
+                                <span asp-validation-for="Comentarios" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="PeriodoFiscal" class="control-label"></label>
+                                <input asp-for="PeriodoFiscal" class="form-control" type="number" required />
+                                <span asp-validation-for="PeriodoFiscal" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Mes" class="control-label"></label>
+                                <input asp-for="Mes" class="form-control" type="number" required />
+                                <span asp-validation-for="Mes" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaPago" class="control-label"></label>
+                                <input asp-for="FechaPago" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaPago" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TotalIngresos" class="control-label"></label>
+                                <input asp-for="TotalIngresos" class="form-control" type="number" required />
+                                <span asp-validation-for="TotalIngresos" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="EstadoNomina">Estado:</label>
+                                @Html.DropDownListFor(model => model.EstadoNomina, new SelectList(ViewBag.NominaEstado), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="EstadoNomina" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="TotalDeducciones" class="control-label"></label>
+                                <input asp-for="TotalDeducciones" class="form-control" type="number" required />
+                                <span asp-validation-for="TotalDeducciones" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TotalImpuestos" class="control-label"></label>
+                                <input asp-for="TotalImpuestos" class="form-control" type="number" required />
+                                <span asp-validation-for="TotalImpuestos" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TotalEmpleadosEnNomina" class="control-label"></label>
+                                <input asp-for="TotalEmpleadosEnNomina" class="form-control" type="number" required />
+                                <span asp-validation-for="TotalEmpleadosEnNomina" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="PagoNeto" class="control-label"></label>
+                                <input asp-for="PagoNeto" class="form-control" type="number" required />
+                                <span asp-validation-for="PagoNeto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AprobadaPor" class="control-label"></label>
+                                <input asp-for="AprobadaPor" class="form-control" />
+                                <span asp-validation-for="AprobadaPor" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ComentariosAprobador" class="control-label"></label>
+                                <input asp-for="ComentariosAprobador" class="form-control" />
+                                <span asp-validation-for="ComentariosAprobador" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                           
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

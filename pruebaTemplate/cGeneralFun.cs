@@ -66,15 +66,16 @@ namespace PlanillaPM
              new MenuDinamico { Objeto= "Empleado",Titulo= "Ausencias",Area= "",Controler= "EmpleadoAusencium",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Activos",Area= "",Controler= "EmpleadoActivo",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Vacaciones",Area= "",Controler= "EmpleadoVacaciones",Accion= "Index" },
-            
+                        
+            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Nómina",Area= "",Controler= "Nomina",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Ingresos",Area= "",Controler= "EmpleadoIngreso",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Deducciones",Area= "",Controler= "EmpleadoDeduccion",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Impuestos",Area= "",Controler= "EmpleadoImpuesto",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Horas Extra",Area= "",Controler= "EmpleadoHorasExtra",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Cuentas por Cobrar",Area= "",Controler= "EmpleadoCXC",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "ISR",Area= "",Controler= "EmpleadoISR",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Viáticos",Area= "",Controler= "EmpleadoViaticos",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Liquidaciones",Area= "",Controler= "EmpleadoLiquidacion",Accion= "Index" },
+            //new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Horas Extra",Area= "",Controler= "EmpleadoHorasExtra",Accion= "Index" },
+            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Cuentas por Cobrar",Area= "",Controler= "CuentaPorCobrar",Accion= "Index" },
+            //new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "ISR",Area= "",Controler= "EmpleadoISR",Accion= "Index" },
+            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Viáticos",Area= "",Controler= "Viatico",Accion= "Index" },
+            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Vacaciones",Area= "",Controler= "Vacacion",Accion= "Index" },
 
             // Agrega más países según necesites
         };

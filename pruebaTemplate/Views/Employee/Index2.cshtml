@@ -1,0 +1,298 @@
+﻿@model IEnumerable<PlanillaPM.Models.Empleado>
+
+<script src="https://balkan.app/js/orgchart.js"></script>
+
+
+<div class="btn-container">
+    <div id="tree"></div>
+</div>
+
+<script>
+    var MisNodos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.nodes));
+    console.log(MisNodos);
+
+    window.onload = function () {
+        // Define una paleta de colores para los departamentos
+        var colors = ['#FFA07A', '#90EE90', '#87CEEB', '#FFD700', '#7B68EE', '#FF6347', '#00CED1', '#DA70D6', '#F08080', '#20B2AA'];
+
+        var deptColors = {};
+
+        // Asigna un color a cada departamento basado en su posición en la lista
+        for (var i = 0; i < MisNodos.length; i++) {
+            if (MisNodos[i].tags && MisNodos[i].tags[0]) {
+                var dept = MisNodos[i].tags[0]; // Suponiendo que el primer tag es el departamento
+                if (!deptColors[dept]) {
+                    // Si aún no hemos asignado un color a este departamento, selecciona uno de la paleta
+                    var colorIndex = Object.keys(deptColors).length % colors.length;
+                    deptColors[dept] = colors[colorIndex];
+                }
+            }
+        }
+
+        // Agrega las plantillas de departamento con los colores asignados al objeto de plantillas de OrgChart
+        for (var dept in deptColors) {
+            OrgChart.templates[dept] = Object.assign({}, OrgChart.templates.ana, {
+                node: '<rect x="0" y="0" height="100" width="250" fill="' + deptColors[dept] + '" stroke-width="1" stroke="#aeaeae"></rect>'
+            });
+        }
+
+        OrgChart.templates.ana.plus = '<circle cx="15" cy="15" r="15" fill="#ffffff" stroke="#aeaeae" stroke-width="1"></circle>' +
+            '<text text-anchor="middle" style="font-size: 18px;cursor:pointer;" fill="#757575" x="15" y="22">{collapsed-children-count}</text>';
+
+        OrgChart.templates.itTemplate = Object.assign({}, OrgChart.templates.ana);
+        OrgChart.templates.itTemplate.nodeMenuButton = "";
+        OrgChart.templates.itTemplate.nodeCircleMenuButton = {
+            radius: 18,
+            x: 250,
+            y: 60,
+            color: '#fff',
+            stroke: '#aeaeae'
+        };
+
+        OrgChart.templates.invisibleGroup.padding = [20, 0, 0, 0];
+
+        var chart = new OrgChart(document.getElementById("tree"), {
+            template: "ana",
+            enableDragDrop: true,
+            assistantSeparation: 170,
+            nodeCircleMenu: {
+                details: {
+                    icon: OrgChart.icon.details(24, 24, '#aeaeae'),
+                    text: "Details",
+                    color: "white"
+                },
+                add: {
+                    icon: OrgChart.icon.add(24, 24, '#aeaeae'),
+                    text: "Add node",
+                    color: "white"
+                },
+                remove: {
+                    icon: OrgChart.icon.remove(24, 24, '#aeaeae'),
+                    text: "Remove node",
+                    color: '#fff',
+                },
+                addLink: {
+                    icon: OrgChart.icon.link(24, 24, '#aeaeae'),
+                    text: "Add C link(drag and drop)",
+                    color: '#fff',
+                    draggable: true
+                }
+            },
+            menu: {
+                pdfPreview: {
+                    text: "Export to PDF",
+                    icon: OrgChart.icon.pdf(24, 24, '#7A7A7A'),
+                    onClick: preview
+                },
+            },
+            nodeMenu: {
+                details: {
+                    text: "Details"
+                },
+                add: {
+                    text: "Add"
+                },
+                remove: {
+                    text: "Remove"
+                }
+            },
+            align: OrgChart.ORIENTATION,
+            toolbar: {
+                fullScreen: true,
+                zoom: true,
+                fit: true,
+                expandAll: true
+            },
+            nodeBinding: {
+                field_0: "name",
+                field_1: "title",
+                img_0: "img"
+            },
+            tags: {
+                "top-management": {
+                    template: "invisibleGroup",
+                    subTreeConfig: {
+                        orientation: OrgChart.orientation.bottom,
+                        collapse: {
+                            level: 1
+                        }
+                    }
+                },
+                "it-team": {
+                    subTreeConfig: {
+                        layout: OrgChart.mixed,
+                        collapse: {
+                            level: 1
+                        }
+                    },
+                },
+                "hr-team": {
+                    subTreeConfig: {
+                        layout: OrgChart.treeRightOffset,
+                        collapse: {
+                            level: 1
+                        }
+                    },
+                },
+                "sales-team": {
+                    subTreeConfig: {
+                        layout: OrgChart.treeLeftOffset,
+                        collapse: {
+                            level: 1
+                        }
+                    },
+                },
+                "seo-menu": {
+                    nodeMenu: {
+                        addSharholder: {
+                            text: "Add new sharholder",
+                            icon: OrgChart.icon.add(24, 24, "#7A7A7A"),
+                            onClick: addSharholder
+                        },
+                        addDepartment: {
+                            text: "Add new department",
+                            icon: OrgChart.icon.add(24, 24, "#7A7A7A"),
+                            onClick: addDepartment
+                        },
+                        addAssistant: {
+                            text: "Add new assistant",
+                            icon: OrgChart.icon.add(24, 24, "#7A7A7A"),
+                            onClick: addAssistant
+                        },
+                        details: {
+                            text: "Details"
+                        },
+                    }
+                },
+                "menu-without-add": {
+                    nodeMenu: {
+                        details: {
+                            text: "Details"
+                        },
+                        remove: {
+                            text: "Remove"
+                        }
+                    }
+                },
+                "department": {
+                    template: "group",
+                    nodeMenu: {
+                        addManager: {
+                            text: "Add new manager",
+                            icon: OrgChart.icon.add(24, 24, "#7A7A7A"),
+                            onClick: addManager
+                        },
+                        remove: {
+                            text: "Remove department"
+                        },
+                        nodePdfPreview: {
+                            text: "Export department to PDF",
+                            icon: OrgChart.icon.pdf(24, 24, "#7A7A7A"),
+                            onClick: nodePdfPreview
+                        }
+                    }
+                },
+                "it-team-member": {
+                    template: "itTemplate",
+                }
+            },
+            clinks: [{
+                from: 11,
+                to: 18
+            }],
+            nodes: MisNodos
+        });
+
+        chart.nodeCircleMenuUI.on('click', function (sender, args) {
+            switch (args.menuItem.text) {
+                case "Details":
+                    chart.editUI.show(args.nodeId, true);
+                    break;
+                case "Add node": {
+                    var id = chart.generateId();
+                    chart.addNode({
+                        id: id,
+                        pid: args.nodeId,
+                        tags: ["it-team-member"]
+                    });
+                }
+                    break;
+                case "Remove node":
+                    chart.removeNode(args.nodeId);
+                    break;
+                default:
+            };
+        });
+
+        chart.nodeCircleMenuUI.on('drop', function (sender, args) {
+            chart.addClink(args.from, args.to).draw(OrgChart.action.update);
+        });
+
+        chart.on('drop', function (sender, draggedNodeId, droppedNodeId) {
+            var draggedNode = sender.getNode(draggedNodeId);
+            var droppedNode = sender.getNode(droppedNodeId);
+
+            if (droppedNode.tags.indexOf("department") != -1 && draggedNode.tags.indexOf("department") == -1) {
+                var draggedNodeData = sender.get(draggedNode.id);
+                draggedNodeData.pid = null;
+                draggedNodeData.stpid = droppedNode.id;
+                sender.updateNode(draggedNodeData);
+                return false;
+            }
+        });
+
+        chart.on('exportstart', function (sender, args) {
+            // args.styles = document.getElementById('myStyles').outerHTML;
+        });
+
+        function preview() {
+            OrgChart.pdfPrevUI.show(chart, {
+                format: 'A4',
+                filename: 'Organigrama_Mirado_HRM'
+            });
+        }
+
+        function addSharholder(nodeId) {
+            chart.addNode({
+                id: OrgChart.randomId(),
+                pid: nodeId,
+                tags: ["menu-without-add"]
+            });
+        }
+
+        function addAssistant(nodeId) {
+            var node = chart.getNode(nodeId);
+            var data = {
+                id: OrgChart.randomId(),
+                pid: node.stParent.id,
+                tags: ["assistant"]
+            };
+            chart.addNode(data);
+        }
+
+        function addDepartment(nodeId) {
+            var node = chart.getNode(nodeId);
+            var data = {
+                id: OrgChart.randomId(),
+                pid: node.stParent.id,
+                tags: ["department"]
+            };
+            chart.addNode(data);
+        }
+
+        function addManager(nodeId) {
+            chart.addNode({
+                id: OrgChart.randomId(),
+                stpid: nodeId
+            });
+        }
+
+        function nodePdfPreview(nodeId) {
+            OrgChart.pdfPrevUI.show(chart, {
+                format: 'A4',
+                nodeId: nodeId
+            });
+        }
+    };
+</script>
+

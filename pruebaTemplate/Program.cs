@@ -24,10 +24,14 @@ using PlanillaPM.Constants;
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("sDBConnection") ?? throw new InvalidOperationException("Connection string 'PlanillaContextConnection' not found.");
 
-SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJxS0d+X1RPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9nSXpTdERkXHhdcHZVQGY=");
+
 var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
     .RequireAuthenticatedUser()
     .Build();
+
+builder.Services.AddControllersWithViews()
+        .AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 //Roles
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -63,7 +67,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddControllersWithViews(opciones =>
 {
     opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-}).AddRazorRuntimeCompilation(); 
+}).AddRazorRuntimeCompilation();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -127,6 +131,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 var app = builder.Build();
 
+//Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBPh8sVXJxS0d+X1RPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9nSXpTdERkXHhdcHZVQGY=");
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2U1hhQlJBfVhdXGJWfFN0QXNYflRwcl9EZEwgOX1dQl9nSXhSd0RhXHdacXNXTmI=");
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 var logger = loggerFactory.CreateLogger("app");
 

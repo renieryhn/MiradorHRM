@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Crear Division</h3>
+            <h3 class="card-title">Crear Deduccion</h3>
         </div>
          <form asp-action="Create">
         <div class="card-body">
@@ -23,19 +23,36 @@
                                 <span asp-validation-for="NombreDeduccion" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Tipo">Tipo:</label>
-                                @Html.DropDownListFor(model => model.Tipo, new SelectList(ViewBag.TipoDeduccion), "Seleccione un ingreso", new { @class = "form-control select2bs4 is-invalid" })
-                                <span asp-validation-for="Tipo" class="text-danger"></span>
+                                <label asp-for="MetodoCalculo"></label>
+                                @Html.DropDownListFor(model => model.MetodoCalculo, (List<SelectListItem>)ViewBag.MetodoCalculoEstado, "Seleccione un Método de Cálculo", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="MetodoCalculo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="TipoDeduccion"></label>
+                                @Html.DropDownListFor(model => model.TipoDeduccion, (List<SelectListItem>)ViewBag.TipoDeduccionEstado, "Seleccione un Tipo de Deducción", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="TipoDeduccion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TipoCalculo"></label>
+                                @Html.DropDownListFor(model => model.TipoCalculo, new SelectList(ViewBag.TipoCalculoEstado), "Seleccione un Tipo Calculo", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="TipoCalculo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Monto" class="control-label"></label>
-                                <input asp-for="Monto" class="form-control" type="number"  />
+                                <input asp-for="Monto" class="form-control" />
                                 <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
+
                             <div class="form-group">
                                 <label asp-for="Formula" class="control-label"></label>
-                                <input asp-for="Formula" class="form-control" type="number"  />
+                                <input asp-for="Formula" class="form-control" />
                                 <span asp-validation-for="Formula" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Orden" class="control-label"></label>
+                                <input asp-for="Orden" class="form-control" value="@ViewBag.NextOrden" readonly />
+                                <span asp-validation-for="Orden" class="text-danger"></span>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
@@ -44,10 +61,12 @@
                             </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" asp-for="BasadoEnTodo" /> @Html.DisplayNameFor(model => model.BasadoEnTodo)
+                                    <input class="form-check-input" asp-for="AsignacionAutomatica" /> @Html.DisplayNameFor(model => model.AsignacionAutomatica)
                                 </label>
                             </div>
-                        </div>                   
+                        </div>
+                            
+                           
                 </div>
             </div>
         </div>
@@ -58,3 +77,6 @@
         </form>
     </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

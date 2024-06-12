@@ -1,19 +1,23 @@
-﻿using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+using ClosedXML.Excel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using PlanillaPM.Models;
-using System.Data;
 using static PlanillaPM.cGeneralFun;
-using static PlanillaPM.Models.EmpleadoContrato;
+using Microsoft.AspNetCore.Identity;
+using PlanillaPM.ViewModel;
+
+using PlanillaPM.Models;
 using static PlanillaPM.Models.Impuesto;
 
 namespace PlanillaPM.Controllers
 {
     public class ImpuestoController : Controller
     {
-
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
@@ -23,8 +27,7 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
         }
 
-
-        // GET: ImpuestosController
+        // GET: Impuesto
         public async Task<IActionResult> Index(int pg, string? filter)
         {
             List<Impuesto> registros;
@@ -34,10 +37,8 @@ namespace PlanillaPM.Controllers
             }
             else
             {
-                registros = await _context.Impuestos.ToListAsync();
+                registros = await _context.Impuestos.OrderBy(r => r.Orden).ToListAsync();
             }
-           
-
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -47,29 +48,27 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-
-        public ActionResult Download()
-        {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Impuesto>? data = null;
-            if (data == null)
-            {
+         public ActionResult Download()
+         {
+             ListtoDataTableConverter converter = new ListtoDataTableConverter();
+             List<Impuesto>? data = null;
+             if (data == null)
+             {
                 data = _context.Impuestos.ToList();
-            }
-            DataTable table = converter.ToDataTable(data);
-            string fileName = "Impuestos.xlsx";
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(table);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
-        }
-
-        // GET: ImpuestosController/Details/5
+             }
+             DataTable table = converter.ToDataTable(data);
+             string fileName = "Impuestos.xlsx";
+             using (XLWorkbook wb = new XLWorkbook())
+             {
+                 wb.Worksheets.Add(table);
+                 using (MemoryStream stream = new MemoryStream())
+                 {
+                     wb.SaveAs(stream);
+                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                 }
+             }
+        }    
+        // GET: Impuesto/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -87,18 +86,24 @@ namespace PlanillaPM.Controllers
             return View(impuesto);
         }
 
-        // GET: ImpuestosController/Create
-        public ActionResult Create()
+        // GET: Impuesto/Create
+        public IActionResult Create()
         {
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
+            // Obtener el último valor del campo Orden
+            int maxOrden = _context.Ingresos.Max(i => (int?)i.Orden) ?? 0;
 
+            // Asignar el próximo valor de Orden al ViewBag
+            ViewBag.NextOrden = maxOrden + 1;
+            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
             return View();
         }
 
-        // POST: ImpuestosController/Create
+        // POST: Impuesto/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Create([Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Orden,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
         {
             if (ModelState.IsValid)
             {
@@ -111,52 +116,39 @@ namespace PlanillaPM.Controllers
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["Error"] = "Error: " + message;
+                TempData["error"] = "Error: " + message;
             }
             return View(impuesto);
         }
 
-        [HttpGet]
-        public IActionResult MostrarModalImpuestoTabla(int impuestoId)
-        {
-            ViewBag.ImpuestoId = impuestoId;
-            List<ImpuestoTabla> impuestoTabla;
-            impuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList();
-           
-            return PartialView("_EditarImpuestoTabla", impuestoTabla);
-           
-        }
-
-
-        // GET: ImpuestosController/Edit/5
+        // GET: Impuesto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
             var impuesto = await _context.Impuestos.FindAsync(id);
             if (impuesto == null)
             {
                 return NotFound();
             }
-            ViewBag.TipoImpuesto = Enum.GetValues(typeof(TipoImpuesto));
-
+            ViewBag.TipoImpuesto = Enum.GetValues(typeof(Impuesto.TipoImpuesto));
             return View(impuesto);
-           
         }
 
-        // POST: ImpuestosController/Edit/5
+        // POST: Impuesto/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Grabable,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdImpuesto,NombreImpuesto,Tipo,Monto,Formula,Orden,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Impuesto impuesto)
         {
-
             if (id != impuesto.IdImpuesto)
             {
                 return NotFound();
             }
-
 
             if (ModelState.IsValid)
             {
@@ -179,7 +171,7 @@ namespace PlanillaPM.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
@@ -188,7 +180,25 @@ namespace PlanillaPM.Controllers
             return View(impuesto);
         }
 
-        // GET: ImpuestosController/Delete/5
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(int[] order)
+        {
+            for (int i = 0; i < order.Length; i++)
+            {
+                var impuesto = await _context.Impuestos.FindAsync(order[i]);
+                if (impuesto != null)
+                {
+                    impuesto.Orden = i + 1; // Actualiza el campo Orden según el nuevo orden
+                    _context.Entry(impuesto).State = EntityState.Modified;
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+        // GET: Impuesto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -206,22 +216,22 @@ namespace PlanillaPM.Controllers
             return View(impuesto);
         }
 
-        // POST: ImpuestosController/Delete/5
+        // POST: Impuesto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var impuesto = await _context.Impuestos.FindAsync(id);
+             var impuesto = await _context.Impuestos.FindAsync(id);
             try
             {
-
+               
                 if (impuesto != null)
                 {
                     _context.Impuestos.Remove(impuesto);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
-                }
+                } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
@@ -248,11 +258,12 @@ namespace PlanillaPM.Controllers
         {
             return _context.Impuestos.Any(e => e.IdImpuesto == id);
         }
+        
         private void SetCamposAuditoria(Impuesto record, bool bNewRecord)
         {
             var now = DateTime.Now;
-            var CurrentUser = _userManager.GetUserName(User);
-
+            var CurrentUser =  _userManager.GetUserName(User);
+           
             if (bNewRecord)
             {
                 record.FechaCreacion = now;
@@ -266,6 +277,6 @@ namespace PlanillaPM.Controllers
                 record.FechaModificacion = now;
                 record.ModificadoPor = CurrentUser;
             }
-        }
+        }        
     }
 }

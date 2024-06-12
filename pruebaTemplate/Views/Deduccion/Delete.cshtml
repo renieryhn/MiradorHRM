@@ -13,7 +13,7 @@
     </div>
      <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalle de Division</h3>
+            <h3 class="card-title">Detalle de Deduccion</h3>
         </div>
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
@@ -24,37 +24,55 @@
                             @Html.DisplayNameFor(model => model.NombreDeduccion)
                         </dt>
                         <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.NombreDeduccion)
+                            @Html.DisplayFor(model => model.NombreDeduccion)
                         </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.Tipo)
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.MetodoCalculo)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Tipo)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.MetodoCalculo)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TipoDeduccion)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TipoDeduccion)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TipoCalculo)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TipoCalculo)
+                        </dd>
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Monto)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Monto)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Monto)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Formula)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Formula)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Formula)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.DeducibleImpuesto)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.DeducibleImpuesto)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.DeducibleImpuesto)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.BasadoEnTodo)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.BasadoEnTodo)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.BasadoEnTodo)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.AsignacionAutomatica)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.AsignacionAutomatica)
                         </dd>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Activo)

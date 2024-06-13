@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PlanillaPM.Models.Empleado>
 
-<script src="https://balkan.app/js/orgchart.js"></script>
 
+<script src="~/js/orgchart.js"></script>
 
 <div class="btn-container">
     <div id="tree"></div>
@@ -12,30 +12,26 @@
     console.log(MisNodos);
 
     window.onload = function () {
-        // Define una paleta de colores para los departamentos
-        var colors = ['#FFA07A', '#90EE90', '#87CEEB', '#FFD700', '#7B68EE', '#FF6347', '#00CED1', '#DA70D6', '#F08080', '#20B2AA'];
-
-        var deptColors = {};
-
-        // Asigna un color a cada departamento basado en su posición en la lista
-        for (var i = 0; i < MisNodos.length; i++) {
-            if (MisNodos[i].tags && MisNodos[i].tags[0]) {
-                var dept = MisNodos[i].tags[0]; // Suponiendo que el primer tag es el departamento
-                if (!deptColors[dept]) {
-                    // Si aún no hemos asignado un color a este departamento, selecciona uno de la paleta
-                    var colorIndex = Object.keys(deptColors).length % colors.length;
-                    deptColors[dept] = colors[colorIndex];
+        // Definición de la función OrgChart._getViewBox
+        OrgChart._getViewBox = function (t) {
+            var e = null;
+            if (t) {
+                e = t.getAttribute("viewBox");
+                if (e) {
+                    e = "[" + e.replace(/\ /g, ",") + "]";
+                    e = JSON.parse(e);
                 }
             }
-        }
+            return e;
+        };
 
-        // Agrega las plantillas de departamento con los colores asignados al objeto de plantillas de OrgChart
-        for (var dept in deptColors) {
-            OrgChart.templates[dept] = Object.assign({}, OrgChart.templates.ana, {
-                node: '<rect x="0" y="0" height="100" width="250" fill="' + deptColors[dept] + '" stroke-width="1" stroke="#aeaeae"></rect>'
-            });
-        }
+        // Adición de la función getViewBox al prototipo de OrgChart
+        OrgChart.prototype.getViewBox = function () {
+            var svgElement = this.getSvg();
+            return OrgChart._getViewBox(svgElement);
+        };
 
+        // Configuración del gráfico
         OrgChart.templates.ana.plus = '<circle cx="15" cy="15" r="15" fill="#ffffff" stroke="#aeaeae" stroke-width="1"></circle>' +
             '<text text-anchor="middle" style="font-size: 18px;cursor:pointer;" fill="#757575" x="15" y="22">{collapsed-children-count}</text>';
 
@@ -295,4 +291,3 @@
         }
     };
 </script>
-

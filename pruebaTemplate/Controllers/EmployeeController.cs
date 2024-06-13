@@ -74,16 +74,29 @@ namespace PlanillaPM.Controllers
 
         private string ConvertToBase64(string imagePath)
         {
+            // Si el imagePath es nulo o vacío, usa la imagen por defecto
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                imagePath = "/img/Employee.png";
+            }
+
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath.TrimStart('/'));
 
             if (!System.IO.File.Exists(path))
             {
-                return string.Empty; // O maneja el caso donde la imagen no exista
+                // Si la imagen especificada no existe, usa la imagen por defecto
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/Employee.png");
+            }
+
+            // Verifica si la imagen por defecto existe
+            if (!System.IO.File.Exists(path))
+            {
+                return string.Empty; 
             }
 
             var imageBytes = System.IO.File.ReadAllBytes(path);
             var base64String = Convert.ToBase64String(imageBytes);
-            var imageFormat = Path.GetExtension(path).ToLower() == ".png" ? "png" : "jpeg"; // Asume que las imágenes son PNG o JPEG
+            var imageFormat = Path.GetExtension(path).ToLower() == ".png" ? "png" : "jpeg"; 
 
             return $"data:image/{imageFormat};base64,{base64String}";
         }

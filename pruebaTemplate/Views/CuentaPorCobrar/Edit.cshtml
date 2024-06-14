@@ -1,0 +1,143 @@
+﻿@model PlanillaPM.Models.CuentaPorCobrar
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Editar Cuenta Por Cobrar</h3>
+        </div>
+         <form asp-action="Edit">
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="IdCuentaPorCobrar" />
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="control-label"></label>
+                                <input asp-for="Descripcion" class="form-control" />
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IdDeduccion" class="control-label"></label>
+                                <select asp-for="IdDeduccion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdDeduccion"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="control-label"></label>
+                                <input asp-for="FechaInicio" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Monto" class="control-label"></label>
+                                <input asp-for="Monto" class="form-control" type="number" required />
+                                <span asp-validation-for="Monto" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="EstadoCuentaPorCobrar"></label>
+                                @Html.DropDownListFor(model => model.EstadoCuentaPorCobrar, (List<SelectListItem>)ViewBag.CuentaPorCobrarEst, "Seleccione un Tipo de Ingreso", new { @class = "form-control select2bs4" })
+                                <span asp-validation-for="EstadoCuentaPorCobrar" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-5">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="InteresAplicado" class="control-label"></label>
+                                <input asp-for="InteresAplicado" class="form-control" type="number" required />
+                                <span asp-validation-for="InteresAplicado" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaFinalizacion" class="control-label"></label>
+                                <input asp-for="FechaFinalizacion" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaFinalizacion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AprobadoPor" class="control-label"></label>
+                                <input asp-for="AprobadoPor" class="form-control" />
+                                <span asp-validation-for="AprobadoPor" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ComentarioAprobacion" class="control-label"></label>
+                                <input asp-for="ComentarioAprobacion" class="form-control" />
+                                <span asp-validation-for="ComentarioAprobacion" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="NumeroPagos" class="control-label"></label>
+                                <input asp-for="NumeroPagos" class="form-control" type="number"/>
+                                <span asp-validation-for="NumeroPagos" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="EstadoAprobacion"></label>
+                                @Html.DropDownListFor(model => model.EstadoAprobacion, new SelectList(ViewBag.Aprobacion), "Seleccione un Tipo Calculo", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="EstadoAprobacion" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                                                          
+                </div>
+            </div>
+             <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                    <h5>Otros</h5>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="FechaCreacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaCreacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="FechaModificacion" class="control-label"></label>
+                                <input type="datetime" asp-for="FechaModificacion" class="form-control" readonly />
+                                <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="CreadoPor" class="control-label"></label>
+                                <input asp-for="CreadoPor" class="form-control" readonly />
+                                <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ModificadoPor" class="control-label"></label>
+                                <input asp-for="ModificadoPor" class="form-control" readonly />
+                                <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="card-footer">
+            <input type="submit" value="Guardar" class="btn btn-primary" style="background-color: var(--blue);" />
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+         </div>
+      </form>
+    </div>
+</div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

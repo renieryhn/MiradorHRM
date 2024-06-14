@@ -1,0 +1,22 @@
+﻿@model IEnumerable<PlanillaPM.Models.Empleado>
+
+<script src="https://balkan.app/js/orgchart.js"></script>
+
+<div class="btn-container">
+    <div id="tree"></div>
+</div>
+<script>
+    var MisNodos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.nodes));
+    console.log(MisNodos);
+    var chart = new OrgChart(document.getElementById("tree"), {
+        nodeBinding: {
+            field_0: "name",
+            field_1: "title",
+            img_0: "img"
+        },
+
+     nodes: 
+            MisNodos
+        
+    });
+</script>

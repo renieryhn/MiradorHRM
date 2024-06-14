@@ -1,0 +1,187 @@
+﻿@model IEnumerable<PlanillaPM.Models.Empleado>
+
+<link href="https://cdn.syncfusion.com/ej2/20.1.57/material.css" rel="stylesheet">
+<script src="https://cdn.syncfusion.com/ej2/20.1.57/dist/ej2.min.js"></script>
+
+<style>
+    .btn-container {
+        margin-bottom: 10px;
+    }
+
+        .btn-container button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-container button:hover {
+                background-color: #2980B9;
+            }
+</style>
+
+<div class="btn-container">
+    <button id="btnRadialTree">Radial Tree</button>
+    <button id="btnOrganizationalChart">Organizational Chart</button>
+    <button id="btnHierarchicalTree">Hierarchical Tree</button>
+    <button id="btnComplexHierarchicalTree">Complex Hierarchical Tree</button>
+
+</div>
+
+
+<div id="overview" style="width: 233px; height: 300px; border: 1px solid gray; margin-bottom: 10px;"></div>
+<div id="container" style="width: 100%; height: 700px;" ></div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var diagram;
+        var dataManager = new ej.data.DataManager(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.nodes)));
+
+        var cargoColors = {
+            'Managing Director': '#3498DB',
+            'Project Manager': '#27AE60',
+            'Project Lead': '#F39C12'
+        };
+
+        var assignedColors = {}; // Para almacenar colores asignados a cargos desconocidos
+        var colorIndex = 0;
+        var colorPalette = ['#8E44AD', '#2ECC71', '#E74C3C', '#F1C40F', '#1ABC9C', '#2C3E50', '#D35400']; // Paleta de colores
+
+        function getColorForCargo(cargo) {
+            if (cargoColors[cargo]) {
+                return cargoColors[cargo];
+            }
+            if (!assignedColors[cargo]) {
+                assignedColors[cargo] = colorPalette[colorIndex % colorPalette.length];
+                colorIndex++;
+            }
+            return assignedColors[cargo];
+        }
+     
+
+        function createDiagram(layoutType) {
+            diagram = new ej.diagrams.Diagram({
+                width: '100%',
+                height: '700px',
+                dataSourceSettings: {
+                    id: 'IdEmpleado',
+                    parentId: 'IdEncargado',
+                    dataManager: dataManager
+                },
+                layout: {
+                    type: layoutType
+                },
+                getNodeDefaults: function (obj) {
+                    obj.width = 150;
+                    obj.height = 50;
+                    obj.style = {
+                        fill: getColorForCargo(obj.data.Cargo),
+                        strokeColor: 'white',
+                        strokeWidth: 2
+                    };
+                    return obj;
+                },
+                getConnectorDefaults: function (connector) {
+                    connector.type = 'Orthogonal';
+                    connector.style = {
+                        strokeColor: '#6BA5D7',
+                        strokeWidth: 2
+                    };
+                    connector.targetDecorator = {
+                        style: {
+                            fill: '#6BA5D7',
+                            strokeColor: '#6BA5D7'
+                        }
+                    };
+                    return connector;
+                },
+                setNodeTemplate: function (obj, diagram) {
+                    var content = new ej.diagrams.StackPanel();
+                    content.id = obj.id + '_outerstack';
+                    content.orientation = 'Horizontal';
+                    content.style.strokeColor = 'gray';
+                    content.padding = { left: 5, right: 10, top: 5, bottom: 5 };
+
+                    var image = new ej.diagrams.ImageElement();
+                    image.width = 50;
+                    image.height = 50;
+                    image.style.strokeColor = 'none';
+                    image.source = obj.data.Image || '/img/Employee.png' // Asignar imagen por defecto si no está presente
+                    image.id = obj.id + '_pic';
+
+                    var innerStack = new ej.diagrams.StackPanel();
+                    innerStack.style.strokeColor = 'none';
+                    innerStack.margin = { left: 5, right: 0, top: 0, bottom: 0 };
+                    innerStack.id = obj.id + '_innerstack';
+
+                    var text = new ej.diagrams.TextElement();
+                    text.content = obj.data.NombreCompleto;
+                    text.style.color = 'black';
+                    text.style.bold = true;
+                    text.style.strokeColor = 'none';
+                    text.horizontalAlignment = 'Left';
+                    text.style.fill = 'none';
+                    text.id = obj.id + '_text1';
+
+                    var desigText = new ej.diagrams.TextElement();
+                    desigText.margin = { left: 0, right: 0, top: 5, bottom: 0 };
+                    desigText.content = obj.data.Cargo;
+                    desigText.style.color = 'black';
+                    desigText.style.strokeColor = 'none';
+                    desigText.style.fontSize = 12;
+                    desigText.style.fill = 'none';
+                    desigText.horizontalAlignment = 'Left';
+                    desigText.style.textWrapping = 'Wrap';
+                    desigText.id = obj.id + '_desig';
+
+                    innerStack.children = [text, desigText];
+                    content.children = [image, innerStack];
+
+                    return content;
+                }
+            });
+
+          
+            diagram.appendTo('#container');
+
+            overview = new ej.diagrams.Overview({
+                sourceID: 'container'
+            });
+
+            overview.appendTo('#overview');
+        }
+
+       
+
+        createDiagram('OrganizationalChart'); // Establecer el tipo de diseño inicial
+
+        document.getElementById('btnRadialTree').addEventListener('click', function () {
+            diagram.layout.type = 'RadialTree';
+            diagram.layout.updateLayout();
+        });
+
+        document.getElementById('btnOrganizationalChart').addEventListener('click', function () {
+            diagram.layout.type = 'OrganizationalChart';
+            diagram.layout.updateLayout();
+        });
+
+        document.getElementById('btnHierarchicalTree').addEventListener('click', function () {
+            diagram.layout.type = 'HierarchicalTree';
+            diagram.layout.updateLayout();
+        });
+
+        document.getElementById('btnComplexHierarchicalTree').addEventListener('click', function () {
+            diagram.layout.type = 'ComplexHierarchicalTree';
+            diagram.layout.updateLayout();
+        });
+       
+
+    });
+
+
+</script>

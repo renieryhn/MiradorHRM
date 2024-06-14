@@ -31,4 +31,6 @@ public partial class TipoNomina
     public string? ModificadoPor { get; set; }
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
+
+    public virtual ICollection<Nomina> Nominas { get; set; } = new List<Nomina>();
 }

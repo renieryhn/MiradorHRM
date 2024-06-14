@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PlanillaPM.Models;
 using Syncfusion.EJ2.Diagrams;
-
-
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace PlanillaPM.Controllers
 {
@@ -52,7 +54,7 @@ namespace PlanillaPM.Controllers
                 name = e.NombreCompleto,
                 pid = e.IdEncargado.HasValue ? e.IdEncargadoNavigation.IdEmpleado.ToString() : "0",
                 title = e.IdCargoNavigation.NombreCargo,
-                img = e.FotografiaPath
+                img = ConvertToBase64(e.FotografiaPath)
             }).ToList();
 
             // Agrega el valor en la primera posición
@@ -62,7 +64,7 @@ namespace PlanillaPM.Controllers
                 name = "Proyecto Mirador LLC",
                 pid = "null",
                 title = "main",
-                img = "/img/MiEmpresa.jpeg"
+                img = ConvertToBase64("/img/MiEmpresa.jpeg")
             });
 
             ViewBag.nodes = nodes;
@@ -70,6 +72,36 @@ namespace PlanillaPM.Controllers
             return View(empleados);
         }
 
+        private string ConvertToBase64(string imagePath)
+        {
+            // Si el imagePath es nulo o vacío, usa la imagen por defecto
+            if (string.IsNullOrEmpty(imagePath))
+            {
+                imagePath = "/img/Employee.png";
+            }
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath.TrimStart('/'));
+
+            if (!System.IO.File.Exists(path))
+            {
+                // Si la imagen especificada no existe, usa la imagen por defecto
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/Employee.png");
+            }
+
+            // Verifica si la imagen por defecto existe
+            if (!System.IO.File.Exists(path))
+            {
+                return string.Empty; 
+            }
+
+            var imageBytes = System.IO.File.ReadAllBytes(path);
+            var base64String = Convert.ToBase64String(imageBytes);
+            var imageFormat = Path.GetExtension(path).ToLower() == ".png" ? "png" : "jpeg"; 
+
+            return $"data:image/{imageFormat};base64,{base64String}";
+        }
     }
+
+   
 }
 

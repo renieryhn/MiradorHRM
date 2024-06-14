@@ -155,6 +155,13 @@ public partial class Empleado
         get { return string.Format("{0} {1}", NombreEmpleado, ApellidoEmpleado); }
     }
 
+    public virtual ICollection<EmpleadoImpuesto> EmpleadoImpuestos { get; set; } = new List<EmpleadoImpuesto>();
+
+    public virtual ICollection<VacacionDetalle> VacacionDetalles { get; set; } = new List<VacacionDetalle>();
+    public virtual ICollection<Vacacion> Vacacions { get; set; } = new List<Vacacion>();
+    public virtual ICollection<NominaDetalle> NominaDetalles { get; set; } = new List<NominaDetalle>();
+    public virtual ICollection<HorasExtraDetalle> HorasExtraDetalles { get; set; } = new List<HorasExtraDetalle>();
+    public virtual ICollection<CuentaPorCobrar> CuentaPorCobrars { get; set; } = new List<CuentaPorCobrar>();
     public virtual ICollection<EmpleadoActivo> EmpleadoActivos { get; set; } = new List<EmpleadoActivo>();
 
     public virtual ICollection<EmpleadoAusencium> EmpleadoAusencia { get; set; } = new List<EmpleadoAusencium>();
@@ -180,6 +187,7 @@ public partial class Empleado
     public virtual ICollection<EmpleadoSalarioHistorico> EmpleadoSalarioHistoricos { get; set; } = new List<EmpleadoSalarioHistorico>();
 
 
+
     [DisplayName("Banco")]
     public virtual Banco? IdBancoNavigation { get; set; } = null!;
     [DisplayName("Cargo")]
@@ -199,6 +207,7 @@ public partial class Empleado
     public virtual Ubicacion? IdUbicacionNavigation { get; set; } = null!;
 
     public virtual ICollection<Empleado> InverseIdEncargadoNavigation { get; set; } = new List<Empleado>();
+    public virtual ICollection<Viatico> Viaticos { get; set; } = new List<Viatico>();
 
     [DisplayName("Edad")]
     public int Edad

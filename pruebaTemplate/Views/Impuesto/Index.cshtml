@@ -1,166 +1,247 @@
 ﻿@model IEnumerable<PlanillaPM.Models.Impuesto>
 @using PlanillaPM.Models;
 
-@{
-    ViewData["Title"] = "Index";
-    Pager pager = new Pager();
-    int PageNo = 0;
-    if (ViewBag.Pager != null)
-    {
+        @{
+        ViewData["Title"] = "Index";
+        Pager pager = new Pager();
+        int PageNo = 0;
+        if (ViewBag.Pager != null)
+        {
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
-    }
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-primary">
-                <div class="card-header" style="background-color: var(--blue);">
-                    <h3 class="card-title">Impuestos</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
+        }
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header" style="background-color: var(--blue);">
+                        <h3 class="card-title">Impuesto</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <div class="">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="form-vertical">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <form id="fSearch" method="post" asp-action="Index">
-                                                    <div class="row">
-                                                        <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
-                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
-                                                        </div>
-                                                        <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
-                                                            <div class="btn-group btn-group-justified" role="group">
-                                                                <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
-                                                               
+                    <div class="card-body">
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-vertical">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <form id="fSearch" method="post" asp-action="Index">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            </div>
+                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                                <div class="btn-group btn-group-justified" role="group">
+                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row m-1">
-                            <div id="resultados" class="table-responsive table-striped table-sm">
-                                <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th data-sortable="true">No.</th>
-                                            <th></th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.NombreImpuesto)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Tipo)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Monto)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Formula)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Grabable)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.Activo)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.FechaCreacion)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.FechaModificacion)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.CreadoPor)
-                                            </th>
-                                            <th data-sortable="true">
-                                                @Html.DisplayNameFor(model => model.ModificadoPor)
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @{
-                                            int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
-                                        }
-                                        @foreach (var item in Model)
-                                        {
-                                            count = (count + 1);
+                            <div class="row m-1">
+                                <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table id="sortable" cellspacing="0" class="table table-striped projects" data-toggle="table">
+                                        <thead class="thead-light">
                                             <tr>
-                                                <th scope="row">@count</th>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-trash-o" style="color: white;"></i></a>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.NombreImpuesto)
-                                                </td>                                             
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Tipo)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Monto)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Formula)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Grabable)
-                                                </td>
-                                                <td>
-                                                    @if (item.Activo)
-                                                    {
-                                                        <span class="badge badge-success">Activo</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge badge-danger">Inactivo</span>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaCreacion)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.FechaModificacion)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.CreadoPor)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.ModificadoPor)
-                                                </td>
+                                                        <th>No.</th>
+                                                        <th>Drag Row</th>
+                                                        <th></th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.NombreImpuesto)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Tipo)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Monto)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Formula)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.AsignacionAutomatica)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Activo)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaCreacion)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.FechaModificacion)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.CreadoPor)
+                                                        </th>
+                                                        <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.ModificadoPor)
+                                                        </th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                            int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
+                                            }
+                                            @foreach (var item in Model) {
+                                            count = (count + 1);
+                                            <tr data-id="@item.IdImpuesto" class="ui-state-default">
+
+                                                <td>@count</td>
+                                                <td><i class="fa fa-bars"></i></td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdImpuesto"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.NombreImpuesto)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Tipo)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Monto)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Formula)
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if (item.AsignacionAutomatica)
+                                                            {
+                                                                <i class="fas fa-check text-success"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fas fa-ban text-danger"></i>
+                                                            }
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if (item.Activo)
+                                                            {
+                                                                <span class="badge badge-success">Activo</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge badge-danger">Inactivo</span>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaCreacion)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.FechaModificacion)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.CreadoPor)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.ModificadoPor)
+                                                        </td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer">
+                    <div class="card-footer">
                     <partial name="_Pager" model="@pager" />
+                    </div>
                 </div>
             </div>
         </div>
+        <br />
     </div>
-    <br />
-</div>
 
+<style>
+    .responsive-table {
+        overflow: auto;
+    }
 
+    table {
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: collapse;
+        white-space: nowrap;
+    }
+
+        table th {
+            background: #BDBDBD;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #F2F2F2;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #E6E6E6;
+        }
+
+    th, tr, td {
+        text-align: center;
+        border: 1px solid #E0E0E0;
+        padding: 5px;
+    }
+
+    .fa-bars {
+        cursor: move;
+    }
+
+    .sortable-placeholder {
+        background-color: #D3D3D3;
+        visibility: visible !important;
+    }
+</style>
+
+<script>
+    $(function () {
+        $("#sortable tbody").sortable({
+            cursor: "move",
+            placeholder: "sortable-placeholder",
+            helper: function (e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function (index) {
+                    $(this).width($originals.eq(index).width());
+                });
+                return $helper;
+            },
+            update: function (event, ui) {
+                var order = $(this).sortable('toArray', { attribute: 'data-id' });
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UpdateOrder", "Impuesto")', // Asegúrate de que la URL esté correcta
+                    data: { order: order },
+                    traditional: true,
+                    success: function (response) {
+                        // Manejar la respuesta del servidor si es necesario
+                        console.log("Orden actualizado exitosamente.");
+                    },
+                    error: function (xhr, status, error) {
+                        // Manejar errores si es necesario
+                        console.log("Error al actualizar el orden: " + error);
+                    }
+                });
+            }
+        }).disableSelection();
+    });
+
+</script>

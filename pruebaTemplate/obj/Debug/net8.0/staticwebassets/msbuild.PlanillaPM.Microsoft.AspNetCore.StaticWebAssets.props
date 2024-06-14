@@ -528,12 +528,12 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\97ed85b0-b98e-4c8e-8582-92eb911496d6.jpg))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\c04c8dcb-79ff-45ee-b4f9-84aa3e18600a.png))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\b002a0b9-579f-4fdc-b578-c8f70aeebecc.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>PlanillaPM</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/PlanillaPM</BasePath>
-      <RelativePath>EmpleadoImg/c04c8dcb-79ff-45ee-b4f9-84aa3e18600a.png</RelativePath>
+      <RelativePath>EmpleadoImg/b002a0b9-579f-4fdc-b578-c8f70aeebecc.jpg</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Primary</AssetRole>
@@ -542,7 +542,7 @@
       <AssetTraitValue></AssetTraitValue>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\c04c8dcb-79ff-45ee-b4f9-84aa3e18600a.png))</OriginalItemSpec>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\b002a0b9-579f-4fdc-b578-c8f70aeebecc.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\EmpleadoImg\c8cb4609-0675-4ab7-b04e-b79ddb703b0f.png))">
       <SourceType>Package</SourceType>

@@ -117,6 +117,8 @@ namespace PlanillaPM.Controllers
             var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
             var IdTipoNominaNavigation = await _context.TipoNominas.ToListAsync();
             ViewBag.IdTipoNomina = new SelectList(IdTipoNomina, "IdTipoNomina", "NombreTipoNomina");
+
+
             return View(data);
 
         }

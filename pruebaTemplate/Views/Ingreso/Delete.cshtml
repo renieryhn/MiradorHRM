@@ -13,7 +13,7 @@
     </div>
      <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalle de Division</h3>
+            <h3 class="card-title">Detalle de Ingreso</h3>
         </div>
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
@@ -24,55 +24,49 @@
                             @Html.DisplayNameFor(model => model.NombreIngreso)
                         </dt>
                         <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.NombreIngreso)
+                            @Html.DisplayFor(model => model.NombreIngreso)
                         </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.Tipo)
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TipoIngreso)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Tipo)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TipoIngreso)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TipoCalculo)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TipoCalculo)
+                        </dd>
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Monto)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Monto)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Monto)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Formula)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Formula)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Formula)
                         </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Grabable)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Grabable)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Grabable)
                         </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.Periodo)
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.AsignacionAutomatica)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Periodo)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.AsignacionAutomatica)
                         </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.FechaInicial)
-                        </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.FechaInicial)
-                        </dd>
-                        <dt class="col-sm-2">
-                            @Html.DisplayNameFor(model => model.FechaFinal)
-                        </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.FechaFinal)
-                        </dd>
-                        <dt class="col-sm-2">
+                        <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Orden)
                         </dt>
-                        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Orden)
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Orden)
                         </dd>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Activo)
@@ -103,6 +97,24 @@
                         </dt>
                         <dd class = "col-sm-10">
                             @Html.DisplayFor(model => model.ModificadoPor)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.FechaInicial)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.FechaInicial)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.FechaFinal)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.FechaFinal)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Periodo)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Periodo)
                         </dd>
                 </div>
             </div>

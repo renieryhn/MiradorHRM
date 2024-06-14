@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using pruebaTemplate.Models;
+using static PlanillaPM.Models.Deduccion;
 
 namespace PlanillaPM.Models;
 
@@ -23,8 +24,6 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     public virtual DbSet<ClaseEmpleado> ClaseEmpleados { get; set; }
 
     public DbSet<IdentityRoleClaim<string>> AspNetRoleClaims { get; set; }
-
-    public virtual DbSet<Deduccion> Deduccions { get; set; }
 
     public virtual DbSet<Departamento> Departamentos { get; set; }
  
@@ -81,6 +80,40 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     public virtual DbSet<TipoNomina> TipoNominas { get; set; }
 
     public virtual DbSet<Ubicacion> Ubicaciones { get; set; }
+
+    public virtual DbSet<Viatico> Viaticos { get; set; }
+
+    public virtual DbSet<ViaticoDetalle> ViaticoDetalles { get; set; }
+
+    public virtual DbSet<ConceptoViatico> ConceptoViaticos { get; set; }
+
+    public virtual DbSet<DeduccionIngreso> DeduccionIngresos { get; set; }
+
+    public virtual DbSet<NominaIngreso> NominaIngresos { get; set; }
+
+    public virtual DbSet<CuentaPorCobrar> CuentaPorCobrars { get; set; }
+
+    public virtual DbSet<CuentaPorCobrarDetalle> CuentaPorCobrarDetalles { get; set; }
+
+    public virtual DbSet<Deduccion> Deduccions { get; set; }
+
+    public virtual DbSet<HorasExtra> HorasExtras { get; set; }
+
+    public virtual DbSet<HorasExtraDetalle> HorasExtraDetalles { get; set; }
+
+    public virtual DbSet<Nomina> Nominas { get; set; }
+
+    public virtual DbSet<NominaDeduccion> NominaDeduccions { get; set; }
+
+    public virtual DbSet<NominaDetalle> NominaDetalles { get; set; }
+
+    public virtual DbSet<NominaImpuesto> NominaImpuestos { get; set; }
+
+    public virtual DbSet<Vacacion> Vacacions { get; set; }
+
+    public virtual DbSet<VacacionDetalle> VacacionDetalles { get; set; }
+
+    public virtual DbSet<EmpleadoImpuesto> EmpleadoImpuestos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:sDBConnection");
@@ -170,27 +203,6 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.HasOne(d => d.IdHorarioNavigation).WithMany(p => p.ClaseEmpleados)
                 .HasForeignKey(d => d.IdHorario)
                 .HasConstraintName("FK_ClaseEmpleado_Horario");
-        });
-
-        modelBuilder.Entity<Deduccion>(entity =>
-        {
-            entity.HasKey(e => e.IdDeduccion);
-
-            entity.ToTable("Deduccion");
-
-            
-            entity.Property(e => e.Activo).HasDefaultValue(true);
-            entity.Property(e => e.BasadoEnTodo).HasDefaultValue(true);
-            entity.Property(e => e.CreadoPor)
-                .HasMaxLength(50)
-                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
-            entity.Property(e => e.Formula).HasMaxLength(4000);
-            entity.Property(e => e.ModificadoPor)
-                .HasMaxLength(50)
-                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
-            entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
-            entity.Property(e => e.NombreDeduccion).HasMaxLength(50);
-           
         });
 
         modelBuilder.Entity<Departamento>(entity =>
@@ -485,21 +497,30 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
         modelBuilder.Entity<EmpleadoDeduccion>(entity =>
         {
-            entity.HasKey(e => new { e.IdDeduccion, e.IdEmpleado });
+            entity.HasKey(e => e.IdEmpleadoDeduccion);
 
             entity.ToTable("EmpleadoDeduccion");
 
-            entity.Property(e => e.IdDeduccion).HasMaxLength(20);
+            entity.HasIndex(e => new { e.IdEmpleado, e.IdDeduccion }, "IX_EmpleadoDeduccion").IsUnique();
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
-            entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
+            entity.Property(e => e.Tipo)
+                .HasConversion<int>();
 
             entity.HasOne(d => d.IdDeduccionNavigation).WithMany(p => p.EmpleadoDeduccions)
                 .HasForeignKey(d => d.IdDeduccion)
@@ -623,21 +644,32 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
         modelBuilder.Entity<EmpleadoIngreso>(entity =>
         {
-            entity.HasKey(e => new { e.IdIngreso, e.IdEmpleado });
+            entity.HasKey(e => e.IdEmpleadoIngreso).HasName("PK_EmpleadoIngreso_1");
 
             entity.ToTable("EmpleadoIngreso");
 
-            entity.Property(e => e.IdIngreso).HasMaxLength(20);
+            entity.HasIndex(e => new { e.IdEmpleado, e.IdIngreso }, "IX_EmpleadoIngreso");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
-            entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Formula).HasMaxLength(4000);
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
+            entity.Property(e => e.Tipo)
+            .HasConversion<int>();
+            //.HasComment("Fijo, Fórmula o Porcentaje");
 
             entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.EmpleadoIngresos)
                 .HasForeignKey(d => d.IdEmpleado)
@@ -744,21 +776,24 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
             entity.ToTable("Impuesto");
 
+            entity.HasIndex(e => e.NombreImpuesto, "IX_Impuesto").IsUnique();
+
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
             entity.Property(e => e.Formula).HasMaxLength(4000);
-            entity.Property(e => e.IdImpuesto).HasMaxLength(20);
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50)
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
             entity.Property(e => e.NombreImpuesto).HasMaxLength(50);
-           
-
+            entity.Property(e => e.Tipo)
+                 .HasConversion<int>()
+                .HasComment("Fijo, Fórmula, Porcentaje o Tabla");
         });
-
 
         modelBuilder.Entity<ImpuestoTabla>(entity =>
         {
@@ -789,21 +824,61 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
             entity.ToTable("Ingreso");
 
-            //entity.Property(e => e.IdIngreso).HasMaxLength(20);
+            entity.HasIndex(e => e.NombreIngreso, "IX_Ingreso").IsUnique();
+
             entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CreadoPor)
                 .HasMaxLength(50)
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
             entity.Property(e => e.Formula).HasMaxLength(4000);
+            entity.Property(e => e.Grabable).HasColumnName("Grabable");
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50)
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
             entity.Property(e => e.NombreIngreso).HasMaxLength(50);
-            //entity.Property(e => e.Tipo)
-            //    .HasMaxLength(20)
-            //    .HasDefaultValue("Fijo")
-            //    .HasComment("Fijo, Fórmula o Porcentaje");
+            entity.Property(e => e.TipoCalculo)
+           .HasConversion<int>()
+           .HasComment("Fijo, Fórmula, Porcentaje");
+
+            entity.Property(e => e.TipoIngreso)
+                  .HasConversion<int>()
+                  .HasComment("Salario, Bono de Productividad, Comisión, Horas Extra, Vacaciones, Aguinaldo, Días Libres, Pensión, Propina, Por Meta, Indemnización, Reembolso de Gastos, Viáticos, Bono Navideño, Otros");
+        });
+
+        modelBuilder.Entity<DeduccionIngreso>(entity =>
+        {
+            entity.HasKey(e => e.IdDeduccionIngreso);
+
+            entity.ToTable("DeduccionIngreso");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.HasOne(d => d.IdDeduccionNavigation).WithMany(p => p.DeduccionIngresos)
+                .HasForeignKey(d => d.IdDeduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeduccionIngreso_Deduccion");
+
+            entity.HasOne(d => d.IdIngresoNavigation).WithMany(p => p.DeduccionIngresos)
+                .HasForeignKey(d => d.IdIngreso)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeduccionIngreso_Ingreso");
         });
 
         modelBuilder.Entity<Monedum>(entity =>
@@ -940,6 +1015,608 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                .HasMaxLength(20)
                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
         });
+
+        modelBuilder.Entity<Viatico>(entity =>
+        {
+            entity.HasKey(e => e.IdViatico);
+
+            entity.ToTable("Viatico");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AdelantoRecibido).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.AprobadoPor).HasMaxLength(50);
+            entity.Property(e => e.BalancePendiente).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Descripcion).HasMaxLength(500);
+            entity.Property(e => e.Estado)
+                 .HasConversion<int>();
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.TotalGastos).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.Viaticos)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Viatico_Empleado");
+        });
+
+        modelBuilder.Entity<ViaticoDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdViaticoDetalle);
+
+            entity.ToTable("ViaticoDetalle");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.Comentarios).HasMaxLength(100);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdConceptoViaticoNavigation).WithMany(p => p.ViaticoDetalles)
+                .HasForeignKey(d => d.IdConceptoViatico)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ViaticoDetalle_ConceptoViatico");
+
+            entity.HasOne(d => d.IdViaticoNavigation).WithMany(p => p.ViaticoDetalles)
+                .HasForeignKey(d => d.IdViatico)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ViaticoDetalle_Viatico");
+        });
+
+        modelBuilder.Entity<ConceptoViatico>(entity =>
+        {
+            entity.HasKey(e => e.IdConceptoViatico);
+
+            entity.ToTable("ConceptoViatico");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.NombreConceptoViatico)
+                .HasMaxLength(50)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+        });
+
+        modelBuilder.Entity<CuentaPorCobrar>(entity =>
+        {
+            entity.HasKey(e => e.IdCuentaPorCobrar);
+
+            entity.ToTable("CuentaPorCobrar");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AprobadoPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Descripcion).UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.EstadoAprobacion)
+                .HasConversion<int>()
+                .HasComment("Solicitado, Aprobado, Rechazado");
+
+            entity.Property(e => e.EstadoCuentaPorCobrar)
+                 .HasConversion<int>()
+                 .HasComment("Activo, Pagado, En Mora");
+
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.InteresAplicado).HasColumnType("numeric(3, 2)");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.NumeroPagos);
+            //.HasDefaultValue(1);
+
+            entity.HasOne(d => d.IdDeduccionNavigation).WithMany(p => p.CuentaPorCobrars)
+                .HasForeignKey(d => d.IdDeduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CuentaPorCobrar_Deduccion");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.CuentaPorCobrars)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CuentaPorCobrar_Empleado");
+        });
+
+        modelBuilder.Entity<Deduccion>(entity =>
+        {
+            entity.HasKey(e => e.IdDeduccion);
+
+            entity.ToTable("Deduccion");
+
+            entity.HasIndex(e => e.NombreDeduccion, "IX_Deduccion").IsUnique();
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.BasadoEnTodo).HasDefaultValue(true);
+
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime");
+
+            // Configuración de MetodoCalculo como enum
+            entity.Property(e => e.MetodoCalculo)
+                .HasConversion<int>()              
+                .HasComment("Porcentaje del Salario Bruto, Porcentaje del Salario Neto, Monto Fijo");
+
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 4)");
+
+            entity.Property(e => e.NombreDeduccion).HasMaxLength(50);
+
+            entity.Property(e => e.TipoCalculo)
+               .HasConversion<int>();
+
+            // Configuración de TipoDeduccion como enum
+            entity.Property(e => e.TipoDeduccion)
+                .HasConversion<int>()               
+                .HasComment("Seguridad Social, Aportaciones, Ahorros, Préstamos, Fondo de Pensiones, Seguro Médico, Cuotas Sindical, Fondo de Vivienda, Retención de Pensión Alimenticia, Embargo, Multas, Planes de Jubilación, Seguro de Vida, Otro");
+        });
+
+        modelBuilder.Entity<DeduccionIngreso>(entity =>
+        {
+            entity.HasKey(e => e.IdDeduccionIngreso);
+
+            entity.ToTable("DeduccionIngreso");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.HasOne(d => d.IdDeduccionNavigation).WithMany(p => p.DeduccionIngresos)
+                .HasForeignKey(d => d.IdDeduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeduccionIngreso_Deduccion");
+
+            entity.HasOne(d => d.IdIngresoNavigation).WithMany(p => p.DeduccionIngresos)
+                .HasForeignKey(d => d.IdIngreso)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeduccionIngreso_Ingreso");
+        });
+
+        modelBuilder.Entity<CuentaPorCobrarDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdCuentaPorCobrarDetalle).HasName("PK_CuentaPorPagarDetalle");
+
+            entity.ToTable("CuentaPorCobrarDetalle");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Cuota).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.EstadoCuota)
+                .HasDefaultValue(1)
+                .HasComment("Pendiente, Pagada");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Interes).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.MontoPagado).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.MontoPendiente).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdCuentaPorCobrarNavigation).WithMany(p => p.CuentaPorCobrarDetalles)
+                .HasForeignKey(d => d.IdCuentaPorCobrar)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CuentaPorPagarDetalle_CuentaPorCobrar");
+        });
+
+        modelBuilder.Entity<HorasExtra>(entity =>
+        {
+            entity.HasKey(e => e.IdHorasExtra);
+
+            entity.ToTable("HorasExtra");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AprobadoPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.HasOne(d => d.IdNominaNavigation).WithMany(p => p.HorasExtras)
+                .HasForeignKey(d => d.IdNomina)
+                .HasConstraintName("FK_HorasExtra_Nomina");
+        });
+
+        modelBuilder.Entity<HorasExtraDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdHorasExtraDetalle);
+
+            entity.ToTable("HorasExtraDetalle");
+
+            entity.Property(e => e.IdHorasExtraDetalle).ValueGeneratedNever();
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AprobadoPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.EstadoAprobacion)
+                .HasDefaultValue(1)
+                .HasComment("Pendiente,Aprobado, Rechazado");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.TotalDiurna).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalMixta).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalNoTrabajado).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalNocturna).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalNormales).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.HorasExtraDetalles)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HorasExtraDetalle_Empleado");
+
+            entity.HasOne(d => d.IdHorasExtraNavigation).WithMany(p => p.HorasExtraDetalles)
+                .HasForeignKey(d => d.IdHorasExtra)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HorasExtraDetalle_HorasExtra");
+        });
+
+        modelBuilder.Entity<Nomina>(entity =>
+        {
+            entity.HasKey(e => e.IdNomina);
+
+            entity.ToTable("Nomina");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AprobadaPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.EstadoNomina)
+               .HasConversion<int>();
+            //.HasComment("En Trabajo, Pendiente de Aprobación, Aprobada, Rechazada, Pagada o Finalizada");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.PagoNeto).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalDeducciones).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalImpuestos).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.TotalIngresos).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdTipoNominaNavigation).WithMany(p => p.Nominas)
+                .HasForeignKey(d => d.IdTipoNomina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Nomina_TipoNomina");
+        });
+
+        modelBuilder.Entity<NominaDeduccion>(entity =>
+        {
+            entity.HasKey(e => e.IdNominaDeduccion);
+
+            entity.ToTable("NominaDeduccion");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdDeduccionNavigation).WithMany(p => p.NominaDeduccions)
+                .HasForeignKey(d => d.IdDeduccion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaDeduccion_Deduccion");
+
+            entity.HasOne(d => d.IdNominaDetalleNavigation).WithMany(p => p.NominaDeduccions)
+                .HasForeignKey(d => d.IdNominaDetalle)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaDeduccion_NominaDetalle");
+        });
+
+        modelBuilder.Entity<NominaDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdNominaDetalle);
+
+            entity.ToTable("NominaDetalle");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.Comentarios).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Deducciones).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Impuestos).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.Ingresos).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Neto).HasColumnType("numeric(18, 2)");
+            entity.Property(e => e.SalarioBase).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.NominaDetalles)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaDetalle_Empleado");
+
+            entity.HasOne(d => d.IdNominaNavigation).WithMany(p => p.NominaDetalles)
+                .HasForeignKey(d => d.IdNomina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaDetalle_Nomina");
+        });
+
+        modelBuilder.Entity<NominaImpuesto>(entity =>
+        {
+            entity.HasKey(e => e.IdNominaImpuesto);
+
+            entity.ToTable("NominaImpuesto");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdImpuestoNavigation).WithMany(p => p.NominaImpuestos)
+                .HasForeignKey(d => d.IdImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaImpuesto_Impuesto");
+
+            entity.HasOne(d => d.IdNominaDetalleNavigation).WithMany(p => p.NominaImpuestos)
+                .HasForeignKey(d => d.IdNominaDetalle)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaImpuesto_NominaDetalle");
+        });
+
+        modelBuilder.Entity<NominaIngreso>(entity =>
+        {
+            entity.HasKey(e => e.IdNominaIngreso);
+
+            entity.ToTable("NominaIngreso");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.Monto).HasColumnType("numeric(18, 2)");
+
+            entity.HasOne(d => d.IdIngresoNavigation).WithMany(p => p.NominaIngresos)
+                .HasForeignKey(d => d.IdIngreso)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaIngreso_Ingreso");
+
+            entity.HasOne(d => d.IdNominaDetalleNavigation).WithMany(p => p.NominaIngresos)
+                .HasForeignKey(d => d.IdNominaDetalle)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_NominaIngreso_NominaDetalle");
+        });
+
+        modelBuilder.Entity<Vacacion>(entity =>
+        {
+            entity.HasKey(e => e.IdVacacion).HasName("PK_EmpleadoVacacion");
+
+            entity.ToTable("Vacacion");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.TotalDiasPeriodo).HasDefaultValue(6);
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.Vacacions)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EmpleadoVacacion_Empleado");
+        });
+
+        modelBuilder.Entity<VacacionDetalle>(entity =>
+        {
+            entity.HasKey(e => e.IdVacacionDetalle);
+
+            entity.ToTable("VacacionDetalle");
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.AprobadoPor).HasMaxLength(50);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.EstadoSolicitud)
+                .HasDefaultValue(1)
+                .HasComment("Pendiente, Aprobada, Rechazada");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.VacacionDetalles)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VacacionDetalle_Empleado");
+
+            entity.HasOne(d => d.IdVacacionNavigation).WithMany(p => p.VacacionDetalles)
+                .HasForeignKey(d => d.IdVacacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VacacionDetalle_Vacacion");
+        });
+
+        modelBuilder.Entity<EmpleadoImpuesto>(entity =>
+        {
+            entity.HasKey(e => e.IdEmpleadoImpuesto);
+
+            entity.ToTable("EmpleadoImpuesto");
+
+            entity.HasIndex(e => new { e.IdEmpleado, e.IdImpuesto }, "IX_EmpleadoImpuesto").IsUnique();
+
+            entity.Property(e => e.Activo).HasDefaultValue(true);
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50)
+                .HasDefaultValue("Admin")
+                .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.EmpleadoImpuestos)
+                .HasForeignKey(d => d.IdEmpleado)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EmpleadoImpuesto_Empleado");
+
+            entity.HasOne(d => d.IdImpuestoNavigation).WithMany(p => p.EmpleadoImpuestos)
+                .HasForeignKey(d => d.IdImpuesto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EmpleadoImpuesto_Impuesto");
+        });
+
+       
 
         OnModelCreatingPartial(modelBuilder);
     }

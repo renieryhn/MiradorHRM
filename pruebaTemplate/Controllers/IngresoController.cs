@@ -1,20 +1,27 @@
-﻿using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+using ClosedXML.Excel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using PlanillaPM.Models;
-using Syncfusion.DocIO.DLS;
-using System.Data;
 using static PlanillaPM.cGeneralFun;
-using static PlanillaPM.Models.Impuesto;
+using Microsoft.AspNetCore.Identity;
+using PlanillaPM.ViewModel;
+
+using PlanillaPM.Models;
 using static PlanillaPM.Models.Ingreso;
+
+
+
+
 
 namespace PlanillaPM.Controllers
 {
     public class IngresoController : Controller
     {
-
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
@@ -23,7 +30,8 @@ namespace PlanillaPM.Controllers
             _context = context;
             _userManager = userManager;
         }
-        // GET: Ingreso
+
+       
         public async Task<IActionResult> Index(int pg, string? filter)
         {
             List<Ingreso> registros;
@@ -33,8 +41,9 @@ namespace PlanillaPM.Controllers
             }
             else
             {
-                registros = await _context.Ingresos.ToListAsync();
+                registros = await _context.Ingresos.OrderBy(r => r.Orden).ToListAsync(); // Ordenar por el campo Orden
             }
+
             const int pageSize = 10;
             if (pg < 1) pg = 1;
             int recsCount = registros.Count();
@@ -44,28 +53,26 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-
         public ActionResult Download()
-        {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Ingreso>? data = null;
-            if (data == null)
-            {
+         {
+             ListtoDataTableConverter converter = new ListtoDataTableConverter();
+             List<Ingreso>? data = null;
+             if (data == null)
+             {
                 data = _context.Ingresos.ToList();
-            }
-            DataTable table = converter.ToDataTable(data);
-            string fileName = "Ingresos.xlsx";
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(table);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
-        }
-
+             }
+             DataTable table = converter.ToDataTable(data);
+             string fileName = "Ingresos.xlsx";
+             using (XLWorkbook wb = new XLWorkbook())
+             {
+                 wb.Worksheets.Add(table);
+                 using (MemoryStream stream = new MemoryStream())
+                 {
+                     wb.SaveAs(stream);
+                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                 }
+             }
+        }    
         // GET: Ingreso/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -85,18 +92,37 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: Ingreso/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
-            ViewBag.TipoIngreso = Enum.GetValues(typeof(TipoIngreso));
-            ViewBag.TipoPeriodo = Enum.GetValues(typeof(TipoPeriodo));
-            
+            // Obtener el último valor del campo Orden
+            int maxOrden = _context.Ingresos.Max(i => (int?)i.Orden) ?? 0;
+
+            // Asignar el próximo valor de Orden al ViewBag
+            ViewBag.NextOrden = maxOrden + 1;
+
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado));
+
+            // Obtener lista de TipoIngresoEstado
+            ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
+                                              .Cast<TipoIngresoEstado>()
+                                              .Select(e => new SelectListItem
+                                              {
+                                                  Value = ((int)e).ToString(),
+                                                  Text = e.GetDisplayName()
+                                              })
+                                              .ToList();
+
+
+
             return View();
         }
 
         // POST: Ingreso/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,Tipo,Monto,Formula,Grabable,Periodo,FechaInicial,FechaFinal,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ingreso ingreso)
+        public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso)
         {
             if (ModelState.IsValid)
             {
@@ -109,7 +135,7 @@ namespace PlanillaPM.Controllers
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["Error"] = "Error: " + message;
+                TempData["error"] = "Error: " + message;
             }
             return View(ingreso);
         }
@@ -127,16 +153,27 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-            ViewBag.TipoIngreso = Enum.GetValues(typeof(TipoIngreso));
-            ViewBag.TipoPeriodo = Enum.GetValues(typeof(TipoPeriodo));
+
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(Ingreso.TipoCalculoEstado));
+            ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
+                                  .Cast<TipoIngresoEstado>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Value = ((int)e).ToString(),
+                                      Text = e.GetDisplayName()
+                                  })
+                                  .ToList();
+
+          
             return View(ingreso);
         }
 
-
         // POST: Ingreso/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdIngreso,NombreIngreso,Tipo,Monto,Formula,Grabable,Periodo,FechaInicial,FechaFinal,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ingreso ingreso)
+        public async Task<IActionResult> Edit(int id, [Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso)
         {
             if (id != ingreso.IdIngreso)
             {
@@ -164,14 +201,45 @@ namespace PlanillaPM.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
+            ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
+                                  .Cast<TipoIngresoEstado>()
+                                  .Select(e => new SelectListItem
+                                  {
+                                      Value = ((int)e).ToString(),
+                                      Text = e.GetDisplayName()
+                                  })
+                                  .ToList();
+
+            
+
+
             return View(ingreso);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(int[] order)
+        {
+            for (int i = 0; i < order.Length; i++)
+            {
+                var ingreso = await _context.Ingresos.FindAsync(order[i]);
+                if (ingreso != null)
+                {
+                    ingreso.Orden = i + 1; // Actualiza el campo Orden según el nuevo orden
+                    _context.Entry(ingreso).State = EntityState.Modified;
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+
 
         // GET: Ingreso/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -196,17 +264,17 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ingreso = await _context.Ingresos.FindAsync(id);
+             var ingreso = await _context.Ingresos.FindAsync(id);
             try
             {
-
+               
                 if (ingreso != null)
                 {
                     _context.Ingresos.Remove(ingreso);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
-                }
+                } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
@@ -217,12 +285,12 @@ namespace PlanillaPM.Controllers
             {
                 if (ex.InnerException != null && ex.InnerException.Message.Contains("FK_"))
                 {
-                    TempData["Error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
+                    TempData["error"] = "Error: No puede elimiar el registro actual ya que se encuentra relacionado a otro Registro.";
                 }
                 else
                 {
                     var message = ex.InnerException;
-                    TempData["Error"] = "Error: " + message;
+                    TempData["error"] = "Error: " + message;
                 }
                 return View(ingreso);
             }
@@ -233,12 +301,12 @@ namespace PlanillaPM.Controllers
         {
             return _context.Ingresos.Any(e => e.IdIngreso == id);
         }
-
+        
         private void SetCamposAuditoria(Ingreso record, bool bNewRecord)
         {
             var now = DateTime.Now;
-            var CurrentUser = _userManager.GetUserName(User);
-
+            var CurrentUser =  _userManager.GetUserName(User);
+           
             if (bNewRecord)
             {
                 record.FechaCreacion = now;
@@ -252,8 +320,6 @@ namespace PlanillaPM.Controllers
                 record.FechaModificacion = now;
                 record.ModificadoPor = CurrentUser;
             }
-        }
-
-
+        }        
     }
 }

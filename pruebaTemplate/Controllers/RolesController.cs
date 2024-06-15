@@ -15,7 +15,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace PlanillaPM.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
+   //[Authorize(Roles = "SuperAdmin")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -34,6 +34,7 @@ namespace PlanillaPM.Controllers
             var roles = await _roleManager.Roles.ToListAsync();
             return View(roles);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddRole(string roleName)
@@ -88,47 +89,6 @@ namespace PlanillaPM.Controllers
             return RedirectToAction("Index");
         }
 
-        //public async Task<IActionResult> AddRole(string roleName)
-        //{
-        //    if (roleName != null)
-        //    {
-        //        // Crear el rol
-        //        var result = await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
-
-        //        if (result.Succeeded)
-        //        {
-        //            // Generar permisos para el nuevo rol
-        //            var permissions = Permissions.GeneratePermissionsForModule(roleName.Trim());
-
-        //            // Obtener el rol recién creado
-        //            var newRole = await _roleManager.FindByNameAsync(roleName.Trim());
-
-        //            // Agregar reclamaciones para cada permiso generado
-        //            foreach (var permission in permissions)
-        //            {
-        //                await _roleManager.AddClaimAsync(newRole, new Claim(CustomClaimTypes.Permission, permission));
-        //            }
-
-        //            // Configurar el mensaje de éxito
-        //            TempData["success"] = $"Nuevo Rol: {roleName.Trim()}";
-        //        }
-        //        else
-        //        {
-        //            // Manejar error de creación de rol
-        //            TempData["error"] = $"Error al crear el rol: {result.Errors.FirstOrDefault()?.Description ?? "Unknown error"}";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Manejar nombre de rol vacío
-        //        TempData["error"] = "Nombre de rol no válido.";
-        //    }
-
-        //    // Redireccionar a la vista Index
-        //    return RedirectToAction("Index");
-        //}
-
-
         [HttpGet]
         public async Task<IActionResult> Edit(string roleId)
         {
@@ -137,7 +97,7 @@ namespace PlanillaPM.Controllers
             {
                 return NotFound();
             }
-           
+
             // Aquí puedes devolver una vista con un formulario de edición para el nombre y el nombre normalizado del rol.
             return View(role);
         }
@@ -160,7 +120,7 @@ namespace PlanillaPM.Controllers
             await UpdatePermissionClaims(oldName, Name);
 
             // Esperar a que UpdateSuperAdminPermissions se complete antes de continuar
-            await UpdateSuperAdminPermissions(oldName, Name);
+            //await UpdateSuperAdminPermissions(oldName, Name);
 
             // Actualiza el nombre del rol con el nuevo valor.
             role.Name = Name;
@@ -185,6 +145,31 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        private async Task UpdatePermissionClaims(string oldRoleId, string newRoleName)
+        {
+            var oldRole = await _roleManager.FindByNameAsync(oldRoleId);
+
+            // Verificar si el rol nuevo existe
+            if (oldRole != null)
+            {
+                // Obtener las reclamaciones del rol antiguo
+                var oldRoleClaims = await _roleManager.GetClaimsAsync(oldRole);
+
+                // Iterar sobre cada reclamación del rol antiguo
+                foreach (var claim in oldRoleClaims)
+                {
+                    if (claim.Type == CustomClaimTypes.Permission && claim.Value.Contains($".{oldRoleId}."))
+                    {
+                        // Eliminar la reclamación asociada al rol antiguo
+                        await _roleManager.RemoveClaimAsync(oldRole, claim);
+
+                        // Crear una nueva reclamación asociada al rol nuevo con el mismo valor
+                        await _roleManager.AddClaimAsync(oldRole, new Claim(CustomClaimTypes.Permission, claim.Value.Replace(oldRoleId, newRoleName)));
+                    }
+                }
+            }
+
+        }
 
         private async Task UpdateSuperAdminPermissions(string oldRoleName, string newRoleName)
         {
@@ -215,67 +200,6 @@ namespace PlanillaPM.Controllers
             }
         }
 
-        private async Task UpdatePermissionClaims(string oldRoleId, string newRoleName)
-        {
-              var oldRole = await _roleManager.FindByNameAsync(oldRoleId);                
-
-                // Verificar si el rol nuevo existe
-                if (oldRole != null)
-                {
-                    // Obtener las reclamaciones del rol antiguo
-                    var oldRoleClaims = await _roleManager.GetClaimsAsync(oldRole);
-
-                    // Iterar sobre cada reclamación del rol antiguo
-                    foreach (var claim in oldRoleClaims)
-                    {
-                        if (claim.Type == CustomClaimTypes.Permission && claim.Value.Contains($".{oldRoleId}."))
-                        {
-                            // Eliminar la reclamación asociada al rol antiguo
-                            await _roleManager.RemoveClaimAsync(oldRole, claim);
-
-                            // Crear una nueva reclamación asociada al rol nuevo con el mismo valor
-                            await _roleManager.AddClaimAsync(oldRole, new Claim(CustomClaimTypes.Permission, claim.Value.Replace(oldRoleId, newRoleName)));
-                        }
-                    }
-                }
-            
-        }
-
-
-
-
-
-
-
-        //public async Task<IActionResult> Edit(string roleId, string Name)
-        //{
-        //    var role = await _roleManager.FindByIdAsync(roleId);
-        //    if (role == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // Actualiza el nombre del rol con el nuevo valor.
-        //    role.Name = Name;
-        //    role.NormalizedName = _roleManager.NormalizeKey(Name);
-
-        //    var result = await _roleManager.UpdateAsync(role);
-        //    if (result.Succeeded)
-        //    {
-        //        TempData["success"] = $"El Rol se actualizó correctamente";
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        TempData["Error"] = $"Se produjo un error al actualizar el rol";
-        //        foreach (var error in result.Errors)
-        //        {
-        //            ModelState.AddModelError(string.Empty, error.Description);
-        //        }
-        //        return RedirectToAction("Index");
-        //    }
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string roleId)
@@ -290,32 +214,38 @@ namespace PlanillaPM.Controllers
             var usersInRole = await userManager.GetUsersInRoleAsync(role.Name);
             foreach (var user in usersInRole)
             {
-                await userManager.RemoveFromRoleAsync(user, role.Name);
+                var result = await userManager.RemoveFromRoleAsync(user, role.Name);
+                if (!result.Succeeded)
+                {
+                    // Manejar errores al eliminar usuarios de roles
+                    return BadRequest(new { error = $"Error al eliminar el usuario {user.UserName} del rol {role.Name}." });
+                }
             }
 
             // Eliminar las claims asociadas al rol
             var roleClaims = await _roleManager.GetClaimsAsync(role);
             foreach (var claim in roleClaims)
             {
-                await _roleManager.RemoveClaimAsync(role, claim);
+                var result = await _roleManager.RemoveClaimAsync(role, claim);
+                if (!result.Succeeded)
+                {
+                    // Manejar errores al eliminar reclamos
+                    return BadRequest(new { error = $"Error al eliminar la reclamación {claim.Type} del rol {role.Name}." });
+                }
             }
 
             // Eliminar el rol
-            var result = await _roleManager.DeleteAsync(role);
-            if (result.Succeeded)
+            var deleteResult = await _roleManager.DeleteAsync(role);
+            if (deleteResult.Succeeded)
             {
                 // Eliminar las reclamaciones asociadas al rol de superadministrador
                 await RemoveSuperAdminPermissions(role.Name);
-                //TempData["success"] = $"El rol '{role.Name}' se eliminó correctamente.";
                 return Ok(new { success = $"El rol '{role.Name}' se eliminó correctamente." });
             }
             else
             {
-                //TempData["Error"] = $"Se produjo un error al eliminar el rol '{role.Name}'.";
                 return BadRequest(new { error = $"Se produjo un error al eliminar el rol '{role.Name}'." });
             }
-
-            
         }
 
         private async Task RemoveSuperAdminPermissions(string roleName)
@@ -341,9 +271,6 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
-
-
-
 
 
     }

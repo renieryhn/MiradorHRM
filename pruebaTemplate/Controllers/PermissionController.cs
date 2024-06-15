@@ -39,20 +39,22 @@ namespace PlanillaPM.Controllers
             // Verificar si el rol existe
             if (role != null)
             {
-                // Obtener todas las reclamaciones asociadas al rol desde la base de datos
-                var claims = await _roleManager.GetClaimsAsync(role);
+                // Obtener el ID del rol SuperAdmin
+                var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
+                var superAdminRoleId = superAdminRole?.Id;
 
-                // Obtener todos los permisos disponibles en la base de datos
+                // Obtener todas las reclamaciones de tipo Permission disponibles en la base de datos
                 var allClaims = await _context.AspNetRoleClaims
-                    .Where(c => c.ClaimType == CustomClaimTypes.Permission)
+                    .Where(c => c.ClaimType == CustomClaimTypes.Permission &&
+                                !c.ClaimValue.Contains($".{superAdminRoleId}."))
                     .Select(c => c.ClaimValue)
                     .ToListAsync();
 
-                // Obtener los permisos asignados al rol
-                var assignedClaims = claims.Select(c => c.Value).ToList();
+                // Obtener las reclamaciones asociadas al rol desde la base de datos
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
 
-                // Obtener los permisos no asignados al rol
-                var unassignedClaims = allClaims.Where(c => !assignedClaims.Contains(c)).ToList();
+                // Filtrar las reclamaciones del rol para obtener solo los permisos asignados
+                var assignedClaims = roleClaims.Select(c => c.Value).ToList();
 
                 // Convertir las reclamaciones en el formato adecuado para la vista
                 var model = new PermissionViewModel
@@ -63,7 +65,7 @@ namespace PlanillaPM.Controllers
                         Value = claim,
                         Selected = true // Establecer Selected como true ya que está asignado al rol
                     }).ToList(),
-                    UnassignedPermissions = unassignedClaims.Select(claim => new RoleClaimsViewModel
+                    UnassignedPermissions = allClaims.Except(assignedClaims).Select(claim => new RoleClaimsViewModel
                     {
                         Value = claim,
                         Selected = false // Establecer Selected como false ya que no está asignado al rol
@@ -77,6 +79,62 @@ namespace PlanillaPM.Controllers
                 return NotFound(); // Devolver una respuesta NotFound si el rol no fue encontrado
             }
         }
+
+
+
+
+        //public async Task<IActionResult> Index(string roleId)
+        //{
+        //    // Verificar si el ID del rol es nulo o vacío
+        //    if (string.IsNullOrEmpty(roleId))
+        //    {
+        //        return NotFound(); // Devolver una respuesta NotFound si el ID del rol es nulo o vacío
+        //    }
+
+        //    // Obtener el rol
+        //    var role = await _roleManager.FindByIdAsync(roleId);
+
+        //    // Verificar si el rol existe
+        //    if (role != null)
+        //    {
+        //        // Obtener todas las reclamaciones asociadas al rol desde la base de datos
+        //        var claims = await _roleManager.GetClaimsAsync(role);
+
+        //        // Obtener todos los permisos disponibles en la base de datos
+        //        var allClaims = await _context.AspNetRoleClaims
+        //            .Where(c => c.ClaimType == CustomClaimTypes.Permission)
+        //            .Select(c => c.ClaimValue)
+        //            .ToListAsync();
+
+        //        // Obtener los permisos asignados al rol
+        //        var assignedClaims = claims.Select(c => c.Value).ToList();
+
+        //        // Obtener los permisos no asignados al rol
+        //        var unassignedClaims = allClaims.Where(c => !assignedClaims.Contains(c)).ToList();
+
+        //        // Convertir las reclamaciones en el formato adecuado para la vista
+        //        var model = new PermissionViewModel
+        //        {
+        //            RoleId = roleId,
+        //            RoleClaims = assignedClaims.Select(claim => new RoleClaimsViewModel
+        //            {
+        //                Value = claim,
+        //                Selected = true // Establecer Selected como true ya que está asignado al rol
+        //            }).ToList(),
+        //            UnassignedPermissions = unassignedClaims.Select(claim => new RoleClaimsViewModel
+        //            {
+        //                Value = claim,
+        //                Selected = false // Establecer Selected como false ya que no está asignado al rol
+        //            }).ToList()
+        //        };
+
+        //        return View(model);
+        //    }
+        //    else
+        //    {
+        //        return NotFound(); // Devolver una respuesta NotFound si el rol no fue encontrado
+        //    }
+        //}
 
 
 

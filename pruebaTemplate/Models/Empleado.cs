@@ -143,10 +143,13 @@ public partial class Empleado
     [Required(ErrorMessage = "El Estado Civil es obligatorio.")]
     public EstadoCivilEmpleado? EstadoCivil { get; set; }
 
+    [DisplayName("Fecha de Inactivación")]
     public DateOnly? FechaInactivacion { get; set; }
 
+    [DisplayName("Motivo de Inactivación")]
     public string? MotivoInactivacion { get; set; }
-
+    [DisplayName("Clase de Empleado")]
+    [Required(ErrorMessage = "La Clase de Empleado es obligatorio.")]
     public int? IdClaseEmpleado { get; set; }
 
     [DisplayName("Nombre Completo")]

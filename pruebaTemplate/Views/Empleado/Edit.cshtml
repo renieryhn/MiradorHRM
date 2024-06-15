@@ -27,7 +27,7 @@
                                     <span class="btn btn-danger btn-circle-outline btn-sm position-absolute" style="top: 10px; right: 85px;" onclick="QuitarImagen(event)">
                                         <i class="fas fa-times"></i> <!-- Font Awesome icon for "x" -->
                                     </span>
-                                </div>                              
+                                </div>
                             </div>
                         </div>
 
@@ -49,6 +49,7 @@
                             <div class="form-group">
                                 <label class="btn btn-success btn-rounded btn-block" for="avfile">Seleccionar</label>
                                 <input type="file" id="avfile" asp-for="Fotografia" class="btn btn-primary d-none" accept="image/*" onchange="validateImage(event)" />
+                                <input type="hidden" id="isImageRemoved" name="IsImageRemoved" value="false" />
                             </div>
                         </div>
                        
@@ -128,7 +129,7 @@
 
                             <div class="form-group">
                                 <label asp-for="Nacionalidad" class="control-label"></label>
-                                <select asp-for="Nacionalidad" class="form-control" required>
+                                <select asp-for="Nacionalidad" class="form-control select2bs4 is-invalid">
                                     <option value="">Selecciona una nacionalidad</option>
                                     <option value="Beliceño/a" selected="@(Model.Nacionalidad == "Beliceño/a" ? "selected" : null)">Beliceño/a</option>
                                     <option value="Costarricense" selected="@(Model.Nacionalidad == "Costarricense" ? "selected" : null)">Costarricense</option>
@@ -420,6 +421,9 @@
                     var dataURL = reader.result;
                     var output = document.getElementById('profile-img');
                     output.src = dataURL;
+
+                    // Reset the isImageRemoved flag
+                    document.getElementById('isImageRemoved').value = 'false';
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -430,6 +434,9 @@
             var ofile = document.getElementById('avfile');
             ofile.value = '';
             output.src = "/EmpleadoImg/Employee.png";
+
+            // Set the isImageRemoved flag
+            document.getElementById('isImageRemoved').value = 'true';
         }
     </script>
 </div>

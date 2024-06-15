@@ -19,11 +19,15 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdImpuesto" class="control-label"></label>
-                                <select asp-for="IdImpuesto" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdImpuesto"></select>
+                                <select asp-for="IdImpuesto" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdImpuesto">
+                                    <option></option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label asp-for="IdEmpleado" class="control-label"></label>
-                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado"></select>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
+                                    <option></option>
+                                </select>
                             </div>
                             
                             <div class="form-group">

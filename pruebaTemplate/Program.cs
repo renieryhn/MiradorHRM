@@ -19,10 +19,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using PlanillaPM.Constants;
+using System.Security.Claims;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("sDBConnection") ?? throw new InvalidOperationException("Connection string 'PlanillaContextConnection' not found.");
+
+
 
 
 var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
@@ -34,8 +38,10 @@ builder.Services.AddControllersWithViews()
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 //Roles
+
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
 builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
 {
     opciones.SignIn.RequireConfirmedAccount = true;
@@ -141,7 +147,7 @@ try
     var userManager = app.Services.GetRequiredService<UserManager<Usuario>>();
     var roleManager = app.Services.GetRequiredService<RoleManager<IdentityRole>>();
     await PlanillaPM.Seeds.DefaultRoles.SeedAsync(userManager, roleManager);
-    await PlanillaPM.Seeds.DefaultUsers.SeedBasicUserAsync(userManager, roleManager);
+    //await PlanillaPM.Seeds.DefaultUsers.SeedBasicUserAsync(userManager, roleManager);
     await PlanillaPM.Seeds.DefaultUsers.SeedSuperAdminAsync(userManager, roleManager);
     logger.LogInformation("Finished Seeding Default Data");
     logger.LogInformation("Application Starting");

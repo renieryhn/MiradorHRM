@@ -6,7 +6,7 @@ using PlanillaPM.Models;
 
 namespace PlanillaPM.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
+    //[Authorize(Roles = "SuperAdmin")]
     public class UserRolesController : Controller
     {
         private readonly SignInManager<Usuario> _signInManager;
@@ -22,8 +22,15 @@ namespace PlanillaPM.Controllers
 
         public async Task<IActionResult> Index(string userId)
         {
-            var viewModel = new List<UserRolesViewModel>();
+
             var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                TempData["Error"] = "Usuario no encontrado.";
+                return RedirectToAction("Index", "Users");
+            }
+
+            var viewModel = new List<UserRolesViewModel>();         
             foreach (var role in _roleManager.Roles.ToList())
             {
                 var userRolesViewModel = new UserRolesViewModel
@@ -52,6 +59,12 @@ namespace PlanillaPM.Controllers
         public async Task<IActionResult> Update(string id, ManageUserRolesViewModel model)
         {
             var user = await _userManager.FindByIdAsync(id);
+          
+            if (user == null)
+            {
+                TempData["Error"] = "Usuario no encontrado.";
+                return RedirectToAction("Index", "Users");
+            }
             var roles = await _userManager.GetRolesAsync(user);
 
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
@@ -83,23 +96,13 @@ namespace PlanillaPM.Controllers
 
             var currentUser = await _userManager.GetUserAsync(User);
             await _signInManager.RefreshSignInAsync(currentUser);
-            await Seeds.DefaultUsers.SeedSuperAdminAsync(_userManager, _roleManager);
+            //await Seeds.DefaultUsers.SeedSuperAdminAsync(_userManager, _roleManager);
 
             //return RedirectToAction("Index", new { userId = id });
             return RedirectToAction("Index", "Users");
 
         }
 
-        //public async Task<IActionResult> Update(string id, ManageUserRolesViewModel model)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-        //    var roles = await _userManager.GetRolesAsync(user);
-        //    var result = await _userManager.RemoveFromRolesAsync(user, roles);
-        //    result = await _userManager.AddToRolesAsync(user, model.UserRoles.Where(x => x.Selected).Select(y => y.RoleName));
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    await _signInManager.RefreshSignInAsync(currentUser);
-        //    await Seeds.DefaultUsers.SeedSuperAdminAsync(_userManager, _roleManager);
-        //    return RedirectToAction("Index", new { userId = id });
-        //}
+        
     }
 }

@@ -26,7 +26,10 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="IdTipoHorario" class="control-label"></label>
-                                <select asp-for="IdTipoHorario" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoHorario"></select>
+                                <select asp-for="IdTipoHorario" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoHorario">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdTipoHorario" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

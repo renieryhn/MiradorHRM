@@ -24,7 +24,10 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="IdDivision" class="control-label"></label>
-                                <select asp-for="IdDivision" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdDivision" required></select>
+                                <select asp-for="IdDivision" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdDivision" required>
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="IdDivision" class="text-danger"></span>
                             </div>
                         </div>
                 </div>

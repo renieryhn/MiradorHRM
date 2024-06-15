@@ -65,7 +65,7 @@ namespace PlanillaPM
              new MenuDinamico { Objeto= "Empleado",Titulo= "Habilidades",Area= "",Controler= "EmpleadoHabilidad",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Ausencias",Area= "",Controler= "EmpleadoAusencium",Accion= "Index" },
              new MenuDinamico { Objeto= "Empleado",Titulo= "Activos",Area= "",Controler= "EmpleadoActivo",Accion= "Index" },
-             new MenuDinamico { Objeto= "Empleado",Titulo= "Vacaciones",Area= "",Controler= "EmpleadoVacaciones",Accion= "Index" },
+             //new MenuDinamico { Objeto= "Empleado",Titulo= "Vacaciones",Area= "",Controler= "EmpleadoVacaciones",Accion= "Index" },
                         
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Nómina",Area= "",Controler= "Nomina",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Ingresos",Area= "",Controler= "EmpleadoIngreso",Accion= "Index" },

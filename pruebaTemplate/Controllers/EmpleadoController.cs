@@ -579,7 +579,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia, bool IsImageRemoved)
         {
 
 
@@ -593,8 +593,20 @@ namespace PlanillaPM.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    // Cargar el valor original de FotografiaPath
+                    var empleadoOriginal = await _context.Empleados.AsNoTracking().FirstOrDefaultAsync(e => e.IdEmpleado == id);
+                    if (empleadoOriginal == null)
+                    {
+                        return NotFound();
+                    }
+
                     SetCamposAuditoria(empleado, false);
-                    if (Fotografia != null && Fotografia.Length > 0)
+                    if (IsImageRemoved)
+                    {
+                        empleado.FotografiaName = "Employee.png";
+                        empleado.FotografiaPath = "/EmpleadoImg/Employee.png";
+                    }
+                   else if (Fotografia != null && Fotografia.Length > 0)
                     {
                         // Genera un nombre único para el archivo de imagen
                         var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Fotografia.FileName);
@@ -608,6 +620,13 @@ namespace PlanillaPM.Controllers
                         empleado.FotografiaName = fileName;
                         empleado.FotografiaPath = "/EmpleadoImg/" + fileName;
                     }
+                    else
+                    {
+                        // Mantener el valor original de FotografiaPath si no se carga una nueva imagen
+                        empleado.FotografiaName = empleadoOriginal.FotografiaName;
+                        empleado.FotografiaPath = empleadoOriginal.FotografiaPath;
+                    }
+
                     _context.Update(empleado);
                     await _context.SaveChangesAsync();
                     TempData["mensaje"] = "Empleado actualizado exitosamente.";

@@ -77,6 +77,7 @@ public partial class Nomina
     public virtual ICollection<HorasExtra> HorasExtras { get; set; } = new List<HorasExtra>();
 
     [Display(Name = "Tipo Nomina")]
+    [Required(ErrorMessage = "El campo Tipo Nomina es requerido")]
     public virtual TipoNomina IdTipoNominaNavigation { get; set; } = null!;
 
     public virtual ICollection<NominaDetalle> NominaDetalles { get; set; } = new List<NominaDetalle>();

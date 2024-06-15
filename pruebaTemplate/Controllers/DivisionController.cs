@@ -17,16 +17,16 @@ namespace PlanillaPM.Controllers
 {
     public class DivisionController : Controller
     {
+       
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
         public DivisionController(PlanillaContext context, UserManager<Usuario> userManager)
-        {
+        {          
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Division
         public async Task<IActionResult> Index(int pg, string? filter)
         {
             List<Division> registros;
@@ -47,7 +47,10 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
+
+
+
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<Division>? data = null;

@@ -13,7 +13,7 @@ public partial class Departamento
     public string NombreDepartamento { get; set; } = null!;
 
     [DisplayName("División Administrativa")]
-    
+    [Required(ErrorMessage = "El tipo de División es obligatorio.")]
     public int? IdDivision { get; set; }
 
     public bool Activo { get; set; }
@@ -32,5 +32,7 @@ public partial class Departamento
 
     public virtual ICollection<Empleado> Empleados { get; set; } = new List<Empleado>();
 
+    [DisplayName("Division")]
+    
     public virtual Division? IdDivisionNavigation { get; set; }
 }

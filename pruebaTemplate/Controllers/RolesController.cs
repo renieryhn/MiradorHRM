@@ -12,22 +12,25 @@ using System.Security.Claims;
 using PlanillaPM.Constants;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using PlanillaPM.Seeds;
 
 namespace PlanillaPM.Controllers
 {
-   //[Authorize(Roles = "SuperAdmin")]
+    //[Authorize(Roles = "SuperAdmin")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<Usuario> userManager;
-        private readonly PlanillaContext context;
+        private readonly UserManager<Usuario> _userManager;
+        private readonly PlanillaContext _context;
 
         public RolesController(RoleManager<IdentityRole> roleManager, UserManager<Usuario> userManager, PlanillaContext context)
         {
             _roleManager = roleManager;
-            this.userManager = userManager;
-            this.context = context;
+            _userManager = userManager;
+            _context = context;
         }
+
+        private const string PermissionClaimType = "Permission";
 
         public async Task<IActionResult> Index()
         {
@@ -46,29 +49,24 @@ namespace PlanillaPM.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Generar permisos para el nuevo rol
-                    var permissions = Permissions.GeneratePermissionsForModule(roleName.Trim());
-
                     // Obtener el rol recién creado
                     var newRole = await _roleManager.FindByNameAsync(roleName.Trim());
 
-                    // Agregar reclamaciones para cada permiso generado
-                    foreach (var permission in permissions)
-                    {
-                        await _roleManager.AddClaimAsync(newRole, new Claim(CustomClaimTypes.Permission, permission));
-                    }
+                    // Agregar solo la reclamación de "View" al nuevo rol
+                    await _roleManager.AddClaimAsync(newRole, new Claim(roleName, "View"));
 
                     // Obtener el rol de superadministrador
-                    var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
+                    //var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
 
-                    // Asignar los mismos permisos al rol de superadministrador
-                    if (superAdminRole != null)
-                    {
-                        foreach (var permission in permissions)
-                        {
-                            await _roleManager.AddClaimAsync(superAdminRole, new Claim(CustomClaimTypes.Permission, permission));
-                        }
-                    }
+                    //// Asignar todos los permisos al rol de superadministrador
+                    //if (superAdminRole != null)
+                    //{
+                    //    var allPermissions = Permissions.GeneratePermissionsForModule();
+                    //    foreach (var permission in allPermissions)
+                    //    {
+                    //        await _roleManager.AddClaimAsync(superAdminRole, new Claim(permission, permission));
+                    //    }
+                    //}
 
                     // Configurar el mensaje de éxito
                     TempData["success"] = $"Nuevo Rol: {roleName.Trim()}";
@@ -116,7 +114,7 @@ namespace PlanillaPM.Controllers
             var oldName = role.Name;
 
             // Actualiza los nombres de los permisos asociados al rol.
-            await UpdateSuperAdminPermissions(oldName, Name);
+            //await UpdateSuperAdminPermissions(oldName, Name);
             await UpdatePermissionClaims(oldName, Name);
 
             // Esperar a que UpdateSuperAdminPermissions se complete antes de continuar
@@ -125,7 +123,6 @@ namespace PlanillaPM.Controllers
             // Actualiza el nombre del rol con el nuevo valor.
             role.Name = Name;
             role.NormalizedName = _roleManager.NormalizeKey(Name);
-
 
             var result = await _roleManager.UpdateAsync(role);
 
@@ -158,47 +155,46 @@ namespace PlanillaPM.Controllers
                 // Iterar sobre cada reclamación del rol antiguo
                 foreach (var claim in oldRoleClaims)
                 {
-                    if (claim.Type == CustomClaimTypes.Permission && claim.Value.Contains($".{oldRoleId}."))
+                    if (claim.Type == oldRoleId)
                     {
                         // Eliminar la reclamación asociada al rol antiguo
                         await _roleManager.RemoveClaimAsync(oldRole, claim);
 
                         // Crear una nueva reclamación asociada al rol nuevo con el mismo valor
-                        await _roleManager.AddClaimAsync(oldRole, new Claim(CustomClaimTypes.Permission, claim.Value.Replace(oldRoleId, newRoleName)));
-                    }
-                }
-            }
-
-        }
-
-        private async Task UpdateSuperAdminPermissions(string oldRoleName, string newRoleName)
-        {
-            // Obtener el rol de superadministrador
-            var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
-
-            // Verificar si el rol de superadministrador existe
-            if (superAdminRole != null)
-            {
-                // Obtener las reclamaciones del rol de superadministrador
-                var superAdminClaims = await _roleManager.GetClaimsAsync(superAdminRole);
-
-                // Iterar sobre cada reclamación del rol de superadministrador
-                foreach (var claim in superAdminClaims)
-                {
-                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}, Old Role Name: {oldRoleName}, New Role Name: {newRoleName}");
-
-                    // Verificar si la reclamación es de tipo "Permission" y está asociada al rol antiguo
-                    if (claim.Type == CustomClaimTypes.Permission && claim.Value.Contains($".{oldRoleName}."))
-                    {
-                        // Eliminar la reclamación asociada al rol antiguo
-                        await _roleManager.RemoveClaimAsync(superAdminRole, claim);
-
-                        // Crear una nueva reclamación asociada al rol nuevo con el mismo valor
-                        await _roleManager.AddClaimAsync(superAdminRole, new Claim(CustomClaimTypes.Permission, claim.Value.Replace(oldRoleName, newRoleName)));
+                        await _roleManager.AddClaimAsync(oldRole, new Claim(newRoleName, claim.Value));
                     }
                 }
             }
         }
+
+        //private async Task UpdateSuperAdminPermissions(string oldRoleName, string newRoleName)
+        //{
+        //    // Obtener el rol de superadministrador
+        //    var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
+
+        //    // Verificar si el rol de superadministrador existe
+        //    if (superAdminRole != null)
+        //    {
+        //        // Obtener las reclamaciones del rol de superadministrador
+        //        var superAdminClaims = await _roleManager.GetClaimsAsync(superAdminRole);
+
+        //        // Iterar sobre cada reclamación del rol de superadministrador
+        //        foreach (var claim in superAdminClaims)
+        //        {
+        //            Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}, Old Role Name: {oldRoleName}, New Role Name: {newRoleName}");
+
+        //            // Verificar si la reclamación es de tipo antiguo
+        //            if (claim.Type == oldRoleName)
+        //            {
+        //                // Eliminar la reclamación asociada al rol antiguo
+        //                await _roleManager.RemoveClaimAsync(superAdminRole, claim);
+
+        //                // Crear una nueva reclamación asociada al rol nuevo con el mismo valor
+        //                await _roleManager.AddClaimAsync(superAdminRole, new Claim(newRoleName, claim.Value));
+        //            }
+        //        }
+        //    }
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -211,18 +207,16 @@ namespace PlanillaPM.Controllers
             }
 
             // Eliminar las asignaciones de usuarios a roles
-            var usersInRole = await userManager.GetUsersInRoleAsync(role.Name);
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
             foreach (var user in usersInRole)
             {
-                var result = await userManager.RemoveFromRoleAsync(user, role.Name);
+                var result = await _userManager.RemoveFromRoleAsync(user, role.Name);
                 if (!result.Succeeded)
                 {
                     // Manejar errores al eliminar usuarios de roles
                     return BadRequest(new { error = $"Error al eliminar el usuario {user.UserName} del rol {role.Name}." });
                 }
             }
-
-            // Eliminar las claims asociadas al rol
             var roleClaims = await _roleManager.GetClaimsAsync(role);
             foreach (var claim in roleClaims)
             {
@@ -239,7 +233,7 @@ namespace PlanillaPM.Controllers
             if (deleteResult.Succeeded)
             {
                 // Eliminar las reclamaciones asociadas al rol de superadministrador
-                await RemoveSuperAdminPermissions(role.Name);
+                //await RemoveSuperAdminPermissions(role.Name);
                 return Ok(new { success = $"El rol '{role.Name}' se eliminó correctamente." });
             }
             else
@@ -248,30 +242,29 @@ namespace PlanillaPM.Controllers
             }
         }
 
-        private async Task RemoveSuperAdminPermissions(string roleName)
-        {
-            // Obtener el rol de superadministrador
-            var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
+        //private async Task RemoveSuperAdminPermissions(string roleName)
+        //{
+        //    // Obtener el rol de superadministrador
+        //    var superAdminRole = await _roleManager.FindByNameAsync("SuperAdmin");
 
-            // Verificar si el rol de superadministrador existe
-            if (superAdminRole != null)
-            {
-                // Obtener las reclamaciones del rol de superadministrador
-                var superAdminClaims = await _roleManager.GetClaimsAsync(superAdminRole);
+        //    // Verificar si el rol de superadministrador existe
+        //    if (superAdminRole != null)
+        //    {
+        //        // Obtener las reclamaciones del rol de superadministrador
+        //        var superAdminClaims = await _roleManager.GetClaimsAsync(superAdminRole);
 
-                // Iterar sobre cada reclamación del rol de superadministrador
-                foreach (var claim in superAdminClaims)
-                {
-                    // Verificar si la reclamación está asociada al rol que se está eliminando
-                    if (claim.Type == CustomClaimTypes.Permission && claim.Value.StartsWith($"Permissions.{roleName}."))
-                    {
-                        // Eliminar la reclamación asociada al rol
-                        await _roleManager.RemoveClaimAsync(superAdminRole, claim);
-                    }
-                }
-            }
-        }
-
+        //        // Iterar sobre cada reclamación del rol de superadministrador
+        //        foreach (var claim in superAdminClaims)
+        //        {
+        //            // Verificar si la reclamación está asociada al rol que se está eliminando
+        //            if (claim.Type == roleName)
+        //            {
+        //                // Eliminar la reclamación asociada al rol
+        //                await _roleManager.RemoveClaimAsync(superAdminRole, claim);
+        //            }
+        //        }
+        //    }
+        //}
 
     }
 }

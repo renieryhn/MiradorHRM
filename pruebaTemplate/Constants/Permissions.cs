@@ -4,14 +4,14 @@ namespace PlanillaPM.Constants
 {
     public static class Permissions
     {
-        public static List<string> GeneratePermissionsForModule(string module)
+        public static List<string> GeneratePermissionsForModule()
         {
-            return new List<string>()
+            return new List<string>
         {
-            $"Permissions.{module}.Create",
-            $"Permissions.{module}.View",
-            $"Permissions.{module}.Edit",
-            $"Permissions.{module}.Delete",
+            "Create",
+            "View",
+            "Edit",
+            "Delete",
         };
         }
        

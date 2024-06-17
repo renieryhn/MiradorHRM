@@ -24,44 +24,47 @@
                                                     <div class="row m-1">
                                                         <div class="form-group">
                                                             <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
-                                                                <input asp-for="@Model.RoleId" type="hidden" />
+                                                                <input asp-for="RoleId" type="hidden" />
                                                                 <h4>Asignar Permisos</h4>
                                                                 <table class="table table-striped" id="permissionTable">
                                                                     <thead>
                                                                         <tr>
-
-                                                                            <th>
-                                                                                Permission
-                                                                            </th>
-                                                                            <th>
-                                                                                Status
-                                                                            </th>
+                                                                            <th>Rol</th>
+                                                                            <th>View</th>
+                                                                            <th>Create</th>
+                                                                            <th>Edit</th>
+                                                                            <th>Delete</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        @for (int i = 0; i < Model.UnassignedPermissions.Count(); i++)
-                                                                        {
-                                                                            <tr>
-
-                                                                                <td>
-                                                                                    <input asp-for="@Model.UnassignedPermissions[i].Value" type="hidden" />
-                                                                                    @Model.UnassignedPermissions[i].Value
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-check m-1">
-                                                                                        <input asp-for="@Model.UnassignedPermissions[i].Selected" class="form-check-input" />
-                                                                                    </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                        }
-
-
+                                                                        <tr>
+                                                                            <td>@Model.RoleId</td>
+                                                                            <td>
+                                                                                <div class="form-check m-1">
+                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "View").Selected" class="form-check-input" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check m-1">
+                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Create").Selected" class="form-check-input" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check m-1">
+                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Edit").Selected" class="form-check-input" />
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check m-1">
+                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Delete").Selected" class="form-check-input" />
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
                                                                     </tbody>
                                                                 </table>
 
-                                                                <div class="col-sm-12" >
-                                                                    <button style="background-color: var(--blue);" type="submit"  class="btn btn-success">
-                                                                       
+                                                                <div class="col-sm-12">
+                                                                    <button style="background-color: var(--blue);" type="submit" class="btn btn-success">
                                                                         Guardar
                                                                     </button>
                                                                 </div>
@@ -115,31 +118,13 @@
 
                                                                             <th>
                                                                                 Permission
-                                                                            </th>
-                                                                            <th>
-                                                                                Status
-                                                                            </th>
+                                                                            </th>                                                                         
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-
-                                                                        @for (int i = 0; i < Model.RoleClaims.Count(); i++)
-                                                                        {
-
                                                                             <tr>
-                                                                                <td>
-                                                                                    <input asp-for="@Model.RoleClaims[i].Value" type="hidden" />
-                                                                                    @Model.RoleClaims[i].Value
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-check m-1">
-                                                                                        <input asp-for="@Model.RoleClaims[i].Selected" class="form-check-input" />
-                                                                                    </div>
-                                                                                </td>
+                                                                                <td>@Model.RoleId</td>
                                                                             </tr>
-
-                                                                        }
-
                                                                     </tbody>
                                                                 </table>
 

@@ -1,14 +1,30 @@
 ﻿@model PlanillaPM.Models.PermissionViewModel
+@using PlanillaPM.Models;
+
+@{
+    var ventanas = ViewBag.Ventanas as List<Ventana>;
+}
 
 <div class="container-fluid">
+    <div>
+        <label for="cmbRoles">Seleccione un rol:</label>
+        <select id="cmbRoles" name="cmbRoles" class="form-control">
+            @foreach (var role in Model.Roles)
+            {
+                <option value="@role.RoleId" selected="@(role.RoleId == Model.RoleId ? "selected" : null)">@role.RoleName</option>
+            }
+        </select>
+    </div>
+    <br>
     <div class="row">
         <div class="col">
             <div class="container-fluid">
+              
                 <div class="row">
                     <div class="col-12">
                         <div class="card card-primary">
                             <div class="card-header" style="background-color: var(--blue);">
-                                <h3 class="card-title">Permisos</h3>
+                                <h3 class="card-title">Asignar y Remover Permisos de @Model.RoleName</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                         <i class="fas fa-minus"></i>
@@ -22,52 +38,62 @@
                                             <div class="form-vertical">
                                                 <div class="row">
                                                     <div class="row m-1">
-                                                        <div class="form-group">
-                                                            <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
+                                                        <div class="form-group">                                                      
+                                                           <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
                                                                 <input asp-for="RoleId" type="hidden" />
-                                                                <h4>Asignar Permisos</h4>
-                                                                <table class="table table-striped" id="permissionTable">
+                                                                <input type="hidden" asp-for="RoleName" />
+                                                                <table class="table table-striped">
                                                                     <thead>
                                                                         <tr>
                                                                             <th>Rol</th>
-                                                                            <th>View</th>
                                                                             <th>Create</th>
+                                                                            <th>View</th>
                                                                             <th>Edit</th>
                                                                             <th>Delete</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        <tr>
-                                                                            <td>@Model.RoleId</td>
-                                                                            <td>
-                                                                                <div class="form-check m-1">
-                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "View").Selected" class="form-check-input" />
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="form-check m-1">
-                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Create").Selected" class="form-check-input" />
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="form-check m-1">
-                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Edit").Selected" class="form-check-input" />
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="form-check m-1">
-                                                                                    <input asp-for="@Model.UnassignedPermissions.FirstOrDefault(p => p.Value == "Delete").Selected" class="form-check-input" />
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
+                                                                        @foreach (var rolePermission in Model.AssignedPermissions.Concat(Model.UnassignedPermissions).GroupBy(p => p.Type))
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@rolePermission.Key</td>
+                                                                                <td>
+                                                                                    <div class="form-check">
+                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Create" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Create" && p.Selected))
+                                                                                        {
+                                                                                            <text>checked</text>
+                                                                                        } />
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="form-check">
+                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="View" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "View" && p.Selected))
+                                                                                        {
+                                                                                            <text>checked</text>
+                                                                                        } />
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="form-check">
+                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Edit" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Edit" && p.Selected))
+                                                                                        {
+                                                                                            <text>checked</text>
+                                                                                        } />
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="form-check">
+                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Delete" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Delete" && p.Selected))
+                                                                                        {
+                                                                                            <text>checked</text>
+                                                                                        } />
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
                                                                     </tbody>
                                                                 </table>
-
-                                                                <div class="col-sm-12">
-                                                                    <button style="background-color: var(--blue);" type="submit" class="btn btn-success">
-                                                                        Guardar
-                                                                    </button>
-                                                                </div>
+                                                                
                                                             </form>
 
                                                         </div>
@@ -93,7 +119,7 @@
                     <div class="col-12">
                         <div class="card card-primary">
                             <div class="card-header" style="background-color: var(--blue);">
-                                <h3 class="card-title">Permisos</h3>
+                                <h3 class="card-title">Accesos</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                         <i class="fas fa-minus"></i>
@@ -108,32 +134,20 @@
                                                 <div class="row">
                                                     <div class="row m-1">
                                                         <div class="form-group">
-                                                            <form asp-controller="permission" method="post" asp-action="RemovePermissions" class="d-inline">
-                                                                <input asp-for="@Model.RoleId" type="hidden" />
-                                                                @* <input type="hidden" name="action" value="RemovePermissions" /> *@
-                                                                <h4>Quitar Permisos</h4>
-                                                                <table class="table table-striped" id="permissionTable">
-                                                                    <thead>
-                                                                        <tr>
-
-                                                                            <th>
-                                                                                Permission
-                                                                            </th>                                                                         
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                            <tr>
-                                                                                <td>@Model.RoleId</td>
-                                                                            </tr>
-                                                                    </tbody>
-                                                                </table>
-
-                                                                <div class="col-sm-12" >
-                                                                    <button style="background-color: var(--blue);" type="submit" id="save" class="btn btn-success">
-                                                                        
-                                                                        Guardar
-                                                                    </button>
-                                                                </div>
+                                                            <form asp-controller="Permission" method="post" asp-action="" id="roleForm">                                                                                                             
+                                                                <div class="form-group">
+                                                                    <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
+                                                                    <div class="select2-blue">
+                                                                        <select id="cmbVentanas" name="cmbVentanas" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
+                                                                     
+                                                                        @foreach (var ventana in ViewBag.Ventanas)
+                                                                        {
+                                                                            <option value="@ventana.Nombre">@ventana.Nombre</option>
+                                                                        }
+                                                                    </select>
+                                                                    </div>
+                                                                </div>                                                            
+                                                             <button type="submit" class="btn btn-primary">Enviar</button>
                                                             </form>
 
                                                         </div>
@@ -158,3 +172,74 @@
 
 
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.permission-checkbox').change(function () {
+                var isChecked = $(this).is(':checked');
+                var permission = $(this).data('permission');
+                var roleId = $('input[name="RoleId"]').val();
+                var roleName = $('input[name="RoleName"]').val();
+
+                if (isChecked) {
+                    $.ajax({
+                        url: '@Url.Action("Update", "permission")',
+                        method: 'POST',
+                        data: {
+                            RoleId: roleId,
+                            RoleName: roleName,
+                            UnassignedPermissions: [{
+                                Type: roleName,
+                                Value: permission,
+                                Selected: true
+                            }]
+                        },
+                        success: function () {
+                            toastr.success(`Permiso ${permission} asignado al rol ${roleName}`);
+                        },
+                        error: function () {
+                            toastr.error(`Error al asignar el permiso ${permission} al rol ${roleName}`);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '@Url.Action("RemovePermissions", "permission")',
+                        method: 'POST',
+                        data: {
+                            RoleId: roleId,
+                            RoleName: roleName,
+                            AssignedPermissions: [{
+                                Type: roleName,
+                                Value: permission,
+                                Selected: false
+                            }]
+                        },
+                        success: function () {
+                            
+                            toastr.warning(`Permiso ${permission} Removido al rol ${roleName}`);
+                        },
+                        error: function () {
+                           
+                            toastr.error(`Error al Remover el permiso ${permission} al rol ${roleName}`);
+                        }
+                    });
+                }
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const cmbRoles = document.getElementById('cmbRoles');
+
+            cmbRoles.addEventListener('change', function () {
+                var selectedRoleId = cmbRoles.value;
+                if (selectedRoleId) {
+                    window.location.href = '@Url.Action("GetPermissions", "Permission")' + '?selectedRoleId=' + selectedRoleId;
+                }
+            });
+        });
+
+
+
+    </script>
+}

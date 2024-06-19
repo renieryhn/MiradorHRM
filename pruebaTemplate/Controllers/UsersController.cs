@@ -7,7 +7,7 @@ using PlanillaPM.Models;
 
 namespace PlanillaPM.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin")]
     public class UsersController : Controller
     {
         private readonly UserManager<Usuario> _userManager;

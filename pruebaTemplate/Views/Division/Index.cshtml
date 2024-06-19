@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 @using PlanillaPM.Constants
+@using System.Security.Claims
 
         @{
  
@@ -45,16 +46,16 @@
                                                             <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                                 <div class="btn-group btn-group-justified" role="group">
                                                                    
+                                                                   @if (User.HasClaim(ClaimTypes.Role, "SuperAdmin") || User.HasClaim("rrhh", "Create"))
+                                                                     {
                                                                         <a asp-action="Index" class="btn " style="background-color: var(--blue);">
                                                                             <i class="fa fa-refresh" style="color: white;"></i>
                                                                         </a>
-                                                                    
-                                                                  
                                                                         <a asp-action="Create" class="btn " style="background-color: var(--blue);">
                                                                             <i class="fa fa-plus" style="color: white;"></i>
-                                                                        </a>
-                                                                    
-                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                        </a>                                                                    
+                                                                        <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -102,21 +103,28 @@
                                                 <th scope="row">@count</th>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                            
-                                                                <a asp-action="Edit" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
-                                                                    <i class="fa fa-pencil" style="color: white;"></i>
-                                                                </a>
-                                                            
+
+                                                        @if (User.HasClaim(ClaimTypes.Role, "SuperAdmin") || User.HasClaim("rrhh", "Edit"))
+                                                        {
+                                                            <a asp-action="Edit" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
+                                                                <i class="fa fa-pencil" style="color: white;"></i> 
+                                                            </a>
+                                                        }
+
+                                                        @if (User.HasClaim(ClaimTypes.Role, "SuperAdmin") || User.HasClaim("rrhh", "View"))
+                                                        {
+                                                            <a asp-action="Details" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
+                                                                <i class="fa fa-address-card-o" style="color: white;"></i> 
+                                                            </a>
+                                                        }
+
+                                                        @if (User.HasClaim(ClaimTypes.Role, "SuperAdmin") || User.HasClaim("rrhh", "Delete"))
+                                                        {
+                                                            <a asp-action="Delete" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
+                                                                <i class="fa fa-trash-o" style="color: white;"></i> 
+                                                            </a>
+                                                        }
                                                            
-                                                                <a asp-action="Details" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
-                                                                    <i class="fa fa-address-card-o" style="color: white;"></i>
-                                                                </a>
-                                                            
-                                                          
-                                                                <a asp-action="Delete" class="btn" style="background-color: var(--blue)" asp-route-id="@item.IdDivision">
-                                                                    <i class="fa fa-trash-o" style="color: white;"></i>
-                                                                </a>
-                                                            
                                                         </div>
                                                     </td>
                                                         <td>

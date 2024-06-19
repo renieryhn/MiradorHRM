@@ -81,5 +81,39 @@ namespace PlanillaPM
         };
             return menu;
         }
+
+        public List<Ventana> ObtenerVentana()
+        {
+            // Convierte el JSON en una lista de objetos MenuDinamico
+            List<Ventana> menuList = ListadoVentanas().ToList();
+            return menuList;
+        }
+
+        private List<Ventana> ListadoVentanas()
+        {
+
+            var menu = new List<Ventana>
+        {
+            new Ventana { Nombre= "Perfil" },
+            new Ventana { Nombre= "Banco" },
+            new Ventana { Nombre= "Cargo" },
+            new Ventana { Nombre= "ClaseEmpleado" },
+            new Ventana { Nombre= "Constancia" },
+            new Ventana { Nombre= "CuentaPorCobrar" },
+            new Ventana { Nombre= "Dashboard" },
+            new Ventana { Nombre= "Deduccion" },
+            new Ventana { Nombre= "Departamento" },
+            new Ventana { Nombre= "DiaFestivo" },
+            new Ventana { Nombre= "Division" },
+            new Ventana { Nombre= "Empleado" },
+            new Ventana { Nombre= "EmpleadoActivo" },
+            new Ventana { Nombre= "EmpleadoAusencium" }
+           
+
+            // Agrega más países según necesites
+        };
+
+            return menu;
+        }
     }
 }

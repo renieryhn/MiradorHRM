@@ -7,12 +7,6 @@ namespace PlanillaPM.Models;
 
 public partial class Division
 {
-
-    public List<Division> Divisions { get; set; }
-    public bool CanEdit { get; set; }
-    public bool CanViewDetails { get; set; }
-    public bool CanDelete { get; set; }
-
     public int IdDivision { get; set; }
     [DisplayName("Nombre de la División Administrativa")]
     [Required(ErrorMessage = "El Nombre Division Administrativa es obligatorio.")]

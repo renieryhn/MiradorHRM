@@ -11,7 +11,7 @@ namespace PlanillaPM.Constants
             "Create",
             "View",
             "Edit",
-            "Delete",
+            "Delete"
         };
         }
        

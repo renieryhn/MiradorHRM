@@ -16,7 +16,7 @@ using PlanillaPM.Seeds;
 
 namespace PlanillaPM.Controllers
 {
-    //[Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

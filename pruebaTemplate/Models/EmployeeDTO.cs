@@ -7,7 +7,7 @@
         public string Cargo { get; set; }
         public int? IdEncargado { get; set; }
         public string Image { get; set; }
-
+       
 
     }
 }

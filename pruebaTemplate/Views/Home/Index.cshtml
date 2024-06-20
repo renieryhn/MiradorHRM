@@ -11,6 +11,15 @@
     var ubicaciones = Model.EmpleadosPorUbicacion.Keys.ToList();
     var cantidades = Model.EmpleadosPorUbicacion.Values.ToList();
 
+    var hasData = Model.EmpleadosPorUbicacion != null && Model.EmpleadosPorUbicacion.Any();
+
+    var totalHombres = Model.TotalHombres;
+    var totalMujeres = Model.TotalMujeres;
+    var hasDataMF = totalHombres > 0 || totalMujeres > 0;
+
+    var empleadosPorDepartamento = Model.EmpleadoDepartamento;
+    var hasDataDept = empleadosPorDepartamento != null && empleadosPorDepartamento.Any();
+
 }
 
 <script src="~/plugins/chart.js/chart.bundle.min.js"></script>
@@ -100,14 +109,7 @@
                     <div class="card">
                         <div class="card-header border-0">
                             <h3 class="card-title">Próximos  Cumpleañeros</h3>
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-                            </div>
+                           
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-striped table-valign-middle">
@@ -118,6 +120,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (Model.ProximosCumpleañeros == null || !Model.ProximosCumpleañeros.Any())
+                                {
+                                    <tr>
+                                        <td colspan="2" class="text-center">No hay datos disponibles</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     @foreach (var empleado in Model.ProximosCumpleañeros)
                                     {
                                         <tr>
@@ -163,6 +173,7 @@
                                             </td>
                                         </tr>
                                     }
+                                }
                                 </tbody>
                             </table>
                         </div>
@@ -171,15 +182,7 @@
                 <section class="col-lg-4 connectedSortable">
                     <div class="card">
                         <div class="card-header border-0">
-                            <h3 class="card-title">Licencias por Vencer</h3>
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-                            </div>
+                            <h3 class="card-title">Licencias por Vencer</h3>                         
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-striped table-valign-middle">
@@ -191,6 +194,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                     @if (Model.LicenciasPorVencer == null || !Model.LicenciasPorVencer.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No hay datos disponibles</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     @foreach (var empleado in Model.LicenciasPorVencer)
                                     {
                                         <tr>
@@ -233,6 +244,7 @@
 
                                         </tr>
                                     }
+                                 }
                                 </tbody>
                             </table>
                         </div>
@@ -242,14 +254,7 @@
                     <div class="card">
                         <div class="card-header border-0">
                             <h3 class="card-title">Contratos por Vencer</h3>
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <a href="#" class="btn btn-tool btn-sm">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-                            </div>
+                            
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-striped table-valign-middle">
@@ -261,6 +266,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (Model.ContratosPorVencer == null || !Model.ContratosPorVencer.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No hay datos disponibles</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     @foreach (var contrato in Model.ContratosPorVencer)
                                     {
                                         <tr>
@@ -309,6 +322,7 @@
                                             </td>
                                         </tr>
                                     }
+                                 }
 
                                 </tbody>
                             </table>
@@ -335,6 +349,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (Model.EmpleadoAusencias == null || !Model.EmpleadoAusencias.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center">No hay datos disponibles</td>
+                                    </tr>
+                                }
+                                else
+                                {
                                     @foreach (var empleado in Model.EmpleadoAusencias)
                                     {
                                         <tr>
@@ -363,6 +385,7 @@
 
                                         </tr>
                                     }
+                                }
                                 </tbody>
                             </table>
                         </div>
@@ -441,7 +464,14 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <canvas id="pieChart3" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            @if (hasDataDept)
+                            {
+                                <canvas id="pieChart3" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            }
+                            else
+                            {
+                                <p>Aún no hay datos disponibles</p>
+                            }
                         </div>
                         <!-- /.card-body-->
                     </div>
@@ -462,7 +492,14 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <canvas id="pieChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            @if (hasDataMF)
+                            {
+                                <canvas id="pieChart" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            }
+                            else
+                            {
+                                <p>Aún no hay datos disponibles</p>
+                            }
                         </div>
                     </div>
                 </section>
@@ -481,7 +518,14 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <canvas id="pieChart2" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            @if (hasData)
+                            {
+                                <canvas id="pieChart2" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            }
+                            else
+                            {
+                                <p>Aún no hay datos disponibles</p>
+                            }
                         </div>
                     </div>
                 </section>
@@ -528,76 +572,100 @@
 
 
         $(document).ready(function () {
-            // Datos para el gráfico de pie M/F
-            var pieData = {
-                labels: ['Hombres', 'Mujeres'],
-                datasets: [{
-                    label: 'Cantidad de Personas por Sexo',
-                    data: [@Model.TotalHombres, @Model.TotalMujeres],
-                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
-                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
-                    borderWidth: 1
-                }]
-            };
 
-            var pieOptions = {
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Distribución por Sexo'
+            var hasDataMF = @hasDataMF.ToString().ToLower();
+            if (hasDataMF) {
+                // Datos para el gráfico de pie M/F
+                var pieData = {
+                    labels: ['Hombres', 'Mujeres'],
+                    datasets: [{
+                        label: 'Cantidad de Personas por Sexo',
+                        data: [@Model.TotalHombres, @Model.TotalMujeres],
+                        backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
+                        borderColor: @Html.Raw(JsonConvert.SerializeObject(colors2)),
+                        borderWidth: 1
+                    }]
+                };
+
+                var pieOptions = {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución por Sexo'
+                        }
                     }
-                }
-            };
+                };
 
-            var pieChartCanvas = document.getElementById('pieChart').getContext('2d');
-            new Chart(pieChartCanvas, {
-                type: 'pie',
-                data: pieData,
-                options: pieOptions
-            });
+                var pieChartCanvas = document.getElementById('pieChart').getContext('2d');
+                new Chart(pieChartCanvas, {
+                    type: 'pie',
+                    data: pieData,
+                    options: pieOptions
+                });
+            }
 
-            // Datos para el gráfico de pie ubicacion
-            var pieData2 = {
-                labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Keys)),
-                datasets: [{
-                    label: 'Empleados por Ubicación',
-                    data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Values)),
-                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
-                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
-                    borderWidth: 1
-                }]
-            };
+            var hasData = @hasData.ToString().ToLower();
+            if (hasData) {
+                // Datos para el gráfico de pie ubicacion
+                var pieData2 = {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Keys)),
+                    datasets: [{
+                        label: 'Empleados por Ubicación',
+                        data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadosPorUbicacion.Values)),
+                        backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
+                        borderColor: @Html.Raw(JsonConvert.SerializeObject(colors3)),
+                        borderWidth: 1
+                    }]
+                };
 
-            var pieChartCanvas2 = document.getElementById('pieChart2').getContext('2d');
-            new Chart(pieChartCanvas2, {
-                type: 'pie',
-                data: pieData2,
-                options: pieOptions
-            });
+                var pieChartCanvas2 = document.getElementById('pieChart2').getContext('2d');
+                new Chart(pieChartCanvas2, {
+                    type: 'pie',
+                    data: pieData2,
+                    options: pieOptions
+                });
+            }
 
-            // Datos para el gráfico de pie departamentos
-            var pieData3 = {
-                labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.NombreDepartamento))),
-                datasets: [{
-                    label: 'Empleados por Departamento',
-                    data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.Count))),
-                    backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
-                    borderColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
-                    borderWidth: 1
-                }]
-            };
+            var hasDataDept = @hasDataDept.ToString().ToLower();
+            if (hasDataDept) {
+                // Datos para el gráfico de pie departamentos
+                var pieData3 = {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.NombreDepartamento))),
+                    datasets: [{
+                        label: 'Empleados por Departamento',
+                        data: @Html.Raw(JsonConvert.SerializeObject(@Model.EmpleadoDepartamento.Select(d => d.Count))),
+                        backgroundColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
+                        borderColor: @Html.Raw(JsonConvert.SerializeObject(colors)),
+                        borderWidth: 1
+                    }]
+                };
 
-            var pieChartCanvas3 = document.getElementById('pieChart3').getContext('2d');
-            new Chart(pieChartCanvas3, {
-                type: 'pie',
-                data: pieData3,
-                options: pieOptions
-            });
+                var pieOptions = {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución por Departamento'
+                        }
+                    }
+                };
+
+                var pieChartCanvas3 = document.getElementById('pieChart3').getContext('2d');
+                new Chart(pieChartCanvas3, {
+                    type: 'pie',
+                    data: pieData3,
+                    options: pieOptions
+                });
+            }
         });
 
 

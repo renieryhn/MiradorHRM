@@ -74,27 +74,22 @@
         }
 
         .profile {
-            margin-left: auto;
+            margin-left: 5px;
             margin-right: auto;
             text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
         }
 
             .profile img {
-                width: 80px;
-                height: 80px;
-                margin: 0 auto 10px auto;
+                width: 50px;
+                height: 50px;
+                margin: 0 auto;
                 border-radius: 50%;
             }
-
-            .profile .name {
-                font-size: 16px;
-                margin-bottom: 0;
-            }
-
+    
             .profile .role {
-                font-size: 12px;
+                font-size: 20px;
                 color: #cfcfcf;
             }
 
@@ -106,7 +101,22 @@
             border-radius: 50%;
         }
 
-       
+
+        .user-image {
+            width: 35px;
+            height: 35px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-nav .nav-link {
+            display: flex;
+            align-items: center;
+        }
+
+            .navbar-nav .nav-link img {
+                margin-right: 10px;
+            }
        
 
  </style>
@@ -121,29 +131,29 @@
                 @* <partial name="_MenuDinamico.cshtml" id="PartialMenu" /> *@
             </li>
         </ul>
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto">         
+            <partial name="_LinksLogin" model="@User" />
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
-
-        </ul>
-        <partial name="_LinksLogin" model="@User" />
+        </ul>                         
+       
     </nav>
 
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color:#1797C0">
+    <aside class="main-sidebar sidebar-dark-primary elevation-2" style="background-color:#1797C0">
         <div class="sidebar">
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="user-panel mt-3 pb-1 mb-3 d-flex">
                 <div class="profile">
-                    <img id="iFotoPerfil" src="" class="profile-user-img img-fluid img-circle">
-                    <h5 class="name"><strong>@User.Identity.Name</strong></h5>             
-                    <strong><span id="srol" class="role">Administrador</span></strong>
+                    <img src="~/img/MiEmpresa.jpeg" class="profile-user img-fluid img-circle" alt="User Image">
+                    <strong><span class="role">MiradorHRM</span></strong>
                 </div>
             </div>
 
+           
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item active">
@@ -409,7 +419,7 @@
         <nav class="mt-1">
             <ul class="nav nav-pills nav-sidebar flex-column">
                 <a href="#www.proyectomirador.org" class="brand-link">
-                    <img src="~/img/LogoHorizontal.png" alt="Proyecto Mirador Logo" class="brand-image" style="opacity: .8">
+                    <img src="~/img/LogoHorizontal.png" alt="Proyecto Mirador Logo" class="brand-image" style="opacity: .8; width: 185px; height: auto;">
                 </a>
             </ul>
         </nav>

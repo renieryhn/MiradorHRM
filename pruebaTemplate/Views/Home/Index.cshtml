@@ -5,9 +5,9 @@
 @{
     ViewData["Title"] = "Home Page";
 
-    var colors = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a", "#FF5733", "#C70039", "#900C3F", "#581845" };
-    var colors2 = new[] { "#3c8dbc", "#ff6384" }; // Azul y rosa
-    var colors3 = new[] { "#3c8dbc", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a" };
+    var colors = new[] { "#1797C0", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a", "#FF5733", "#C70039", "#900C3F", "#581845" };
+    var colors2 = new[] { "#1797C0", "#ff6384" }; // Azul y rosa
+    var colors3 = new[] { "#1797C0", "#0073b7", "#00c0ef", "#f39c12", "#f56954", "#00a65a" };
     var ubicaciones = Model.EmpleadosPorUbicacion.Keys.ToList();
     var cantidades = Model.EmpleadosPorUbicacion.Values.ToList();
 
@@ -22,6 +22,55 @@
 
 }
 
+
+<style>
+    .icon-custom-color {
+        color: #D9D9D9;
+        transition: color 0.3s;
+        display: block;
+    }
+
+    .icon-container:hover .icon-custom-color {
+        color: #1797C0;
+    }
+
+    .users-list-name {
+        display: block;
+        text-align: center;
+        margin-top: 8px;
+        color: #D9D9D9;
+        transition: color 0.3s;
+        font-weight: bold;
+    }
+
+    .icon-container:hover .users-list-name {
+        color: #1797C0;
+    }
+
+    .icon-container {
+        text-align: center;
+        list-style: none;
+        padding: 0;
+        margin: 20px;
+    }
+
+    .icon-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .icon-list {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        padding: 0;
+    }
+
+    .card-custom {
+        border-top: 3px solid #1797C0; 
+  
+</style>
 <script src="~/plugins/chart.js/chart.bundle.min.js"></script>
 <script src="~/plugins/chart.js/chart.bundle.js"></script>
 <script src="~/plugins/chart.js/chart.min.js"></script>
@@ -393,57 +442,60 @@
                 </section>
 
                 <div class="col-md-6">
-                    <!-- USERS LIST -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Accesos Directos</h3>
+                   
+                        <div class="card card-custom card-outline">                          
+                            <div class="card-header">
+                                <h3 class="card-title">
 
-                            <div class="card-tools">
-
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-
+                                  Accesos Directos
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body p-0">
-                            <ul class="users-list clearfix">
-                                <li>
-                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
-                                        <img src="~/img/contactoemergenciaAD.png" alt="User Image">
-                                    </a>
-                                    <span class="users-list-name">Contacto de Emergencia</span>
+                      
+                      
+                            <ul class="icon-list">
+                                <li class="icon-container">
+                                    <div class="icon-wrapper">
+                                        <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                            <i class="fas fa-exclamation-circle fa-4x icon-custom-color"></i>
+                                        </a>
+                                        <span class="users-list-name">Contacto de Emergencia</span>
+                                    </div>
                                 </li>
-                                <li>
-                                    <a asp-controller="EmpleadoAusencium" asp-action="Index">
-                                        <img src="~/img/ausenciaAD.png" alt="User Image">
-                                    </a>
-                                    <span class="users-list-name">Ausencia</span>
+                                <li class="icon-container">
+                                    <div class="icon-wrapper">
+                                        <a asp-controller="EmpleadoAusencium" asp-action="Index">
+                                            <i class="fas fa-user-times fa-4x icon-custom-color"></i>
+                                        </a>
+                                        <span class="users-list-name">Ausencia</span>
+                                    </div>
                                 </li>
-                                <li>
-                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
-                                        <img src="~/img/contratoAD.png" alt="User Image">
-                                    </a>
-                                    <a class="users-list-name" href="#">Contratos</a>
-
+                                <li class="icon-container">
+                                    <div class="icon-wrapper">
+                                        <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                            <i class="fas fa-file-contract fa-4x icon-custom-color"></i>
+                                        </a>
+                                        <span class="users-list-name">Contratos</span>
+                                    </div>
                                 </li>
-                                <li>
-                                    <a asp-controller="Empleado" asp-action="Index">
-                                        <img src="~/img/EmpleadoAD.png" alt="User Image">
-                                    </a>
-                                    <a class="users-list-name" href="#">Empleado</a>
-
+                                <li class="icon-container">
+                                    <div class="icon-wrapper">
+                                        <a asp-controller="Empleado" asp-action="Index">
+                                            <i class="fas fa-user fa-4x icon-custom-color"></i>
+                                        </a>
+                                        <span class="users-list-name">Empleado</span>
+                                    </div>
                                 </li>
 
 
                             </ul>
-                            <!-- /.users-list -->
+                            <!-- /.users-list -->                      
                         </div>
-                        <!-- /.card-body -->
-
-                    </div>
-                    <!--/.card -->
+                 
                 </div>
 
             </div>
@@ -451,7 +503,7 @@
             <div class="row">
                 <section class="col-lg-6 connectedSortable">
                     <!-- PIE CHART -->
-                    <div class="card card-primary card-outline">
+                    <div class="card card-custom card-outline">
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="far fa-chart-bar"></i>
@@ -478,7 +530,7 @@
                 </section>
 
                 <section class="col-lg-6 connectedSortable">
-                    <div class="card card-primary card-outline">
+                    <div class="card card-custom card-outline">
                         <div class="card-header">
 
                             <h3 class="card-title">
@@ -505,7 +557,7 @@
                 </section>
 
                 <section class="col-lg-6 connectedSortable">
-                    <div class="card card-primary card-outline">
+                    <div class="card card-custom card-outline" >
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="far fa-chart-bar"></i>

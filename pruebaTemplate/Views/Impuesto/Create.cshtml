@@ -63,5 +63,75 @@
     </div>
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                // Obtener los elementos DOM
+                var tipoImpuestoDropdown = $('#Tipo');
+                var montoInput = $('#Monto');
+                var formulaInput = $('#Formula');
+                var botonTabla = $('#botonTabla');
+
+                // Función para activar o desactivar campos según el tipo seleccionado
+                function toggleCamposSegunTipo() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+
+                    // Desactivar campos y limpiar valores
+                    montoInput.prop('disabled', true);
+                    formulaInput.prop('disabled', true).val('');
+
+                    if (selectedTipo === 'Fijo' || selectedTipo === 'Porcentaje') {
+                        montoInput.prop('disabled', false);
+                    } else if (selectedTipo === 'Fórmula') {
+                        formulaInput.prop('disabled', false);
+                        montoInput.val('0');
+                    }
+                }
+
+                // Función para activar o desactivar el botón según el tipo seleccionado
+                function toggleBotonTabla() {
+                    var selectedTipo = tipoImpuestoDropdown.val();
+                    if (selectedTipo === 'Tabla') {
+                        botonTabla.prop('disabled', false);
+                    } else {
+                        botonTabla.prop('disabled', true);
+                    }
+                }
+
+                // Llamar a las funciones al cargar la página
+                toggleCamposSegunTipo();
+                toggleBotonTabla();
+
+                // Evento change para el dropdown de Tipo para actualizar campos y botón
+                tipoImpuestoDropdown.change(function () {
+                    toggleCamposSegunTipo();
+                    toggleBotonTabla();
+                });
+            });
+
+
+            $(document).ready(function () {
+                $('#botonTabla').click(function () {
+                    var impuestoId = $('#IdImpuesto').val();
+                    cargarModalImpuestoTabla(impuestoId);
+                });
+
+            });
+
+            function cargarModalImpuestoTabla(impuestoId) {
+                $.ajax({
+                    url: '@Url.Action("MostrarModalImpuestoTabla", "Impuesto")',
+                    type: 'GET',
+                    data: { impuestoId: impuestoId },
+                    success: function (data) {
+                        $('#modalContent').html(data);
+                        $('#modal-xl').modal('show');
+                    }
+
+                });
+            }
+
+        </script>
+}
 }

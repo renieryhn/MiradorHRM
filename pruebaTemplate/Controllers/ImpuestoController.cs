@@ -121,6 +121,18 @@ namespace PlanillaPM.Controllers
             return View(impuesto);
         }
 
+
+        [HttpGet]
+        public IActionResult MostrarModalImpuestoTabla(int impuestoId)
+        {
+            ViewBag.ImpuestoId = impuestoId;
+            List<ImpuestoTabla> impuestoTabla;
+            impuestoTabla = _context.ImpuestoTablas.Where(it => it.IdImpuesto == impuestoId).ToList();
+
+            return PartialView("_EditarImpuestoTabla", impuestoTabla);
+
+        }
+
         // GET: Impuesto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

@@ -80,6 +80,11 @@
     <None Include="Views\Vacacion\Details.cshtml" />
     <None Include="Views\Vacacion\Edit.cshtml" />
     <None Include="Views\Vacacion\Index.cshtml" />
+    <None Include="Views\Ventana\Create.cshtml" />
+    <None Include="Views\Ventana\Delete.cshtml" />
+    <None Include="Views\Ventana\Details.cshtml" />
+    <None Include="Views\Ventana\Edit.cshtml" />
+    <None Include="Views\Ventana\Index.cshtml" />
     <None Include="Views\Viatico\Create.cshtml" />
     <None Include="Views\Viatico\Delete.cshtml" />
     <None Include="Views\Viatico\Details.cshtml" />

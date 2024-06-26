@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MiradorHRM.Models;
 using pruebaTemplate.Models;
 using static PlanillaPM.Models.Deduccion;
 
@@ -114,6 +115,10 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     public virtual DbSet<VacacionDetalle> VacacionDetalles { get; set; }
 
     public virtual DbSet<EmpleadoImpuesto> EmpleadoImpuestos { get; set; }
+
+    public DbSet<Ventana> Ventana { get; set; }
+
+    public DbSet<RoleVentana> RoleVentana { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:sDBConnection");
@@ -1616,7 +1621,17 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasConstraintName("FK_EmpleadoImpuesto_Impuesto");
         });
 
-       
+
+        modelBuilder.Entity<RoleVentana>()
+        .HasOne(rv => rv.Role)
+        .WithMany()
+        .HasForeignKey(rv => rv.RoleId);
+
+        modelBuilder.Entity<RoleVentana>()
+            .HasOne(rv => rv.Ventana)
+            .WithMany(v => v.RoleVentanas)
+            .HasForeignKey(rv => rv.VentanaId);
+
 
         OnModelCreatingPartial(modelBuilder);
     }

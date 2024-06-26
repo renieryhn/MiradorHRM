@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col">
             <div class="container-fluid">
-              
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card card-primary">
@@ -38,18 +38,19 @@
                                             <div class="form-vertical">
                                                 <div class="row">
                                                     <div class="row m-1">
-                                                        <div class="form-group">                                                      
-                                                           <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
+                                                        <div class="form-group">
+                                                            <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
                                                                 <input asp-for="RoleId" type="hidden" />
                                                                 <input type="hidden" asp-for="RoleName" />
                                                                 <table class="table table-striped">
                                                                     <thead>
                                                                         <tr>
                                                                             <th>Rol</th>
-                                                                            <th>Create</th>
-                                                                            <th>View</th>
-                                                                            <th>Edit</th>
-                                                                            <th>Delete</th>
+                                                                            <th>Ventana</th>
+                                                                            <th>Vew</th>
+                                                                            <th>Crear</th>
+                                                                            <th>Editar</th>
+                                                                            <th>Eliminar</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -57,6 +58,7 @@
                                                                         {
                                                                             <tr>
                                                                                 <td>@rolePermission.Key</td>
+                                                                                <td></td>
                                                                                 <td>
                                                                                     <div class="form-check">
                                                                                         <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Create" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Create" && p.Selected))
@@ -93,7 +95,7 @@
                                                                         }
                                                                     </tbody>
                                                                 </table>
-                                                                
+
                                                             </form>
 
                                                         </div>
@@ -134,21 +136,26 @@
                                                 <div class="row">
                                                     <div class="row m-1">
                                                         <div class="form-group">
-                                                            <form asp-controller="Permission" method="post" asp-action="" id="roleForm">                                                                                                             
+                                                            <form asp-controller="Permission" asp-action="AssignVentanas" method="post" id="roleForm">
+                                                                <input type="hidden" name="roleId" value="@Model.RoleId" />
                                                                 <div class="form-group">
                                                                     <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
                                                                     <div class="select2-blue">
-                                                                        <select id="cmbVentanas" name="cmbVentanas" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
-                                                                     
-                                                                        @foreach (var ventana in ViewBag.Ventanas)
-                                                                        {
-                                                                            <option value="@ventana.Nombre">@ventana.Nombre</option>
-                                                                        }
-                                                                    </select>
+                                                                        <select id="cmbVentanas" name="ventanaIds" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
+                                                                            @foreach (var ventana in ViewBag.Ventanas)
+                                                                            {
+                                                                                <option value="@ventana.Id" selected="@ViewBag.VentanasAsignadas.Contains(ventana.Id)">
+                                                                                    @ventana.Nombre
+                                                                                </option>
+
+
+                                                                            }
+                                                                        </select>
                                                                     </div>
-                                                                </div>                                                            
-                                                             <button type="submit" class="btn btn-primary">Enviar</button>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Enviar</button>
                                                             </form>
+
 
                                                         </div>
                                                     </div>
@@ -215,11 +222,11 @@
                             }]
                         },
                         success: function () {
-                            
+
                             toastr.warning(`Permiso ${permission} Removido al rol ${roleName}`);
                         },
                         error: function () {
-                           
+
                             toastr.error(`Error al Remover el permiso ${permission} al rol ${roleName}`);
                         }
                     });

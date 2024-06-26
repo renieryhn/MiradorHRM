@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MiradorHRM.Models;
 using PlanillaPM.Constants;
 using PlanillaPM.Helpers;
 using PlanillaPM.Models;
@@ -69,7 +70,11 @@ namespace PlanillaPM.Controllers
 
 
             var roles = await _roleManager.Roles.ToListAsync();
-
+            var ventanas = _context.Ventana.ToList();
+            var ventanasAsignadas = await _context.RoleVentana
+               .Where(rv => rv.RoleId == roleId)
+               .Select(rv => rv.VentanaId)
+               .ToListAsync();
 
             var model = new PermissionViewModel
             {
@@ -100,12 +105,53 @@ namespace PlanillaPM.Controllers
             };
 
             cGeneralFun cGen = new cGeneralFun();
-            var ventanas = cGen.ObtenerVentana();           
-            ViewBag.Ventanas = ventanas;
 
+            
+           
+            ViewBag.Ventanas = ventanas;
+            ViewBag.VentanasAsignadas = ventanasAsignadas;
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignVentanas(string roleId, List<int> ventanaIds)
+        {
+            if (string.IsNullOrEmpty(roleId))
+            {
+                return BadRequest("Invalid role ID.");
+            }
+
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var existingRoleVentanas = _context.RoleVentana.Where(rv => rv.RoleId == roleId).ToList();
+
+            // Eliminar ventanas que ya no están seleccionadas
+            var ventanasToRemove = existingRoleVentanas
+                .Where(rv => !ventanaIds.Contains(rv.VentanaId))
+                .ToList();
+            _context.RoleVentana.RemoveRange(ventanasToRemove);
+
+            // Agregar nuevas ventanas seleccionadas
+            var ventanasToAdd = ventanaIds
+                .Where(ventanaId => !existingRoleVentanas.Any(rv => rv.VentanaId == ventanaId))
+                .Select(ventanaId => new RoleVentana
+                {
+                    RoleId = roleId,
+                    VentanaId = ventanaId
+                }).ToList();
+            _context.RoleVentana.AddRange(ventanasToAdd);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { roleId });
+        }
+
+
 
 
         [HttpPost]

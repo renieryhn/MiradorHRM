@@ -16,4 +16,6 @@ namespace MiradorHRM.Models
         public virtual IdentityRole Role { get; set; }
         public virtual Ventana Ventana { get; set; }
     }
+
+
 }

@@ -125,7 +125,7 @@ namespace PlanillaPM.Controllers
             var role = await _roleManager.FindByIdAsync(roleId);
             if (role == null)
             {
-                return NotFound();
+                return NotFound("Role not found.");
             }
 
             var existingRoleVentanas = _context.RoleVentana.Where(rv => rv.RoleId == roleId).ToList();
@@ -137,19 +137,43 @@ namespace PlanillaPM.Controllers
             _context.RoleVentana.RemoveRange(ventanasToRemove);
 
             // Agregar nuevas ventanas seleccionadas
-            var ventanasToAdd = ventanaIds
-                .Where(ventanaId => !existingRoleVentanas.Any(rv => rv.VentanaId == ventanaId))
-                .Select(ventanaId => new RoleVentana
+            foreach (var ventanaId in ventanaIds)
+            {
+                bool ver = Request.Form.ContainsKey($"ver_{ventanaId}");
+                bool crear = Request.Form.ContainsKey($"crear_{ventanaId}");
+                bool editar = Request.Form.ContainsKey($"editar_{ventanaId}");
+                bool eliminar = Request.Form.ContainsKey($"eliminar_{ventanaId}");
+
+                var existingRoleVentana = existingRoleVentanas.FirstOrDefault(rv => rv.VentanaId == ventanaId);
+                if (existingRoleVentana != null)
                 {
-                    RoleId = roleId,
-                    VentanaId = ventanaId
-                }).ToList();
-            _context.RoleVentana.AddRange(ventanasToAdd);
+                    existingRoleVentana.Ver = ver;
+                    existingRoleVentana.Crear = crear;
+                    existingRoleVentana.Editar = editar;
+                    existingRoleVentana.Eliminar = eliminar;
+                }
+                else
+                {
+                    _context.RoleVentana.Add(new RoleVentana
+                    {
+                        RoleId = roleId,
+                        VentanaId = ventanaId,
+                        Ver = ver,
+                        Crear = crear,
+                        Editar = editar,
+                        Eliminar = eliminar
+                    });
+                }
+            }
 
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Ventanas asignadas exitosamente.";
+
             return RedirectToAction("Index", new { roleId });
         }
+
+
 
 
 

@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Bootstrap4 Duallistbox -->
+    <link rel="stylesheet" href="~/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
     <!-- JQVMap -->
     <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
     <!-- Theme style -->
@@ -481,8 +483,9 @@
         <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
         <script src="~/plugins/flot/plugins/jquery.flot.resize.js"></script>
         <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
-        <script src="~/plugins/flot/plugins/jquery.flot.pie.js"></script>
-
+        <script src="~/plugins/flot/plugins/jquery.flot.pie.js"></script>   
+        <!-- Bootstrap4 Duallistbox -->
+        <script src="~/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
         <!-- JQVMap -->
         <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
         <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
@@ -505,6 +508,9 @@
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         <script>
+
+            //Bootstrap Duallistbox
+            $('.duallistbox').bootstrapDualListbox()
 
             //Initialize Select2 Elements
             $('.select2').select2()

@@ -227,5 +227,126 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            //var emple = await _context.Empleados.FindAsync(id);
+            var emple = await _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefaultAsync();
+            if (emple == null)
+            {
+                return NotFound();
+            }
+
+            if (emple.Fotografia != null)
+            {
+                var nombreArchivo = emple.FotografiaName;
+                //emple.FotografiaBase64 = Url.Content("~/img/Employee.png");
+            }
+            else
+            {
+                // emple.FotografiaBase64 = "img/Employee.png";
+                emple.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
+            }
+
+
+
+            var empleado = await _context.Empleados
+                .Include(e => e.IdBancoNavigation)
+                .Include(e => e.IdCargoNavigation)
+                .Include(e => e.IdDepartamentoNavigation)
+                .Include(e => e.IdEncargadoNavigation)
+                .Include(e => e.IdTipoContratoNavigation)
+                .Include(e => e.IdTipoNominaNavigation)
+                .Include(e => e.IdClaseEmpleadoNavigation)
+                .Include(e => e.IdUbicacionNavigation)
+                .FirstOrDefaultAsync(m => m.IdEmpleado == id);
+            if (empleado == null)
+            {
+                return NotFound();
+            }
+
+            return View(empleado);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadIngreso(int id, string filter)
+        {
+            try
+            {
+                ViewBag.IdEmpleado = id;
+
+                var query = _context.EmpleadoIngresos.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.IdIngresoNavigation.NombreIngreso.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                return PartialView("~/Views/EmpleadoIngreso/Index.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadImpuesto(int id, string filter)
+        {
+            try
+            {
+                ViewBag.IdEmpleado = id;
+
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdCargoNavigation = await _context.Cargos.ToListAsync();
+                var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+
+                var query = _context.EmpleadoImpuestos.Where(e => e.IdEmpleado == id && e.Activo == true);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.IdEmpleadoNavigation.NombreCompleto.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();
+
+                return PartialView("~/Views/EmpleadoImpuesto/Index.cshtml", registros);
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadDeduccion(int id, string filter)
+        {
+            try
+            {
+                ViewBag.IdEmpleado = id;
+                var query = _context.EmpleadoDeduccions.Where(e => e.IdEmpleado == id && e.Activo == true);
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query = query.Where(e => e.IdDeduccionNavigation.NombreDeduccion.Contains(filter));
+                }
+
+                var registros = await query.ToListAsync();
+                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                return PartialView("~/Views/EmpleadoDeduccion/Index.cshtml", registros);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+       
+       
     }
 }

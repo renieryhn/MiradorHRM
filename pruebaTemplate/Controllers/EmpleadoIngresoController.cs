@@ -92,15 +92,48 @@ namespace PlanillaPM.Controllers
             return View(empleadoIngreso);
         }
 
+       
+
+
         // GET: EmpleadoIngreso/Create
         public IActionResult Create()
         {
-            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado));
+            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
+                             .Cast<TipoEstado>()
+                             .Select(e => new SelectListItem
+                             {
+                                 Value = ((int)e).ToString(),
+                                 Text = e.ToString()
+                             }).ToList();
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso");
+
             return View();
         }
 
+
+        public JsonResult GetIngresoDetails(int id)
+        {
+
+            var ingreso = _context.Ingresos
+                .Where(i => i.IdIngreso == id)
+                .Select(i => new
+                {
+                    montoIngreso = i.Monto,
+                    formulaIngreso = i.Formula,
+                    ordenIngreso = i.Orden,
+                    tipoIngreso = i.TipoIngreso
+
+                })
+                .FirstOrDefault();
+
+            if (ingreso == null)
+            {
+                return Json(new { error = "Ingreso no encontrado" });
+            }
+
+            return Json(ingreso);
+        }
         // POST: EmpleadoIngreso/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -114,7 +147,7 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoIngreso);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
             }
             else
             {
@@ -123,7 +156,7 @@ namespace PlanillaPM.Controllers
             }
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
-            return View(empleadoIngreso);
+            return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
         }
 
         // GET: EmpleadoIngreso/Edit/5
@@ -177,7 +210,7 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
             }            
             else
             {
@@ -223,12 +256,12 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoIngresos.Remove(empleadoIngreso);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
                 }
             }
             catch (DbUpdateException ex)

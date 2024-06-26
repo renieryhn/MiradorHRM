@@ -10,20 +10,16 @@
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
         }
-            Layout = "~/Views/Shared/_Layout.cshtml";
+            
         }
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="card card-primary">
-                    <div class="card-header" style="background-color: var(--blue);">
-                        <h3 class="card-title">Empleado Ingreso</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
+            <div class="card-header">
+                <h3 class="card-title">Empleado Ingreso</h3>
+                <div class="card-tools">
+                </div>
+            </div>                  
                     <div class="card-body">
                         <div class="">
                             <div class="panel panel-default">
@@ -40,9 +36,9 @@
                                                             </div>
                                                             <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                                 <div class="btn-group btn-group-justified" role="group">
-                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Create"  class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -105,9 +101,9 @@
                                                 <th scope="row">@count</th>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoIngreso" asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoIngreso" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoIngreso" asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
                                                     </td>
                                                         <td>
@@ -161,7 +157,7 @@
                     <div class="card-footer">
                     <partial name="_Pager" model="@pager" />
                     </div>
-                </div>
+               
             </div>
         </div>
         <br />

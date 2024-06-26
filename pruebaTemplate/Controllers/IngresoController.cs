@@ -122,7 +122,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso)
+        public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso, int? id)
         {
             if (ModelState.IsValid)
             {

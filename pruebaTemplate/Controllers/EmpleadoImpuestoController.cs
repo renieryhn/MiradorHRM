@@ -99,6 +99,26 @@ namespace PlanillaPM.Controllers
             return View();
         }
 
+        public JsonResult GetIngresoDetails(int id)
+        {
+
+            var impuesto = _context.Impuestos
+                .Where(i => i.IdImpuesto == id)
+                .Select(i => new
+                {                  
+                    ordenIngreso = i.Orden
+                    
+                })
+                .FirstOrDefault();
+
+            if (impuesto == null)
+            {
+                return Json(new { error = "Ingreso no encontrado" });
+            }
+
+            return Json(impuesto);
+        }
+
         // POST: EmpleadoImpuesto/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -112,7 +132,8 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoImpuesto);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
             }
             else
             {
@@ -174,7 +195,7 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
             }            
             else
             {
@@ -220,12 +241,12 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoImpuestos.Remove(empleadoImpuesto);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
                 }
             }
             catch (DbUpdateException ex)

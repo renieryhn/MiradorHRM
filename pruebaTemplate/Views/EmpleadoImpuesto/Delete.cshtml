@@ -81,9 +81,32 @@
             <form asp-action="Delete">
                 <input type="hidden" asp-for="IdEmpleadoImpuesto" />
                 <input type="submit" value="Delete" class="btn btn-danger" /> 
-                <a asp-action="Index"  class="btn btn-secondary">Regresar a la Lista</a>
+                <a onclick="goBack()" class="btn btn-secondary">Regresar a la Lista</a>
             </form>
           </div>
     </div>
 </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            function goBack() {
+                // Obtener la URL actual
+                var currentUrl = window.location.href;
+
+                // Verificar si la URL contiene "_index"
+                if (currentUrl.includes("_index")) {
+                    // Estás en la página _index, puedes hacer algo específico aquí
+                    console.log("Estás en la página _index");
+                    // Por ejemplo, redirigir a otra página
+                    window.location.href = "/otra-pagina";
+                } else {
+                    // No estás en la página _index, retrocede en la historia
+                    history.back();
+                }
+            }
+        </script>
+    }
+}

@@ -236,7 +236,6 @@ namespace PlanillaPM.Controllers
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Constancia de Trabajo.pdf");
             }
         }
-
         public IActionResult ExportToPDFContrato(int id)
         {
             // Obtener los datos del empleado correspondiente al ID
@@ -738,29 +737,7 @@ namespace PlanillaPM.Controllers
         {
             return _context.Empleados.Any(e => e.IdEmpleado == id);
         }
-        //[HttpGet]
-        //public IActionResult RenderPartialEmpleados()
-        //{
-        //    var listaDeEmpleados = _context.Empleados.Where(e => e.Activo == true).ToList();
-        //    return PartialView("_Empleado", listaDeEmpleados);
-        //}
-
-        //[HttpGet]
-        //public IActionResult RenderPartialEmpleado(int id)
-        //{
-        //    var emple =  _context.Empleados.Include(e => e.EmpleadoContactos).Where(e => e.IdEmpleado == id).FirstOrDefault();
-        //    if (emple == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    else
-        //    {
-        //        var nombreEmpleado = emple.NombreCompleto;
-        //        ViewBag.NombreEmpleado = nombreEmpleado;
-        //        ViewBag.IdEmpleado = emple.IdEmpleado;
-        //        return PartialView("_Empleado", emple);
-        //    }
-        //}
+        
 
         public async Task<IActionResult> FichaEmpleado(int? id, bool? estado)
         {

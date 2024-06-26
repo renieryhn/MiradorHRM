@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PlanillaPM.Models.EmpleadoDeduccion>
+﻿@model IEnumerable<PlanillaPM.Models.Ventana>
 @using PlanillaPM.Models;
 
         @{
@@ -10,18 +10,21 @@
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
         }
-            
+            Layout = "~/Views/Shared/_Layout.cshtml";
         }
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                
-                <div class="card-header">
-                    <h3 class="card-title">Empleado Deduccion</h3>
-                    <div class="card-tools">
+                <div class="card card-primary">
+                    <div class="card-header" style="background-color: var(--blue);">
+                        <h3 class="card-title">Ventana</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                    <div class="card-body">
                         <div class="">
                             <div class="panel panel-default">
                                 <div class="panel-body">
@@ -37,9 +40,9 @@
                                                             </div>
                                                             <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                                 <div class="btn-group btn-group-justified" role="group">
-                                                                    <a asp-controller="EmpleadoDeduccion" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                    <a asp-controller="EmpleadoDeduccion" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                    <a asp-controller="EmpleadoDeduccion" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -58,16 +61,7 @@
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
                                                         <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.Tipo)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.Monto)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.Formula)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.Orden)
+                                                            @Html.DisplayNameFor(model => model.Nombre)
                                                         </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Activo)
@@ -84,12 +78,6 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdDeduccionNavigation)
-                                                        </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                                        </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -102,22 +90,13 @@
                                                 <th scope="row">@count</th>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                            <a asp-controller="EmpleadoDeduccion" asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                            <a asp-controller="EmpleadoDeduccion" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                            <a asp-controller="EmpleadoDeduccion" asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.Id"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.Id"><i class="fa fa-address-card-o" style="color: white;"></i></a>
+                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.Id"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
                                                     </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.Tipo)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Monto)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Formula)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Orden)
+                                                            @Html.DisplayFor(modelItem => item.Nombre)
                                                         </td>
                                                         <td class="text-center">
                                                             @if (item.Activo)
@@ -141,12 +120,6 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdDeduccionNavigation.NombreDeduccion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                        </td>
                                             </tr>
                                             }
                                         </tbody>
@@ -158,7 +131,7 @@
                     <div class="card-footer">
                     <partial name="_Pager" model="@pager" />
                     </div>
-               
+                </div>
             </div>
         </div>
         <br />

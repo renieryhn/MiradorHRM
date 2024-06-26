@@ -32,7 +32,7 @@
                             
                             <div class="form-group">
                                 <label asp-for="Orden" class="control-label"></label>
-                                <input asp-for="Orden" class="form-control" required/>
+                                <input asp-for="Orden" id="OrdenIngreso" class="form-control" required readonly/>
                                 <span asp-validation-for="Orden" class="text-danger"></span>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
@@ -46,11 +46,64 @@
         </div>
         <div class="card-footer">
             <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
-            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+                <a onclick="goBack()" class="btn btn-secondary">Regresar a la Lista</a>
          </div>
         </form>
     </div>
 </div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            function goBack() {
+                // Obtener la URL actual
+                var currentUrl = window.location.href;
+
+                // Verificar si la URL contiene "_index"
+                if (currentUrl.includes("_index")) {
+                    // Estás en la página _index, puedes hacer algo específico aquí
+                    console.log("Estás en la página _index");
+                    // Por ejemplo, redirigir a otra página
+                    window.location.href = "/otra-pagina";
+                } else {
+                    // No estás en la página _index, retrocede en la historia
+                    history.back();
+                }
+            }
+
+            $(document).ready(function () {
+                $('#IdImpuesto').change(function () {
+                    var idImpuesto = $(this).val();
+                    if (idImpuesto) {
+                        $.ajax({
+                            url: '@Url.Action("GetIngresoDetails", "EmpleadoImpuesto")',
+                            type: 'GET',
+                            data: { id: idImpuesto },
+                            success: function (data) {
+                                if (data.error) {
+                                    alert(data.error);
+                                } else {
+                                    console.log(data);
+                                  
+                                    $('#OrdenIngreso').val(data.ordenIngreso);
+                                  
+
+                                }
+                            },
+                            error: function () {
+                                alert('Error obteniendo los detalles del ingreso');
+                            }
+                        });
+                    } else {
+                        
+                        $('#OrdenIngreso').val('');
+                        
+                    }
+                });
+            });
+
+            
+        </script>
+    }
 }

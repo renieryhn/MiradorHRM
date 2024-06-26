@@ -965,6 +965,71 @@ namespace PlanillaPM.Migrations
                         principalColumn: "IdEmpleado");
                 });
 
+            migrationBuilder.CreateTable(
+              name: "Ventana",
+              columns: table => new
+              {
+                  Id = table.Column<int>(nullable: false)
+                      .Annotation("SqlServer:Identity", "1, 1"),
+                  Nombre = table.Column<string>(nullable: false),
+                  Activo = table.Column<bool>(nullable: false),
+                  FechaCreacion = table.Column<DateTime>(nullable: false),
+                  FechaModificacion = table.Column<DateTime>(nullable: true),
+                  CreadoPor = table.Column<string>(nullable: false),
+                  ModificadoPor = table.Column<string>(nullable: true)
+              },
+              constraints: table =>
+              {
+                  table.PrimaryKey("PK_Ventana", x => x.Id);
+              });
+
+            migrationBuilder.CreateTable(
+                name: "RoleVentana",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(nullable: false),
+                    VentanaId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleVentana", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoleVentana_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RoleVentana_Ventana_VentanaId",
+                        column: x => x.VentanaId,
+                        principalTable: "Ventana",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleVentana_RoleId",
+                table: "RoleVentana",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleVentana_VentanaId",
+                table: "RoleVentana",
+                column: "VentanaId");
+        
+
+        migrationBuilder.CreateIndex(
+                name: "IX_RoleVentanas_RoleId",
+                table: "RoleVentanas",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleVentanas_VentanaId",
+                table: "RoleVentanas",
+                column: "VentanaId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ClaseEmpleado_IdHorario",
                 table: "ClaseEmpleado",
@@ -1252,6 +1317,12 @@ namespace PlanillaPM.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
+
+            migrationBuilder.DropTable(
+           name: "RoleVentana");
+
+            migrationBuilder.DropTable(
+                name: "Ventana");
         }
     }
 }

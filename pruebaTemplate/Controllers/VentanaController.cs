@@ -15,28 +15,28 @@ using PlanillaPM.Models;
 
 namespace PlanillaPM.Controllers
 {
-    public class EmpleadoImpuestoController : Controller
+    public class VentanaController : Controller
     {
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
-        public EmpleadoImpuestoController(PlanillaContext context, UserManager<Usuario> userManager)
+        public VentanaController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: EmpleadoImpuesto
+        // GET: Ventana
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            List<EmpleadoImpuesto> registros;
+            List<Ventana> registros;
             if (filter != null)
             {
-                registros = await _context.EmpleadoImpuestos.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower())).ToListAsync();
+                registros = await _context.Ventana.Where(r => r.Nombre.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
             {
-                registros = await _context.EmpleadoImpuestos.ToListAsync();
+                registros = await _context.Ventana.ToListAsync();
             }
             const int pageSize = 10;
             if (pg < 1) pg = 1;
@@ -45,22 +45,18 @@ namespace PlanillaPM.Controllers
             int recSkip = (pg - 1) * pageSize;
             var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
-            var planillaContext = _context.EmpleadoImpuestos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdImpuestoNavigation);
-
-            var IdEmpleadoNavigation = _context.Empleados.ToListAsync();
-            var IdImpuestoNavigation = _context.Impuestos.ToListAsync();
             return View(data);
         }
          public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<EmpleadoImpuesto>? data = null;
+             List<Ventana>? data = null;
              if (data == null)
              {
-                data = _context.EmpleadoImpuestos.ToList();
+                data = _context.Ventana.ToList();
              }
              DataTable table = converter.ToDataTable(data);
-             string fileName = "EmpleadoImpuestos.xlsx";
+             string fileName = "Ventanas.xlsx";
              using (XLWorkbook wb = new XLWorkbook())
              {
                  wb.Worksheets.Add(table);
@@ -71,7 +67,7 @@ namespace PlanillaPM.Controllers
                  }
              }
         }    
-        // GET: EmpleadoImpuesto/Details/5
+        // GET: Ventana/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -79,73 +75,46 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var empleadoImpuesto = await _context.EmpleadoImpuestos
-                .Include(e => e.IdEmpleadoNavigation)
-                .Include(e => e.IdImpuestoNavigation)
-                .FirstOrDefaultAsync(m => m.IdEmpleadoImpuesto == id);
-            if (empleadoImpuesto == null)
+            var ventana = await _context.Ventana
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ventana == null)
             {
                 return NotFound();
             }
 
-            return View(empleadoImpuesto);
+            return View(ventana);
         }
 
-        // GET: EmpleadoImpuesto/Create
+        // GET: Ventana/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
-            ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto");
             return View();
         }
 
-        public JsonResult GetIngresoDetails(int id)
-        {
-
-            var impuesto = _context.Impuestos
-                .Where(i => i.IdImpuesto == id)
-                .Select(i => new
-                {                  
-                    ordenIngreso = i.Orden
-                    
-                })
-                .FirstOrDefault();
-
-            if (impuesto == null)
-            {
-                return Json(new { error = "Ingreso no encontrado" });
-            }
-
-            return Json(impuesto);
-        }
-
-        // POST: EmpleadoImpuesto/Create
+        // POST: Ventana/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ventana ventana)
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(empleadoImpuesto, true);
-                _context.Add(empleadoImpuesto);
+                SetCamposAuditoria(ventana, true);
+                _context.Add(ventana);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                return RedirectToAction(nameof(Index));
             }
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
-            ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
-            return View(empleadoImpuesto);
+            return View(ventana);
         }
 
-        // GET: EmpleadoImpuesto/Edit/5
+        // GET: Ventana/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -153,24 +122,22 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var empleadoImpuesto = await _context.EmpleadoImpuestos.FindAsync(id);
-            if (empleadoImpuesto == null)
+            var ventana = await _context.Ventana.FindAsync(id);
+            if (ventana == null)
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
-            ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
-            return View(empleadoImpuesto);
+            return View(ventana);
         }
 
-        // POST: EmpleadoImpuesto/Edit/5
+        // POST: Ventana/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Ventana ventana)
         {
-            if (id != empleadoImpuesto.IdEmpleadoImpuesto)
+            if (id != ventana.Id)
             {
                 return NotFound();
             }
@@ -179,14 +146,14 @@ namespace PlanillaPM.Controllers
             {
                 try
                 {
-                    SetCamposAuditoria(empleadoImpuesto, false);
-                    _context.Update(empleadoImpuesto);
+                    SetCamposAuditoria(ventana, false);
+                    _context.Update(ventana);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha actualizado exitosamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmpleadoImpuestoExists(empleadoImpuesto.IdEmpleadoImpuesto))
+                    if (!VentanaExists(ventana.Id))
                     {
                         return NotFound();
                     }
@@ -195,19 +162,17 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                return RedirectToAction(nameof(Index));
             }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
-            ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
-            return View(empleadoImpuesto);
+            return View(ventana);
         }
 
-        // GET: EmpleadoImpuesto/Delete/5
+        // GET: Ventana/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -215,38 +180,36 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var empleadoImpuesto = await _context.EmpleadoImpuestos
-                .Include(e => e.IdEmpleadoNavigation)
-                .Include(e => e.IdImpuestoNavigation)
-                .FirstOrDefaultAsync(m => m.IdEmpleadoImpuesto == id);
-            if (empleadoImpuesto == null)
+            var ventana = await _context.Ventana
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ventana == null)
             {
                 return NotFound();
             }
 
-            return View(empleadoImpuesto);
+            return View(ventana);
         }
 
-        // POST: EmpleadoImpuesto/Delete/5
+        // POST: Ventana/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-             var empleadoImpuesto = await _context.EmpleadoImpuestos.FindAsync(id);
+             var ventana = await _context.Ventana.FindAsync(id);
             try
             {
                
-                if (empleadoImpuesto != null)
+                if (ventana != null)
                 {
-                    _context.EmpleadoImpuestos.Remove(empleadoImpuesto);
+                    _context.Ventana.Remove(ventana);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                    return RedirectToAction(nameof(Index));
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                    return RedirectToAction(nameof(Index));
                 }
             }
             catch (DbUpdateException ex)
@@ -260,17 +223,17 @@ namespace PlanillaPM.Controllers
                     var message = ex.InnerException;
                     TempData["error"] = "Error: " + message;
                 }
-                return View(empleadoImpuesto);
+                return View(ventana);
             }
 
         }
 
-        private bool EmpleadoImpuestoExists(int id)
+        private bool VentanaExists(int id)
         {
-            return _context.EmpleadoImpuestos.Any(e => e.IdEmpleadoImpuesto == id);
+            return _context.Ventana.Any(e => e.Id == id);
         }
         
-        private void SetCamposAuditoria(EmpleadoImpuesto record, bool bNewRecord)
+        private void SetCamposAuditoria(Ventana record, bool bNewRecord)
         {
             var now = DateTime.Now;
             var CurrentUser =  _userManager.GetUserName(User);

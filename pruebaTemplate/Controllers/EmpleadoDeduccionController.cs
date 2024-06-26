@@ -95,10 +95,39 @@ namespace PlanillaPM.Controllers
         // GET: EmpleadoDeduccion/Create
         public IActionResult Create()
         {
-            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado));
+            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
+                             .Cast<TipoEstado>()
+                             .Select(e => new SelectListItem
+                             {
+                                 Value = ((int)e).ToString(),
+                                 Text = e.ToString()
+                             }).ToList();
             ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion");
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");          
             return View();
+        }
+
+        public JsonResult GetIngresoDetails(int id)
+        {
+
+            var deduccion = _context.Deduccions
+                .Where(i => i.IdDeduccion == id)
+                .Select(i => new
+                {
+                    montoIngreso = i.Monto,
+                    formulaIngreso = i.Formula,
+                    ordenIngreso = i.Orden,
+                    tipoIngreso = i.TipoDeduccion
+
+                })
+                .FirstOrDefault();
+
+            if (deduccion == null)
+            {
+                return Json(new { error = "Ingreso no encontrado" });
+            }
+
+            return Json(deduccion);
         }
 
         // POST: EmpleadoDeduccion/Create
@@ -114,7 +143,7 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoDeduccion);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
             }
             else
             {
@@ -177,7 +206,7 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
             }            
             else
             {
@@ -223,12 +252,12 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoDeduccions.Remove(empleadoDeduccion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return RedirectToAction(nameof(Index));
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
                 }
             }
             catch (DbUpdateException ex)

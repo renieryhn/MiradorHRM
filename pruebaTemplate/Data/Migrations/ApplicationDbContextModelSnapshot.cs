@@ -17,7 +17,7 @@ namespace PermissionManagement.MVC.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -153,6 +153,44 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("MiradorHRM.Models.RoleVentana", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CreadoPor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VentanaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("VentanaId");
+
+                    b.ToTable("RoleVentanas");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.ArchivoAdjunto", b =>
@@ -362,16 +400,226 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.ToTable("ClaseEmpleado", (string)null);
                 });
 
-            modelBuilder.Entity("PlanillaPM.Models.Deduccion", b =>
+            modelBuilder.Entity("PlanillaPM.Models.ConceptoViatico", b =>
                 {
-                    b.Property<string>("IdDeduccion")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("IdConceptoViatico")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConceptoViatico"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("NombreConceptoViatico")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.HasKey("IdConceptoViatico");
+
+                    b.ToTable("ConceptoViatico", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.CuentaPorCobrar", b =>
+                {
+                    b.Property<int>("IdCuentaPorCobrar")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCuentaPorCobrar"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("AprobadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ComentarioAprobacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("EstadoAprobacion")
+                        .HasColumnType("int")
+                        .HasComment("Solicitado, Aprobado, Rechazado");
+
+                    b.Property<int>("EstadoCuentaPorCobrar")
+                        .HasColumnType("int")
+                        .HasComment("Activo, Pagado, En Mora");
+
+                    b.Property<DateTime?>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("FechaFinalizacion")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdDeduccion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("InteresAplicado")
+                        .HasColumnType("numeric(3, 2)");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<int>("NumeroPagos")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCuentaPorCobrar");
+
+                    b.HasIndex("IdDeduccion");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.ToTable("CuentaPorCobrar", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.CuentaPorCobrarDetalle", b =>
+                {
+                    b.Property<int>("IdCuentaPorCobrarDetalle")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCuentaPorCobrarDetalle"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Cuota")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<int>("EstadoCuota")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasComment("Pendiente, Pagada");
+
+                    b.Property<DateOnly>("Fecha")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdCuentaPorCobrar")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Interes")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("MontoPagado")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("MontoPendiente")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<int>("NumeroPago")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCuentaPorCobrarDetalle")
+                        .HasName("PK_CuentaPorPagarDetalle");
+
+                    b.HasIndex("IdCuentaPorCobrar");
+
+                    b.ToTable("CuentaPorCobrarDetalle", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Deduccion", b =>
+                {
+                    b.Property<int>("IdDeduccion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDeduccion"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("AsignacionAutomatica")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("BasadoEnTodo")
                         .ValueGeneratedOnAdd()
@@ -387,14 +635,17 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime>("FechaModificacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Formula")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MetodoCalculo")
+                        .HasColumnType("int")
+                        .HasComment("Porcentaje del Salario Bruto, Porcentaje del Salario Neto, Monto Fijo");
 
                     b.Property<string>("ModificadoPor")
                         .HasMaxLength(50)
@@ -405,19 +656,78 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("numeric(18, 4)");
 
                     b.Property<string>("NombreDeduccion")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Tipo")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Fijo")
-                        .HasComment("Fijo, Fórmula o Porcentaje");
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoCalculo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoDeduccion")
+                        .HasColumnType("int")
+                        .HasComment("Seguridad Social, Aportaciones, Ahorros, Préstamos, Fondo de Pensiones, Seguro Médico, Cuotas Sindical, Fondo de Vivienda, Retención de Pensión Alimenticia, Embargo, Multas, Planes de Jubilación, Seguro de Vida, Otro");
 
                     b.HasKey("IdDeduccion");
 
+                    b.HasIndex(new[] { "NombreDeduccion" }, "IX_Deduccion")
+                        .IsUnique();
+
                     b.ToTable("Deduccion", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.DeduccionIngreso", b =>
+                {
+                    b.Property<int>("IdDeduccionIngreso")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDeduccionIngreso"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdDeduccion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdIngreso")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.HasKey("IdDeduccionIngreso");
+
+                    b.HasIndex("IdDeduccion");
+
+                    b.HasIndex("IdIngreso");
+
+                    b.ToTable("DeduccionIngreso", (string)null);
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Departamento", b =>
@@ -445,6 +755,7 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("IdDivision")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
@@ -634,10 +945,7 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Property<DateOnly?>("FechaVencimientoLicencia")
                         .HasColumnType("date");
 
-                    b.Property<byte[]>("Fotografia")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("FotografiaNombre")
+                    b.Property<string>("FotografiaName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FotografiaPath")
@@ -655,6 +963,7 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("IdClaseEmpleado")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("IdDepartamento")
@@ -666,7 +975,11 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Property<int>("IdTipoContrato")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdTipoNomina")
+                    b.Property<int?>("IdTipoNomina")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdUbicacion")
                         .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
@@ -701,6 +1014,9 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("NumeroSeguroSocial")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Observaciones")
                         .HasColumnType("nvarchar(max)");
 
@@ -711,6 +1027,9 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<int?>("TipoCuentaBancaria")
+                        .HasColumnType("int");
 
                     b.HasKey("IdEmpleado")
                         .HasName("PK__Empleado__CE6D8B9EC12710B3");
@@ -728,6 +1047,8 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.HasIndex("IdTipoContrato");
 
                     b.HasIndex("IdTipoNomina");
+
+                    b.HasIndex("IdUbicacion");
 
                     b.ToTable("Empleado", (string)null);
                 });
@@ -827,7 +1148,6 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("AprobadoPor")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -1092,15 +1412,16 @@ namespace PermissionManagement.MVC.Data.Migrations
 
             modelBuilder.Entity("PlanillaPM.Models.EmpleadoDeduccion", b =>
                 {
-                    b.Property<string>("IdDeduccion")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("IdEmpleado")
+                    b.Property<int>("IdEmpleadoDeduccion")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEmpleadoDeduccion"));
+
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("CreadoPor")
                         .ValueGeneratedOnAdd()
@@ -1111,13 +1432,22 @@ namespace PermissionManagement.MVC.Data.Migrations
 
                     b.Property<DateTime>("FechaCreacion")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("FechaModificacion")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Formula")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdDeduccion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
                         .ValueGeneratedOnAdd()
@@ -1126,9 +1456,21 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasDefaultValue("Admin")
                         .UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
-                    b.HasKey("IdDeduccion", "IdEmpleado");
+                    b.Property<decimal?>("Monto")
+                        .HasColumnType("numeric(18, 4)");
 
-                    b.HasIndex("IdEmpleado");
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdEmpleadoDeduccion");
+
+                    b.HasIndex("IdDeduccion");
+
+                    b.HasIndex(new[] { "IdEmpleado", "IdDeduccion" }, "IX_EmpleadoDeduccion")
+                        .IsUnique();
 
                     b.ToTable("EmpleadoDeduccion", (string)null);
                 });
@@ -1459,17 +1801,77 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.ToTable("EmpleadoHorario", (string)null);
                 });
 
-            modelBuilder.Entity("PlanillaPM.Models.EmpleadoIngreso", b =>
+            modelBuilder.Entity("PlanillaPM.Models.EmpleadoImpuesto", b =>
                 {
-                    b.Property<string>("IdIngreso")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("IdEmpleadoImpuesto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEmpleadoImpuesto"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<bool>("Excento")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("IdEmpleado")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdImpuesto")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdEmpleadoImpuesto");
+
+                    b.HasIndex("IdImpuesto");
+
+                    b.HasIndex(new[] { "IdEmpleado", "IdImpuesto" }, "IX_EmpleadoImpuesto")
+                        .IsUnique();
+
+                    b.ToTable("EmpleadoImpuesto", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.EmpleadoIngreso", b =>
+                {
+                    b.Property<int>("IdEmpleadoIngreso")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEmpleadoIngreso"));
+
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("CreadoPor")
                         .ValueGeneratedOnAdd()
@@ -1480,13 +1882,23 @@ namespace PermissionManagement.MVC.Data.Migrations
 
                     b.Property<DateTime>("FechaCreacion")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("FechaModificacion")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Formula")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdIngreso")
+                        .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
                         .ValueGeneratedOnAdd()
@@ -1495,9 +1907,21 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasDefaultValue("Admin")
                         .UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
-                    b.HasKey("IdIngreso", "IdEmpleado");
+                    b.Property<decimal?>("Monto")
+                        .HasColumnType("numeric(18, 4)");
 
-                    b.HasIndex("IdEmpleado");
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdEmpleadoIngreso")
+                        .HasName("PK_EmpleadoIngreso_1");
+
+                    b.HasIndex("IdIngreso");
+
+                    b.HasIndex(new[] { "IdEmpleado", "IdIngreso" }, "IX_EmpleadoIngreso");
 
                     b.ToTable("EmpleadoIngreso", (string)null);
                 });
@@ -1595,6 +2019,12 @@ namespace PermissionManagement.MVC.Data.Migrations
 
                     b.Property<byte[]>("Logo")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("LogoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModificadoPor")
                         .HasMaxLength(50)
@@ -1776,12 +2206,164 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.ToTable("Horario", (string)null);
                 });
 
-            modelBuilder.Entity("PlanillaPM.Models.Impuesto", b =>
+            modelBuilder.Entity("PlanillaPM.Models.HorasExtra", b =>
                 {
+                    b.Property<int>("IdHorasExtra")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHorasExtra"));
+
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<string>("AprobadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Comentarios")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateOnly?>("FechaApobacion")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int?>("IdNomina")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("Periodo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalEmpleados")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdHorasExtra");
+
+                    b.HasIndex("IdNomina");
+
+                    b.ToTable("HorasExtra", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.HorasExtraDetalle", b =>
+                {
+                    b.Property<int>("IdHorasExtraDetalle")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("AprobadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CometarioAprobador")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("EstadoAprobacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasComment("Pendiente,Aprobado, Rechazado");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdHorasExtra")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("TotalDiurna")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("TotalMixta")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("TotalNoTrabajado")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("TotalNocturna")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("TotalNormales")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdHorasExtraDetalle");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.HasIndex("IdHorasExtra");
+
+                    b.ToTable("HorasExtraDetalle", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Impuesto", b =>
+                {
+                    b.Property<int>("IdImpuesto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdImpuesto"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("AsignacionAutomatica")
+                        .HasColumnType("bit");
 
                     b.Property<string>("CreadoPor")
                         .HasMaxLength(50)
@@ -1789,21 +2371,14 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
                     b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime>("FechaModificacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Formula")
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
-
-                    b.Property<bool>("Grabable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("IdImpuesto")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ModificadoPor")
                         .HasMaxLength(50)
@@ -1814,15 +2389,21 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("numeric(18, 4)");
 
                     b.Property<string>("NombreImpuesto")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Tipo")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Fijo")
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int")
                         .HasComment("Fijo, Fórmula, Porcentaje o Tabla");
+
+                    b.HasKey("IdImpuesto");
+
+                    b.HasIndex(new[] { "NombreImpuesto" }, "IX_Impuesto")
+                        .IsUnique();
 
                     b.ToTable("Impuesto", (string)null);
                 });
@@ -1861,9 +2442,9 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Property<decimal>("Hasta")
                         .HasColumnType("numeric(18, 2)");
 
-                    b.Property<string>("IdImpuesto")
+                    b.Property<int>("IdImpuesto")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("int");
 
                     b.Property<string>("ModificadoPor")
                         .ValueGeneratedOnAdd()
@@ -1876,7 +2457,7 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("numeric(18, 2)");
 
                     b.Property<decimal?>("Porcentaje")
-                        .HasColumnType("numeric(3, 2)");
+                        .HasColumnType("numeric(6, 2)");
 
                     b.HasKey("IdImpuestoTabla");
 
@@ -1885,14 +2466,19 @@ namespace PermissionManagement.MVC.Data.Migrations
 
             modelBuilder.Entity("PlanillaPM.Models.Ingreso", b =>
                 {
-                    b.Property<string>("IdIngreso")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("IdIngreso")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdIngreso"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("AsignacionAutomatica")
+                        .HasColumnType("bit");
 
                     b.Property<string>("CreadoPor")
                         .HasMaxLength(50)
@@ -1900,23 +2486,24 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .UseCollation("SQL_Latin1_General_CP1_CI_AS");
 
                     b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime>("FechaFinal")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("FechaFinal")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("FechaInicial")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("FechaInicial")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaModificacion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Formula")
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
                     b.Property<bool>("Grabable")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("Grabable");
 
                     b.Property<string>("ModificadoPor")
                         .HasMaxLength(50)
@@ -1927,6 +2514,7 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .HasColumnType("numeric(18, 4)");
 
                     b.Property<string>("NombreIngreso")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -1936,14 +2524,18 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Property<int>("Periodo")
                         .HasColumnType("int");
 
-                    b.Property<string>("Tipo")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Fijo")
-                        .HasComment("Fijo, Fórmula o Porcentaje");
+                    b.Property<int>("TipoCalculo")
+                        .HasColumnType("int")
+                        .HasComment("Fijo, Fórmula, Porcentaje");
+
+                    b.Property<int>("TipoIngreso")
+                        .HasColumnType("int")
+                        .HasComment("Salario, Bono de Productividad, Comisión, Horas Extra, Vacaciones, Aguinaldo, Días Libres, Pensión, Propina, Por Meta, Indemnización, Reembolso de Gastos, Viáticos, Bono Navideño, Otros");
 
                     b.HasKey("IdIngreso");
+
+                    b.HasIndex(new[] { "NombreIngreso" }, "IX_Ingreso")
+                        .IsUnique();
 
                     b.ToTable("Ingreso", (string)null);
                 });
@@ -1990,6 +2582,327 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.HasKey("IdMoneda");
 
                     b.ToTable("Moneda");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Nomina", b =>
+                {
+                    b.Property<int>("IdNomina")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNomina"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("AprobadaPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Comentarios")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ComentariosAprobador")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("EstadoNomina")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("FechaPago")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdTipoNomina")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("PagoNeto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<int>("PeriodoFiscal")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalDeducciones")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<int>("TotalEmpleadosEnNomina")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalImpuestos")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("TotalIngresos")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdNomina");
+
+                    b.HasIndex("IdTipoNomina");
+
+                    b.ToTable("Nomina", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaDeduccion", b =>
+                {
+                    b.Property<int>("IdNominaDeduccion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNominaDeduccion"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdDeduccion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdNominaDetalle")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdNominaDeduccion");
+
+                    b.HasIndex("IdDeduccion");
+
+                    b.HasIndex("IdNominaDetalle");
+
+                    b.ToTable("NominaDeduccion", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaDetalle", b =>
+                {
+                    b.Property<int>("IdNominaDetalle")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNominaDetalle"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Comentarios")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Deducciones")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdNomina")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Impuestos")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("Ingresos")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Neto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<decimal>("SalarioBase")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdNominaDetalle");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.HasIndex("IdNomina");
+
+                    b.ToTable("NominaDetalle", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaImpuesto", b =>
+                {
+                    b.Property<int>("IdNominaImpuesto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNominaImpuesto"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdImpuesto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdNominaDetalle")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdNominaImpuesto");
+
+                    b.HasIndex("IdImpuesto");
+
+                    b.HasIndex("IdNominaDetalle");
+
+                    b.ToTable("NominaImpuesto", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaIngreso", b =>
+                {
+                    b.Property<int>("IdNominaIngreso")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNominaIngreso"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdIngreso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdNominaDetalle")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdNominaIngreso");
+
+                    b.HasIndex("IdIngreso");
+
+                    b.HasIndex("IdNominaDetalle");
+
+                    b.ToTable("NominaIngreso", (string)null);
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Producto", b =>
@@ -2229,6 +3142,61 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.ToTable("TipoNomina", (string)null);
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.Ubicacion", b =>
+                {
+                    b.Property<int>("IdUbicacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUbicacion"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Ciudad")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModificadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("NombreUbicacion")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.HasKey("IdUbicacion");
+
+                    b.ToTable("Ubicacion", (string)null);
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.Usuario", b =>
                 {
                     b.Property<string>("Id")
@@ -2303,6 +3271,317 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.Vacacion", b =>
+                {
+                    b.Property<int>("IdVacacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVacacion"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CreadoPor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("DiasGozados")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiasPendientes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PeriodoVacacional")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalDiasPeriodo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(6);
+
+                    b.HasKey("IdVacacion")
+                        .HasName("PK_EmpleadoVacacion");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.ToTable("Vacacion", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.VacacionDetalle", b =>
+                {
+                    b.Property<int>("IdVacacionDetalle")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVacacionDetalle"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("AprobadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ComentariosAprobador")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("DiasAprobados")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstadoSolicitud")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasComment("Pendiente, Aprobada, Rechazada");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("FechaFin")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("FechaSolicitud")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdVacacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<int>("NumeroDiasSolicitados")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdVacacionDetalle");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.HasIndex("IdVacacion");
+
+                    b.ToTable("VacacionDetalle", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Ventana", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ventanas");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Viatico", b =>
+                {
+                    b.Property<int>("IdViatico")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdViatico"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<decimal>("AdelantoRecibido")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<string>("AprobadoPor")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("BalancePendiente")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Fecha")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("FechaAprobacion")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly?>("FechaPago")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("NotasAdicionales")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Pagado")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("TotalGastos")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdViatico");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.ToTable("Viatico", (string)null);
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.ViaticoDetalle", b =>
+                {
+                    b.Property<int>("IdViaticoDetalle")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdViaticoDetalle"));
+
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Comentarios")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CreadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<string>("FacturaPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("FechaFatura")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("IdConceptoViatico")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdViatico")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPor")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Admin")
+                        .UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric(18, 2)");
+
+                    b.HasKey("IdViaticoDetalle");
+
+                    b.HasIndex("IdConceptoViatico");
+
+                    b.HasIndex("IdViatico");
+
+                    b.ToTable("ViaticoDetalle", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -2354,6 +3633,23 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MiradorHRM.Models.RoleVentana", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId");
+
+                    b.HasOne("PlanillaPM.Models.Ventana", "Ventana")
+                        .WithMany()
+                        .HasForeignKey("VentanaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Ventana");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.ClaseEmpleado", b =>
                 {
                     b.HasOne("PlanillaPM.Models.Horario", "IdHorarioNavigation")
@@ -2366,11 +3662,62 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("IdHorarioNavigation");
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.CuentaPorCobrar", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Deduccion", "IdDeduccionNavigation")
+                        .WithMany("CuentaPorCobrars")
+                        .HasForeignKey("IdDeduccion")
+                        .IsRequired()
+                        .HasConstraintName("FK_CuentaPorCobrar_Deduccion");
+
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("CuentaPorCobrars")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_CuentaPorCobrar_Empleado");
+
+                    b.Navigation("IdDeduccionNavigation");
+
+                    b.Navigation("IdEmpleadoNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.CuentaPorCobrarDetalle", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.CuentaPorCobrar", "IdCuentaPorCobrarNavigation")
+                        .WithMany("CuentaPorCobrarDetalles")
+                        .HasForeignKey("IdCuentaPorCobrar")
+                        .IsRequired()
+                        .HasConstraintName("FK_CuentaPorPagarDetalle_CuentaPorCobrar");
+
+                    b.Navigation("IdCuentaPorCobrarNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.DeduccionIngreso", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Deduccion", "IdDeduccionNavigation")
+                        .WithMany("DeduccionIngresos")
+                        .HasForeignKey("IdDeduccion")
+                        .IsRequired()
+                        .HasConstraintName("FK_DeduccionIngreso_Deduccion");
+
+                    b.HasOne("PlanillaPM.Models.Ingreso", "IdIngresoNavigation")
+                        .WithMany("DeduccionIngresos")
+                        .HasForeignKey("IdIngreso")
+                        .IsRequired()
+                        .HasConstraintName("FK_DeduccionIngreso_Ingreso");
+
+                    b.Navigation("IdDeduccionNavigation");
+
+                    b.Navigation("IdIngresoNavigation");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.Departamento", b =>
                 {
                     b.HasOne("PlanillaPM.Models.Division", "IdDivisionNavigation")
                         .WithMany("Departamentos")
                         .HasForeignKey("IdDivision")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_Departamento_Division");
 
                     b.Navigation("IdDivisionNavigation");
@@ -2392,6 +3739,8 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.HasOne("PlanillaPM.Models.ClaseEmpleado", "IdClaseEmpleadoNavigation")
                         .WithMany("Empleados")
                         .HasForeignKey("IdClaseEmpleado")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("FK_Empleado_ClaseEmpleado");
 
                     b.HasOne("PlanillaPM.Models.Departamento", "IdDepartamentoNavigation")
@@ -2417,6 +3766,11 @@ namespace PermissionManagement.MVC.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Empleado_TipoNomina");
 
+                    b.HasOne("PlanillaPM.Models.Ubicacion", "IdUbicacionNavigation")
+                        .WithMany("Empleados")
+                        .HasForeignKey("IdUbicacion")
+                        .HasConstraintName("FK_Empleado_Ubicacion");
+
                     b.Navigation("IdBancoNavigation");
 
                     b.Navigation("IdCargoNavigation");
@@ -2430,6 +3784,8 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("IdTipoContratoNavigation");
 
                     b.Navigation("IdTipoNominaNavigation");
+
+                    b.Navigation("IdUbicacionNavigation");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.EmpleadoActivo", b =>
@@ -2590,6 +3946,25 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("IdempleadoNavigation");
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.EmpleadoImpuesto", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("EmpleadoImpuestos")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_EmpleadoImpuesto_Empleado");
+
+                    b.HasOne("PlanillaPM.Models.Impuesto", "IdImpuestoNavigation")
+                        .WithMany("EmpleadoImpuestos")
+                        .HasForeignKey("IdImpuesto")
+                        .IsRequired()
+                        .HasConstraintName("FK_EmpleadoImpuesto_Impuesto");
+
+                    b.Navigation("IdEmpleadoNavigation");
+
+                    b.Navigation("IdImpuestoNavigation");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.EmpleadoIngreso", b =>
                 {
                     b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
@@ -2642,6 +4017,182 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("IdTipoHorarioNavigation");
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.HorasExtra", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Nomina", "IdNominaNavigation")
+                        .WithMany("HorasExtras")
+                        .HasForeignKey("IdNomina")
+                        .HasConstraintName("FK_HorasExtra_Nomina");
+
+                    b.Navigation("IdNominaNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.HorasExtraDetalle", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("HorasExtraDetalles")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_HorasExtraDetalle_Empleado");
+
+                    b.HasOne("PlanillaPM.Models.HorasExtra", "IdHorasExtraNavigation")
+                        .WithMany("HorasExtraDetalles")
+                        .HasForeignKey("IdHorasExtra")
+                        .IsRequired()
+                        .HasConstraintName("FK_HorasExtraDetalle_HorasExtra");
+
+                    b.Navigation("IdEmpleadoNavigation");
+
+                    b.Navigation("IdHorasExtraNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Nomina", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.TipoNomina", "IdTipoNominaNavigation")
+                        .WithMany("Nominas")
+                        .HasForeignKey("IdTipoNomina")
+                        .IsRequired()
+                        .HasConstraintName("FK_Nomina_TipoNomina");
+
+                    b.Navigation("IdTipoNominaNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaDeduccion", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Deduccion", "IdDeduccionNavigation")
+                        .WithMany("NominaDeduccions")
+                        .HasForeignKey("IdDeduccion")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaDeduccion_Deduccion");
+
+                    b.HasOne("PlanillaPM.Models.NominaDetalle", "IdNominaDetalleNavigation")
+                        .WithMany("NominaDeduccions")
+                        .HasForeignKey("IdNominaDetalle")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaDeduccion_NominaDetalle");
+
+                    b.Navigation("IdDeduccionNavigation");
+
+                    b.Navigation("IdNominaDetalleNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaDetalle", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("NominaDetalles")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaDetalle_Empleado");
+
+                    b.HasOne("PlanillaPM.Models.Nomina", "IdNominaNavigation")
+                        .WithMany("NominaDetalles")
+                        .HasForeignKey("IdNomina")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaDetalle_Nomina");
+
+                    b.Navigation("IdEmpleadoNavigation");
+
+                    b.Navigation("IdNominaNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaImpuesto", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Impuesto", "IdImpuestoNavigation")
+                        .WithMany("NominaImpuestos")
+                        .HasForeignKey("IdImpuesto")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaImpuesto_Impuesto");
+
+                    b.HasOne("PlanillaPM.Models.NominaDetalle", "IdNominaDetalleNavigation")
+                        .WithMany("NominaImpuestos")
+                        .HasForeignKey("IdNominaDetalle")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaImpuesto_NominaDetalle");
+
+                    b.Navigation("IdImpuestoNavigation");
+
+                    b.Navigation("IdNominaDetalleNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaIngreso", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Ingreso", "IdIngresoNavigation")
+                        .WithMany("NominaIngresos")
+                        .HasForeignKey("IdIngreso")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaIngreso_Ingreso");
+
+                    b.HasOne("PlanillaPM.Models.NominaDetalle", "IdNominaDetalleNavigation")
+                        .WithMany("NominaIngresos")
+                        .HasForeignKey("IdNominaDetalle")
+                        .IsRequired()
+                        .HasConstraintName("FK_NominaIngreso_NominaDetalle");
+
+                    b.Navigation("IdIngresoNavigation");
+
+                    b.Navigation("IdNominaDetalleNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Vacacion", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("Vacacions")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_EmpleadoVacacion_Empleado");
+
+                    b.Navigation("IdEmpleadoNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.VacacionDetalle", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("VacacionDetalles")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_VacacionDetalle_Empleado");
+
+                    b.HasOne("PlanillaPM.Models.Vacacion", "IdVacacionNavigation")
+                        .WithMany("VacacionDetalles")
+                        .HasForeignKey("IdVacacion")
+                        .IsRequired()
+                        .HasConstraintName("FK_VacacionDetalle_Vacacion");
+
+                    b.Navigation("IdEmpleadoNavigation");
+
+                    b.Navigation("IdVacacionNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Viatico", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.Empleado", "IdEmpleadoNavigation")
+                        .WithMany("Viaticos")
+                        .HasForeignKey("IdEmpleado")
+                        .IsRequired()
+                        .HasConstraintName("FK_Viatico_Empleado");
+
+                    b.Navigation("IdEmpleadoNavigation");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.ViaticoDetalle", b =>
+                {
+                    b.HasOne("PlanillaPM.Models.ConceptoViatico", "IdConceptoViaticoNavigation")
+                        .WithMany("ViaticoDetalles")
+                        .HasForeignKey("IdConceptoViatico")
+                        .IsRequired()
+                        .HasConstraintName("FK_ViaticoDetalle_ConceptoViatico");
+
+                    b.HasOne("PlanillaPM.Models.Viatico", "IdViaticoNavigation")
+                        .WithMany("ViaticoDetalles")
+                        .HasForeignKey("IdViatico")
+                        .IsRequired()
+                        .HasConstraintName("FK_ViaticoDetalle_Viatico");
+
+                    b.Navigation("IdConceptoViaticoNavigation");
+
+                    b.Navigation("IdViaticoNavigation");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.Banco", b =>
                 {
                     b.Navigation("Empleados");
@@ -2659,9 +4210,25 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("Empleados");
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.ConceptoViatico", b =>
+                {
+                    b.Navigation("ViaticoDetalles");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.CuentaPorCobrar", b =>
+                {
+                    b.Navigation("CuentaPorCobrarDetalles");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.Deduccion", b =>
                 {
+                    b.Navigation("CuentaPorCobrars");
+
+                    b.Navigation("DeduccionIngresos");
+
                     b.Navigation("EmpleadoDeduccions");
+
+                    b.Navigation("NominaDeduccions");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Departamento", b =>
@@ -2676,6 +4243,8 @@ namespace PermissionManagement.MVC.Data.Migrations
 
             modelBuilder.Entity("PlanillaPM.Models.Empleado", b =>
                 {
+                    b.Navigation("CuentaPorCobrars");
+
                     b.Navigation("EmpleadoActivos");
 
                     b.Navigation("EmpleadoAusencia");
@@ -2696,11 +4265,23 @@ namespace PermissionManagement.MVC.Data.Migrations
 
                     b.Navigation("EmpleadoHorarios");
 
+                    b.Navigation("EmpleadoImpuestos");
+
                     b.Navigation("EmpleadoIngresos");
 
                     b.Navigation("EmpleadoSalarioHistoricos");
 
+                    b.Navigation("HorasExtraDetalles");
+
                     b.Navigation("InverseIdEncargadoNavigation");
+
+                    b.Navigation("NominaDetalles");
+
+                    b.Navigation("VacacionDetalles");
+
+                    b.Navigation("Vacacions");
+
+                    b.Navigation("Viaticos");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Horario", b =>
@@ -2710,14 +4291,46 @@ namespace PermissionManagement.MVC.Data.Migrations
                     b.Navigation("EmpleadoHorarios");
                 });
 
+            modelBuilder.Entity("PlanillaPM.Models.HorasExtra", b =>
+                {
+                    b.Navigation("HorasExtraDetalles");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Impuesto", b =>
+                {
+                    b.Navigation("EmpleadoImpuestos");
+
+                    b.Navigation("NominaImpuestos");
+                });
+
             modelBuilder.Entity("PlanillaPM.Models.Ingreso", b =>
                 {
+                    b.Navigation("DeduccionIngresos");
+
                     b.Navigation("EmpleadoIngresos");
+
+                    b.Navigation("NominaIngresos");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Monedum", b =>
                 {
                     b.Navigation("Empresas");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Nomina", b =>
+                {
+                    b.Navigation("HorasExtras");
+
+                    b.Navigation("NominaDetalles");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.NominaDetalle", b =>
+                {
+                    b.Navigation("NominaDeduccions");
+
+                    b.Navigation("NominaImpuestos");
+
+                    b.Navigation("NominaIngresos");
                 });
 
             modelBuilder.Entity("PlanillaPM.Models.Producto", b =>
@@ -2745,6 +4358,23 @@ namespace PermissionManagement.MVC.Data.Migrations
             modelBuilder.Entity("PlanillaPM.Models.TipoNomina", b =>
                 {
                     b.Navigation("Empleados");
+
+                    b.Navigation("Nominas");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Ubicacion", b =>
+                {
+                    b.Navigation("Empleados");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Vacacion", b =>
+                {
+                    b.Navigation("VacacionDetalles");
+                });
+
+            modelBuilder.Entity("PlanillaPM.Models.Viatico", b =>
+                {
+                    b.Navigation("ViaticoDetalles");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,665 @@
+﻿@model PlanillaPM.Models.Empleado
+
+@{
+    ViewData["Title"] = "Detalles";
+   
+}
+
+<div id="detalleEmpleadoDetails" class="container-fluid">
+    <div id="employeeSelection">
+    </div> 
+    <!-- general form elements -->
+    <div class="card card-primary card-tabs">
+        <div class="card-header p-0 pt-1" style="background-color: var(--blue);">
+            <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                <li class="pt-2 px-3"><h3 class="card-title">@Html.DisplayFor(model => model.NombreCompleto)</h3></li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" onclick="LoadTabData(this);"  href="#custom-tabs-two-home" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Generales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" onclick="LoadTabData(this,'loading-spinner-profile');" href="#custom-tabs-two-profile" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Ingreso</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill" onclick="LoadTabData(this, 'loading-spinner-messages');" href="#custom-tabs-two-messages" role="tab" aria-controls="custom-tabs-two-messages" aria-selected="false">Impuesto</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill" onclick="LoadTabData(this,'loading-spinner-settings');" href="#custom-tabs-two-settings" role="tab" aria-controls="custom-tabs-two-settings" aria-selected="false">Deduccion</a>
+                </li>              
+            </ul>
+        </div>
+
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-two-tabContent">
+                        <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
+                            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                                <h5>Detalles Personal</h5>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="text-center" id="image-drop-area" style="cursor: pointer;">
+                                                <img id="profile-img" class="profile-user-img img-fluid img-circle" src="@Model.FotografiaPath" alt="User profile picture">
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NombreEmpleado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NombreEmpleado)" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="ApellidoEmpleado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.ApellidoEmpleado)" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @*  <div class="form-group">
+                                        <label asp-for="Fotografia" class="control-label"></label>
+                                        <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile" accept="image/*" onchange="previewImage(event)" />
+                                        <label class="custom-file-label" for="customFile"></label>
+                                        </div>
+
+                                        </div> *@
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="CodigoInterno" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CodigoInterno)" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroIdentidad" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroIdentidad)" disabled>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Genero" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Genero)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroRegistroTributario" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroRegistroTributario)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Direccion" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Direccion)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Telefono" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Telefono)" disabled>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="CiudadResidencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CiudadResidencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Email" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Email)" disabled>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Nacionalidad" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Nacionalidad)" disabled>
+
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaNacimiento" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaNacimiento)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="SalarioBase" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.SalarioBase)" disabled>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+                                <h3></h3>
+                            </div>
+                            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                                <h5>Informacion General</h5>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaInicio" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInicio)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdEncargado" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdEncargadoNavigation.NombreCompleto)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdCargo" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdCargoNavigation.NombreCargo)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="IdDepartamento" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdDepartamentoNavigation.NombreDepartamento)" disabled>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="NumeroLicencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroLicencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="FechaVencimientoLicencia" class="control-label"></label>
+                                            <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaVencimientoLicencia)" disabled>
+
+                                        </div>
+                                    </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="IdUbicacion" class="control-label"></label>
+                                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdUbicacionNavigation.NombreUbicacion)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="IdClaseEmpleado" class="control-label"></label>
+                                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdClaseEmpleadoNavigation.NombreClaseEmpleado)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="NumeroSeguroSocial" class="control-label"></label>
+                                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.NumeroSeguroSocial)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Comentarios" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Comentarios)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Observaciones" class="control-label"></label>
+                                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.Observaciones)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="FechaInactivacion" class="control-label"></label>
+                                        <input type="text" class="form-control" value="@Html.DisplayFor(model => model.FechaInactivacion)" disabled>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MotivoInactivacion" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.MotivoInactivacion)" disabled>
+
+                                    </div>
+                                </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="IdTipoContrato" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoContratoNavigation.NombreTipoContrato)" disabled>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="IdTipoNomina" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdTipoNominaNavigation.NombreTipoNomina)" disabled>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="IdBanco" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.IdBancoNavigation.NombreBanco)" disabled>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="TipoCuentaBancaria" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.TipoCuentaBancaria)" disabled>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label asp-for="CuentaBancaria" class="control-label"></label>
+                                    <input type="text" class="form-control" value="@Html.DisplayFor(model => model.CuentaBancaria)" disabled>
+
+                                </div>
+
+                            </div>
+
+                                </div>
+
+                               
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Activo" checked>
+                                            <label class="custom-control-label" for="customSwitch1">@Html.DisplayNameFor(model => model.Activo)</label>
+
+                                        </div>
+
+                                    </div>
+
+                                  
+
+                                </div>
+                                <br />
+                                <div class="row">                                 
+
+                                    <div class="col-md-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Descagar pdf
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia1?id=@Model.IdEmpleado">Constancia de Servicios</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstancia2?id=@Model.IdEmpleado">Constancia de Laboral</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFConstanciaTrabajo?id=@Model.IdEmpleado">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContrato?id=@Model.IdEmpleado">Contrato</a>
+                                                <a class="dropdown-item" href="/Empleado/ExportToPDFContratoCorto?id=@Model.IdEmpleado">Contrato Corto</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Ver Documento
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" onclick="pasarIDConstancia1('@Model.IdEmpleado')">Constancia de Servicios </a>
+                                                <a class="dropdown-item" onclick="pasarIDConstancia2('@Model.IdEmpleado')">Constancia de Laboral</a>
+                                                <a class="dropdown-item" onclick="pasarIDConstanciaTrabajo('@Model.IdEmpleado')">Constancia de Trabajo</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContrato('@Model.IdEmpleado')">Contrato</a>
+                                                <a class="dropdown-item" onclick="pasarIDDFContratoCorto('@Model.IdEmpleado')">Contrato Corto</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                </div>
+                        </div>
+              
+                <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"  aria-labelledby="custom-tabs-two-profile-tab">
+                    <div id="loading-spinner-profile" class="loader" role="status" style="display: none;"></div>
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"  aria-labelledby="custom-tabs-two-messages-tab">
+                    <div id="loading-spinner-messages" class="loader" role="status" style="display: none;"></div>
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel" aria-labelledby="custom-tabs-two-settings-tab">
+                    <div id="loading-spinner-settings" class="loader" role="status" style="display: none;"></div>
+                </div>              
+                               
+                    </div>
+
+                </div>
+                <br />
+
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.IdEmpleado" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
+
+    </div>
+    <!-- /.card -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+       
+             
+        function validateImage(event) {
+            var input = event.target;
+            var file = input.files[0];
+            var fileSize = file.size / 1024; // tamaño del archivo en kilobytes
+
+            // Límite máximo de tamaño de archivo en kilobytes (1 MB)
+            var maxSizeKB = 1024;
+
+            if (fileSize > maxSizeKB) {
+                // Restablecer el valor del campo de entrada de archivo
+                input.value = '';
+                // Mostrar mensaje de error al usuario
+                toastr.warning('La imagen es demasiado grande. Por favor, seleccione una imagen más pequeña.');
+
+                return false; // Detener la carga del archivo
+            }
+
+            // Si pasa la validación, mostrar la vista previa de la imagen
+            previewImage(event);
+        }     
+        function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var output = document.getElementById('profile-img');
+                output.src = dataURL;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // $(document).ready(function () {
+        //     var empleadoId = "@Model.IdEmpleado";
+        //     pasarIDConstancia(empleadoId);
+        // });
+
+
+        function pasarIDConstancia1(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstancia1?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/Constancia1?id=" + id;
+                   
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDConstancia2(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstancia2?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/Constancia2?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDConstanciaTrabajo(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/ConstanciaTrabajo?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDDFContrato(id) {
+            $.ajax({
+                url: "/Empleado/PasarIDConstanciaTrabajo?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                    window.location.href = "/Constancia/FContrato?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+        function pasarIDDFContratoCorto(id) {
+            $.ajax({
+                url: "/Empleado/pasarIDDFContratoCorto?id=" + id,
+                type: "POST",
+                success: function () {
+                    // Redirigir a la página correspondiente después de que se haya pasado el ID
+                     window.location.href = "/Constancia/FContratoCorto?id=" + id;
+
+                },
+                error: function () {
+                    alert("Error al pasar el ID del empleado.");
+                }
+            });
+        }
+
+
+
+    $(document).ready(function () {
+        var tab = getParameterByName('tab');
+        if (tab === 'profile') {          
+            $('#custom-tabs-two-profile-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-profile-tab')[0], 'loading-spinner-profile');
+        } else if (tab === 'messages') {           
+            $('#custom-tabs-two-messages-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-messages-tab')[0], 'loading-spinner-messages');
+        } else if (tab === 'settings') {           
+            $('#custom-tabs-two-settings-tab').tab('show');
+            LoadTabData($('#custom-tabs-two-settings-tab')[0], 'loading-spinner-settings');
+        } 
+    });
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+   
+
+    function LoadTabData(obj, spinnerId) {
+        var tab = obj.id;
+        var sfuncion = "";
+       
+
+        $('#' + spinnerId).show();
+
+        if (tab === 'custom-tabs-two-profile-tab') {
+            sfuncion = "LoadIngreso";
+        } else if (tab === 'custom-tabs-two-messages-tab') {
+            sfuncion = "LoadImpuesto";
+        } else if (tab === 'custom-tabs-two-settings-tab') {
+            sfuncion = "LoadDeduccion";          
+        } 
+
+        var empleadoId = '@Model.IdEmpleado';
+        var filter = "";
+        var surl = '/NominaEmpleado/' + sfuncion + '?id=' + empleadoId + '&filter=' + filter;
+
+        $.ajax({
+            url: surl,
+            method: 'GET',
+            success: function (data) {
+                if (tab === 'custom-tabs-two-profile-tab') {
+                    $('#custom-tabs-two-profile').html(data);
+                }
+                else if (tab === 'custom-tabs-two-messages-tab') {
+                    $('#custom-tabs-two-messages').html(data);
+                }
+                else if (tab === 'custom-tabs-two-settings-tab') {
+                    $('#custom-tabs-two-settings').html(data);
+                }
+                
+
+                $('#' + spinnerId).hide();
+            },
+            error: function (xhr, status, error) {
+                // Maneja el error si la solicitud AJAX falla
+                console.error(error);
+
+                $('#' + spinnerId).hide();
+            }
+            
+        });
+    }
+
+    // Función para almacenar la pestaña activa en sessionStorage
+    function storeActiveTab(tabId) {
+        sessionStorage.setItem('activeTab', tabId);
+    }
+
+
+    $(document).ready(function () {
+        var tab = getParameterByName('tab');
+       
+        if (tab) {         
+            var spinnerId = 'loading-spinner-' + tab.replace('-tab', '');
+            LoadTabData($(tab)[0], spinnerId); // Se pasa el ID completo del spinner
+            storeActiveTab(tab + '-tab'); // Almacena la pestaña activa
+        } else {
+            // Verificar si hay una pestaña activa almacenada en sessionStorage
+            var activeTab = sessionStorage.getItem('activeTab');
+            if (activeTab) {
+                $('#' + activeTab).tab('show');
+                var activeTabName = activeTab ? activeTab.slice(16, -4) : null;
+                console.log(activeTabName)
+                var spinnerId = 'loading-spinner-' + activeTabName;
+                console.log(spinnerId)
+                LoadTabData($('#' + activeTab)[0], spinnerId); // Se pasa el ID completo del spinner
+            }
+        }
+
+        // Almacenar la pestaña activa antes de recargar la página
+        $('.nav-link').on('click', function () {
+            var tabId = $(this).attr('id');
+            storeActiveTab(tabId);
+        });
+    });
+
+
+    function Buscar(sfuncion, sCampofiltro) {
+
+        var filterValue = document.getElementById(sCampofiltro).value;
+        var surl = '/NominaEmpleado/' + sfuncion + '?id=' + @Model.IdEmpleado + '&filter=' + filterValue;
+        $.ajax({
+            url: surl,
+            type: 'GET',
+            success: function (result) {
+                switch (sfuncion) {
+                    case 'LoadIngreso':
+                        $('#custom-tabs-two-profile').html(result);
+                        break;
+                    case 'LoadImpuesto':
+                        $('#custom-tabs-two-messages').html(result);
+                        break;
+                    case 'LoadDeduccion':
+                        $('#custom-tabs-two-settings').html(result);
+                        break;               
+                    default:
+                        // Acción por defecto si sfuncion no coincide con ningún caso
+                        console.error('Función no reconocida:', sfuncion);
+                        break;
+                } 
+            },
+            error: function (xhr, status, error) {
+                console.error('Error al realizar la búsqueda:', error);
+            }
+        });
+    }
+
+
+
+</script>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

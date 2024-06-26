@@ -134,21 +134,26 @@
                                                 <div class="row">
                                                     <div class="row m-1">
                                                         <div class="form-group">
-                                                            <form asp-controller="Permission" method="post" asp-action="" id="roleForm">                                                                                                             
-                                                                <div class="form-group">
-                                                                    <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
-                                                                    <div class="select2-blue">
-                                                                        <select id="cmbVentanas" name="cmbVentanas" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
-                                                                     
+                                                            <form asp-controller="Permission" asp-action="AssignVentanas" method="post" id="roleForm">
+                                                            <input type="hidden" name="roleId" value="@Model.RoleId" />
+                                                            <div class="form-group">
+                                                                <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
+                                                                <div class="select2-blue">
+                                                                    <select id="cmbVentanas" name="ventanaIds" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
                                                                         @foreach (var ventana in ViewBag.Ventanas)
                                                                         {
-                                                                            <option value="@ventana.Nombre">@ventana.Nombre</option>
+                                                                                <option value="@ventana.Id" selected="@ViewBag.VentanasAsignadas.Contains(ventana.Id)">
+                                                                                @ventana.Nombre
+                                                                            </option>
+
+
                                                                         }
                                                                     </select>
-                                                                    </div>
-                                                                </div>                                                            
-                                                             <button type="submit" class="btn btn-primary">Enviar</button>
-                                                            </form>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Enviar</button>
+                                                        </form>
+
 
                                                         </div>
                                                     </div>

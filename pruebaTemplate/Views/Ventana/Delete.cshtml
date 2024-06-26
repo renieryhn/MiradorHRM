@@ -1,4 +1,4 @@
-﻿@model PlanillaPM.Models.EmpleadoImpuesto
+﻿@model PlanillaPM.Models.Ventana
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,7 +13,7 @@
     </div>
      <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalle de Empleado Impuesto</h3>
+            <h3 class="card-title">Detalle de Ventana</h3>
         </div>
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
@@ -21,28 +21,22 @@
                 <br/>
                 <div class="row">   
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Excento)
+                            @Html.DisplayNameFor(model => model.Nombre)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Excento)
-                        </dd>
-                        <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Orden)
-                        </dt>
-                        <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Orden)
-                        </dd>
-                        <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.FechaCreacion)
-                        </dt>
-                        <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.FechaCreacion)
+                            @Html.DisplayFor(model => model.Nombre)
                         </dd>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Activo)
                         </dt>
                         <dd class = "col-sm-10">
                             @Html.DisplayFor(model => model.Activo)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.FechaCreacion)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.FechaCreacion)
                         </dd>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.FechaModificacion)
@@ -62,51 +56,16 @@
                         <dd class = "col-sm-10">
                             @Html.DisplayFor(model => model.ModificadoPor)
                         </dd>
-                        <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                        </dt>
-                        <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.IdEmpleadoNavigation.NombreCompleto)
-                        </dd>
-                        <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.IdImpuestoNavigation)
-                        </dt>
-                        <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.IdImpuestoNavigation.NombreImpuesto)
-                        </dd>
                 </div>
             </div>
         </div>
          <div class="card-footer">
             <form asp-action="Delete">
-                <input type="hidden" asp-for="IdEmpleadoImpuesto" />
+                <input type="hidden" asp-for="Id" />
                 <input type="submit" value="Delete" class="btn btn-danger" /> 
-                <a onclick="goBack()" class="btn btn-secondary">Regresar a la Lista</a>
+                <a asp-action="Index"  class="btn btn-secondary">Regresar a la Lista</a>
             </form>
           </div>
     </div>
 </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            function goBack() {
-                // Obtener la URL actual
-                var currentUrl = window.location.href;
-
-                // Verificar si la URL contiene "_index"
-                if (currentUrl.includes("_index")) {
-                    // Estás en la página _index, puedes hacer algo específico aquí
-                    console.log("Estás en la página _index");
-                    // Por ejemplo, redirigir a otra página
-                    window.location.href = "/otra-pagina";
-                } else {
-                    // No estás en la página _index, retrocede en la historia
-                    history.back();
-                }
-            }
-        </script>
-    }
-}

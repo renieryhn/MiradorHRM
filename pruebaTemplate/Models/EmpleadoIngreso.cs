@@ -42,9 +42,9 @@ public partial class EmpleadoIngreso
     public string CreadoPor { get; set; } = null!;
 
     public string ModificadoPor { get; set; } = null!;
-
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
-
+    [Display(Name = "Ingreso")]
     public virtual Ingreso IdIngresoNavigation { get; set; } = null!;
     public enum TipoEstado
     {

@@ -144,7 +144,9 @@
                                                             @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                         </td>
                                                         <td>
-                                                            @Html.DisplayFor(modelItem => item.IdIngresoNavigation.NombreIngreso)
+                                                            @if(item.IdIngresoNavigation != null){
+                                                                @Html.DisplayFor(modelItem => item.IdIngresoNavigation.NombreIngreso)
+                                                            }
                                                         </td>
                                             </tr>
                                             }

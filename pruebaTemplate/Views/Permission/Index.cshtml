@@ -5,6 +5,12 @@
     var ventanas = ViewBag.Ventanas as List<Ventana>;
 }
 
+<head>
+    <link href="~/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet" />
+    <link href="~/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css" rel="stylesheet" />
+    <script src="~/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <script src="~/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.js"></script>
+</head>
 <div class="container-fluid">
     <div>
         <label for="cmbRoles">Seleccione un rol:</label>
@@ -17,6 +23,65 @@
     </div>
     <br>
     <div class="row">
+        <div class="col">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-primary">
+                            <div class="card-header" style="background-color: var(--blue);">
+                                <h3 class="card-title">Accesos</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div class="form-vertical">
+                                                <div class="row">
+                                                    <div class="row m-1">
+                                                        <div class="form-group">
+                                                            <form asp-controller="Permission" asp-action="AssignVentanas" method="post" id="roleForm">
+                                                                <input type="hidden" name="roleId" value="@Model.RoleId" />
+                                                                <div class="form-group">
+                                                                    <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
+                                                                    <div class="select2-blue">
+                                                                        <select id="cmbVentanas" name="ventanaIds" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
+                                                                            @foreach (var ventana in ViewBag.Ventanas)
+                                                                            {
+                                                                                <option value="@ventana.Id" selected="@ViewBag.VentanasAsignadas.Contains(ventana.Id)">
+                                                                                    @ventana.Nombre
+                                                                                </option>
+
+
+                                                                            }
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Enviar</button>
+                                                            </form>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
         <div class="col">
             <div class="container-fluid">
               
@@ -113,69 +178,51 @@
                 <br />
             </div>
         </div>
-        <div class="col">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-primary">
-                            <div class="card-header" style="background-color: var(--blue);">
-                                <h3 class="card-title">Accesos</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body">
-                                            <div class="form-vertical">
-                                                <div class="row">
-                                                    <div class="row m-1">
-                                                        <div class="form-group">
-                                                            <form asp-controller="Permission" asp-action="AssignVentanas" method="post" id="roleForm">
-                                                            <input type="hidden" name="roleId" value="@Model.RoleId" />
-                                                            <div class="form-group">
-                                                                <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
-                                                                <div class="select2-blue">
-                                                                    <select id="cmbVentanas" name="ventanaIds" class="select2" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
-                                                                        @foreach (var ventana in ViewBag.Ventanas)
-                                                                        {
-                                                                                <option value="@ventana.Id" selected="@ViewBag.VentanasAsignadas.Contains(ventana.Id)">
-                                                                                @ventana.Nombre
-                                                                            </option>
 
-
-                                                                        }
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <button type="submit" class="btn btn-primary">Enviar</button>
-                                                        </form>
-
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br />
-            </div>
-        </div>
     </div>
 </div>
 
+<div class="card card-default">
+    <div class="card-header">
+        <h3 class="card-title">Bootstrap Duallistbox</h3>
 
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label>Multiple</label>
+                    <select class="duallistbox" multiple="multiple">
+                        <option selected>Alabama</option>
+                        <option>Alaska</option>
+                        <option>California</option>
+                        <option>Delaware</option>
+                        <option>Tennessee</option>
+                        <option>Texas</option>
+                        <option>Washington</option>
+                    </select>
+                </div>
+                <!-- /.form-group -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        Visit <a href="https://github.com/istvan-ujjmeszaros/bootstrap-duallistbox#readme">Bootstrap Duallistbox</a> for more examples and information about
+        the plugin.
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -230,6 +277,7 @@
                     });
                 }
             });
+            $('.duallistbox').bootstrapDualListbox()
         });
 
 
@@ -245,6 +293,13 @@
         });
 
 
+    </script>
+    <script>
+        $(function () {
+            //Bootstrap Duallistbox
+            $('.duallistbox').bootstrapDualListbox()
 
+        })
     </script>
 }
+

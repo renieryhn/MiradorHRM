@@ -49,7 +49,7 @@ namespace PlanillaPM.Controllers
             var planillaContext = _context.EmpleadoIngresos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdIngresoNavigation);
 
             var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-            var IdIngresoNavigation = await _context.EmpleadoIngresos.ToListAsync();
+            var IdIngresoNavigation = await _context.Ingresos.ToListAsync();
             return View(data);
         }
          public ActionResult Download()

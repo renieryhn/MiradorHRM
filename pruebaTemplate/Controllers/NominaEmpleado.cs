@@ -288,6 +288,7 @@ namespace PlanillaPM.Controllers
 
                 var registros = await query.ToListAsync();
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdIngresoNavigation = await _context.Ingresos.ToListAsync();
                 return PartialView("~/Views/EmpleadoIngreso/Index.cshtml", registros);
             }
             catch (Exception)
@@ -306,6 +307,7 @@ namespace PlanillaPM.Controllers
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 var IdCargoNavigation = await _context.Cargos.ToListAsync();
                 var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+                var IdImpuestoNavigation = await _context.Impuestos.ToListAsync();
 
                 var query = _context.EmpleadoImpuestos.Where(e => e.IdEmpleado == id && e.Activo == true);
 
@@ -339,6 +341,7 @@ namespace PlanillaPM.Controllers
 
                 var registros = await query.ToListAsync();
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                var IdDeduccionNavigation = await _context.Deduccions.ToListAsync();
                 return PartialView("~/Views/EmpleadoDeduccion/Index.cshtml", registros);
             }
             catch (Exception)

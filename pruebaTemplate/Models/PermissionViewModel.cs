@@ -1,12 +1,14 @@
-﻿namespace PlanillaPM.Models
+﻿using MiradorHRM.Models;
+
+namespace PlanillaPM.Models
 {
     public class PermissionViewModel
     {
         public string RoleId { get; set; }
         public string RoleName { get; set; }
-        public List<RoleClaimsViewModel> AssignedPermissions { get; set; }
-        public List<RoleClaimsViewModel> UnassignedPermissions { get; set; }
         public List<RoleViewModel> Roles { get; set; }
+        public List<Ventana> Ventanas { get; set; }
+        public List<RoleVentana> VentanasAsignadas { get; set; }
     }
 
     public class RoleClaimsViewModel

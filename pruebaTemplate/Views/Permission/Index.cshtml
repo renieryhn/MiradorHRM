@@ -2,10 +2,6 @@
 @using MiradorHRM.Models
 @using PlanillaPM.Models;
 
-@{
-
-    var ventanas = ViewBag.Ventanas as List<PlanillaPM.Models.Ventana>;
-}
 
 
 <div class="container-fluid">
@@ -19,184 +15,85 @@
         </select>
     </div>
     <br>
-    <div class="row">
-        <div class="col">
+    <div class="row">      
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
 
-                        <div class="card card-primary">
-    <div class="card-header" style="background-color: var(--blue);">
-        <h3 class="card-title">Accesos</h3>
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-            </button>
-        </div>
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <div class="row">
-            <div class="col-12">
-                <form asp-controller="Permission" asp-action="AssignVentanas" method="post" id="roleForm">
-                    <input type="hidden" name="roleId" value="@Model.RoleId" />
-                    <div class="form-group">
-                        <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
-                        <select id="cmbVentanas" name="ventanaIds" class="duallistbox" multiple="multiple" data-placeholder="Select a State" data-dropdown-css-class="select2-blue" style="width: 100%;">
-                            @foreach (var ventana in ViewBag.Ventanas)
-                            {
-                                                        bool isSelected = ViewBag.VentanasAsignadas.Contains(ventana.Id);
-                                                        <option value="@ventana.Id" selected="@isSelected">
-                                                            @ventana.Nombre
-                                                        </option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Ver</th>
-                                    <th>Crear</th>
-                                    <th>Editar</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var ventana in ViewBag.Ventanas)
-                                {
-                                    if (ViewBag.VentanasAsignadas.Contains(ventana.Id))
-                                    {
-                                        <tr>
-                                            <td>@ventana.Nombre</td>
-                                            <td><input type="checkbox" name="ver_@ventana.Id"  /></td>
-                                            <td><input type="checkbox" name="crear_@ventana.Id"  /></td>
-                                            <td><input type="checkbox" name="editar_@ventana.Id"  /></td>
-                                            <td><input type="checkbox" name="eliminar_@ventana.Id"  /></td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                </form>
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.card-body -->
-</div>
-
-
-
-
-                    </div>
-                </div>
-                <br />
-            </div>
-        </div>
-        <div class="col">
-            <div class="container-fluid">
-
-                <div class="row">
-                    <div class="col-12">
                         <div class="card card-primary">
                             <div class="card-header" style="background-color: var(--blue);">
-                                <h3 class="card-title">Asignar y Remover Permisos de @Model.RoleName</h3>
+                                <h3 class="card-title">Accesos</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                         <i class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             </div>
+                            <!-- /.card-header -->
                             <div class="card-body">
-                                <div class="">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body">
-                                            <div class="form-vertical">
-                                                <div class="row">
-                                                    <div class="row m-1">
-                                                        <div class="form-group">
-                                                            <form asp-controller="permission" method="post" asp-action="Update" class="d-inline">
-                                                                <input asp-for="RoleId" type="hidden" />
-                                                                <input type="hidden" asp-for="RoleName" />
-                                                                <table class="table table-striped">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Rol</th>
-                                                                            <th>Create</th>
-                                                                            <th>View</th>
-                                                                            <th>Edit</th>
-                                                                            <th>Delete</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @foreach (var rolePermission in Model.AssignedPermissions.Concat(Model.UnassignedPermissions).GroupBy(p => p.Type))
-                                                                        {
-                                                                            <tr>
-                                                                                <td>@rolePermission.Key</td>
-                                                                                <td>
-                                                                                    <div class="form-check">
-                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Create" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Create" && p.Selected))
-                                                                                        {
-                                                                                            <text>checked</text>
-                                                                                        } />
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-check">
-                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="View" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "View" && p.Selected))
-                                                                                        {
-                                                                                            <text>checked</text>
-                                                                                        } />
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-check">
-                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Edit" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Edit" && p.Selected))
-                                                                                        {
-                                                                                            <text>checked</text>
-                                                                                        } />
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div class="form-check">
-                                                                                        <input type="checkbox" class="form-check-input permission-checkbox" data-permission="Delete" data-role="@rolePermission.Key" @if (rolePermission.Any(p => p.Value == "Delete" && p.Selected))
-                                                                                        {
-                                                                                            <text>checked</text>
-                                                                                        } />
-                                                                                    </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                        }
-                                                                    </tbody>
-                                                                </table>
-
-                                                            </form>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <form asp-controller="Permission" asp-action="AssignInitialVentanas" method="post" id="roleForm">
+                                            <input type="hidden" name="roleId" value="@Model.RoleId" />
+                                            <div class="form-group">
+                                                <label for="cmbVentanas">Seleccione una o varias ventanas:</label>
+                                                <select id="cmbVentanas" name="ventanaIds" class="duallistbox" multiple="multiple" data-placeholder="Seleccione una ventana" data-dropdown-css-class="select2-blue" style="width: 100%;">
+                                                    @foreach (var ventana in Model.Ventanas)
+                                                    {
+                                                        bool isSelected = Model.VentanasAsignadas.Any(rv => rv.VentanaId == ventana.Id);
+                                                        <option value="@ventana.Id" selected="@isSelected">@ventana.Nombre</option>
+                                                    }
+                                                </select>
                                             </div>
-                                        </div>
-                                    </div>
 
+                                            <button type="submit" class="btn btn-primary">Guardar Asignación Inicial</button>
+                                        </form>
+                                    </div>
+                                    <!-- /.col -->
                                 </div>
+                                <!-- /.row -->
                             </div>
-                            <div class="card-footer">
-                            </div>
+                            <!-- /.card-body -->
+                       
+
+
+                        <div class="col-6">
+                            <h4>Ventanas Asignadas</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Ver</th>
+                                        <th>Crear</th>
+                                        <th>Editar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                    <tbody id="selectedVentanasTableBody">
+                                        @foreach (var roleVentana in Model.VentanasAsignadas)
+                                        {
+                                            var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
+                                            if (ventana != null)
+                                            {
+                                            <tr data-ventana-id="@ventana.Id">
+                                                <td>@ventana.Nombre</td>
+                                                <td><input type="checkbox" name="ver_@ventana.Id" @(roleVentana.Ver ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'ver', this.checked, '@ventana.Nombre')" /></td>
+                                                <td><input type="checkbox" name="crear_@ventana.Id" @(roleVentana.Crear ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'crear', this.checked, '@ventana.Nombre')" /></td>
+                                                <td><input type="checkbox" name="editar_@ventana.Id" @(roleVentana.Editar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'editar', this.checked, '@ventana.Nombre')" /></td>
+                                                <td><input type="checkbox" name="eliminar_@ventana.Id" @(roleVentana.Eliminar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'eliminar', this.checked, '@ventana.Nombre')" /></td>
+                                            </tr>
+                                            }
+                                        }
+                                    </tbody>
+                            </table>
+                        </div>
                         </div>
                     </div>
+                   
                 </div>
                 <br />
             </div>
-        </div>
-
+        
     </div>
 
 
@@ -205,59 +102,7 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('.permission-checkbox').change(function () {
-                var isChecked = $(this).is(':checked');
-                var permission = $(this).data('permission');
-                var roleId = $('input[name="RoleId"]').val();
-                var roleName = $('input[name="RoleName"]').val();
 
-                if (isChecked) {
-                    $.ajax({
-                        url: '@Url.Action("Update", "permission")',
-                        method: 'POST',
-                        data: {
-                            RoleId: roleId,
-                            RoleName: roleName,
-                            UnassignedPermissions: [{
-                                Type: roleName,
-                                Value: permission,
-                                Selected: true
-                            }]
-                        },
-                        success: function () {
-                            toastr.success(`Permiso ${permission} asignado al rol ${roleName}`);
-                        },
-                        error: function () {
-                            toastr.error(`Error al asignar el permiso ${permission} al rol ${roleName}`);
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: '@Url.Action("RemovePermissions", "permission")',
-                        method: 'POST',
-                        data: {
-                            RoleId: roleId,
-                            RoleName: roleName,
-                            AssignedPermissions: [{
-                                Type: roleName,
-                                Value: permission,
-                                Selected: false
-                            }]
-                        },
-                        success: function () {
-
-                            toastr.warning(`Permiso ${permission} Removido al rol ${roleName}`);
-                        },
-                        error: function () {
-
-                            toastr.error(`Error al Remover el permiso ${permission} al rol ${roleName}`);
-                        }
-                    });
-                }
-            });
-
-        });
 
         document.addEventListener("DOMContentLoaded", function () {
             const cmbRoles = document.getElementById('cmbRoles');
@@ -271,6 +116,51 @@
         });
 
 
+        $(document).ready(function () {
+            $('#cmbVentanas').bootstrapDualListbox({
+                // Configuración adicional si es necesaria
+            });
+
+            $('#roleForm').submit(function (event) {
+                event.preventDefault(); 
+
+                $.ajax({
+                    url: '@Url.Action("AssignInitialVentanas", "Permission")',
+                    type: 'POST',
+                    data: $(this).serialize(), 
+                    success: function (data) {
+                        toastr.success('Asignación inicial de ventanas guardada exitosamente.');
+                        window.location.reload(); 
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al guardar la asignación inicial de ventanas:', error);
+                    }
+                });
+            });
+        });
+
+        function updatePermission(roleId, ventanaId, permissionType, isChecked, ventanaNombre) {
+            $.ajax({
+                url: '@Url.Action("UpdateVentanas", "Permission")',
+                type: 'POST',
+                data: {
+                    roleId: roleId,
+                    ventanaId: ventanaId,
+                    permissionType: permissionType,
+                    isSelected: isChecked
+                },
+                success: function () {
+                    if (isChecked) {
+                        toastr.success(`Permiso ${permissionType} de la ventana "${ventanaNombre}" otorgado correctamente.`);
+                    } else {
+                        toastr.warning(`Permiso ${permissionType} de la ventana "${ventanaNombre}" removido correctamente.`);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error al actualizar el permiso:', error);
+                }
+            });
+        }
     </script>
 
 }

@@ -164,15 +164,7 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            //if (EmpleadoSeleccionado.Fotografia != null)
-            //{
-            //    var base64Image = Convert.ToBase64String(EmpleadoSeleccionado.Fotografia);
-            //    EmpleadoSeleccionado.FotografiaBase64 = "data:image/jpeg;base64," + base64Image;
-            //}
-            //else
-            //{
-            //    EmpleadoSeleccionado.FotografiaBase64 = Url.Content("~/img/Employee.png");
-            //}
+           
 
             if (EmpleadoSeleccionado.Fotografia != null)
             {

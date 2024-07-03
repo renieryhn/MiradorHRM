@@ -96,10 +96,7 @@ namespace PlanillaPM.Controllers
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
-
-        // POST: Vacacion/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdVacacion,IdEmpleado,Observaciones,PeriodoVacacional,TotalDiasPeriodo,DiasGozados,DiasPendientes,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Vacacion vacacion)
@@ -120,6 +117,126 @@ namespace PlanillaPM.Controllers
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacion.IdEmpleado);
             return View(vacacion);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAntiguedad(int idEmpleado)
+        {
+            var empleado = await _context.Empleados.FindAsync(idEmpleado);
+            if (empleado == null)
+            {
+                return Json(new { antiguedad = 0 });
+            }
+
+            return Json(new { antiguedad = empleado.Antiguedad });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> CalcularVacaciones(int idEmpleado, int year)
+        {
+            try
+            {
+                var empleado = await _context.Empleados.FindAsync(idEmpleado);
+                if (empleado == null)
+                {
+                    return Json(new { success = false, message = "Empleado no encontrado." });
+                }
+
+                int antiguedad = empleado.Antiguedad;
+
+                if (antiguedad == 0)
+                {
+                    return Json(new { success = false, message = "El empleado aún no cumple los requisitos de antigüedad para tener días de vacaciones." });
+                }
+
+                // Obtener los días de vacaciones según la antigüedad
+                var diasVacacion = await _context.DiasVacaciones
+                    .Where(dv => dv.Hasta >= antiguedad && dv.Activo)
+                    .OrderBy(dv => dv.Hasta)
+                    .FirstOrDefaultAsync();
+
+                if (diasVacacion == null)
+                {
+                    return Json(new { success = false, message = "No se encontraron días de vacaciones para la antigüedad del empleado." });
+                }
+
+                // Obtener los detalles de vacaciones del empleado
+                var detallesVacaciones = await _context.Vacacions
+                    .Where(v => v.IdEmpleado == idEmpleado && v.Activo)
+                    .ToListAsync();
+
+                int diasGozados = detallesVacaciones.Where(v => v.PeriodoVacacional == year).Sum(v => v.DiasGozados);
+                int diasPendientes = diasVacacion.DiasVacaciones - diasGozados;
+
+                // Verificar días pendientes del año actual o anterior
+                var historialVacaciones = detallesVacaciones
+                    .Where(v => v.PeriodoVacacional == year || (v.DiasPendientes > 0 && v.PeriodoVacacional < year))
+                    .ToList();
+
+                // Sumar días pendientes de años anteriores si existen
+                int diasPendientesAnteriores = historialVacaciones
+                    .Where(v => v.DiasPendientes > 0 && v.PeriodoVacacional < year)
+                    .Sum(v => v.DiasPendientes);
+
+                diasPendientes += diasPendientesAnteriores;
+
+                return Json(new
+                {
+                    success = true,
+                    antiguedad,
+                    diasVacaciones = diasVacacion.DiasVacaciones,
+                    diasGozados,
+                    diasPendientes,
+                    historial = historialVacaciones.Select(v => new
+                    {
+                        v.IdVacacion,
+                        v.PeriodoVacacional,
+                        v.TotalDiasPeriodo,
+                        v.DiasPendientes,
+                        v.DiasGozados
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                // Mostrar error en consola
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Ocurrió un error al calcular las vacaciones.", error = ex.Message });
+            }
+        }
+
+
+
+
+        [HttpGet]
+        public async Task<JsonResult> BuscarHistorialVacaciones(int idEmpleado)
+        {
+            try
+            {
+                var historialVacaciones = await _context.Vacacions
+                    .Where(vd => vd.IdEmpleado == idEmpleado && vd.Activo)
+                    .ToListAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    historial = historialVacaciones.Select(vd => new
+                    {
+                        IdVacacion = vd.IdVacacion,
+                        PeriodoVacacional = vd.PeriodoVacacional,
+                        TotalDiasPeriodo = vd.TotalDiasPeriodo,
+                        DiasPendientes = vd.DiasPendientes,
+                        DiasGozados = vd.DiasGozados
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                // Mostrar error en consola
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Ocurrió un error al buscar el historial de vacaciones.", error = ex.Message });
+            }
+        }
+
 
         // GET: Vacacion/Edit/5
         public async Task<IActionResult> Edit(int? id)

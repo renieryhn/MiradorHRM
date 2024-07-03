@@ -429,44 +429,7 @@ namespace PlanillaPM.Controllers
 
         }
 
-        //public IActionResult Photo()
-        //{
-        //    string avatarBase64 = string.Empty;
 
-        //    // Verifica si hay una cookie que contenga la imagen del avatar
-        //    if (Request.Cookies.TryGetValue("AvatarBase64", out avatarBase64))
-        //    {
-        //        byte[] avatarBytes = Convert.FromBase64String(avatarBase64);
-        //        return File(avatarBytes, "image/jpeg");
-        //    }
-
-        //    Usuario user = userManager.GetUserAsync(User).Result;
-
-        //    if (user != null && user.Avatar != null)
-        //    {
-
-        //        avatarBase64 = Convert.ToBase64String(user.Avatar);
-        //        // Almacena la cadena Base64 en una cookie con opciones adicionales
-        //        Response.Cookies.Append("AvatarBase64", avatarBase64, new CookieOptions
-        //        {
-
-        //            Expires = DateTimeOffset.UtcNow.AddHours(1),
-        //            HttpOnly = true,  
-        //            Secure = true,                   
-        //            SameSite = SameSiteMode.Strict
-        //        });
-
-        //        // Devuelve la imagen del avatar
-        //        return File(user.Avatar, "image/jpeg");
-        //    }
-        //    else
-        //    {
-
-        //        string wwwPath = this.Environment.WebRootPath;
-        //        byte[] defaultAvatar = System.IO.File.ReadAllBytes(wwwPath + "/img/avatar.png");
-        //        return File(defaultAvatar, "image/png");
-        //    }
-        //}
         [HttpGet]
         public string Photo()
         {
@@ -663,18 +626,7 @@ namespace PlanillaPM.Controllers
             return View(model);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> UpdatePersonalDataAsync(string mensaje = null)
-        //{
-        //    if (mensaje is not null)
-        //    {
-        //        ViewData["mensaje"] = mensaje;
-        //    }
 
-           
-
-        //    return View();
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -1009,6 +1009,25 @@ namespace PlanillaPM.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+            name: "DiasVacacion",
+            columns: table => new
+            {
+                IdDiaVacion = table.Column<int>(nullable: false)
+                    .Annotation("SqlServer:Identity", "1, 1"),
+                Hasta = table.Column<int>(nullable: false),
+                DiasVacaciones = table.Column<int>(nullable: false),
+                Activo = table.Column<bool>(nullable: false),
+                FechaCreacion = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                FechaModificacion = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                CreadoPor = table.Column<string>(maxLength: 50, nullable: false),
+                ModificadoPor = table.Column<string>(maxLength: 50, nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_DiasVacacion", x => x.IdDiaVacion);
+            });
+
             migrationBuilder.CreateIndex(
                 name: "IX_RoleVentana_RoleId",
                 table: "RoleVentana",
@@ -1323,6 +1342,9 @@ namespace PlanillaPM.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ventana");
+
+            migrationBuilder.DropTable(
+            name: "DiasVacacion");
         }
     }
 }

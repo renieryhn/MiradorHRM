@@ -117,6 +117,8 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
     public virtual DbSet<EmpleadoImpuesto> EmpleadoImpuestos { get; set; }
 
     public DbSet<Ventana> Ventana { get; set; }
+    public DbSet<DiasVacacion> DiasVacaciones { get; set; }
+
 
     public DbSet<RoleVentana> RoleVentana { get; set; }
 
@@ -1562,7 +1564,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.EstadoSolicitud)
-                .HasDefaultValue(1)
+                 .HasConversion<int>()
                 .HasComment("Pendiente, Aprobada, Rechazada");
             entity.Property(e => e.FechaCreacion)
                 .HasDefaultValueSql("(getdate())")
@@ -1631,6 +1633,38 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             .HasOne(rv => rv.Ventana)
             .WithMany(v => v.RoleVentanas)
             .HasForeignKey(rv => rv.VentanaId);
+
+
+        modelBuilder.Entity<DiasVacacion>(entity =>
+        {
+            entity.ToTable("DiasVacacion"); 
+
+            entity.HasKey(e => e.IdDiaVacion);
+
+            entity.Property(e => e.Hasta)
+                .IsRequired();
+
+            entity.Property(e => e.DiasVacaciones)
+                .IsRequired();
+
+            entity.Property(e => e.Activo)
+                .IsRequired();
+
+            entity.Property(e => e.FechaCreacion)
+                .HasDefaultValueSql("GETDATE()")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.FechaModificacion)
+                .HasDefaultValueSql("GETDATE()")
+                .ValueGeneratedOnAddOrUpdate();
+
+            entity.Property(e => e.CreadoPor)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.ModificadoPor)
+                .HasMaxLength(50);
+        });
+
 
 
         OnModelCreatingPartial(modelBuilder);

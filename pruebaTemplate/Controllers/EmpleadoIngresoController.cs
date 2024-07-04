@@ -27,31 +27,69 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
         }
 
-        // GET: EmpleadoIngreso
-        public async Task<IActionResult> Index(int pg, string? filter)
+
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? idIngresoBuscar, int? estado)
         {
-            List<EmpleadoIngreso> registros;
-            if (filter != null)
+            IQueryable<EmpleadoIngreso> query = _context.EmpleadoIngresos;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.EmpleadoIngresos.Where(r => r.ModificadoPor.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdIngresoNavigation.NombreIngreso.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+            if (!String.IsNullOrEmpty(idIngresoBuscar))
+            {
+                query = query.Where(r => r.IdIngreso.ToString().Contains(idIngresoBuscar));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentIdidIngresoBuscar = idIngresoBuscar;
+            ViewBag.CurrentEstado = estado;
+
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.EmpleadoIngresos.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.EmpleadoIngresos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdIngresoNavigation);
 
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-            var IdIngresoNavigation = await _context.Ingresos.ToListAsync();
+            var idIngreso = await _context.Ingresos.ToListAsync();
+            ViewBag.IdIngreso = new SelectList(idIngreso, "IdIngreso", "TipoIngreso");
+
             return View(data);
+
         }
+        // GET: EmpleadoIngreso
+       
          public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
@@ -139,7 +177,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso, int? id)
         {
             if (ModelState.IsValid)
             {
@@ -147,20 +185,57 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoIngreso);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+
+                if (id.HasValue)
+                {
+                    if (id == 1)
+                    {
+                        return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+                    }
+                    if (id == 2)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                    return RedirectToAction("Index");
+                }
             }
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["error"] = "Error: " + message;
             }
+
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
-            return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+
+            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+            if (id.HasValue)
+            {
+                if (id == 1)
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+                }
+                if (id == 2)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                return RedirectToAction("Index");
+            }
+
+            // Devolver una vista en caso de que todo falle (aunque no debería alcanzarse este punto)
+            return View(empleadoIngreso);
         }
 
         // GET: EmpleadoIngreso/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -175,6 +250,7 @@ namespace PlanillaPM.Controllers
             ViewBag.TipoEstado = Enum.GetValues(typeof(EmpleadoIngreso.TipoEstado));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
+            ViewBag.Numero = numero;
             return View(empleadoIngreso);
         }
 
@@ -183,7 +259,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso, string? numero)
         {
             if (id != empleadoIngreso.IdEmpleadoIngreso)
             {
@@ -210,7 +286,16 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+
+                if (numero == "1")
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+                
             }            
             else
             {
@@ -223,7 +308,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoIngreso/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -239,30 +324,41 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
+
             return View(empleadoIngreso);
         }
 
         // POST: EmpleadoIngreso/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
              var empleadoIngreso = await _context.EmpleadoIngresos.FindAsync(id);
             try
             {
-               
                 if (empleadoIngreso != null)
                 {
                     _context.EmpleadoIngresos.Remove(empleadoIngreso);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
-                } 
+                }
                 else
                 {
-                    TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+                    TempData["error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
                 }
+
+                if (numero == "1")
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso?.IdEmpleado}?tab=profile");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // Si no se cumple ninguna condición anterior, redirige a una página predeterminada
+                return RedirectToAction("Index");
             }
             catch (DbUpdateException ex)
             {

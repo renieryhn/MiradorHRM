@@ -9,59 +9,188 @@
         <div class="card-header" style="background-color: var(--blue);">
             <h3 class="card-title">Crear Vacacion</h3>
         </div>
-         <form asp-action="Create">
-        <div class="card-body">
-            <div class="callout callout-info" style="border-left-color: var(--blue);">
-                <h5>Información General</h5>
-                <br/>
+        <form asp-action="Create">
+            <div class="card-body">
                 <div class="row">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="col-md-4">
+                        <div class="callout callout-info" style="border-left-color: var(--blue);">
+                            <h5>Información General</h5>
+                            <br />
+                            <div class="row">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="text" id="Antiguedad" class="form-control" hidden readonly />
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="IdEmpleado" class="control-label"></label>                              
-                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
-                                    <option></option>
-                                </select>
-                            </div>                           
-                           
-                            <div class="form-group">
-                                <label asp-for="PeriodoVacacional" class="control-label"></label>
-                                <input asp-for="PeriodoVacacional" class="form-control" type="number" required />
-                                <span asp-validation-for="PeriodoVacacional" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="TotalDiasPeriodo" class="control-label"></label>
-                                <input asp-for="TotalDiasPeriodo" class="form-control" required />
-                                <span asp-validation-for="TotalDiasPeriodo" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="DiasGozados" class="control-label"></label>
-                                <input asp-for="DiasGozados" class="form-control" type="number" required />
-                                <span asp-validation-for="DiasGozados" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="DiasPendientes" class="control-label"></label>
-                                <input asp-for="DiasPendientes" class="form-control" type="number" required />
-                                <span asp-validation-for="DiasPendientes" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Observaciones" class="control-label"></label>
-                                <input asp-for="Observaciones" class="form-control" />
-                                <span asp-validation-for="Observaciones" class="text-danger"></span>
+                                <div class="form-group">
+                                    <label asp-for="IdEmpleado" class="control-label"></label>
+                                    <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
+                                        <option></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Año</label>
+                                    <select class="form-control" asp-for="PeriodoVacacional" required>
+                                        <option value="">Seleccione...</option>
+                                        @{
+                                            int currentYear = DateTime.Now.Year;
+                                            for (int year = currentYear - 1; year <= currentYear + 1; year++)
+                                            {
+                                                <option value="@year">@year</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="PeriodoVacacional" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="TotalDiasPeriodo" class="control-label"></label>
+                                    <input asp-for="TotalDiasPeriodo" id="TotalDiasVacaciones" class="form-control" required />
+                                    <span asp-validation-for="TotalDiasPeriodo" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="DiasGozados" class="control-label"></label>
+                                    <input asp-for="DiasGozados" id="DiasGozados" class="form-control" type="number" required />
+                                    <span asp-validation-for="DiasGozados" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="DiasPendientes" class="control-label"></label>
+                                    <input asp-for="DiasPendientes" id="DiasPendientes" class="form-control" type="number" required />
+                                    <span asp-validation-for="DiasPendientes" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Observaciones" class="control-label"></label>
+                                    <input asp-for="Observaciones" class="form-control" />
+                                    <span asp-validation-for="Observaciones" class="text-danger"></span>
+                                </div>
+
+
+
                             </div>
                         </div>
-                           
+                    </div>
+                    <div class="col-md-8">
+                        <div class="callout callout-info" style="border-left-color: var(--blue);">
+
+                            <h5>Historial de Vacaciones</h5>
+                            <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table class="table table-striped projects" data-toggle="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Periodo</th>
+                                            <th>Total Días Periodo</th>
+                                            <th>Días Pendientes</th>
+                                            <th>Días Gozados</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historialVacacionesBody">
+                                        <!-- Filas dinámicas se agregarán aquí -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
-            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
-         </div>
+            <div class="card-footer">
+                <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
         </form>
     </div>
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#IdEmpleado').change(function () {
+                    var idEmpleado = $(this).val();
+                    if (idEmpleado) {
+                        $.getJSON('/Vacacion/GetAntiguedad', { idEmpleado: idEmpleado }, function (data) {
+                            $('#Antiguedad').val(data.antiguedad);
+                            var year = $('#PeriodoVacacional').val();
+                            if (year) {
+                                calcularVacaciones(idEmpleado, year);
+                            }
+                            buscarHistorialVacaciones(idEmpleado);
+                        });
+                    } else {
+                        $('#Antiguedad').val('');
+                        $('#TotalDiasVacaciones').val('');
+                        $('#DiasGozados').val('');
+                        $('#DiasPendientes').val('');
+                        $('#historialVacacionesBody').empty();
+                    }
+                });
+
+                $('#PeriodoVacacional').change(function () {
+                    var idEmpleado = $('#IdEmpleado').val();
+                    var year = $(this).val();
+                    if (idEmpleado && year) {
+                        calcularVacaciones(idEmpleado, year);
+                    }
+                });
+            });
+
+            function calcularVacaciones(idEmpleado, year) {
+                $.ajax({
+                    url: '/Vacacion/CalcularVacaciones',
+                    type: 'GET',
+                    data: { idEmpleado: idEmpleado, year: year },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#TotalDiasVacaciones').val(response.diasVacaciones);
+                            $('#DiasGozados').val(response.diasGozados);
+                            $('#DiasPendientes').val(response.diasPendientes);
+                            toastr.success('Vacaciones calculadas exitosamente.');
+                        } else {
+                            toastr.warning(response.message);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Error al calcular las vacaciones.');
+                    }
+                });
+            }
+
+            function buscarHistorialVacaciones(idEmpleado) {
+                $.ajax({
+                    url: '/Vacacion/BuscarHistorialVacaciones',
+                    type: 'GET',
+                    data: { idEmpleado: idEmpleado },
+                    success: function (response) {
+                        if (response.success) {
+                            var historial = response.historial;
+                            var historialVacacionesBody = $('#historialVacacionesBody');
+                            historialVacacionesBody.empty();
+
+                            historial.forEach(function (item) {
+                                historialVacacionesBody.append(`
+                                                            <tr>
+                                                                <td>${item.idVacacion}</td>
+                                                                <td>${item.periodoVacacional}</td>
+                                                                <td>${item.totalDiasPeriodo}</td>
+                                                                <td>${item.diasPendientes}</td>
+                                                                <td>${item.diasGozados}</td>
+                                                            </tr>
+                                                        `);
+                            });
+
+                            if (historial.length === 0) {
+                                console.log('No hay registros para este empleado.');
+                            } else {
+                                console.log('Historial encontrado:', historial);
+                            }
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error al buscar el historial de vacaciones.');
+                    }
+                });
+            }
+        </script>
+    }
 }

@@ -231,6 +231,32 @@ public partial class Empleado
         }
     }
 
+    [DisplayName("Antiguedad")]
+    public int Antiguedad
+    {
+        get
+        {
+            DateOnly fechaActual = DateOnly.FromDateTime(DateTime.Today);
+            int antiguedad = 0;
+
+            if (FechaInicio == null)
+            {
+                antiguedad = 0;
+            }
+            else
+            {
+                antiguedad = fechaActual.Year - FechaInicio.Value.Year;
+            }
+
+            if (FechaInicio.HasValue && FechaInicio.Value.AddYears(antiguedad) > fechaActual)
+            {
+                antiguedad--;
+            }
+
+            return antiguedad;
+        }
+    }
+
     public enum EstadoCivilEmpleado
     {
         Soltero = 1,

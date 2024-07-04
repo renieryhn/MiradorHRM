@@ -12,87 +12,53 @@ using Microsoft.AspNetCore.Identity;
 using PlanillaPM.ViewModel;
 
 using PlanillaPM.Models;
-using static PlanillaPM.Models.EmpleadoContrato;
-using static PlanillaPM.Models.Viatico;
+using static PlanillaPM.Models.VacacionDetalle;
 
 namespace PlanillaPM.Controllers
 {
-    public class ViaticoController : Controller
+    public class VacacionDetallController : Controller
     {
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
-        public ViaticoController(PlanillaContext context, UserManager<Usuario> userManager)
+        public VacacionDetallController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-
-        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
+        // GET: VacacionDetall
+        public async Task<IActionResult> Index(int pg, string? filter)
         {
-            IQueryable<Viatico> query = _context.Viaticos;
-
-            if (!String.IsNullOrEmpty(filter))
+            List<VacacionDetalle> registros;
+            if (filter != null)
             {
-                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
-            }
-            if (!String.IsNullOrEmpty(idEmpleado))
-            {
-                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
-            }
-            
-
-            if (estado.HasValue)
-            {
-                if (estado == 1)
-                {
-                    query = query.Where(r => r.Activo == false);
-                }
-                else if (estado == 0)
-                {
-                    query = query.Where(r => r.Activo == true);
-                }
-                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
-            }
-
-            ViewBag.CurrentFilter = filter;
-            ViewBag.CurrentIdEmpleado = idEmpleado;          
-            ViewBag.CurrentEstado = estado;
-
-
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = query.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-            if (idEmpleado != null)
-            {
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+                registros = await _context.VacacionDetalles.Where(r => r.IdVacacionNavigation.ModificadoPor.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
             {
-                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
+                registros = await _context.VacacionDetalles.ToListAsync();
             }
-            var planillaContext = await _context.EmpleadoDeduccions.ToListAsync();
-
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = registros.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+            var planillaContext = _context.VacacionDetalles.Include(v => v.IdEmpleadoNavigation).Include(v => v.IdVacacionNavigation);
             return View(data);
-
         }
-        public ActionResult Download()
+         public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Viatico>? data = null;
+             List<VacacionDetalle>? data = null;
              if (data == null)
              {
-                data = _context.Viaticos.ToList();
+                data = _context.VacacionDetalles.ToList();
              }
              DataTable table = converter.ToDataTable(data);
-             string fileName = "Viaticos.xlsx";
+             string fileName = "VacacionDetalles.xlsx";
              using (XLWorkbook wb = new XLWorkbook())
              {
                  wb.Worksheets.Add(table);
@@ -103,7 +69,7 @@ namespace PlanillaPM.Controllers
                  }
              }
         }    
-        // GET: Viatico/Details/5
+        // GET: VacacionDetall/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -111,36 +77,38 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var viatico = await _context.Viaticos
+            var vacacionDetalle = await _context.VacacionDetalles
                 .Include(v => v.IdEmpleadoNavigation)
-                .FirstOrDefaultAsync(m => m.IdViatico == id);
-            if (viatico == null)
+                .Include(v => v.IdVacacionNavigation)
+                .FirstOrDefaultAsync(m => m.IdVacacionDetalle == id);
+            if (vacacionDetalle == null)
             {
                 return NotFound();
             }
 
-            return View(viatico);
+            return View(vacacionDetalle);
         }
 
-        // GET: Viatico/Create
+        // GET: VacacionDetall/Create
         public IActionResult Create()
         {
-            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado));
+            ViewBag.Estado = Enum.GetValues(typeof(Estado));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion");
             return View();
         }
 
-        // POST: Viatico/Create
+        // POST: VacacionDetall/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdViatico,IdEmpleado,Descripcion,Fecha,TotalGastos,AdelantoRecibido,BalancePendiente,Estado,FechaAprobacion,AprobadoPor,NotasAdicionales,Pagado,FechaPago,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Viatico viatico)
+        public async Task<IActionResult> Create([Bind("IdVacacionDetalle,IdVacacion,IdEmpleado,FechaSolicitud,FechaInicio,FechaFin,NumeroDiasSolicitados,EstadoSolicitud,AprobadoPor,DiasAprobados,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] VacacionDetalle vacacionDetalle)
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(viatico, true);
-                _context.Add(viatico);
+                SetCamposAuditoria(vacacionDetalle, true);
+                _context.Add(vacacionDetalle);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
                 return RedirectToAction(nameof(Index));
@@ -150,11 +118,12 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", viatico.IdEmpleado);
-            return View(viatico);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            return View(vacacionDetalle);
         }
 
-        // GET: Viatico/Edit/5
+        // GET: VacacionDetall/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,24 +131,25 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var viatico = await _context.Viaticos.FindAsync(id);
-            if (viatico == null)
+            var vacacionDetalle = await _context.VacacionDetalles.FindAsync(id);
+            if (vacacionDetalle == null)
             {
                 return NotFound();
             }
-            ViewBag.TipoEstado = Enum.GetValues(typeof(Viatico.TipoEstado));
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", viatico.IdEmpleado);
-            return View(viatico);
+            ViewBag.Estado = Enum.GetValues(typeof(VacacionDetalle.Estado));
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            return View(vacacionDetalle);
         }
 
-        // POST: Viatico/Edit/5
+        // POST: VacacionDetall/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdViatico,IdEmpleado,Descripcion,Fecha,TotalGastos,AdelantoRecibido,BalancePendiente,Estado,FechaAprobacion,AprobadoPor,NotasAdicionales,Pagado,FechaPago,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Viatico viatico)
+        public async Task<IActionResult> Edit(int id, [Bind("IdVacacionDetalle,IdVacacion,IdEmpleado,FechaSolicitud,FechaInicio,FechaFin,NumeroDiasSolicitados,EstadoSolicitud,AprobadoPor,DiasAprobados,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] VacacionDetalle vacacionDetalle)
         {
-            if (id != viatico.IdViatico)
+            if (id != vacacionDetalle.IdVacacionDetalle)
             {
                 return NotFound();
             }
@@ -188,14 +158,14 @@ namespace PlanillaPM.Controllers
             {
                 try
                 {
-                    SetCamposAuditoria(viatico, false);
-                    _context.Update(viatico);
+                    SetCamposAuditoria(vacacionDetalle, false);
+                    _context.Update(vacacionDetalle);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha actualizado exitosamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ViaticoExists(viatico.IdViatico))
+                    if (!VacacionDetalleExists(vacacionDetalle.IdVacacionDetalle))
                     {
                         return NotFound();
                     }
@@ -211,11 +181,12 @@ namespace PlanillaPM.Controllers
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 TempData["Error"] = "Error: " + message;
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", viatico.IdEmpleado);
-            return View(viatico);
+            ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            return View(vacacionDetalle);
         }
 
-        // GET: Viatico/Delete/5
+        // GET: VacacionDetall/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -223,29 +194,30 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            var viatico = await _context.Viaticos
+            var vacacionDetalle = await _context.VacacionDetalles
                 .Include(v => v.IdEmpleadoNavigation)
-                .FirstOrDefaultAsync(m => m.IdViatico == id);
-            if (viatico == null)
+                .Include(v => v.IdVacacionNavigation)
+                .FirstOrDefaultAsync(m => m.IdVacacionDetalle == id);
+            if (vacacionDetalle == null)
             {
                 return NotFound();
             }
 
-            return View(viatico);
+            return View(vacacionDetalle);
         }
 
-        // POST: Viatico/Delete/5
+        // POST: VacacionDetall/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-             var viatico = await _context.Viaticos.FindAsync(id);
+             var vacacionDetalle = await _context.VacacionDetalles.FindAsync(id);
             try
             {
                
-                if (viatico != null)
+                if (vacacionDetalle != null)
                 {
-                    _context.Viaticos.Remove(viatico);
+                    _context.VacacionDetalles.Remove(vacacionDetalle);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
@@ -267,17 +239,17 @@ namespace PlanillaPM.Controllers
                     var message = ex.InnerException;
                     TempData["error"] = "Error: " + message;
                 }
-                return View(viatico);
+                return View(vacacionDetalle);
             }
 
         }
 
-        private bool ViaticoExists(int id)
+        private bool VacacionDetalleExists(int id)
         {
-            return _context.Viaticos.Any(e => e.IdViatico == id);
+            return _context.VacacionDetalles.Any(e => e.IdVacacionDetalle == id);
         }
         
-        private void SetCamposAuditoria(Viatico record, bool bNewRecord)
+        private void SetCamposAuditoria(VacacionDetalle record, bool bNewRecord)
         {
             var now = DateTime.Now;
             var CurrentUser =  _userManager.GetUserName(User);

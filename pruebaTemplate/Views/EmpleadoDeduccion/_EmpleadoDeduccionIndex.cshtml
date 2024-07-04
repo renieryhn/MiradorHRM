@@ -1,0 +1,177 @@
+﻿@model IEnumerable<PlanillaPM.Models.EmpleadoDeduccion>
+@using PlanillaPM.Models;
+
+@{
+    ViewData["Title"] = "Index";
+    Pager pager = new Pager();
+    int PageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+    }
+
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card-header">
+                <h3 class="card-title">Empleado Deduccion</h3>
+                <div class="card-tools">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-vertical">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <form id="fSearch" method="post" asp-action="Index">
+                                                <div class="row">
+                                                    <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                        <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                        <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                    </div>
+                                                    <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                        <div class="btn-group btn-group-justified" role="group">
+                                                            @* <a asp-controller="EmpleadoDeduccion" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
+                                                            <a asp-controller="EmpleadoDeduccion" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoDeduccion" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-1">
+                        <div id="resultados" class="table-responsive table-striped table-sm">
+                            <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th data-sortable="true">No.</th>
+                                        <th></th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.IdDeduccionNavigation)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.Tipo)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.Monto)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.Formula)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.Orden)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.Activo)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.FechaCreacion)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.FechaModificacion)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.CreadoPor)
+                                        </th>
+                                        <th data-sortable="true">
+                                            @Html.DisplayNameFor(model => model.ModificadoPor)
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int count = (pager.CurrentPage * pager.PageSize) - pager.PageSize;
+                                    }
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var item in Model)
+                                    {
+                                        count = (count + 1);
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
+                                                    <a asp-controller="EmpleadoDeduccion" asp-action="Edit" class="btn " asp-route-numero="1" style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                    @* <a asp-controller="EmpleadoDeduccion" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
+                                                    <a asp-controller="EmpleadoDeduccion" asp-action="Delete" class="btn " asp-route-numero="1" style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoDeduccion"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IdDeduccionNavigation.NombreDeduccion)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tipo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Monto)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Formula)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Orden)
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.Activo)
+                                                {
+                                                    <span class="badge badge-success">Activo</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-danger">Inactivo</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FechaCreacion)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FechaModificacion)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CreadoPor)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ModificadoPor)
+                                            </td>
+                                           
+                                        </tr>
+                                    }
+                                    }
+                                    else
+                                    {
+                                    <tr>
+                                        <td colspan="13" class="text-center">No hay información disponible.</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <partial name="_Pager" model="@pager" />
+            </div>
+
+        </div>
+    </div>
+    <br />
+</div>

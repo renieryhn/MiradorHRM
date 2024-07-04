@@ -1,4 +1,4 @@
-﻿@model PlanillaPM.Models.EmpleadoIngreso
+﻿@model PlanillaPM.Models.VacacionDetalle
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,7 +13,7 @@
     </div>
      <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Detalle de Empleado Ingreso</h3>
+            <h3 class="card-title">Detalle de VacacionDetalle</h3>
         </div>
         <div class="card-body">
             <div class="callout callout-info" style="border-left-color: var(--blue);">
@@ -21,28 +21,52 @@
                 <br/>
                 <div class="row">   
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Tipo)
+                            @Html.DisplayNameFor(model => model.FechaSolicitud)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Tipo)
+                            @Html.DisplayFor(model => model.FechaSolicitud)
                         </dd>
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Monto)
+                            @Html.DisplayNameFor(model => model.FechaInicio)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Monto)
+                            @Html.DisplayFor(model => model.FechaInicio)
                         </dd>
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Formula)
+                            @Html.DisplayNameFor(model => model.FechaFin)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Formula)
+                            @Html.DisplayFor(model => model.FechaFin)
                         </dd>
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.Orden)
+                            @Html.DisplayNameFor(model => model.NumeroDiasSolicitados)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Orden)
+                            @Html.DisplayFor(model => model.NumeroDiasSolicitados)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.EstadoSolicitud)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.EstadoSolicitud)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.AprobadoPor)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.AprobadoPor)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.DiasAprobados)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.DiasAprobados)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.ComentariosAprobador)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.ComentariosAprobador)
                         </dd>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Activo)
@@ -78,48 +102,24 @@
                             @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.IdEmpleadoNavigation.NombreCompleto)
+                            @Html.DisplayFor(model => model.IdEmpleadoNavigation.IdEmpleado)
                         </dd>
                         <dt class = "col-sm-2">
-                            @Html.DisplayNameFor(model => model.IdIngresoNavigation)
+                            @Html.DisplayNameFor(model => model.IdVacacionNavigation)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.IdIngresoNavigation.NombreIngreso)
+                            @Html.DisplayFor(model => model.IdVacacionNavigation.IdVacacion)
                         </dd>
                 </div>
             </div>
         </div>
          <div class="card-footer">
             <form asp-action="Delete">
-                <input type="hidden" asp-for="IdEmpleadoIngreso" />
-                <input type="hidden" name="numero" value="@ViewBag.Numero" />
+                <input type="hidden" asp-for="IdVacacionDetalle" />
                 <input type="submit" value="Delete" class="btn btn-danger" /> 
-                <a onclick="goBack()" class="btn btn-secondary">Regresar a la Lista</a>
+                <a asp-action="Index"  class="btn btn-secondary">Regresar a la Lista</a>
             </form>
           </div>
     </div>
 </div>
-
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            function goBack() {
-                // Obtener la URL actual
-                var currentUrl = window.location.href;
-
-                // Verificar si la URL contiene "_index"
-                if (currentUrl.includes("_index")) {
-                    // Estás en la página _index, puedes hacer algo específico aquí
-                    console.log("Estás en la página _index");
-                    // Por ejemplo, redirigir a otra página
-                    window.location.href = "/otra-pagina";
-                } else {
-                    // No estás en la página _index, retrocede en la historia
-                    history.back();
-                }
-            }
-        </script>
-    }
-}
+</div>

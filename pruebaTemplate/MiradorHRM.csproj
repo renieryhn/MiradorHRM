@@ -75,6 +75,11 @@
     <None Include="Views\Usuario\Login.cshtml" />
     <None Include="Views\Usuario\Registro.cshtml" />
     <None Include="Views\Usuario\_layout.cshtml" />
+    <None Include="Views\VacacionDetall\Create.cshtml" />
+    <None Include="Views\VacacionDetall\Delete.cshtml" />
+    <None Include="Views\VacacionDetall\Details.cshtml" />
+    <None Include="Views\VacacionDetall\Edit.cshtml" />
+    <None Include="Views\VacacionDetall\Index.cshtml" />
     <None Include="Views\Vacacion\Create.cshtml" />
     <None Include="Views\Vacacion\Delete.cshtml" />
     <None Include="Views\Vacacion\Details.cshtml" />

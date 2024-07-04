@@ -36,22 +36,20 @@ public partial class Vacacion
     [Display(Name = "Activo")]
     public bool Activo { get; set; }
 
-    [Required(ErrorMessage = "La fecha de creación es requerida")]
+  
     [Display(Name = "Fecha de Creación")]
     public DateTime FechaCreacion { get; set; }
 
-    [Required(ErrorMessage = "La fecha de modificación es requerida")]
+  
     [Display(Name = "Fecha de Modificación")]
     public DateTime FechaModificacion { get; set; }
 
-    [Required(ErrorMessage = "El creador es requerido")]
+   
     [Display(Name = "Creado Por")]
-    [StringLength(50, ErrorMessage = "El nombre del creador no puede tener más de 50 caracteres")]
     public string CreadoPor { get; set; } = null!;
 
-    [Required(ErrorMessage = "El modificador es requerido")]
-    [Display(Name = "Modificado Por")]
-    [StringLength(50, ErrorMessage = "El nombre del modificador no puede tener más de 50 caracteres")]
+ 
+    [Display(Name = "Modificado Por")] 
     public string ModificadoPor { get; set; } = null!;
 
     [Display(Name = "Empleado")]
@@ -59,4 +57,5 @@ public partial class Vacacion
 
     [Display(Name = "Detalles de Vacación")]
     public virtual ICollection<VacacionDetalle> VacacionDetalles { get; set; } = new List<VacacionDetalle>();
+
 }

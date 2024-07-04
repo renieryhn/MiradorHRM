@@ -27,31 +27,76 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoImpuesto
-        public async Task<IActionResult> Index(int pg, string? filter)
+      
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? idImpuesto, int? estado)
         {
-            List<EmpleadoImpuesto> registros;
-            if (filter != null)
+            IQueryable<EmpleadoImpuesto> query = _context.EmpleadoImpuestos;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.EmpleadoImpuestos.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+            if (!String.IsNullOrEmpty(idImpuesto))
+            {
+                query = query.Where(r => r.IdImpuesto.ToString().Contains(idImpuesto));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentIdidImpuesto = idImpuesto;
+            ViewBag.CurrentEstado = estado;
+
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            //var planillaContext = await _context.EmpleadoImpuestos
+            //    .Include(e => e.IdEmpleadoNavigation)
+            //    .Include(e => e.IdImpuestoNavigation);
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.EmpleadoImpuestos.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.EmpleadoImpuestos.Include(e => e.IdEmpleadoNavigation).Include(e => e.IdImpuestoNavigation);
+           
+            var IdImpuestoNavigation = await _context.Impuestos.ToListAsync();
+            ViewBag.IdImpuesto = new SelectList(IdImpuestoNavigation, "IdImpuesto", "NombreImpuesto");
 
-            var IdEmpleadoNavigation = _context.Empleados.ToListAsync();
-            var IdImpuestoNavigation = _context.Impuestos.ToListAsync();
+          
+
+            
+
             return View(data);
+
         }
-         public ActionResult Download()
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<EmpleadoImpuesto>? data = null;
@@ -124,7 +169,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto, int? id)
         {
             if (ModelState.IsValid)
             {
@@ -132,8 +177,23 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoImpuesto);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                               
+                if (id.HasValue)
+                {
+                    if (id == 1)
+                    {
+                        return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                    }
+                    if (id == 2)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                    return RedirectToAction("Index");
+                }
             }
             else
             {
@@ -142,11 +202,29 @@ namespace PlanillaPM.Controllers
             }
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
             ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
+            
+            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+            if (id.HasValue)
+            {
+                if (id == 1)
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                }
+                if (id == 2)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                return RedirectToAction("Index");
+            }
             return View(empleadoImpuesto);
         }
 
         // GET: EmpleadoImpuesto/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -160,6 +238,7 @@ namespace PlanillaPM.Controllers
             }
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
             ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
+            ViewBag.Numero = numero;
             return View(empleadoImpuesto);
         }
 
@@ -168,7 +247,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto, string? numero)
         {
             if (id != empleadoImpuesto.IdEmpleadoImpuesto)
             {
@@ -195,7 +274,16 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                
+
+                if (numero == "1")
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
             }            
             else
             {
@@ -208,7 +296,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoImpuesto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -224,13 +312,14 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
             return View(empleadoImpuesto);
         }
 
         // POST: EmpleadoImpuesto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
              var empleadoImpuesto = await _context.EmpleadoImpuestos.FindAsync(id);
             try
@@ -241,13 +330,25 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoImpuestos.Remove(empleadoImpuesto);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+                   
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
+                   
+                }
+
+                if (numero == "1")
+                {
                     return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
                 }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // Si no se cumple ninguna condición anterior, redirige a una página predeterminada
+                return RedirectToAction("Index");
             }
             catch (DbUpdateException ex)
             {

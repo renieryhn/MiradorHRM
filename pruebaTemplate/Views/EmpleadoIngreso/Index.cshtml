@@ -13,13 +13,94 @@
             
         }
     <div class="container-fluid">
+    <div class="alert alert-info alert-dismissible" style="background-color: var(--blue);">
+        <form id="fSearch" method="post" asp-action="Index">
+            <div class="row">
+                <h3 style="color: #ffffff;">
+                    <label>Filtros</label>
+                </h3>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <select name="IdEmpleado" class="form-control select2 select2bs4">
+                        <option value="">Empleado</option>
+                        @foreach (var empleado in ViewBag.IdEmpleado)
+                        {
+                            bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
+                            if (isSelected)
+                            {
+                                <option value="@empleado.Value" selected>@empleado.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@empleado.Value">@empleado.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="IdIngreso" class="form-control select2 select2bs4">
+                        <option value="">Seleccionar Tipo de nómina</option>
+                        @foreach (var tipo in ViewBag.IdIngreso)
+                        {
+                            bool isSelected = ViewBag.CurrentIdidIngresoBuscar == tipo.Value;
+                            if (isSelected)
+                            {
+                                <option value="@tipo.Value" selected>@tipo.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@tipo.Value">@tipo.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <select id="estado" name="estado" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="0">Activos</option>
+                            <option value="1">Inactivos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="btn-group btn-group-justified" role="group">
+                        <input type="hidden" name="filter" value="@ViewBag.CurrentFilter">
+                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar...">
+                        <button style="background-color: var(--blue);" type="submit" class="btn btn-info">
+                            <i class="fa fa-search" style="color: white; font-size: 22px; font-weight: bold;"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a asp-controller="EmpleadoIngreso" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh " style="color: white; "></i></a>
+                            <a asp-controller="EmpleadoIngreso" asp-action="Create" asp-route-id="2" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;  "></i></a>
+                            <a asp-controller="EmpleadoIngreso" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
         <div class="row">
             <div class="col-12">
-            <div class="card-header">
-                <h3 class="card-title">Empleado Ingreso</h3>
-                <div class="card-tools">
+            <div class="card card-primary">
+                <div class="card-header" style="background-color: var(--blue);">
+                    <h3 class="card-title">Empleado Ingreso</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>                  
                     <div class="card-body">
                         <div class="">
                             <div class="panel panel-default">
@@ -28,21 +109,7 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <form id="fSearch" method="post" asp-action="Index">
-                                                        <div class="row">
-                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
-                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
-                                                            </div>
-                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
-                                                                <div class="btn-group btn-group-justified" role="group">
-                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Create"  class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                    <a asp-controller="EmpleadoIngreso" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                                   
                                                 </div>
                                             </div>
                                         </div>
@@ -56,6 +123,12 @@
                                             <tr>
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdIngresoNavigation)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Tipo)
                                                         </th>
@@ -83,12 +156,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                                        </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdIngresoNavigation)
-                                                        </th>
+                                                       
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -101,11 +169,20 @@
                                                 <th scope="row">@count</th>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                            <a asp-controller="EmpleadoIngreso" asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                        <a asp-controller="EmpleadoIngreso" asp-action="Edit" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-pencil" style="color: white;"></i></a>
                                                             <a asp-controller="EmpleadoIngreso" asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                            <a asp-controller="EmpleadoIngreso" asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        <a asp-controller="EmpleadoIngreso" asp-action="Delete" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoIngreso"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
                                                     </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                </td>
+                                                <td>
+                                                    @if (item.IdIngresoNavigation != null)
+                                                    {
+                                                        @Html.DisplayFor(modelItem => item.IdIngresoNavigation.NombreIngreso)
+                                                    }
+                                                </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Tipo)
                                                         </td>
@@ -140,14 +217,7 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                        </td>
-                                                        <td>
-                                                            @if(item.IdIngresoNavigation != null){
-                                                                @Html.DisplayFor(modelItem => item.IdIngresoNavigation.NombreIngreso)
-                                                            }
-                                                        </td>
+                                                       
                                             </tr>
                                             }
                                         </tbody>
@@ -162,6 +232,29 @@
                
             </div>
         </div>
+        </div>
         <br />
     </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                var url = $("#liMenuDinamico");
+                var $table = $('#table');
+                $.ajax({
+                    url: "NominaEmpleado/ObtenerMenuDinamico",
+                    type: "GET",
+                    success: function (data) {
+                        $("#liMenuDinamico").html(data);
+                    },
+                    error: function () {
+                        console.error("Error al cargar el menú dinámico");
+                    }
+                });
+            });
+          
+        </script>
+    }
+}

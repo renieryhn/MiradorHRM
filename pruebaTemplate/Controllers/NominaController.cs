@@ -29,29 +29,70 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: Nomina
-        public async Task<IActionResult> Index(int pg, string? filter)
+        
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? idTipoNomina, int? estado)
         {
-            List<Nomina> registros;
-            if (filter != null)
+            IQueryable<Nomina> query = _context.Nominas;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.Nominas.Where(r => r.ModificadoPor.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdTipoNominaNavigation.NombreTipoNomina.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdNomina.ToString().Contains(idEmpleado));
+            }
+            if (!String.IsNullOrEmpty(idTipoNomina))
+            {
+                query = query.Where(r => r.IdTipoNomina.ToString().Contains(idTipoNomina));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentIdTipoNomina = idTipoNomina;
+            ViewBag.CurrentEstado = estado;
+         
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.Nominas.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.Nominas.Include(n => n.IdTipoNominaNavigation);
-            var IdTipoNominaNavigation = _context.TipoNominas.ToListAsync();
+
+            var IdTipoNomina = await _context.TipoNominas.ToListAsync();
+            ViewBag.IdTipoNomina = new SelectList(IdTipoNomina, "IdTipoNomina", "NombreTipoNomina");
+
             return View(data);
+
         }
-         public ActionResult Download()
+
+       
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<Nomina>? data = null;

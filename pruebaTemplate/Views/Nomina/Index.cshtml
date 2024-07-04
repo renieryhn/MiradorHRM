@@ -13,6 +13,83 @@
             Layout = "~/Views/Shared/_Layout.cshtml";
         }
     <div class="container-fluid">
+    <div class="alert alert-info alert-dismissible" style="background-color: var(--blue);">
+        <form id="fSearch" method="post" asp-action="Index">
+            <div class="row">
+                <h3 style="color: #ffffff;">
+                    <label>Filtros</label>
+                </h3>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <select name="IdEmpleado" class="form-control select2 select2bs4">
+                        <option value="">Empleado</option>
+                        @foreach (var empleado in ViewBag.IdEmpleado)
+                        {
+                            bool isSelected = ViewBag.CurrentIdEmpleado == empleado.Value;
+                            if (isSelected)
+                            {
+                                <option value="@empleado.Value" selected>@empleado.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@empleado.Value">@empleado.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="IdTipoNomina" class="form-control select2 select2bs4">
+                        <option value="">Seleccionar Tipo de nómina</option>
+                        @foreach (var tipo in ViewBag.IdTipoNomina)
+                        {
+                            bool isSelected = ViewBag.CurrentIdTipoNomina == tipo.Value;
+                            if (isSelected)
+                            {
+                                <option value="@tipo.Value" selected>@tipo.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@tipo.Value">@tipo.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <select id="estado" name="estado" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="0">Activos</option>
+                            <option value="1">Inactivos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="btn-group btn-group-justified" role="group">
+                        <input type="hidden" name="filter" value="@ViewBag.CurrentFilter">
+                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar...">
+                        <button style="background-color: var(--blue);" type="submit" class="btn btn-info">
+                            <i class="fa fa-search" style="color: white; font-size: 22px; font-weight: bold;"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="col-sm-6">
+                    <div class="col-sm-6">
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh " style="color: white; "></i></a>
+                            <a asp-action="Create" asp-route-id="2" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;  "></i></a>
+                            <a asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary">
@@ -32,21 +109,8 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <form id="fSearch" method="post" asp-action="Index">
-                                                        <div class="row">
-                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
-                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
-                                                            </div>
-                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
-                                                                <div class="btn-group btn-group-justified" role="group">
-                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                                   
+
                                                 </div>
                                             </div>
                                         </div>
@@ -60,6 +124,9 @@
                                             <tr>
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdTipoNominaNavigation)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Comentarios)
                                                         </th>
@@ -111,9 +178,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdTipoNominaNavigation)
-                                                        </th>
+                                                      
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -131,6 +196,9 @@
                                                             <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdNomina"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
                                                     </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.IdTipoNominaNavigation.NombreTipoNomina)
+                                                        </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Comentarios)
                                                         </td>
@@ -189,9 +257,7 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                    @Html.DisplayFor(modelItem => item.IdTipoNominaNavigation.NombreTipoNomina)
-                                                        </td>
+                                                       
                                             </tr>
                                             }
                                         </tbody>
@@ -209,3 +275,25 @@
         <br />
     </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                var url = $("#liMenuDinamico");
+                var $table = $('#table');
+                $.ajax({
+                    url: "NominaEmpleado/ObtenerMenuDinamico",
+                    type: "GET",
+                    success: function (data) {
+                        $("#liMenuDinamico").html(data);
+                    },
+                    error: function () {
+                        console.error("Error al cargar el menú dinámico");
+                    }
+                });
+            });
+      
+        </script>
+    }
+}

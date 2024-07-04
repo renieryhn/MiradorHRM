@@ -26,33 +26,70 @@ namespace PlanillaPM.Controllers
         {
             _context = context;
             _userManager = userManager;
-        }
+        }   
 
-        // GET: EmpleadoDeduccion
-        public async Task<IActionResult> Index(int pg, string? filter)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? idDeduccion, int? estado)
         {
-            List<EmpleadoDeduccion> registros;
-            if (filter != null)
+            IQueryable<EmpleadoDeduccion> query = _context.EmpleadoDeduccions;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.EmpleadoDeduccions.Where(r => r.IdDeduccionNavigation.NombreDeduccion.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdDeduccionNavigation.NombreDeduccion.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+            if (!String.IsNullOrEmpty(idDeduccion))
+            {
+                query = query.Where(r => r.IdDeduccion.ToString().Contains(idDeduccion));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentIdidDeduccion = idDeduccion;
+            ViewBag.CurrentEstado = estado;
+
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.EmpleadoDeduccions.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.EmpleadoDeduccions.ToListAsync();
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            var planillaContext = await _context.EmpleadoDeduccions.ToListAsync();
             var IdDeduccionNavigation = await _context.Deduccions.ToListAsync();
+            ViewBag.IdDeduccion = new SelectList(IdDeduccionNavigation, "IdDeduccion", "NombreDeduccion");         
+         
+
             return View(data);
+
         }
-         public ActionResult Download()
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<EmpleadoDeduccion>? data = null;
@@ -93,7 +130,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoDeduccion/Create
-        public IActionResult Create()
+        public  IActionResult Create()
         {
             ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
                              .Cast<TipoEstado>()
@@ -130,12 +167,10 @@ namespace PlanillaPM.Controllers
             return Json(deduccion);
         }
 
-        // POST: EmpleadoDeduccion/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+   
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion)
+        public async Task<IActionResult> Create([Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion, int? id)
         {
             if (ModelState.IsValid)
             {
@@ -143,7 +178,23 @@ namespace PlanillaPM.Controllers
                 _context.Add(empleadoDeduccion);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "El registro ha sido creado exitosamente.";
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                
+                if (id.HasValue)
+                {
+                    if (id == 1)
+                    {
+                        return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                    }
+                    if (id == 2)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                    return RedirectToAction("Index");
+                }
             }
             else
             {
@@ -152,11 +203,28 @@ namespace PlanillaPM.Controllers
             }
             ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion", empleadoDeduccion.IdDeduccion);
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoDeduccion.IdEmpleado);
+            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+            if (id.HasValue)
+            {
+                if (id == 1)
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                }
+                if (id == 2)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                TempData["error"] = "Error: No se encontró el valor de la dirección.";
+                return RedirectToAction("Index");
+            }
             return View(empleadoDeduccion);
         }
 
         // GET: EmpleadoDeduccion/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? numero)
         {
             if (id == null)
             {
@@ -171,6 +239,7 @@ namespace PlanillaPM.Controllers
             ViewBag.TipoEstado = Enum.GetValues(typeof(EmpleadoDeduccion.TipoEstado));
             ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion", empleadoDeduccion.IdDeduccion);
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoDeduccion.IdEmpleado);
+            ViewBag.Numero = numero;
             return View(empleadoDeduccion);
         }
 
@@ -179,7 +248,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion, string? numero)
         {
             if (id != empleadoDeduccion.IdEmpleadoDeduccion)
             {
@@ -206,7 +275,16 @@ namespace PlanillaPM.Controllers
                         throw;
                     }
                 }
-                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                
+
+                if (numero == "1")
+                {
+                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
             }            
             else
             {
@@ -219,7 +297,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoDeduccion/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? numero)
         {
             if (id == null)
             {
@@ -235,13 +313,14 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+            ViewBag.Numero = numero;
             return View(empleadoDeduccion);
         }
 
         // POST: EmpleadoDeduccion/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? numero)
         {
              var empleadoDeduccion = await _context.EmpleadoDeduccions.FindAsync(id);
             try
@@ -252,13 +331,24 @@ namespace PlanillaPM.Controllers
                     _context.EmpleadoDeduccions.Remove(empleadoDeduccion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+                   
                 } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
+                   
+                }
+                if (numero == "1")
+                {
                     return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
                 }
+                if (numero == "2")
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // Si no se cumple ninguna condición anterior, redirige a una página predeterminada
+                return RedirectToAction("Index");
             }
             catch (DbUpdateException ex)
             {

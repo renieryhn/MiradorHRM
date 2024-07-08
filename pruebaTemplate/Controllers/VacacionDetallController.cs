@@ -13,6 +13,7 @@ using PlanillaPM.ViewModel;
 
 using PlanillaPM.Models;
 using static PlanillaPM.Models.VacacionDetalle;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace PlanillaPM.Controllers
 {
@@ -94,9 +95,42 @@ namespace PlanillaPM.Controllers
         {
             ViewBag.Estado = Enum.GetValues(typeof(Estado));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
-            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion");
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "PeriodoVacacional");
+
             return View();
         }
+
+        [HttpGet]
+        public async Task<JsonResult> ObtenerDiasDisponibles(int idEmpleado, int idVacacion)
+        {
+            // Obtiene el período vacacional y los días totales permitidos
+            var periodoVacacional = await _context.Vacacions
+                .Where(v => v.IdVacacion == idVacacion)
+                .FirstOrDefaultAsync();
+
+            if (periodoVacacional == null)
+            {
+                return Json(new { success = false, message = "Período vacacional no encontrado." });
+            }
+
+            // Obtiene todas las vacaciones solicitadas por el empleado en ese período
+            var vacacionesSolicitadas = await _context.Vacacions
+                .Where(v => v.IdEmpleado == idEmpleado && v.IdVacacion == idVacacion)
+                .ToListAsync();
+
+            // Suma los días solicitados
+            int diasUsados = vacacionesSolicitadas.Sum(v => v.DiasPendientes);
+
+            // Calcula los días disponibles
+            int diasDisponibles = diasUsados - periodoVacacional.DiasTotales;
+
+            //int porcentaje = (diasUsados/ periodoVacacional.TotalDiasPeriodo)*100;
+            int porcentaje = (diasUsados * 100) / periodoVacacional.TotalDiasPeriodo;
+
+            return Json(new { success = true, diasDisponibles, porcentaje });
+        }
+
+
 
         // POST: VacacionDetall/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -119,7 +153,7 @@ namespace PlanillaPM.Controllers
                 TempData["error"] = "Error: " + message;
             }
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
-            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "PeriodoVacacional", vacacionDetalle.IdVacacion);
             return View(vacacionDetalle);
         }
 
@@ -138,7 +172,7 @@ namespace PlanillaPM.Controllers
             }
             ViewBag.Estado = Enum.GetValues(typeof(VacacionDetalle.Estado));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
-            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "PeriodoVacacional", vacacionDetalle.IdVacacion);
             return View(vacacionDetalle);
         }
 
@@ -182,7 +216,7 @@ namespace PlanillaPM.Controllers
                 TempData["Error"] = "Error: " + message;
             }
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacionDetalle.IdEmpleado);
-            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "IdVacacion", vacacionDetalle.IdVacacion);
+            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "PeriodoVacacional", vacacionDetalle.IdVacacion);
             return View(vacacionDetalle);
         }
 

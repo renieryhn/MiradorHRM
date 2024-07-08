@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaPM.Models;
 
@@ -58,4 +59,6 @@ public partial class Vacacion
     [Display(Name = "Detalles de Vacación")]
     public virtual ICollection<VacacionDetalle> VacacionDetalles { get; set; } = new List<VacacionDetalle>();
 
+    [NotMapped]
+    public int DiasTotales { get; internal set; }
 }

@@ -167,14 +167,14 @@
 
                             historial.forEach(function (item) {
                                 historialVacacionesBody.append(`
-                                                            <tr>
-                                                                <td>${item.idVacacion}</td>
-                                                                <td>${item.periodoVacacional}</td>
-                                                                <td>${item.totalDiasPeriodo}</td>
-                                                                <td>${item.diasPendientes}</td>
-                                                                <td>${item.diasGozados}</td>
-                                                            </tr>
-                                                        `);
+                                                <tr>
+                                                    <td>${item.idVacacion}</td>
+                                                    <td>${item.periodoVacacional}</td>
+                                                    <td>${item.totalDiasPeriodo}</td>
+                                                    <td>${item.diasPendientes}</td>
+                                                    <td>${item.diasGozados}</td>
+                                                </tr>
+                                            `);
                             });
 
                             if (historial.length === 0) {

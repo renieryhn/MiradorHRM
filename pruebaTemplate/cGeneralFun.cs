@@ -72,10 +72,11 @@ namespace PlanillaPM
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Deducciones",Area= "",Controler= "EmpleadoDeduccion",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Impuestos",Area= "",Controler= "EmpleadoImpuesto",Accion= "Index" },
             //new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Horas Extra",Area= "",Controler= "EmpleadoHorasExtra",Accion= "Index" },
-            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Cuentas por Cobrar",Area= "",Controler= "CuentaPorCobrar",Accion= "Index" },
+            //new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Cuentas por Cobrar",Area= "",Controler= "CuentaPorCobrar",Accion= "Index" },
             //new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "ISR",Area= "",Controler= "EmpleadoISR",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Viáticos",Area= "",Controler= "Viatico",Accion= "Index" },
             new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Vacaciones",Area= "",Controler= "Vacacion",Accion= "Index" },
+            new MenuDinamico { Objeto= "NominaEmpleado",Titulo= "Solicitud Vacaciones",Area= "",Controler= "VacacionDetall",Accion= "Index" },
 
              new MenuDinamico { Objeto= "Nomina",Titulo= "Ingreso",Area= "",Controler= "Ingreso",Accion= "Index" },
              new MenuDinamico { Objeto= "Nomina",Titulo= "Impuesto",Area= "",Controler= "Impuesto",Accion= "Index" },

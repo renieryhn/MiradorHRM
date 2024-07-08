@@ -9,30 +9,25 @@
         <div class="card-header" style="background-color: var(--blue);">
             <h3 class="card-title">Crear VacacionDetalle</h3>
         </div>
-         <form asp-action="Create">
-        <div class="card-body">
-            <div class="callout callout-info" style="border-left-color: var(--blue);">
-                <h5>Información General</h5>
-                <br/>
-                <div class="row">
+        <form asp-action="Create">
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: var(--blue);">
+                    <h5>Información General</h5>
+                    <br />
+                    <div class="row">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                   
-                    <div class="col-md-4">
+
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdVacacion" class="control-label"></label>
-                                <select asp-for="IdVacacion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdVacacion">
+                                <select asp-for="IdVacacion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdVacacion" id="IdVacacion">
                                     <option></option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="IdEmpleado" class="control-label"></label>
-                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
-                                    <option></option>
-                                </select>
-                            </div>
+
                             <div class="form-group">
                                 <label asp-for="FechaSolicitud" class="control-label"></label>
-                                <input asp-for="FechaSolicitud" class="form-control" type="date" required />
+                                <input asp-for="FechaSolicitud" id="FechaSolicitud" class="form-control" type="date" required />
                                 <span asp-validation-for="FechaSolicitud" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -41,48 +36,138 @@
                                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="FechaFin" class="control-label"></label>
-                                <input asp-for="FechaFin" class="form-control" type="date" required />
-                                <span asp-validation-for="FechaFin" class="text-danger"></span>
+                                <label asp-for="NumeroDiasSolicitados" class="control-label"></label>
+                                <input asp-for="NumeroDiasSolicitados" id="NumeroDiasSolicitados" class="form-control" type="number" required />
+                                <span asp-validation-for="NumeroDiasSolicitados" class="text-danger"></span>
                             </div>
+
                         </div>
                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado" id="IdEmpleado">
+                                    <option></option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label asp-for="EstadoSolicitud">Estado:</label>
                                 <input asp-for="EstadoSolicitud" value="Pendiente" class="form-control" readonly required />
                                 <span asp-validation-for="EstadoSolicitud" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="NumeroDiasSolicitados" class="control-label"></label>
-                                <input asp-for="NumeroDiasSolicitados" class="form-control" type="number" required />
-                                <span asp-validation-for="NumeroDiasSolicitados" class="text-danger"></span>
+                                <label asp-for="FechaFin" class="control-label"></label>
+                                <input asp-for="FechaFin" class="form-control" type="date" required />
+                                <span asp-validation-for="FechaFin" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <input asp-for="AprobadoPor" class="form-control" hidden />
                             </div>
                             <div class="form-group">
-                                <label asp-for="AprobadoPor" class="control-label"></label>
-                                <input asp-for="AprobadoPor" class="form-control" />
-                                <span asp-validation-for="AprobadoPor" class="text-danger"></span>
+                                <input asp-for="DiasAprobados" id="DiasAprobados" class="form-control" hidden />
                             </div>
                             <div class="form-group">
-                                <label asp-for="DiasAprobados" class="control-label"></label>
-                                <input asp-for="DiasAprobados" class="form-control" type="number" required />
-                                <span asp-validation-for="DiasAprobados" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="ComentariosAprobador" class="control-label"></label>
-                                <input asp-for="ComentariosAprobador" class="form-control" />
-                                <span asp-validation-for="ComentariosAprobador" class="text-danger"></span>
+                                <input asp-for="ComentariosAprobador" class="form-control" hidden />
                             </div>
                         </div>
+
+                       <div class="col-md-4">
+    <label></label>
+    <div class="info-box bg-info mt-1">
+        <span class="info-box-icon"><i class="fa fa-plane"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Días Disponibles</span>
+            <span class="info-box-number" id="diasDisponibles">0</span>
+            <div class="progress">
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <span class="progress-description" id="porcentaje"></span>
+        </div>
+        <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+</div>
+
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
-            <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
-         </div>
+            <div class="card-footer">
+                <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
         </form>
     </div>
 </div>
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const fechaSolicitud = document.getElementById("FechaSolicitud");
+                const fechaInicio = document.getElementById("FechaInicio");
+                const fechaFin = document.getElementById("FechaFin");
+                const diasAprobados = document.getElementById("DiasAprobados");
+                const numeroDiasSolicitados = document.getElementById("NumeroDiasSolicitados");
+
+                const today = new Date().toISOString().split('T')[0];
+                fechaSolicitud.value = today;
+
+                fechaInicio.addEventListener("change", calcularDias);
+                fechaFin.addEventListener("change", calcularDias);
+
+                function calcularDias() {
+                    const inicio = new Date(fechaInicio.value);
+                    const fin = new Date(fechaFin.value);
+
+                    if (inicio && fin && fin >= inicio) {
+                        const tiempoDiferencia = fin - inicio;
+                        const diasDiferencia = tiempoDiferencia / (1000 * 3600 * 24) + 1; // Sumar 1 para incluir el día de inicio
+                        diasAprobados.value = diasDiferencia;
+                        numeroDiasSolicitados.value = diasDiferencia;
+                    } else {
+                        diasAprobados.value = 0;
+                        numeroDiasSolicitados.value = 0;
+                    }
+                }
+
+            });
+
+        $(document).ready(function () {
+    const idEmpleado = $("#IdEmpleado");
+    const idVacacion = $("#IdVacacion");
+    const diasDisponiblesElement = $("#diasDisponibles");
+    const porcentajeElement = $("#porcentaje");
+    const progressBarElement = $(".progress-bar");
+
+    idEmpleado.change(actualizarDiasDisponibles);
+    idVacacion.change(actualizarDiasDisponibles);
+
+    function actualizarDiasDisponibles() {
+        const empleadoId = idEmpleado.val();
+        const vacacionId = idVacacion.val();
+
+        if (empleadoId && vacacionId) {
+            $.ajax({
+                url: `/VacacionDetall/ObtenerDiasDisponibles`,
+                type: "GET",
+                data: { idEmpleado: empleadoId, idVacacion: vacacionId },
+                success: function (data) {
+                    if (data.success) {
+                        diasDisponiblesElement.text(data.diasDisponibles);
+                        porcentajeElement.text(data.porcentaje + '%');
+                        progressBarElement.css('width', data.porcentaje + '%');
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    }
+});
+        </script>
+    }
 }

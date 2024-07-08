@@ -26,81 +26,50 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
         }
 
-
-        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
+        // GET: Vacacion
+        public async Task<IActionResult> Index(int pg, string? filter)
         {
-            IQueryable<Vacacion> query = _context.Vacacions;
-
-            if (!String.IsNullOrEmpty(filter))
+            List<Vacacion> registros;
+            if (filter != null)
             {
-                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
-            }
-            if (!String.IsNullOrEmpty(idEmpleado))
-            {
-                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
-            }
-
-
-            if (estado.HasValue)
-            {
-                if (estado == 1)
-                {
-                    query = query.Where(r => r.Activo == false);
-                }
-                else if (estado == 0)
-                {
-                    query = query.Where(r => r.Activo == true);
-                }
-                // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
-            }
-
-            ViewBag.CurrentFilter = filter;
-            ViewBag.CurrentIdEmpleado = idEmpleado;
-            ViewBag.CurrentEstado = estado;
-
-
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = query.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-            if (idEmpleado != null)
-            {
-                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+                registros = await _context.Vacacions.Where(r => r.Observaciones.ToLower().Contains(filter.ToLower())).ToListAsync();
             }
             else
             {
-                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
+                registros = await _context.Vacacions.ToListAsync();
             }
-           
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = registros.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+            var planillaContext = _context.Vacacions.Include(v => v.IdEmpleadoNavigation);
 
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
             return View(data);
-
         }
-        public ActionResult Download()
-        {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Vacacion>? data = null;
-            if (data == null)
-            {
+         public ActionResult Download()
+         {
+             ListtoDataTableConverter converter = new ListtoDataTableConverter();
+             List<Vacacion>? data = null;
+             if (data == null)
+             {
                 data = _context.Vacacions.ToList();
-            }
-            DataTable table = converter.ToDataTable(data);
-            string fileName = "Vacacions.xlsx";
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(table);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
-        }
+             }
+             DataTable table = converter.ToDataTable(data);
+             string fileName = "Vacacions.xlsx";
+             using (XLWorkbook wb = new XLWorkbook())
+             {
+                 wb.Worksheets.Add(table);
+                 using (MemoryStream stream = new MemoryStream())
+                 {
+                     wb.SaveAs(stream);
+                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                 }
+             }
+        }    
         // GET: Vacacion/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -123,28 +92,17 @@ namespace PlanillaPM.Controllers
         // GET: Vacacion/Create
         public IActionResult Create()
         {
-
+           
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
-
+         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdVacacion,IdEmpleado,Observaciones,PeriodoVacacional,TotalDiasPeriodo,DiasGozados,DiasPendientes,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Vacacion vacacion)
         {
             if (ModelState.IsValid)
             {
-
-                // Verificar si ya existe un registro para el mismo año y empleado
-                var existeVacacion = await _context.Vacacions
-                    .AnyAsync(v => v.IdEmpleado == vacacion.IdEmpleado && v.PeriodoVacacional == vacacion.PeriodoVacacional);
-
-                if (existeVacacion)
-                {
-                    TempData["error"] = "Ya existe un registro de vacaciones para este empleado en el año especificado.";
-                    return RedirectToAction(nameof(Create));
-                }
-
                 SetCamposAuditoria(vacacion, true);
                 _context.Add(vacacion);
                 await _context.SaveChangesAsync();
@@ -201,7 +159,7 @@ namespace PlanillaPM.Controllers
                     return Json(new { success = false, message = "No se encontraron días de vacaciones para la antigüedad del empleado." });
                 }
 
-               
+                // Obtener los detalles de vacaciones del empleado
                 var detallesVacaciones = await _context.Vacacions
                     .Where(v => v.IdEmpleado == idEmpleado && v.Activo)
                     .ToListAsync();
@@ -330,7 +288,7 @@ namespace PlanillaPM.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            }            
             else
             {
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
@@ -364,17 +322,17 @@ namespace PlanillaPM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vacacion = await _context.Vacacions.FindAsync(id);
+             var vacacion = await _context.Vacacions.FindAsync(id);
             try
             {
-
+               
                 if (vacacion != null)
                 {
                     _context.Vacacions.Remove(vacacion);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "El registro ha sido eliminado exitosamente.";
                     return RedirectToAction(nameof(Index));
-                }
+                } 
                 else
                 {
                     TempData["Error"] = "Hubo un error al intentar eliminar el Empleado Contacto. Por favor, verifica la información e intenta nuevamente.";
@@ -401,12 +359,12 @@ namespace PlanillaPM.Controllers
         {
             return _context.Vacacions.Any(e => e.IdVacacion == id);
         }
-
+        
         private void SetCamposAuditoria(Vacacion record, bool bNewRecord)
         {
             var now = DateTime.Now;
-            var CurrentUser = _userManager.GetUserName(User);
-
+            var CurrentUser =  _userManager.GetUserName(User);
+           
             if (bNewRecord)
             {
                 record.FechaCreacion = now;
@@ -420,6 +378,6 @@ namespace PlanillaPM.Controllers
                 record.FechaModificacion = now;
                 record.ModificadoPor = CurrentUser;
             }
-        }
+        }        
     }
 }

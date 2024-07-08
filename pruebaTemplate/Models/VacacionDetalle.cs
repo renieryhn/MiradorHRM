@@ -6,15 +6,15 @@ namespace PlanillaPM.Models;
 
 public partial class VacacionDetalle
 {
-    [Key]
+    [Key]   
     public int IdVacacionDetalle { get; set; }
 
     [Required(ErrorMessage = "El ID de la vacación es obligatorio.")]
-    [Display(Name = "ID de Vacación")]
+    [Display(Name = "Periodo")]
     public int IdVacacion { get; set; }
 
     [Required(ErrorMessage = "El ID del empleado es obligatorio.")]
-    [Display(Name = "ID del Empleado")]
+    [Display(Name = "Empleado")]
     public int IdEmpleado { get; set; }
 
     [Required(ErrorMessage = "La fecha de solicitud es obligatoria.")]
@@ -39,8 +39,7 @@ public partial class VacacionDetalle
 
     [Display(Name = "Aprobado Por")]
     public string? AprobadoPor { get; set; }
-
-    [Required(ErrorMessage = "El número de días aprobados es obligatorio.")]
+ 
     [Display(Name = "Días Aprobados")]
     public int DiasAprobados { get; set; }
 

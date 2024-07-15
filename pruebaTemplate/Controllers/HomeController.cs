@@ -15,13 +15,14 @@ using Syncfusion.HtmlConverter;
 using Microsoft.EntityFrameworkCore;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using static PlanillaPM.Models.EmpleadoAusencium;
+using MiradorHRM.Models;
+using static PlanillaPM.Models.VacacionDetalle;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 
 
-namespace pruebaTemplate.Controllers
-{
 
-    public class HomeController : Controller
+public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Microsoft.AspNetCore.Identity.UserManager<Usuario> _userManager;
@@ -41,6 +42,7 @@ namespace pruebaTemplate.Controllers
             var cantidadUsuarios = await _userManager.Users.CountAsync();
             var cantidadCargos = await _context.Cargos.CountAsync();
             int cantidadPerfilesCompletos = await _context.Empleados
+
             .Where(e => e.Activo
              && !string.IsNullOrEmpty(e.NombreEmpleado)
              && !string.IsNullOrEmpty(e.ApellidoEmpleado)
@@ -126,36 +128,190 @@ namespace pruebaTemplate.Controllers
                 return NotFound();
             }
         }
-
-        private async Task<List<Empleado>> ObtenerProximosCumpleañeros()
+        public async Task<IActionResult> DashboardNomina()
         {
-            int id = 0;
-            List<Empleado> proximosCumpleañeros = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
 
-            // Obtener la fecha de hoy
-            DateTime hoy = DateTime.Today;
+            var nominasData = await _context.Nominas
+           .GroupBy(n => n.Mes)
+           .Select(g => new NominaDataCharts
+           {
+               Mes = g.Key,
+               TotalIngresosCharts = g.Sum(n => n.TotalIngresos),
+               TotalDeduccionesCharts = g.Sum(n => n.TotalDeducciones),
+               TotalImpuestosCharts = g.Sum(n => n.TotalImpuestos),
+               PagoNetoCharts = g.Sum(n => n.PagoNeto)
+           }).ToListAsync();
 
-            // Calcular la fecha de hace 7 días
-            DateTime haceVeinteDias = hoy.AddDays(20);
+            ViewBag.NominasData = nominasData;
 
-            // Obtener los próximos cumpleañeros activos en los próximos 7 días
-            // Obtener los próximos cumpleañeros activos en los próximos 20 días
-            try
+        var totales = await ObtenerYCalcularTotalesAsync();
+            var solicituddetalle = await SolicitudTomarAccion();
+            var nomina = await NominaTomarAccion();
+
+            
+
+        var viewModel = new NominaTotales
             {
-                proximosCumpleañeros = await _context.Empleados
-                .Where(e => e.Activo &&
-                    (e.FechaNacimiento.DayOfYear >= hoy.DayOfYear && e.FechaNacimiento.DayOfYear <= haceVeinteDias.DayOfYear))
-                .OrderBy(e => e.FechaNacimiento)
-                .Take(10)
-                .ToListAsync();
-                return proximosCumpleañeros;
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return proximosCumpleañeros;
-            }
+                TotalIngresos = totales.TotalIngresos,
+                TotalDeducciones = totales.TotalDeducciones,
+                TotalImpuestos = totales.TotalImpuestos,
+                TotalEmpleadosEnNomina = totales.TotalEmpleadosEnNomina,
+                VacacionDetalle = solicituddetalle,
+                NominaAprovacion = nomina,
+                
+        };
+
+       
+
+        return View(viewModel);
+
+
         }
+
+        //Dahsboard nomina
+        public async Task<NominaTotales> ObtenerYCalcularTotalesAsync()
+        {
+            var fechaActual = DateTime.Now;
+            int añoActual = fechaActual.Year;
+            int mesActual = fechaActual.Month;
+
+            var nominasDelMesActual = await _context.Nominas
+                .Where(n => n.PeriodoFiscal == añoActual && n.Mes == mesActual)
+                .ToListAsync();
+
+            var totales = new NominaTotales
+            {
+                TotalIngresos = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalIngresos) : 0,
+                TotalDeducciones = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalDeducciones) : 0,
+                TotalImpuestos = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalImpuestos) : 0,
+                TotalEmpleadosEnNomina = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalEmpleadosEnNomina) : 0
+            };
+
+            return totales;
+        }
+        private async Task<List<VacacionDetalle>> SolicitudTomarAccion()
+        {
+            var empleadoAusencias = await _context.VacacionDetalles
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdVacacionNavigation)
+                .Where(e => e.Activo && e.EstadoSolicitud == Estado.Pendiente)
+                .ToListAsync();
+
+            return empleadoAusencias;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarEstadoSolicitud([FromBody] VacacionDetalle request)
+        {
+            var vacacionDetalle = await _context.VacacionDetalles.FindAsync(request.IdVacacionDetalle);
+            if (vacacionDetalle == null)
+            {
+                return Json(new { success = false, message = "Solicitud de vacaciones no encontrada." });
+            }
+
+            // Acceder al usuario actual
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            if (usuarioActual == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            // Actualizar el estado, los días aprobados y los comentarios
+            vacacionDetalle.EstadoSolicitud = request.EstadoSolicitud;
+            vacacionDetalle.DiasAprobados = request.DiasAprobados;
+            vacacionDetalle.ComentariosAprobador = request.ComentariosAprobador;
+            vacacionDetalle.AprobadoPor = usuarioActual.Email; // Asignar directamente el usuario actual
+
+            // Establecer campos de auditoría
+            SetCamposAuditoria2(vacacionDetalle, false); // false indica que no es un nuevo registro
+
+            _context.Update(vacacionDetalle);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Estado actualizado correctamente." });
+        }
+        private void SetCamposAuditoria2(VacacionDetalle record, bool isNewRecord)
+        {
+            var now = DateTime.Now;
+            var currentUser = _userManager.GetUserName(User);
+
+            if (isNewRecord)
+            {
+                record.FechaCreacion = now;
+                record.CreadoPor = currentUser;
+            }
+
+            record.FechaModificacion = now;
+            record.ModificadoPor = currentUser;
+        }
+
+        private async Task<List<Nomina>> NominaTomarAccion()
+        {
+            var empleadoNominas = await _context.Nominas             
+                .Include(e => e.IdTipoNominaNavigation)
+                .Where(e => e.Activo && e.EstadoNomina == Nomina.NominaEstado.PendientedeAprobación)
+                .ToListAsync();
+
+            return empleadoNominas;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActualizarEstadoNomina([FromBody] Nomina request)
+        {
+            var nomina = await _context.Nominas.FindAsync(request.IdNomina);
+
+            if (nomina == null)
+            {
+                return Json(new { success = false, message = "Nómina no encontrada." });
+            }
+            // Acceder al usuario actual
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            if (usuarioActual == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            nomina.EstadoNomina = request.EstadoNomina;
+            nomina.AprobadaPor = usuarioActual.Email;
+            nomina.ComentariosAprobador = request.ComentariosAprobador;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+ 
+    //index
+    private async Task<List<Empleado>> ObtenerProximosCumpleañeros()
+            {
+                int id = 0;
+                List<Empleado> proximosCumpleañeros = _context.Empleados.Where(e => e.IdEmpleado == id).ToList();
+
+                // Obtener la fecha de hoy
+                DateTime hoy = DateTime.Today;
+
+                // Calcular la fecha de hace 7 días
+                DateTime haceVeinteDias = hoy.AddDays(20);
+
+                // Obtener los próximos cumpleañeros activos en los próximos 7 días
+                // Obtener los próximos cumpleañeros activos en los próximos 20 días
+                try
+                {
+                    proximosCumpleañeros = await _context.Empleados
+                    .Where(e => e.Activo &&
+                        (e.FechaNacimiento.DayOfYear >= hoy.DayOfYear && e.FechaNacimiento.DayOfYear <= haceVeinteDias.DayOfYear))
+                    .OrderBy(e => e.FechaNacimiento)
+                    .Take(10)
+                    .ToListAsync();
+                    return proximosCumpleañeros;
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = ex.Message;
+                    return proximosCumpleañeros;
+                }
+            }
 
         private async Task<List<Empleado>> ObtenerLicenciasPorVencer()
         {
@@ -255,8 +411,6 @@ namespace pruebaTemplate.Controllers
             return departamentoCount;
         }
 
-      
-    
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -309,8 +463,55 @@ namespace pruebaTemplate.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> ComprobarPeriodoVacacional(int id, int diasAprobados, int idvacacion)
+        {
+            var vacacionDetalles = await _context.VacacionDetalles
+                .Include(v => v.IdVacacionNavigation)
+                .FirstOrDefaultAsync(v => v.IdVacacionDetalle == id);
 
-        public IActionResult Privacy()
+            if (vacacionDetalles == null)
+            {
+                return Json(new { success = false, message = "Vacación no encontrada." });
+            }
+
+            var periodoVacacional = vacacionDetalles.IdVacacionNavigation.PeriodoVacacional;
+
+            var vacacion = await _context.Vacacions
+               .Include(v => v.IdEmpleadoNavigation)
+               .FirstOrDefaultAsync(v => v.IdVacacion == idvacacion);
+
+            if (vacacion == null)
+            {
+                return Json(new { success = false, message = "Vacación no encontrada." });
+            }
+
+            if (periodoVacacional == vacacion.PeriodoVacacional)
+            {
+                // Actualizar el valor de DiasGozados
+                vacacion.DiasGozados += diasAprobados;
+                vacacion.DiasPendientes -= diasAprobados;
+
+                try
+                {
+                    _context.Update(vacacion);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Periodo vacacional comprobado y días gozados actualizados correctamente." });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error al actualizar los días gozados: " + ex.Message });
+                }
+            }
+            else
+            {
+                return Json(new { success = false, message = "El periodo vacacional no coincide con el año actual." });
+            }
+        }
+
+
+
+    public IActionResult Privacy()
         {
             return View();
         }
@@ -321,4 +522,4 @@ namespace pruebaTemplate.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-}
+

@@ -69,7 +69,7 @@
 
     .card-custom {
         border-top: 3px solid #1797C0; 
-  
+    }
 </style>
 <script src="~/plugins/chart.js/chart.bundle.min.js"></script>
 <script src="~/plugins/chart.js/chart.bundle.js"></script>
@@ -154,7 +154,7 @@
             </div>
             <!-- /.row -->
             <div class="row">
-                <section class="col-lg-4 connectedSortable">
+                <section class="col-lg-6 connectedSortable">
                     <div class="card">
                         <div class="card-header border-0">
                             <h3 class="card-title">Próximos  Cumpleañeros</h3>
@@ -228,7 +228,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="col-lg-4 connectedSortable">
+                <section class="col-lg-6 connectedSortable">
                     <div class="card">
                         <div class="card-header border-0">
                             <h3 class="card-title">Licencias por Vencer</h3>                         
@@ -299,85 +299,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="col-lg-4 connectedSortable">
-                    <div class="card">
-                        <div class="card-header border-0">
-                            <h3 class="card-title">Contratos por Vencer</h3>
-                            
-                        </div>
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-striped table-valign-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre Completo</th>
-                                        <th>Tipo de contrato</th>
-                                        <th>Fecha de Vencimiento</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model.ContratosPorVencer == null || !Model.ContratosPorVencer.Any())
-                                {
-                                    <tr>
-                                        <td colspan="3" class="text-center">No hay datos disponibles</td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    @foreach (var contrato in Model.ContratosPorVencer)
-                                    {
-                                        <tr>
-                                            @if (contrato.IdEmpleadoNavigation != null)
-                                            {
-                                                <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
-                                            }
-                                            @if (contrato.IdTipoContratoNavigation != null)
-                                            {
-                                                <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
-                                            }
-                                            <td>
-                                                @{
-                                                    // Crear un nuevo objeto DateTime usando el año, mes y día de la fecha de vencimiento del contrato
-                                                    DateTime fechaVencimiento = new DateTime(contrato.FechaFin.Year, contrato.FechaFin.Month, contrato.FechaFin.Day);
-
-                                                    // Calcular la diferencia en días entre la fecha de vencimiento del contrato y la fecha actual
-                                                    int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
-
-
-                                                    // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
-                                                    string etiqueta = string.Empty;
-                                                    string claseEtiqueta = string.Empty;
-                                                    if (diasRestantes <= 10)
-                                                    {
-                                                        etiqueta = "Urgente";
-                                                        claseEtiqueta = "badge bg-danger";
-                                                    }
-                                                    else if (diasRestantes <= 20)
-                                                    {
-                                                        etiqueta = "Importante";
-                                                        claseEtiqueta = "badge bg-warning";
-                                                    }
-                                                    else if (diasRestantes <= 30)
-                                                    {
-                                                        etiqueta = "Próximo";
-                                                        claseEtiqueta = "badge bg-info";
-                                                    }
-                                                }
-
-                                                <!-- Mostrar la etiqueta de advertencia -->
-                                                <span class="badge @claseEtiqueta">@etiqueta</span>
-
-                                                <!-- Mostrar la fecha de vencimiento del contrato -->
-                                                @Html.DisplayFor(modelItem => contrato.FechaFin)
-                                            </td>
-                                        </tr>
-                                    }
-                                 }
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+               
 
             </div>
             <div class="row">
@@ -440,74 +362,97 @@
                         </div>
                     </div>
                 </section>
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Contratos por Vencer</h3>
 
-                <div class="col-md-6">
-                   
-                        <div class="card card-custom card-outline">                          
-                            <div class="card-header">
-                                <h3 class="card-title">
-
-                                  Accesos Directos
-                                </h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                      
-                      
-                            <ul class="icon-list">
-                                <li class="icon-container">
-                                    <div class="icon-wrapper">
-                                        <a asp-controller="EmpleadoContacto" asp-action="Index">
-                                            <i class="fas fa-exclamation-circle fa-4x icon-custom-color"></i>
-                                        </a>
-                                        <span class="users-list-name">Contacto de Emergencia</span>
-                                    </div>
-                                </li>
-                                <li class="icon-container">
-                                    <div class="icon-wrapper">
-                                        <a asp-controller="EmpleadoAusencium" asp-action="Index">
-                                            <i class="fas fa-user-times fa-4x icon-custom-color"></i>
-                                        </a>
-                                        <span class="users-list-name">Ausencia</span>
-                                    </div>
-                                </li>
-                                <li class="icon-container">
-                                    <div class="icon-wrapper">
-                                        <a asp-controller="EmpleadoContacto" asp-action="Index">
-                                            <i class="fas fa-file-contract fa-4x icon-custom-color"></i>
-                                        </a>
-                                        <span class="users-list-name">Contratos</span>
-                                    </div>
-                                </li>
-                                <li class="icon-container">
-                                    <div class="icon-wrapper">
-                                        <a asp-controller="Empleado" asp-action="Index">
-                                            <i class="fas fa-user fa-4x icon-custom-color"></i>
-                                        </a>
-                                        <span class="users-list-name">Empleado</span>
-                                    </div>
-                                </li>
-
-
-                            </ul>
-                            <!-- /.users-list -->                      
                         </div>
-                 
-                </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Tipo de contrato</th>
+                                        <th>Fecha de Vencimiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.ContratosPorVencer == null || !Model.ContratosPorVencer.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">No hay datos disponibles</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var contrato in Model.ContratosPorVencer)
+                                        {
+                                            <tr>
+                                                @if (contrato.IdEmpleadoNavigation != null)
+                                                {
+                                                    <td>@Html.DisplayFor(modelItem => contrato.IdEmpleadoNavigation.NombreCompleto)</td>
+                                                }
+                                                @if (contrato.IdTipoContratoNavigation != null)
+                                                {
+                                                    <td>@Html.DisplayFor(modelItem => contrato.IdTipoContratoNavigation.NombreTipoContrato)</td>
+                                                }
+                                                <td>
+                                                    @{
+                                                        // Crear un nuevo objeto DateTime usando el año, mes y día de la fecha de vencimiento del contrato
+                                                        DateTime fechaVencimiento = new DateTime(contrato.FechaFin.Year, contrato.FechaFin.Month, contrato.FechaFin.Day);
+
+                                                        // Calcular la diferencia en días entre la fecha de vencimiento del contrato y la fecha actual
+                                                        int diasRestantes = (fechaVencimiento - DateTime.Today).Days;
+
+
+                                                        // Determinar qué etiqueta de advertencia mostrar en función de los días restantes
+                                                        string etiqueta = string.Empty;
+                                                        string claseEtiqueta = string.Empty;
+                                                        if (diasRestantes <= 10)
+                                                        {
+                                                            etiqueta = "Urgente";
+                                                            claseEtiqueta = "badge bg-danger";
+                                                        }
+                                                        else if (diasRestantes <= 20)
+                                                        {
+                                                            etiqueta = "Importante";
+                                                            claseEtiqueta = "badge bg-warning";
+                                                        }
+                                                        else if (diasRestantes <= 30)
+                                                        {
+                                                            etiqueta = "Próximo";
+                                                            claseEtiqueta = "badge bg-info";
+                                                        }
+                                                    }
+
+                                                    <!-- Mostrar la etiqueta de advertencia -->
+                                                    <span class="badge @claseEtiqueta">@etiqueta</span>
+
+                                                    <!-- Mostrar la fecha de vencimiento del contrato -->
+                                                    @Html.DisplayFor(modelItem => contrato.FechaFin)
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+               
 
             </div>
             <!-- Main row -->
             <div class="row">
-                <section class="col-lg-6 connectedSortable">
-                    <!-- PIE CHART -->
+                <div class="col-md-6">
+
                     <div class="card card-custom card-outline">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="far fa-chart-bar"></i>
-                                Empleados por Departamento
+
+                                Accesos Directos
                             </h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -515,19 +460,48 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body">
-                            @if (hasDataDept)
-                            {
-                                <canvas id="pieChart3" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
-                            }
-                            else
-                            {
-                                <p>Aún no hay datos disponibles</p>
-                            }
-                        </div>
-                        <!-- /.card-body-->
+
+
+                        <ul class="icon-list">
+                            <li class="icon-container">
+                                <div class="icon-wrapper">
+                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                        <i class="fas fa-exclamation-circle fa-4x icon-custom-color"></i>
+                                    </a>
+                                    <span class="users-list-name">Contacto de Emergencia</span>
+                                </div>
+                            </li>
+                            <li class="icon-container">
+                                <div class="icon-wrapper">
+                                    <a asp-controller="EmpleadoAusencium" asp-action="Index">
+                                        <i class="fas fa-user-times fa-4x icon-custom-color"></i>
+                                    </a>
+                                    <span class="users-list-name">Ausencia</span>
+                                </div>
+                            </li>
+                            <li class="icon-container">
+                                <div class="icon-wrapper">
+                                    <a asp-controller="EmpleadoContacto" asp-action="Index">
+                                        <i class="fas fa-file-contract fa-4x icon-custom-color"></i>
+                                    </a>
+                                    <span class="users-list-name">Contratos</span>
+                                </div>
+                            </li>
+                            <li class="icon-container">
+                                <div class="icon-wrapper">
+                                    <a asp-controller="Empleado" asp-action="Index">
+                                        <i class="fas fa-user fa-4x icon-custom-color"></i>
+                                    </a>
+                                    <span class="users-list-name">Empleado</span>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                        <!-- /.users-list -->
                     </div>
-                </section>
+
+                </div>
 
                 <section class="col-lg-6 connectedSortable">
                     <div class="card card-custom card-outline">
@@ -556,8 +530,40 @@
                     </div>
                 </section>
 
+              
+
+            </div>
+
+            <div class="row">
                 <section class="col-lg-6 connectedSortable">
-                    <div class="card card-custom card-outline" >
+                    <!-- PIE CHART -->
+                    <div class="card card-custom card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="far fa-chart-bar"></i>
+                                Empleados por Departamento
+                            </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if (hasDataDept)
+                            {
+                                <canvas id="pieChart3" style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                            }
+                            else
+                            {
+                                <p>Aún no hay datos disponibles</p>
+                            }
+                        </div>
+                        <!-- /.card-body-->
+                    </div>
+                </section>
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card card-custom card-outline">
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="far fa-chart-bar"></i>
@@ -581,9 +587,7 @@
                         </div>
                     </div>
                 </section>
-
             </div>
-
 
         </div>
         <!-- /.row (main row) -->

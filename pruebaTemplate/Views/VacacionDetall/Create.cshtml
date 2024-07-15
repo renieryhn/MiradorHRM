@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="card card-primary">
         <div class="card-header" style="background-color: var(--blue);">
-            <h3 class="card-title">Crear VacacionDetalle</h3>
+            <h3 class="card-title">Crear Vacaciones Detalle</h3>
         </div>
         <form asp-action="Create">
             <div class="card-body">
@@ -19,12 +19,12 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="IdVacacion" class="control-label"></label>
-                                <select asp-for="IdVacacion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdVacacion" id="IdVacacion">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado" id="IdEmpleado">
                                     <option></option>
                                 </select>
                             </div>
-
+                           
                             <div class="form-group">
                                 <label asp-for="FechaSolicitud" class="control-label"></label>
                                 <input asp-for="FechaSolicitud" id="FechaSolicitud" class="form-control" type="date" required />
@@ -32,7 +32,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaInicio" class="control-label"></label>
-                                <input asp-for="FechaInicio" class="form-control" type="date" required />
+                                <input asp-for="FechaInicio" class="form-control" id="FechaInicio" type="date" required />
                                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -44,8 +44,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="IdEmpleado" class="control-label"></label>
-                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado" id="IdEmpleado">
+                                <label asp-for="IdVacacion" class="control-label"></label>
+                                <select asp-for="IdVacacion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdVacacion" id="IdVacacion" disabled>
                                     <option></option>
                                 </select>
                             </div>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaFin" class="control-label"></label>
-                                <input asp-for="FechaFin" class="form-control" type="date" required />
+                                <input asp-for="FechaFin" class="form-control" id="FechaFin" type="date" required />
                                 <span asp-validation-for="FechaFin" class="text-danger"></span>
                             </div>
 
@@ -65,7 +65,7 @@
                                 <input asp-for="AprobadoPor" class="form-control" hidden />
                             </div>
                             <div class="form-group">
-                                <input asp-for="DiasAprobados" id="DiasAprobados" class="form-control" hidden />
+                                <input asp-for="DiasAprobados" id="DiasAprobados" class="form-control"  hidden/>
                             </div>
                             <div class="form-group">
                                 <input asp-for="ComentariosAprobador" class="form-control" hidden />
@@ -73,21 +73,21 @@
                         </div>
 
                        <div class="col-md-4">
-    <label></label>
-    <div class="info-box bg-info mt-1">
-        <span class="info-box-icon"><i class="fa fa-plane"></i></span>
-        <div class="info-box-content">
-            <span class="info-box-text">Días Disponibles</span>
-            <span class="info-box-number" id="diasDisponibles">0</span>
-            <div class="progress">
-                <div class="progress-bar" style="width: 0%"></div>
-            </div>
-            <span class="progress-description" id="porcentaje"></span>
-        </div>
-        <!-- /.info-box-content -->
-    </div>
-    <!-- /.info-box -->
-</div>
+                    <label></label>
+                    <div class="info-box bg-info mt-1">
+                        <span class="info-box-icon"><i class="fa fa-plane"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Días Disponibles</span>
+                            <span class="info-box-number" id="diasDisponibles">0</span>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-description" id="porcentaje"></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
 
                     </div>
                 </div>
@@ -103,35 +103,97 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const fechaSolicitud = document.getElementById("FechaSolicitud");
-                const fechaInicio = document.getElementById("FechaInicio");
-                const fechaFin = document.getElementById("FechaFin");
-                const diasAprobados = document.getElementById("DiasAprobados");
-                const numeroDiasSolicitados = document.getElementById("NumeroDiasSolicitados");
 
-                const today = new Date().toISOString().split('T')[0];
-                fechaSolicitud.value = today;
-
-                fechaInicio.addEventListener("change", calcularDias);
-                fechaFin.addEventListener("change", calcularDias);
-
-                function calcularDias() {
-                    const inicio = new Date(fechaInicio.value);
-                    const fin = new Date(fechaFin.value);
-
-                    if (inicio && fin && fin >= inicio) {
-                        const tiempoDiferencia = fin - inicio;
-                        const diasDiferencia = tiempoDiferencia / (1000 * 3600 * 24) + 1; // Sumar 1 para incluir el día de inicio
-                        diasAprobados.value = diasDiferencia;
-                        numeroDiasSolicitados.value = diasDiferencia;
+            $(document).ready(function () {
+                //Validaciones Vacaciones------------
+                $('#IdEmpleado').change(function () {
+                    var idEmpleado = $(this).val();
+                    if (idEmpleado) {
+                        $.getJSON('@Url.Action("GetVacacionesByEmpleado", "VacacionDetall")', { idEmpleado: idEmpleado }, function (data) {
+                            var opciones = '<option value="">Seleccione una vacación</option>';
+                            $.each(data, function (index, item) {
+                                opciones += '<option value="' + item.idVacacion + '">' + item.periodoVacacional + '</option>';
+                            });
+                            $('#IdVacacion').html(opciones).prop('disabled', false);
+                        });
                     } else {
-                        diasAprobados.value = 0;
-                        numeroDiasSolicitados.value = 0;
+                        $('#IdVacacion').html('<option value="">Seleccione una vacación</option>').prop('disabled', true);
                     }
-                }
+                });
 
+                //fechas validaciones------------
+                // Deshabilitar fechas anteriores a hoy para FechaInicio
+                var today = new Date().toISOString().split('T')[0];
+                $('#FechaInicio').attr('min', today);
+
+                // Deshabilitar fechas anteriores a FechaInicio para FechaFin
+                $('#FechaInicio').change(function () {
+                    var startDate = $(this).val();
+                    $('#FechaFin').attr('min', startDate);
+                });
+
+                // Validar que FechaFin no sea menor que FechaInicio
+                $('#FechaFin').change(function () {
+                    var endDate = $(this).val();
+                    var startDate = $('#FechaInicio').val();
+                    if (endDate < startDate) {
+                        alert('La fecha de fin no puede ser menor que la fecha de inicio');
+                        $(this).val('');
+                    }
+                });
             });
+          
+   document.addEventListener("DOMContentLoaded", function () {
+    const fechaSolicitud = document.getElementById("FechaSolicitud");
+    const fechaInicio = document.getElementById("FechaInicio");
+    const fechaFin = document.getElementById("FechaFin");
+    const diasAprobados = document.getElementById("DiasAprobados");
+    const numeroDiasSolicitados = document.getElementById("NumeroDiasSolicitados");
+   
+
+    const today = new Date().toISOString().split('T')[0];
+    fechaSolicitud.value = today;
+
+    fechaInicio.addEventListener("change", calcularDias);
+    fechaFin.addEventListener("change", calcularDias);
+
+    function calcularDias() {
+        const inicio = new Date(fechaInicio.value);
+        const fin = new Date(fechaFin.value);
+
+        if (inicio && fin && fin >= inicio) {
+            const tiempoDiferencia = fin - inicio;
+            const diasDiferencia = tiempoDiferencia / (1000 * 3600 * 24) + 1; // Sumar 1 para incluir el día de inicio
+            // numeroDiasSolicitados.value = diasDiferencia;
+
+            $.ajax({
+                url: '/VacacionDetall/CalcularDiasVacaciones',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    fechaInicio: fechaInicio.value,
+                    fechaFin: fechaFin.value,
+                    numeroDiasSolicitados: diasDiferencia
+                }),
+                success: function(data) {
+                    diasAprobados.value = data.diasAprobados;
+                    numeroDiasSolicitados.value = data.diasAprobados; 
+                    console.log('Dias Festivos:', data.diasFestivos);
+                    console.log('Dias Aprobados:', data.diasAprobados);
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    diasAprobados.value = 0;
+                }
+            });
+        } else {
+            diasAprobados.value = 0;
+            numeroDiasSolicitados.value = 0;
+        }
+    }
+});
+
+
 
         $(document).ready(function () {
     const idEmpleado = $("#IdEmpleado");

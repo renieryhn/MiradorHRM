@@ -26,31 +26,63 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
         }
 
-        // GET: Vacacion
-        public async Task<IActionResult> Index(int pg, string? filter)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
-            List<Vacacion> registros;
-            if (filter != null)
+            IQueryable<Vacacion> query = _context.Vacacions;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.Vacacions.Where(r => r.Observaciones.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+                
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentEstado = estado;
+
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.Vacacions.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.Vacacions.Include(v => v.IdEmpleadoNavigation);
+            var planillaContext = await _context.EmpleadoDeduccions.ToListAsync();
 
-            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
             return View(data);
+
         }
-         public ActionResult Download()
+
+
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<Vacacion>? data = null;

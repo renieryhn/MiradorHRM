@@ -9,8 +9,9 @@ public partial class Nomina
     [Key]
     public int IdNomina { get; set; }
 
+
+    //[Required(ErrorMessage = "El Id de Tipo de Nómina es requerido")]
     [Display(Name = "Tipo de Nómina")]
-    [Required(ErrorMessage = "El Id de Tipo de Nómina es requerido")]
     public int IdTipoNomina { get; set; }
 
     [Display(Name = "Comentarios")]

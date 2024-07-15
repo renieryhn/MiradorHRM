@@ -29,28 +29,63 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: VacacionDetall
-        public async Task<IActionResult> Index(int pg, string? filter)
+       
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
-            List<VacacionDetalle> registros;
-            if (filter != null)
+            IQueryable<VacacionDetalle> query = _context.VacacionDetalles;
+
+            if (!String.IsNullOrEmpty(filter))
             {
-                registros = await _context.VacacionDetalles.Where(r => r.IdVacacionNavigation.ModificadoPor.ToLower().Contains(filter.ToLower())).ToListAsync();
+                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+
+            }
+
+            ViewBag.CurrentFilter = filter;
+            ViewBag.CurrentIdEmpleado = idEmpleado;
+            ViewBag.CurrentEstado = estado;
+
+
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = query.Count();
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = query.Skip(recSkip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+
+            var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+            if (idEmpleado != null)
+            {
+                ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             }
             else
             {
-                registros = await _context.VacacionDetalles.ToListAsync();
+                ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
-            const int pageSize = 10;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            var planillaContext = _context.VacacionDetalles.Include(v => v.IdEmpleadoNavigation).Include(v => v.IdVacacionNavigation);
+            var planillaContext = await _context.EmpleadoDeduccions.ToListAsync();
+            var IdVacacionNavigation = await _context.Vacacions.ToListAsync();
+
             return View(data);
+
         }
-         public ActionResult Download()
+        public ActionResult Download()
          {
              ListtoDataTableConverter converter = new ListtoDataTableConverter();
              List<VacacionDetalle>? data = null;
@@ -95,10 +130,21 @@ namespace PlanillaPM.Controllers
         {
             ViewBag.Estado = Enum.GetValues(typeof(Estado));
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
-            ViewData["IdVacacion"] = new SelectList(_context.Vacacions, "IdVacacion", "PeriodoVacacional");
+            ViewData["IdVacacion"] = new SelectList(Enumerable.Empty<SelectListItem>(), "IdVacacion", "PeriodoVacacional");
 
             return View();
         }
+        [HttpGet]
+        public JsonResult GetVacacionesByEmpleado(int idEmpleado)
+        {
+            var vacaciones = _context.Vacacions
+                .Where(v => v.IdEmpleado == idEmpleado)
+                .Select(v => new { v.IdVacacion, v.PeriodoVacacional })
+                .ToList();
+
+            return Json(vacaciones);
+        }
+
 
         [HttpGet]
         public async Task<JsonResult> ObtenerDiasDisponibles(int idEmpleado, int idVacacion)
@@ -118,6 +164,10 @@ namespace PlanillaPM.Controllers
                 .Where(v => v.IdEmpleado == idEmpleado && v.IdVacacion == idVacacion)
                 .ToListAsync();
 
+            var diasfestivos = await _context.DiaFestivos.ToListAsync();
+
+            
+
             // Suma los días solicitados
             int diasUsados = vacacionesSolicitadas.Sum(v => v.DiasPendientes);
 
@@ -130,6 +180,41 @@ namespace PlanillaPM.Controllers
             return Json(new { success = true, diasDisponibles, porcentaje });
         }
 
+        public async Task<int> CalcularDiasFestivosAsync(DateOnly fechaInicio, DateOnly fechaFin)
+        {
+            var diasFestivos = await _context.DiaFestivos
+                .Where(df => df.FechaDesde <= fechaFin && df.FechaHasta >= fechaInicio)
+                .ToListAsync();
+
+            int diasFestivosEnRango = diasFestivos
+                .Where(df => (df.FechaDesde >= fechaInicio && df.FechaDesde <= fechaFin) ||
+                             (df.FechaHasta >= fechaInicio && df.FechaHasta <= fechaFin))
+                .Sum(df => (df.FechaHasta.ToDateTime(new TimeOnly(0, 0)) - df.FechaDesde.ToDateTime(new TimeOnly(0, 0))).Days + 1);
+
+            return diasFestivosEnRango;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalcularDiasVacaciones([FromBody] CalcularDiasVacacionesRequest request)
+        {
+            DateOnly fechaInicio = DateOnly.Parse(request.FechaInicio);
+            DateOnly fechaFin = DateOnly.Parse(request.FechaFin);
+
+            int diasFestivos = await CalcularDiasFestivosAsync(fechaInicio, fechaFin);
+            int diasAprobados = request.NumeroDiasSolicitados - diasFestivos;
+
+            if (diasAprobados < 0) diasAprobados = 0;
+
+            return Json(new { success = true, diasAprobados,  diasFestivos });
+        }
+
+
+        public class CalcularDiasVacacionesRequest
+        {
+            public string FechaInicio { get; set; }
+            public string FechaFin { get; set; }
+            public int NumeroDiasSolicitados { get; set; }
+        }
 
 
         // POST: VacacionDetall/Create
@@ -141,11 +226,22 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(vacacionDetalle, true);
-                _context.Add(vacacionDetalle);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+
+                bool tieneSolicitudPendiente = _context.VacacionDetalles
+                .Any(v => v.IdEmpleado == vacacionDetalle.IdEmpleado && v.EstadoSolicitud == Estado.Pendiente);
+
+                if (tieneSolicitudPendiente)
+                {
+                    TempData["error"] = "Error: El empleado ya tiene una solicitud pendiente y no puede realizar otra.";
+                }
+                else
+                {
+                    SetCamposAuditoria(vacacionDetalle, true);
+                    _context.Add(vacacionDetalle);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
             else
             {

@@ -73,6 +73,7 @@ public partial class Viatico
 
     public string ModificadoPor { get; set; } = null!;
 
+    [Display(Name = "Empleado")]
     public virtual Empleado IdEmpleadoNavigation { get; set; } = null!;
 
     public virtual ICollection<ViaticoDetalle> ViaticoDetalles { get; set; } = new List<ViaticoDetalle>();

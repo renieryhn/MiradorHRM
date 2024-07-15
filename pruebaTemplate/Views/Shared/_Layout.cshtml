@@ -158,22 +158,31 @@
            
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <li class="nav-item active">
-                        <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Home" asp-action="Index">
-                            <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
-                            <p style="color: var(--GrisMenu);">
-                                <strong>Inicio</strong>
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-controller="Home" asp-action="DashboardNomina">
-                            <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
-                            <p style="color: var(--GrisMenu);">
-                                <strong>Inicio2</strong>
-                            </p>
-                        </a>
-                    </li>
+
+                     @if (User.IsInRole("rrhh"))
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Home" asp-action="Index">
+                                <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
+                                <p style="color: var(--GrisMenu);">
+                                    <strong>Dashboard RRHH</strong>
+                                </p>
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Nomina"))
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-controller="Home" asp-action="DashboardNomina">
+                                <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
+                                <p style="color: var(--GrisMenu);">
+                                    <strong>Dashboard Nomina</strong>
+                                </p>
+                            </a>
+                        </li>
+                    }
+                    
+                   
 
                     <li class="nav-item active">
                         <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Empleado" asp-action="Index">

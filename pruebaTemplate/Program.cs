@@ -106,7 +106,7 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
     Opciones =>
     {
         Opciones.LoginPath = "/usuario/login";
-        Opciones.AccessDeniedPath = "/usuario/login";
+        Opciones.AccessDeniedPath = "/Home/NoPermissionAccess";
     });
 
 

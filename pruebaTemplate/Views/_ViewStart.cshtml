@@ -1,3 +1,78 @@
-﻿@{
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.AspNetCore.Mvc.Routing
+@using PlanillaPM.Models
+@using PlanillaPM.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject PlanillaContext _context
+@inject IUrlHelperFactory UrlHelperFactory
+@inject UserManager<Usuario> UserManager
+@inject SignInManager<Usuario> SignInManager
+
+@{
     Layout = "_Layout";
+    List<string> userPermissions = new List<string>();
+
+    try
+    {
+        var urlHelper = UrlHelperFactory.GetUrlHelper(ViewContext);
+        var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+        var actionName = ViewContext.RouteData.Values["action"].ToString();
+        var viewName = ViewContext.View.Path;
+        var userName = User.Identity.Name;
+
+        if (!User.IsInRole("SuperAdmin"))
+        {
+            if (controllerName != "Usuario" && controllerName != "Home" && controllerName != "NoPermissionAccess")
+            {
+                var ventana = _context.Ventana.FirstOrDefault(v => v.Nombre == $"{controllerName}");
+                if (ventana != null)
+                {
+                    var user = await UserManager.FindByNameAsync(userName);
+                    var roles = await UserManager.GetRolesAsync(user);
+
+                    foreach (var role in roles)
+                    {
+                        var roleId = _context.Roles.FirstOrDefault(r => r.Name == role)?.Id;
+                        if (roleId != null)
+                        {
+                            var roleClaims = _context.RoleClaims.Where(rc => rc.RoleId == roleId && rc.ClaimType == "Permission").ToList();
+                            userPermissions.AddRange(roleClaims.Select(rc => rc.ClaimValue));
+                        }
+                    }
+                }
+
+                var hasAccess = false;
+                switch (actionName)
+                {
+                    case "Index":
+                        hasAccess = userPermissions.Contains("View");
+                        break;
+                    case "Create":
+                        hasAccess = userPermissions.Contains("Create");
+                        break;
+                    case "Edit":
+                        hasAccess = userPermissions.Contains("Edit");
+                        break;
+                    case "Details":
+                        hasAccess = userPermissions.Contains("View");
+                        break;
+                    case "Delete":
+                        hasAccess = userPermissions.Contains("Delete");
+                        break;
+                }
+
+                if (!hasAccess)
+                {
+                    var noPermissionUrl = urlHelper.Action("NoPermissionAccess", "Home");
+                    Context.Response.Redirect(noPermissionUrl);
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+    ViewData["UserPermissions"] = userPermissions;
 }

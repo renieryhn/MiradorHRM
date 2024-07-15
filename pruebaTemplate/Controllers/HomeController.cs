@@ -510,7 +510,10 @@ public class HomeController : Controller
         }
 
 
-
+    public IActionResult NoPermissionAccess()
+    {
+        return View();
+    }
     public IActionResult Privacy()
         {
             return View();

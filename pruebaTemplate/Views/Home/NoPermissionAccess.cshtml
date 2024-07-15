@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+<title>@ViewData["Title"]</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #495057;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .error-container {
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+
+    .fa-exclamation-triangle {
+        color: #ffc107;
+        margin-right: 10px;
+    }
+
+    .error-code {
+        font-size: 5rem;
+        color: #818290;
+        margin-bottom: 20px;
+    } 
+
+    
+</style>
+
+
+<div class="container-flui">
+    <div class="error-container">
+        <div class="error-code text-center">403</div>      
+        <div class="text-center">
+            <h1><i class="fas fa-exclamation-triangle"></i> Acceso Denegado</h1>
+            <p>Lo sentimos, no tiene permisos suficientes para acceder a esta página.</p>
+        </div>
+    </div>
+</div>

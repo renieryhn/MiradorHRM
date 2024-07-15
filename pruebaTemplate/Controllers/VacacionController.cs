@@ -124,7 +124,7 @@ namespace PlanillaPM.Controllers
         // GET: Vacacion/Create
         public IActionResult Create()
         {
-           
+            
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();
         }
@@ -135,6 +135,28 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Obtener el empleado
+                var empleado = await _context.Empleados.FindAsync(vacacion.IdEmpleado);
+                if (empleado == null)
+                {
+                    TempData["error"] = "Error: Empleado no encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Verificar antigüedad del empleado
+                int antiguedad = empleado.Antiguedad;
+
+                // Obtener el año del PeriodoVacacional
+                int periodoVacacionalYear = vacacion.PeriodoVacacional;
+
+                // Comparar con la fecha de inicio del empleado si no es nulo
+                if (antiguedad == 0 || (empleado.FechaInicio.HasValue && empleado.FechaInicio.Value.Year == periodoVacacionalYear))
+                {
+                    TempData["error"] = "Error: El empleado aún no cumple los requisitos de antigüedad para tener días de vacaciones.";
+                    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", vacacion.IdEmpleado);
+                    return View(vacacion);
+                }
+
                 SetCamposAuditoria(vacacion, true);
                 _context.Add(vacacion);
                 await _context.SaveChangesAsync();
@@ -161,6 +183,7 @@ namespace PlanillaPM.Controllers
 
             return Json(new { antiguedad = empleado.Antiguedad });
         }
+
 
         [HttpGet]
         public async Task<JsonResult> CalcularVacaciones(int idEmpleado, int year)
@@ -235,9 +258,6 @@ namespace PlanillaPM.Controllers
                 return Json(new { success = false, message = "Ocurrió un error al calcular las vacaciones.", error = ex.Message });
             }
         }
-
-
-
 
         [HttpGet]
         public async Task<JsonResult> BuscarHistorialVacaciones(int idEmpleado)

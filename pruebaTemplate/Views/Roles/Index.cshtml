@@ -69,10 +69,12 @@
                                                             Action
                                                         </button>
                                                         <div class="dropdown-menu shadow animated--grow-in">
+                                                            @if (role.Name != "SuperAdmin")
+                                                            {
                                                             <a class="dropdown-item" asp-controller="Roles" asp-action="Edit" asp-route-roleId="@role.Id">
                                                                 <i class="fas fa-pencil-alt"></i> Edit
                                                             </a>
-
+                                                            
                                                             <form id="delete-role-form" class="delete-role-form" asp-action="Delete" asp-controller="Roles" method="post">
                                                                 @Html.AntiForgeryToken()
                                                                 <input type="hidden" id="roleId" name="roleId" value="" />
@@ -80,11 +82,6 @@
                                                                     <i class="fa fa-trash"></i> Eliminar Rol
                                                                 </button>
                                                             </form>
-
-
-
-                                                            @if (role.Name != "SuperAdmin")
-                                                            {
 
                                                                 <a style='margin-right:16px' asp-controller="Permission" asp-action="Index" asp-route-roleId="@role.Id" class="dropdown-item">
                                                                     <i class="fas fa-wrench"></i> Administrar Permisos

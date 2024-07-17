@@ -135,30 +135,77 @@ namespace PlanillaPM.Controllers
         public IActionResult Create()
         {
             ViewBag.NominaEstado = Enum.GetValues(typeof(NominaEstado));
-            ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina");
+            ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas.Where(r => r.Activo), "IdTipoNomina", "NombreTipoNomina");
             return View();
         }
 
         // POST: Nomina/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdNomina,IdTipoNomina,Comentarios,PeriodoFiscal,Mes,FechaPago,TotalIngresos,TotalDeducciones,TotalImpuestos,TotalEmpleadosEnNomina,PagoNeto,EstadoNomina,AprobadaPor,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Nomina nomina)
+        //{
+        //    try
+        //    {
+
+        //        if (ModelState.IsValid)
+        //        {
+        //            SetCamposAuditoria(nomina, true);
+        //            _context.Add(nomina);
+        //            await _context.SaveChangesAsync();
+        //            TempData["success"] = "El registro ha sido creado exitosamente.";
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //        else
+        //        {
+        //            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //            TempData["error"] = "Error: " + message;
+        //        }
+        //        ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina", nomina.IdTipoNomina);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        TempData["error"] = "Error: " + ex.Message;
+        //    }
+        //        return View(nomina);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdNomina,IdTipoNomina,Comentarios,PeriodoFiscal,Mes,FechaPago,TotalIngresos,TotalDeducciones,TotalImpuestos,TotalEmpleadosEnNomina,PagoNeto,EstadoNomina,AprobadaPor,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Nomina nomina)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(nomina, true);
-                _context.Add(nomina);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(nomina, true);
+                    _context.Add(nomina);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error: " + message;
+                }
             }
-            else
+            catch (DbUpdateException dbEx)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("IX_Nomina"))
+                {
+                    TempData["error"] = "No se puede repetir el Tipo de Nómina, Periodo Fiscal y Mes. Por favor, verifique los datos.";
+                }
+                else
+                {
+                    TempData["error"] = "Error: " + dbEx.Message;
+                }
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Error: " + ex.Message;
+            }
+
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina", nomina.IdTipoNomina);
             return View(nomina);
         }

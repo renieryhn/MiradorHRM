@@ -136,10 +136,10 @@ public class HomeController : Controller
            .Select(g => new NominaDataCharts
            {
                Mes = g.Key,
-               TotalIngresosCharts = g.Sum(n => n.TotalIngresos),
-               TotalDeduccionesCharts = g.Sum(n => n.TotalDeducciones),
-               TotalImpuestosCharts = g.Sum(n => n.TotalImpuestos),
-               PagoNetoCharts = g.Sum(n => n.PagoNeto)
+               TotalIngresosCharts = (decimal)g.Sum(n => n.TotalIngresos),
+               TotalDeduccionesCharts = (decimal)g.Sum(n => n.TotalDeducciones),
+               TotalImpuestosCharts = (decimal)g.Sum(n => n.TotalImpuestos),
+               PagoNetoCharts = (decimal)g.Sum(n => n.PagoNeto)
            }).ToListAsync();
 
             ViewBag.NominasData = nominasData;
@@ -181,10 +181,10 @@ public class HomeController : Controller
 
             var totales = new NominaTotales
             {
-                TotalIngresos = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalIngresos) : 0,
-                TotalDeducciones = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalDeducciones) : 0,
-                TotalImpuestos = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalImpuestos) : 0,
-                TotalEmpleadosEnNomina = nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalEmpleadosEnNomina) : 0
+                TotalIngresos = nominasDelMesActual.Any() ? (decimal)nominasDelMesActual.Sum(n => n.TotalIngresos) : 0,
+                TotalDeducciones = nominasDelMesActual.Any() ? (decimal)nominasDelMesActual.Sum(n => n.TotalDeducciones) : 0,
+                TotalImpuestos = nominasDelMesActual.Any() ? (decimal)nominasDelMesActual.Sum(n => n.TotalImpuestos) : 0,
+                TotalEmpleadosEnNomina = (int)(nominasDelMesActual.Any() ? nominasDelMesActual.Sum(n => n.TotalEmpleadosEnNomina) : 0)
             };
 
             return totales;
@@ -250,7 +250,7 @@ public class HomeController : Controller
         {
             var empleadoNominas = await _context.Nominas             
                 .Include(e => e.IdTipoNominaNavigation)
-                .Where(e => e.Activo && e.EstadoNomina == Nomina.NominaEstado.PendientedeAprobación)
+                .Where(e => e.Activo && e.EstadoNomina == Nomina.NominaEstado.AprobacionPendiente)
                 .ToListAsync();
 
             return empleadoNominas;

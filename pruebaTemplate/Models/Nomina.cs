@@ -6,6 +6,12 @@ namespace PlanillaPM.Models;
 
 public partial class Nomina
 {
+    public Nomina()
+    {
+        EstadoNomina = NominaEstado.EnTrabajo;
+    }
+
+
     [Key]
     public int IdNomina { get; set; }
 
@@ -15,8 +21,7 @@ public partial class Nomina
     public int IdTipoNomina { get; set; }
 
     [Display(Name = "Comentarios")]
-    [Required(ErrorMessage = "Los comentarios son requeridos")]
-    public string Comentarios { get; set; } = null!;
+    public string? Comentarios { get; set; }
 
     [Display(Name = "Periodo Fiscal")]
     [Required(ErrorMessage = "El periodo fiscal es requerido")]
@@ -31,24 +36,19 @@ public partial class Nomina
     public DateOnly FechaPago { get; set; }
 
     [Display(Name = "Total de Ingresos")]
-    [Required(ErrorMessage = "El total de ingresos es requerido")]
-    public decimal TotalIngresos { get; set; }
+    public decimal? TotalIngresos { get; set; }
 
     [Display(Name = "Total de Deducciones")]
-    [Required(ErrorMessage = "El total de deducciones es requerido")]
-    public decimal TotalDeducciones { get; set; }
+    public decimal? TotalDeducciones { get; set; }
 
     [Display(Name = "Total de Impuestos")]
-    [Required(ErrorMessage = "El total de impuestos es requerido")]
-    public decimal TotalImpuestos { get; set; }
+    public decimal? TotalImpuestos { get; set; }
 
     [Display(Name = "Total de Empleados en Nómina")]
-    [Required(ErrorMessage = "El total de empleados en nómina es requerido")]
-    public int TotalEmpleadosEnNomina { get; set; }
+    public int? TotalEmpleadosEnNomina { get; set; }
 
     [Display(Name = "Pago Neto")]
-    [Required(ErrorMessage = "El pago neto es requerido")]
-    public decimal PagoNeto { get; set; }
+    public decimal? PagoNeto { get; set; }
 
     /// <summary>
     /// En Trabajo, Pendiente de Aprobación, Aprobada, Rechazada, Pagada o Finalizada
@@ -78,15 +78,14 @@ public partial class Nomina
     public virtual ICollection<HorasExtra> HorasExtras { get; set; } = new List<HorasExtra>();
 
     [Display(Name = "Tipo Nomina")]
-    [Required(ErrorMessage = "El campo Tipo Nomina es requerido")]
-    public virtual TipoNomina IdTipoNominaNavigation { get; set; } = null!;
+    public virtual TipoNomina? IdTipoNominaNavigation { get; set; } = null!;
 
     public virtual ICollection<NominaDetalle> NominaDetalles { get; set; } = new List<NominaDetalle>();
 
     public enum NominaEstado
     {
         EnTrabajo = 1,
-        PendientedeAprobación = 2,
+        AprobacionPendiente = 2,
         Aprobada = 3,
         Rechazada = 4,
         Pagada = 5,

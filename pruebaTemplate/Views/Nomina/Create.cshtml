@@ -20,14 +20,15 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdTipoNomina" class="control-label"></label>
-                                <select asp-for="IdTipoNomina" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoNomina" >
+                                <select asp-for="IdTipoNomina" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdTipoNomina">
                                     <option></option>
                                 </select>
-                               
+                                <span asp-validation-for="IdTipoNomina" class="text-danger"></span>
                             </div>
+
                             <div class="form-group">
                                 <label asp-for="Comentarios" class="control-label"></label>
-                                <input asp-for="Comentarios" class="form-control" required/>
+                                <input asp-for="Comentarios" class="form-control" />
                                 <span asp-validation-for="Comentarios" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -45,19 +46,19 @@
                                 <input asp-for="FechaPago" class="form-control" type="date" required />
                                 <span asp-validation-for="FechaPago" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            @* <div class="form-group">
                                 <label asp-for="TotalIngresos" class="control-label"></label>
                                 <input asp-for="TotalIngresos" class="form-control" type="number" required />
                                 <span asp-validation-for="TotalIngresos" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
+                            </div> *@
+                           @*  <div class="form-group">
                                 <label asp-for="EstadoNomina">Estado:</label>
                                 <input asp-for="EstadoNomina" class="form-control" value="PendientedeAprobación"  readonly required />
                                 <span asp-validation-for="EstadoNomina" class="text-danger"></span>
-                            </div>
+                            </div> *@
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
+                            @* <div class="form-group">
                                 <label asp-for="TotalDeducciones" class="control-label"></label>
                                 <input asp-for="TotalDeducciones" class="form-control" type="number" required />
                                 <span asp-validation-for="TotalDeducciones" class="text-danger"></span>
@@ -86,7 +87,7 @@
                                 <label asp-for="ComentariosAprobador" class="control-label"></label>
                                 <input asp-for="ComentariosAprobador" class="form-control" />
                                 <span asp-validation-for="ComentariosAprobador" class="text-danger"></span>
-                            </div>
+                            </div> *@
                         </div>
 
                            
@@ -102,4 +103,26 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
 }
+
+    <script>
+        $(document).ready(function () {
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            if (month < 10) {
+                month = "0" + month;
+            }
+            if (day < 10) {
+                day = "0" + day;
+            }
+            var today = year + "-" + month + "-" + day;
+            $("#FechaPago").val(today);
+            $("#PeriodoFiscal").val(year);
+            $("#Mes").val(month);
+        });
+    </script>
+ 

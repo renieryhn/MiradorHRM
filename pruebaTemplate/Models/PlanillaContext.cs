@@ -1349,6 +1349,8 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
         {
             entity.HasKey(e => e.IdNomina);
 
+            entity.HasIndex(e => new { e.Mes, e.PeriodoFiscal, e.IdTipoNomina }).IsUnique();
+
             entity.ToTable("Nomina");
 
             entity.Property(e => e.Activo).HasDefaultValue(true);

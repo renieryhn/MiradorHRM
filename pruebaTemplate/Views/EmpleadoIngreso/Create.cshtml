@@ -22,26 +22,7 @@
                                 <select asp-for="IdIngreso" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdIngreso">
                                     <option></option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="IdEmpleado" class="control-label"></label>                            
-                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
-                                    <option></option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label asp-for="Tipo" class="control-label"></label>
-                                    <select asp-for="Tipo" id="TipoIngreso" class="form-control is-invalid" asp-items="@(new SelectList(ViewBag.TipoEstado, "Value", "Text"))">
-                                        <option value="">Seleccione un estado</option>
-                                    </select>
-                                    <span asp-validation-for="Tipo" class="text-danger"></span>
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
+                            </div>                           
                             <div class="form-group">
                                 <label asp-for="Monto" class="control-label"></label>
                                 <input asp-for="Monto" id="MontoIngreso" class="form-control" type="number" />
@@ -52,13 +33,28 @@
                                 <input asp-for="Formula" id="FormulaIngreso" class="form-control" type="number" />
                                 <span asp-validation-for="Formula" class="text-danger"></span>
                             </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="IdEmpleado" class="control-label"></label>
+                                <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
+                                    <option></option>
+                                </select>
+                            </div>
+                                                    
+                            <div class="form-group">
+                                <label asp-for="Tipo" class="control-label"></label>
+                                <select asp-for="Tipo" id="TipoIngreso" class="form-control is-invalid" asp-items="@(new SelectList(ViewBag.TipoEstado, "Value", "Text"))">
+                                    <option value="">Seleccione un estado</option>
+                                </select>
+                                <span asp-validation-for="Tipo" class="text-danger"></span>
+                            </div>
                             <div class="form-group">
                                 <label asp-for="Orden" class="control-label"></label>
                                 <input asp-for="Orden" id="OrdenIngreso" class="form-control" type="number" required />
                                 <span asp-validation-for="Orden" class="text-danger"></span>
                             </div>
-                        </div>
-                           
+                        </div>                           
                 </div>
             </div>
         </div>

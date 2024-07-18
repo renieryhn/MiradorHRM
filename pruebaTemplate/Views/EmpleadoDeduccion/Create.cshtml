@@ -23,32 +23,35 @@
                                 <option></option>
                                 </select>
                             </div>
+                           
+                            <div class="form-group">
+                                <label asp-for="Monto" class="control-label"></label>
+                                <input asp-for="Monto" id="MontoIngreso" class="form-control" />
+                                <span asp-validation-for="Monto" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Formula" class="control-label"></label>
+                                <input asp-for="Formula" id="FormulaIngreso" class="form-control" />
+                                <span asp-validation-for="Formula" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label asp-for="IdDeduccion" class="control-label"></label>
                                 <select asp-for="IdDeduccion" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdDeduccion">
                                     <option></option>
                                 </select>
                             </div>
+                     
                             <div class="form-group">
                                 <label asp-for="Tipo"></label>
                                 <select asp-for="Tipo" id="TipoIngreso" class="form-control is-invalid" asp-items="@(new SelectList(ViewBag.TipoEstado, "Value", "Text"))">
                                     <option value="">Seleccione un estado</option>
                                 </select>
-                                
-                                <span asp-validation-for="Tipo" class="text-danger"></span>
-                            </div>
-                        </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Monto" class="control-label"></label>
-                                <input asp-for="Monto" id="MontoIngreso" class="form-control" />
-                                <span asp-validation-for="Monto" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Formula" class="control-label"></label>
-                                <input asp-for="Formula" id="FormulaIngreso" class="form-control" />
-                                <span asp-validation-for="Formula" class="text-danger"></span>
+                                <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Orden" class="control-label"></label>

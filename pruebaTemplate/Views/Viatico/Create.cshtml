@@ -22,21 +22,36 @@
                                 <select asp-for="IdEmpleado" class="form-control select2bs4 is-invalid" asp-items="ViewBag.IdEmpleado">
                                     <option></option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Descripcion" class="control-label"></label>
-                                <input asp-for="Descripcion" class="form-control" required />
-                                <span asp-validation-for="Descripcion" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Fecha" class="control-label"></label>
-                                <input asp-for="Fecha" class="form-control" type="date" required />
-                                <span asp-validation-for="Fecha" class="text-danger"></span>
-                            </div>
+                            </div>                                                 
                             <div class="form-group">
                                 <label asp-for="TotalGastos" class="control-label"></label>
                                 <input asp-for="TotalGastos" class="form-control" type="number" required />
                                 <span asp-validation-for="TotalGastos" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BalancePendiente" class="control-label"></label>
+                                <input asp-for="BalancePendiente" class="form-control" type="number" required />
+                                <span asp-validation-for="BalancePendiente" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Estado">Estado:</label>
+                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.TipoEstado), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AprobadoPor" class="control-label"></label>
+                                <input asp-for="AprobadoPor" class="form-control" />
+                                <span asp-validation-for="AprobadoPor" class="text-danger"></span>
+                            </div>
+                           
+                      
+                        </div>
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Fecha" class="control-label"></label>
+                                <input asp-for="Fecha" class="form-control" type="date" required />
+                                <span asp-validation-for="Fecha" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="AdelantoRecibido" class="control-label"></label>
@@ -44,48 +59,35 @@
                                 <span asp-validation-for="AdelantoRecibido" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Estado">Estado:</label>
-                                @Html.DropDownListFor(model => model.Estado, new SelectList(ViewBag.TipoEstado), "Seleccione un estado", new { @class = "form-control select2bs4 is-invalid" })
-                                <span asp-validation-for="Estado" class="text-danger"></span>
-                            </div>
-                            <div class="form-group form-check form-switch ml-4">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" asp-for="Pagado" /> @Html.DisplayNameFor(model => model.Pagado)
-                                </label>
-                            </div>
-                      
-                        </div>
-                            
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="BalancePendiente" class="control-label"></label>
-                                <input asp-for="BalancePendiente" class="form-control" type="number" required />
-                                <span asp-validation-for="BalancePendiente" class="text-danger"></span>
+                                <label asp-for="NotasAdicionales" class="control-label"></label>
+                                <input asp-for="NotasAdicionales" class="form-control" />
+                                <span asp-validation-for="NotasAdicionales" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="FechaAprobacion" class="control-label"></label>
                                 <input asp-for="FechaAprobacion" class="form-control" type="date" />
                                 <span asp-validation-for="FechaAprobacion" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="AprobadoPor" class="control-label"></label>
-                                <input asp-for="AprobadoPor" class="form-control" />
-                                <span asp-validation-for="AprobadoPor" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="NotasAdicionales" class="control-label"></label>
-                                <input asp-for="NotasAdicionales" class="form-control" />
-                                <span asp-validation-for="NotasAdicionales" class="text-danger"></span>
-                            </div>
-
+                            </div>                                                   
                             <div class="form-group">
                                 <label asp-for="FechaPago" class="control-label"></label>
                                 <input asp-for="FechaPago" class="form-control" type="date" required />
                                 <span asp-validation-for="FechaPago" class="text-danger"></span>
                             </div>
                         </div>
-                                                    
-                </div>
+                        <div class="col-md-8">
+                            
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="control-label"></label>
+                                <input asp-for="Descripcion" class="form-control" required />
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check form-switch ml-4">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Pagado" /> @Html.DisplayNameFor(model => model.Pagado)
+                                </label>
+                            </div>
+                        </div>                       
+                    </div>
             </div>
         </div>
         <div class="card-footer">

@@ -291,9 +291,13 @@
                 success: function () {
                     if (!bulkUpdate) {
                         if (isChecked) {
+                            if (ventanaNombre) {
                             toastr.success(`Permiso ${permissionType} de la ventana "${ventanaNombre}" otorgado correctamente.`);
+                            }
                         } else {
+                            if (ventanaNombre) {
                             toastr.warning(`Permiso ${permissionType} de la ventana "${ventanaNombre}" removido correctamente.`);
+                            }
                         }
                     }
                     checkAllStates();

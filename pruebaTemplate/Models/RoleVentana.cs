@@ -6,7 +6,7 @@ namespace MiradorHRM.Models
     public class RoleVentana
     {
         public int Id { get; set; }
-        public string RoleId { get; set; }
+        public string RoleId { get; set; }      
         public int VentanaId { get; set; }
         public bool Ver { get; set; }
         public bool Crear { get; set; }

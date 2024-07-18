@@ -24,6 +24,9 @@
                             <div class="card-header" style="background-color: var(--blue);">
                                 <h3 class="card-title">Accesos</h3>
                                 <div class="card-tools">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cloneRoleModal">
+                                        Clonar Rol Actual
+                                    </button>
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                         <i class="fas fa-minus"></i>
                                     </button>
@@ -54,12 +57,59 @@
                                 <!-- /.row -->
                             </div>
                             <!-- /.card-body -->
-                       
+                                           
+                        </div>
 
+                    <div class="modal fade" id="cloneRoleModal" tabindex="-1" role="dialog" aria-labelledby="cloneRoleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="cloneRoleModalLabel">Clonar Rol</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="newRoleName">Nombre del nuevo rol</label>
+                                        <input type="text" class="form-control" id="newRoleName" placeholder="Ingrese el nombre del nuevo rol">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" onclick="cloneRole()">Crear y Clonar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div class="col-6">
-                            <h4>Ventanas Asignadas</h4>
-                            <table class="table table-bordered">
+                    </div>
+                <section class="col-lg-12 connectedSortable">
+                    <div class="card card-primary">
+                        <div class="card-header" style="background-color: var(--blue);">
+                            <h3 class="card-title">Accesos</h3>
+                            <div class="card-tools">                         
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-vertical">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <h4>Ventanas Asignadas</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                           @*  <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
@@ -69,12 +119,12 @@
                                         <th>Eliminar</th>
                                     </tr>
                                 </thead>
-                                    <tbody id="selectedVentanasTableBody">
-                                        @foreach (var roleVentana in Model.VentanasAsignadas)
+                                <tbody id="selectedVentanasTableBody">
+                                    @foreach (var roleVentana in Model.VentanasAsignadas)
+                                    {
+                                        var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
+                                        if (ventana != null)
                                         {
-                                            var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
-                                            if (ventana != null)
-                                            {
                                             <tr data-ventana-id="@ventana.Id">
                                                 <td>@ventana.Nombre</td>
                                                 <td><input type="checkbox" name="ver_@ventana.Id" @(roleVentana.Ver ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'ver', this.checked, '@ventana.Nombre')" /></td>
@@ -82,14 +132,53 @@
                                                 <td><input type="checkbox" name="editar_@ventana.Id" @(roleVentana.Editar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'editar', this.checked, '@ventana.Nombre')" /></td>
                                                 <td><input type="checkbox" name="eliminar_@ventana.Id" @(roleVentana.Eliminar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'eliminar', this.checked, '@ventana.Nombre')" /></td>
                                             </tr>
-                                            }
                                         }
-                                    </tbody>
+                                    }
+                                </tbody>
+                            </table> *@
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>
+                                            Ver<br />
+                                            <input type="checkbox" id="checkAllVer" onclick="toggleAll('ver', this)" />
+                                        </th>
+                                        <th>
+                                            Crear<br />
+                                            <input type="checkbox" id="checkAllCrear" onclick="toggleAll('crear', this)" />
+                                        </th>
+                                        <th>
+                                            Editar<br />
+                                            <input type="checkbox" id="checkAllEditar" onclick="toggleAll('editar', this)" />
+                                        </th>
+                                        <th>
+                                            Eliminar<br />
+                                            <input type="checkbox" id="checkAllEliminar" onclick="toggleAll('eliminar', this)" />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selectedVentanasTableBody">
+                                    @foreach (var roleVentana in Model.VentanasAsignadas)
+                                    {
+                                        var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
+                                        if (ventana != null)
+                                        {
+                                            <tr data-ventana-id="@ventana.Id">
+                                                <td>@ventana.Nombre</td>
+                                                <td><input type="checkbox" name="ver_@ventana.Id" @(roleVentana.Ver ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'ver', this.checked, '@ventana.Nombre')" class="ver-checkbox" /></td>
+                                                <td><input type="checkbox" name="crear_@ventana.Id" @(roleVentana.Crear ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'crear', this.checked, '@ventana.Nombre')" class="crear-checkbox" /></td>
+                                                <td><input type="checkbox" name="editar_@ventana.Id" @(roleVentana.Editar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'editar', this.checked, '@ventana.Nombre')" class="editar-checkbox" /></td>
+                                                <td><input type="checkbox" name="eliminar_@ventana.Id" @(roleVentana.Eliminar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'eliminar', this.checked, '@ventana.Nombre')" class="eliminar-checkbox" /></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
                             </table>
                         </div>
-                        </div>
                     </div>
-                   
+                </section>
                 </div>
                 <br />
             </div>
@@ -104,7 +193,36 @@
     <script>
 
 
+        function cloneRole() {
+            const originalRoleId = document.getElementById('cmbRoles').value;
+            const newRoleName = document.getElementById('newRoleName').value;
+
+            if (!newRoleName) {
+                toastr.error('Por favor, ingrese un nombre para el nuevo rol.');
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("CloneRole", "Permission")', // Ajusta el nombre del controlador según tu configuración
+                type: 'POST',
+                data: {
+                    originalRoleId: originalRoleId,
+                    newRoleName: newRoleName
+                },
+                success: function () {
+                    toastr.success('Rol clonado exitosamente.');
+                    $('#cloneRoleModal').modal('hide');
+                    // Aquí puedes agregar código para actualizar la lista de roles si es necesario
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error al clonar el rol:', error);
+                }
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
+
+            checkAllStates();
             const cmbRoles = document.getElementById('cmbRoles');
 
             cmbRoles.addEventListener('change', function () {
@@ -139,6 +257,27 @@
             });
         });
 
+
+
+        let bulkUpdate = false;
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            checkAllStates();       
+        });
+
+        function toggleAll(permission, checkbox) {
+            bulkUpdate = true; // Indicate that a bulk update is in progress
+            const checkboxes = document.querySelectorAll(`.${permission}-checkbox`);
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+            checkboxes.forEach(cb => {
+                const ventanaId = cb.closest('tr').getAttribute('data-ventana-id');
+                updatePermission('@Model.RoleId', ventanaId, permission, checkbox.checked, '');
+            });
+            setTimeout(() => { bulkUpdate = false; }, 100); // Reset the flag after a delay
+            toastr.success(`Permisos ${permission} actualizados correctamente para todas las ventanas.`);
+        }
+
         function updatePermission(roleId, ventanaId, permissionType, isChecked, ventanaNombre) {
             $.ajax({
                 url: '@Url.Action("UpdateVentanas", "Permission")',
@@ -150,16 +289,32 @@
                     isSelected: isChecked
                 },
                 success: function () {
-                    if (isChecked) {
-                        toastr.success(`Permiso ${permissionType} de la ventana "${ventanaNombre}" otorgado correctamente.`);
-                    } else {
-                        toastr.warning(`Permiso ${permissionType} de la ventana "${ventanaNombre}" removido correctamente.`);
+                    if (!bulkUpdate) {
+                        if (isChecked) {
+                            toastr.success(`Permiso ${permissionType} de la ventana "${ventanaNombre}" otorgado correctamente.`);
+                        } else {
+                            toastr.warning(`Permiso ${permissionType} de la ventana "${ventanaNombre}" removido correctamente.`);
+                        }
                     }
+                    checkAllStates();
                 },
                 error: function (xhr, status, error) {
                     toastr.error('Error al actualizar el permiso:', error);
                 }
             });
+        }
+
+
+        function checkAllStates() {
+            const permissionTypes = ['ver', 'crear', 'editar', 'eliminar'];
+            permissionTypes.forEach(permission => {
+                const allChecked = [...document.querySelectorAll(`.${permission}-checkbox`)].every(cb => cb.checked);
+                document.getElementById(`checkAll${capitalize(permission)}`).checked = allChecked;
+            });
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
         }
     </script>
 

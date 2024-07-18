@@ -227,13 +227,23 @@ namespace PlanillaPM.Controllers
             if (ModelState.IsValid)
             {
 
+                var vacacion = _context.Vacacions
+                    .FirstOrDefault(v => v.IdEmpleado == vacacionDetalle.IdEmpleado && v.IdVacacion == vacacionDetalle.IdVacacion);
+
+                // Si hay menos días pendientes que los solicitados, mostrar error
+                if (vacacion != null && vacacion.DiasPendientes < vacacionDetalle.NumeroDiasSolicitados)
+                {
+                    TempData["error"] = "Error: El empleado no cuenta con suficientes días.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 bool tieneSolicitudPendiente = _context.VacacionDetalles
                 .Any(v => v.IdEmpleado == vacacionDetalle.IdEmpleado && v.EstadoSolicitud == Estado.Pendiente);
 
                 if (tieneSolicitudPendiente)
                 {
                     TempData["error"] = "Error: El empleado ya tiene una solicitud pendiente y no puede realizar otra.";
-                }
+                } 
                 else
                 {
                     SetCamposAuditoria(vacacionDetalle, true);

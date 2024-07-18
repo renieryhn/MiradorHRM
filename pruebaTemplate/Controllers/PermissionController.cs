@@ -167,6 +167,67 @@ namespace PlanillaPM.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> CloneRole(string originalRoleId, string newRoleName)
+        {
+            // Verificar que el nombre del nuevo rol no esté vacío
+            if (string.IsNullOrEmpty(newRoleName))
+            {
+                return BadRequest("El nombre del nuevo rol no puede estar vacío.");
+            }
+
+            // Buscar el rol original por su Id
+            var originalRole = await _roleManager.FindByIdAsync(originalRoleId);
+            if (originalRole == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                // Crear el nuevo rol basado en el original
+                var newRole = new IdentityRole(newRoleName.Trim());
+
+                // Intentar crear el nuevo rol
+                var result = await _roleManager.CreateAsync(newRole);
+                if (!result.Succeeded)
+                {
+                    // Manejar errores si la creación del rol falla
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return BadRequest($"Error al crear el nuevo rol: {errors}");
+                }
+
+                // Obtener el ID del nuevo rol creado
+                var newRoleId = newRole.Id;
+
+                // Obtener los permisos del rol original
+                var originalPermissions = _context.RoleVentana.Where(rv => rv.RoleId == originalRoleId).ToList();
+
+                // Copiar los permisos al nuevo rol
+                foreach (var permission in originalPermissions)
+                {
+                    var newPermission = new RoleVentana
+                    {
+                        RoleId = newRoleId,
+                        VentanaId = permission.VentanaId,
+                        Ver = permission.Ver,
+                        Crear = permission.Crear,
+                        Editar = permission.Editar,
+                        Eliminar = permission.Eliminar
+                    };
+                    _context.RoleVentana.Add(newPermission);
+                }
+
+                // Guardar los cambios en la base de datos
+                await _context.SaveChangesAsync();
+
+                return Ok(); // Operación exitosa
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
 
 
 

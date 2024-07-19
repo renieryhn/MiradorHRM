@@ -14,8 +14,7 @@ public partial class Viatico
     public int IdEmpleado { get; set; }
 
     [Display(Name = "Descripción")]
-    [Required(ErrorMessage = "La descripción es requerida")]
-    [StringLength(500, ErrorMessage = "La descripción no puede exceder los 500 caracteres")]
+   
     public string Descripcion { get; set; } = null!;
 
     [Display(Name = "Fecha")]
@@ -24,17 +23,17 @@ public partial class Viatico
 
     [Display(Name = "Total de Gastos")]
     [Required(ErrorMessage = "El total de gastos es requerido")]
-    [Range(0, 9999999999999999.99, ErrorMessage = "El total de gastos debe estar entre 0 y 9999999999999999.99")]
+    //[Range(0, 9999999999999999.99, ErrorMessage = "El total de gastos debe estar entre 0 y 9999999999999999.99")]
+   
     public decimal TotalGastos { get; set; }
 
     [Display(Name = "Adelanto Recibido")]
     [Required(ErrorMessage = "El adelanto recibido es requerido")]
-    [Range(0, 9999999999999999.99, ErrorMessage = "El adelanto recibido debe estar entre 0 y 9999999999999999.99")]
+    //[Range(0, 9999999999999999.99, ErrorMessage = "El adelanto recibido debe estar entre 0 y 9999999999999999.99")] 
     public decimal AdelantoRecibido { get; set; }
 
     [Display(Name = "Balance Pendiente")]
     [Required(ErrorMessage = "El balance pendiente es requerido")]
-    [Range(0, 9999999999999999.99, ErrorMessage = "El balance pendiente debe estar entre 0 y 9999999999999999.99")]
     public decimal BalancePendiente { get; set; }
 
     /// <summary>
@@ -59,6 +58,7 @@ public partial class Viatico
     public bool Pagado { get; set; }
 
     [Display(Name = "Fecha de Pago")]
+    [Required(ErrorMessage = "La Fecha de Pago es requerido")]
     public DateOnly? FechaPago { get; set; }
 
     [Display(Name = "Activo")]

@@ -1,4 +1,5 @@
 ﻿using MiradorHRM.Models;
+using static PlanillaPM.Models.Viatico;
 
 namespace PlanillaPM.Models
 {
@@ -11,7 +12,8 @@ namespace PlanillaPM.Models
         public int DiasAprobados { get; set; }
         public string ComentariosAprobador { get; set; }
         public string AprobadoPor { get; set; }
-
+        public int Id { get; set; }
+        public TipoEstado EstadoViatico { get; set; }
         public int IdNomina { get; set; }
         public int PeriodoFiscal { get; set; }
         public int Mes { get; set; }
@@ -22,5 +24,6 @@ namespace PlanillaPM.Models
         public List<VacacionDetalle> VacacionDetalle { get; set; }
         public List<Nomina> NominaAprovacion { get; set; }
         public List<NominaDataCharts> NominaData { get; set; }
+        public List<Viatico> Viatico { get; set; }
     }
 }

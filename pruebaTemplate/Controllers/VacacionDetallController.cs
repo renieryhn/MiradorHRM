@@ -29,7 +29,18 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: VacacionDetall
-       
+
+        [HttpGet]
+        public IActionResult Getvacaciondetalles()
+        {
+            // Obtener todos los días festivos de la base de datos
+            var vacaciondetalles = _context.VacacionDetalles
+             .Include(v => v.IdEmpleadoNavigation) // Incluye la navegación a Empleado
+             .ToList();
+
+            // Devolver los días festivos en formato JSON
+            return Json(vacaciondetalles);
+        }
         public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
             IQueryable<VacacionDetalle> query = _context.VacacionDetalles;

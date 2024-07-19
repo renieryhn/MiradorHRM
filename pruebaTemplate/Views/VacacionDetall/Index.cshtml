@@ -258,11 +258,44 @@
                     </div>
                     <div class="card-footer">
                     <partial name="_Pager" model="@pager" />
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calendarModal" style="background-color: var(--blue);">
+                        Mostrar Calendario
+                    </button>
+
                     </div>
                 </div>
             </div>
         </div>
         <br />
+    <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="calendarModalLabel">Calendario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="card card-primary">
+                            <div class="card-body p-0">
+                                <!-- THE CALENDAR -->
+                                <div id="calendar"></div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     </div>
 
 @section Scripts {
@@ -280,6 +313,92 @@
                     },
                     error: function () {
                         console.error("Error al cargar el menú dinámico");
+                    }
+                });
+            });
+
+            //calendar
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    locale: 'es', // Configura el idioma en español
+                    initialView: 'dayGridMonth', // Vista inicial: mes
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    buttonText: {
+                        today: 'Hoy',
+                        month: 'Mes',
+                        week: 'Semana',
+                        day: 'Día',
+                        list: 'Lista'
+                    },
+                    themeSystem: 'bootstrap',
+                    editable: false,
+                    droppable: false
+                });
+
+                // Función para generar un color mate en formato HSL
+                function getRandomMatteColor() {
+                    var hue = Math.floor(Math.random() * 360); // Hue: cualquier valor entre 0 y 360
+                    var saturation = Math.floor(Math.random() * 21) + 30; // Saturation: entre 30% y 50%
+                    var lightness = Math.floor(Math.random() * 21) + 30; // Lightness: entre 30% y 50%
+                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                }
+
+                // Cargar eventos desde el servidor
+                function loadEvents() {
+                    $.ajax({
+                        method: "GET",
+                        url: "/VacacionDetall/Getvacaciondetalles",
+                        dataType: "json",
+                        success: function (data) {
+                            console.log("Datos recibidos:", data);
+                            data.forEach(function (evento) {
+                                console.log("Evento:", evento);
+
+                                // Solo agregar eventos en estado 'Aprobada'
+                                if (evento.estadoSolicitud === 2) { // Estado.Aprobada
+                                    // Convertir las fechas a objetos Date en la zona horaria de Honduras ('America/Tegucigalpa')
+                                    var fechaInicio = new Date(evento.fechaInicio + 'T00:00:00-06:00'); // -06:00 indica la zona horaria de Honduras
+                                    var fechaFin = new Date(evento.fechaFin + 'T23:59:59-06:00'); // Usamos las 23:59:59 para asegurarnos de que incluya todo el último día
+
+                                    // Ajustar la fecha de finalización sumando un día adicional
+                                    fechaFin.setDate(fechaFin.getDate() + 1);
+
+                                    // Generar un color mate
+                                    var color = getRandomMatteColor();
+
+                                    calendar.addEvent({
+                                        title: evento.idEmpleadoNavigation.nombreCompleto,
+                                        start: fechaInicio,
+                                        end: fechaFin,
+                                        description: evento.estadoSolicitud,
+                                        allDay: true,
+                                        backgroundColor: color,
+                                        borderColor: color,
+                                        textColor: '#ffffff', // Texto en blanco
+                                        className: 'font-weight-bold' // Clase para hacer el texto en negrita
+                                    });
+                                }
+                            });
+
+                            // Renderizar el calendario después de añadir los eventos
+                            calendar.render();
+                        },
+                        error: function () {
+                            console.error("Error al cargar los eventos."); // Registra errores en la consola
+                        }
+                    });
+                }
+
+                // Inicializar el calendario cuando el modal se muestra
+                $('#calendarModal').on('shown.bs.modal', function () {
+                    // Renderizar el calendario solo si aún no se ha renderizado
+                    if (!calendarEl.classList.contains('fc')) {
+                        loadEvents();
                     }
                 });
             });

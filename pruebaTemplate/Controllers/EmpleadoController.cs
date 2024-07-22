@@ -32,7 +32,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace PlanillaPM.Controllers
 {
-   
+
     public class EmpleadoController : Controller
     {
         private readonly PlanillaContext _context;
@@ -47,268 +47,268 @@ namespace PlanillaPM.Controllers
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             Environment = environment;
-        
+
 
         }
 
         [HttpPost]
         public async Task<IActionResult> PasarIDConstancia1(int id)
         {
-            
+
             var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
             if (empleado == null)
             {
                 return NotFound();
             }
 
-           
+
             return RedirectToAction("Constancia1", "Constancia", new { id = id });
         }
 
         [HttpPost]
         public async Task<IActionResult> PasarIDConstancia2(int id)
         {
-            
+
             var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
             if (empleado == null)
             {
                 return NotFound();
             }
 
-            
+
             return RedirectToAction("Constancia2", "Constancia", new { id = id });
         }
 
         [HttpPost]
         public async Task<IActionResult> PasarIDConstanciaTrabajo(int id)
         {
-            
+
             var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
             if (empleado == null)
             {
                 return NotFound();
             }
 
-            
+
             return RedirectToAction("ConstanciaTrabajo", "Constancia", new { id = id });
         }
 
         [HttpPost]
         public async Task<IActionResult> pasarIDDFContrato(int id)
         {
-           
+
             var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
             if (empleado == null)
             {
                 return NotFound();
             }
 
-            
+
             return RedirectToAction("FContrato", "Constancia", new { id = id });
         }
 
         [HttpPost]
         public async Task<IActionResult> pasarIDDFContratoCorto(int id)
         {
-            
+
             var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.IdEmpleado == id);
             if (empleado == null)
             {
                 return NotFound();
             }
 
-           
+
             return RedirectToAction("FContratoCorto", "Constancia", new { id = id });
         }
 
         [AllowAnonymous]
         public IActionResult ExportToPDFConstancia1(int id)
         {
-            
+
             var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
             if (empleado == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            
+
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
             BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
 
-            
+
             int widthInPoints = (int)(8.5 * 72);
             int heightInPoints = (int)(11 * 72);
 
-            
+
             blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
 
-            
+
             htmlConverter.ConverterSettings = blinkConverterSettings;
 
-            
+
             string url = $"https://localhost:7021/Constancia/Constancia1/{id}";
 
-            
+
             using (PdfDocument document = htmlConverter.Convert(url))
             {
-                
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream);
                 stream.Position = 0;
 
-                
+
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Constancia1.pdf");
             }
         }
         public IActionResult ExportToPDFConstancia2(int id)
         {
-            
+
             var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
             if (empleado == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            
+
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
             BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
 
-            
+
             int widthInPoints = (int)(8.5 * 72);
             int heightInPoints = (int)(11 * 72);
 
-            
+
             blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
 
-            
+
             htmlConverter.ConverterSettings = blinkConverterSettings;
 
-            
+
             string url = $"https://localhost:7021/Constancia/Constancia2/{id}";
 
-            
+
             using (PdfDocument document = htmlConverter.Convert(url))
             {
-                
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream);
                 stream.Position = 0;
 
-               
+
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Constancia2.pdf");
             }
         }
         public IActionResult ExportToPDFConstanciaTrabajo(int id)
         {
-            
+
             var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
             if (empleado == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-           
+
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
             BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
 
-            
+
             int widthInPoints = (int)(8.5 * 72);
             int heightInPoints = (int)(11 * 72);
 
-            
+
             blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
 
-            
+
             htmlConverter.ConverterSettings = blinkConverterSettings;
 
-            
+
             string url = $"https://localhost:7021/Constancia/ConstanciaTrabajo/{id}";
 
-            
+
             using (PdfDocument document = htmlConverter.Convert(url))
             {
-                
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream);
                 stream.Position = 0;
 
-                
+
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Constancia de Trabajo.pdf");
             }
         }
         public IActionResult ExportToPDFContrato(int id)
         {
-            
+
             var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
             if (empleado == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            
+
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
             BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
 
-            
+
             int widthInPoints = (int)(8.5 * 72);
             int heightInPoints = (int)(11 * 72);
 
-            
+
             blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
 
-            
+
             htmlConverter.ConverterSettings = blinkConverterSettings;
 
-            
+
             string url = $"https://localhost:7021/Constancia/FContrato/{id}";
 
-            
+
             using (PdfDocument document = htmlConverter.Convert(url))
             {
-                
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream);
                 stream.Position = 0;
 
-                
+
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Contrato.pdf");
             }
         }
         public IActionResult ExportToPDFContratoCorto(int id)
         {
-            
+
             var empleado = _context.Empleados.FirstOrDefault(e => e.IdEmpleado == id);
             if (empleado == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-           
+
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
             BlinkConverterSettings blinkConverterSettings = new BlinkConverterSettings();
 
-            
+
             int widthInPoints = (int)(8.5 * 72);
             int heightInPoints = (int)(11 * 72);
 
-           
+
             blinkConverterSettings.ViewPortSize = new Syncfusion.Drawing.Size(widthInPoints, heightInPoints);
 
-            
+
             htmlConverter.ConverterSettings = blinkConverterSettings;
 
-            
+
             string url = $"https://localhost:7021/Constancia/FContratoCorto/{id}";
 
-            
+
             using (PdfDocument document = htmlConverter.Convert(url))
             {
-                
+
                 MemoryStream stream = new MemoryStream();
                 document.Save(stream);
                 stream.Position = 0;
 
-               
+
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "Contrato Corto.pdf");
             }
         }
@@ -317,46 +317,54 @@ namespace PlanillaPM.Controllers
         // GET: Empleado
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            List<Empleado> registros;
-
-            if (filter != null)
+            try
             {
-                registros = await _context.Empleados.Where(r => r.NombreEmpleado.ToLower().Contains(filter.ToLower())).ToListAsync();
-            }
-            else
-            {
-                registros = await _context.Empleados.ToListAsync();
-            }
+                List<Empleado> registros;
 
-            const int pageSize = 9;
-            if (pg < 1) pg = 1;
-            int recsCount = registros.Count();
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
-            var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-
-
-            foreach (var empleado in registros)
-            {
-                if (empleado.FotografiaName != null)
+                if (filter != null)
                 {
-                    var nombreArchivo = empleado.FotografiaPath;
-
+                    registros = await _context.Empleados.Where(r => r.NombreEmpleado.ToLower().Contains(filter.ToLower())).ToListAsync();
                 }
                 else
                 {
-                    empleado.FotografiaPath = "EmpleadoImg/Employee.png";
+                    registros = await _context.Empleados.ToListAsync();
                 }
-            }
-            var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
-            var IdCargoNavigation = await _context.Cargos.ToListAsync();
-            var IdEncargadoNavigation = await _context.Empleados.ToListAsync();
-            var IdBancoNavigation = await _context.Bancos.ToListAsync();
-            var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
-            var IdTipoNominaNavigation = await _context.TipoNominas.ToListAsync();
 
-            return View(data);
+                const int pageSize = 9;
+                if (pg < 1) pg = 1;
+                int recsCount = registros.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+                this.ViewBag.Pager = pager;
+
+
+                foreach (var empleado in registros)
+                {
+                    if (empleado.FotografiaName != null)
+                    {
+                        var nombreArchivo = empleado.FotografiaPath;
+
+                    }
+                    else
+                    {
+                        empleado.FotografiaPath = "EmpleadoImg/Employee.png";
+                    }
+                }
+                var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
+                var IdCargoNavigation = await _context.Cargos.ToListAsync();
+                var IdEncargadoNavigation = await _context.Empleados.ToListAsync();
+                var IdBancoNavigation = await _context.Bancos.ToListAsync();
+                var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+                var IdTipoNominaNavigation = await _context.TipoNominas.ToListAsync();
+
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Hubo un problema al cargar la página." + ex.Message;
+                return View();
+            }
         }
 
         public IActionResult ObtenerMenuDinamico()
@@ -423,7 +431,7 @@ namespace PlanillaPM.Controllers
                 emple.FotografiaName = Url.Content("~/EmpleadoImg/Employee.png");
             }
 
-            
+
 
             var empleado = await _context.Empleados
                 .Include(e => e.IdBancoNavigation)
@@ -446,7 +454,7 @@ namespace PlanillaPM.Controllers
         // GET: Empleado/Create
         public IActionResult Create()
         {
-            
+
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(EstadoCivilEmpleado));
             ViewBag.TipoCuentaBancaria = Enum.GetValues(typeof(TipoCuenta));
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco");
@@ -465,7 +473,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion")]Empleado empleado, IFormFile Fotografia)
+        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion")] Empleado empleado, IFormFile Fotografia)
         {
 
             try
@@ -515,7 +523,7 @@ namespace PlanillaPM.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Hubo un problema al intentar crear el registro. Por favor, intente nuevamente. " + ex.Message;
-               // TempData["error"] = "Error: " + ex.Message;
+                // TempData["error"] = "Error: " + ex.Message;
             }
 
 
@@ -558,7 +566,7 @@ namespace PlanillaPM.Controllers
             }
 
 
-            
+
 
             ViewBag.EstadoCivilEmpleado = Enum.GetValues(typeof(Empleado.EstadoCivilEmpleado));
             ViewBag.TipoCuentaBancaria = Enum.GetValues(typeof(TipoCuenta));
@@ -584,7 +592,7 @@ namespace PlanillaPM.Controllers
 
             try
             {
-          
+
                 if (id != empleado.IdEmpleado)
                 {
                     return NotFound();
@@ -605,7 +613,7 @@ namespace PlanillaPM.Controllers
                         empleado.FotografiaName = "Employee.png";
                         empleado.FotografiaPath = "/EmpleadoImg/Employee.png";
                     }
-                   else if (Fotografia != null && Fotografia.Length > 0)
+                    else if (Fotografia != null && Fotografia.Length > 0)
                     {
                         // Genera un nombre único para el archivo de imagen
                         var fileName = Guid.NewGuid() + System.IO.Path.GetExtension(Fotografia.FileName);
@@ -673,7 +681,7 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            
+
             if (emple.Fotografia != null)
             {
                 var nombreArchivo = emple.FotografiaName;
@@ -737,7 +745,7 @@ namespace PlanillaPM.Controllers
         {
             return _context.Empleados.Any(e => e.IdEmpleado == id);
         }
-        
+
 
         public async Task<IActionResult> FichaEmpleado(int? id, bool? estado)
         {
@@ -770,7 +778,7 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
-            
+
             if (EmpleadoSeleccionado.FotografiaName != null)
             {
                 var nombreArchivo = EmpleadoSeleccionado.FotografiaPath;
@@ -802,11 +810,11 @@ namespace PlanillaPM.Controllers
             try
             {
                 ViewBag.IdEmpleado = id;
-               
+
                 var query = _context.EmpleadoContactos.Where(e => e.IdEmpleado == id && e.Activo == true);
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    query = query.Where(e => e.NombreContacto.Contains(filter)); 
+                    query = query.Where(e => e.NombreContacto.Contains(filter));
                 }
 
                 var registros = await query.ToListAsync();
@@ -834,7 +842,7 @@ namespace PlanillaPM.Controllers
 
                 if (!string.IsNullOrEmpty(filter))
                 {
-                   query = query.Where(e => e.IdCargoNavigation.EmpleadoContratos.Any(ec => ec.IdTipoContratoNavigation.NombreTipoContrato.Contains(filter)));
+                    query = query.Where(e => e.IdCargoNavigation.EmpleadoContratos.Any(ec => ec.IdTipoContratoNavigation.NombreTipoContrato.Contains(filter)));
                 }
 
                 var registros = await query.ToListAsync();
@@ -860,7 +868,7 @@ namespace PlanillaPM.Controllers
                     query = query.Where(e => e.Institucion.Contains(filter));
                 }
 
-                var registros = await query.ToListAsync();             
+                var registros = await query.ToListAsync();
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml", registros);
             }
@@ -881,7 +889,7 @@ namespace PlanillaPM.Controllers
                     query = query.Where(e => e.Empresa.Contains(filter));
                 }
 
-                var registros = await query.ToListAsync();            
+                var registros = await query.ToListAsync();
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 return PartialView("~/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml", registros);
             }
@@ -923,7 +931,7 @@ namespace PlanillaPM.Controllers
                 var query = _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id && e.Activo == true);
 
                 if (!string.IsNullOrEmpty(filter))
-                {                  
+                {
                     query = query.Where(e => e.IdTipoAusenciaNavigation.EmpleadoAusencia.Any(ec => ec.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter)));
                 }
 
@@ -949,7 +957,7 @@ namespace PlanillaPM.Controllers
                     query = query.Where(e => e.IdProductoNavigation.EmpleadoActivos.Any(ec => ec.IdProductoNavigation.NombreProducto.Contains(filter)));
                 }
 
-                var registros = await query.ToListAsync();            
+                var registros = await query.ToListAsync();
                 var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
                 var IdProductoNavigation = await _context.Productos.ToListAsync();
                 return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
@@ -965,6 +973,9 @@ namespace PlanillaPM.Controllers
 
         private void SetCamposAuditoria(Empleado record, bool bNewRecord)
         {
+
+            try
+            {
             var now = DateTime.Now;
             var CurrentUser = _userManager.GetUserName(User);
 
@@ -988,6 +999,11 @@ namespace PlanillaPM.Controllers
                 {
                     record.CreadoPor = CurrentUser;
                 }
+            }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

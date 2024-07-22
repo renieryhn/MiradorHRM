@@ -197,17 +197,23 @@
                                                         <td class="text-center">
                                                             @if (item.Estado == TipoEstado.Pendiente)
                                                             {
-                                                                <i class="fas fa-clock text-warning"></i>
+                                                                <span class="badge badge-warning">
+                                                                    <i class="fas fa-clock"></i> Pendiente
+                                                                </span>
                                                             }
                                                                 else if (item.Estado == TipoEstado.Aprobado)
                                                             {
-                                                                <i class="fas fa-check text-success"></i>
+                                                                <span class="badge badge-success">
+                                                                    <i class="fas fa-check"></i> Aprobada
+                                                                </span>
                                                             }
                                                                 else if (item.Estado == TipoEstado.Rechazado)
                                                             {
-                                                                <i class="fas fa-times text-danger"></i>
+                                                                <span class="badge badge-danger">
+                                                                    <i class="fas fa-times"></i> Rechazada
+                                                                </span>
                                                             }
-                                                        </td>
+                                                        </td>                                                                                          
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.FechaAprobacion)
                                                         </td>

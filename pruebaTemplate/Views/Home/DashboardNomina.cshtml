@@ -242,11 +242,11 @@
                             </table>
                         </div>
                     </div>
-                </section>
+                </section>               
             </div>
             <div class="row">
                
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="card card-custom card-outline">
                         <div class="card-header">
                             <h3 class="card-title">
@@ -299,6 +299,65 @@
                     </div>
 
                 </div>
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Ausencias</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Completo</th>
+                                        <th>Total de Gastos</th>
+                                        <th>Adelanto Recibido</th>
+                                        <th>Balance Pendiente</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Viatico == null || !Model.Viatico.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center">No hay datos disponibles</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var empleado in Model.Viatico)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => empleado.IdEmpleadoNavigation.NombreCompleto)</td>
+                                                <td>@Html.DisplayFor(modelItem => empleado.TotalGastos)</td>
+                                                <td>@Html.DisplayFor(modelItem => empleado.AdelantoRecibido)</td>
+                                                <td>@Html.DisplayFor(modelItem => empleado.BalancePendiente)</td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Acciones
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <button class="dropdown-item" onclick="actualizarEstado(@empleado.IdViatico, 2)">
+                                                                <i class="fas fa-check-circle mr-1 text-success"></i> Aprobar
+                                                            </button>
+                                                            <button class="dropdown-item" onclick="actualizarEstado(@empleado.IdViatico, 3)">
+                                                                <i class="fas fa-times-circle mr-1 text-danger"></i> Rechazar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+
+
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
                 <!-- Modal Nomina-->         
                 @Html.AntiForgeryToken()
                 <div class="modal fade" id="updateNominaStatusModal" tabindex="-1" role="dialog" aria-labelledby="updateNominaStatusModalLabel" aria-hidden="true">
@@ -857,7 +916,30 @@
             }
         });
 
-
+        function actualizarEstado(id, estadoviatico) {
+            if (confirm('¿Está seguro que desea cambiar el estado de este Viatico?')) {
+                $.ajax({
+                    url: '@Url.Action("ActualizarEstadoViatico", "Home")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ Id: id, EstadoViatico: estadoviatico }),
+                    headers: {
+                        'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            location.reload(); // Refrescar la página
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Error al actualizar el estado: ' + error);
+                    }
+                });
+            }
+        }
 
 
     </script>

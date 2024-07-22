@@ -135,11 +135,23 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 // Obtener el empleado
                 var empleado = await _context.Empleados.FindAsync(vacacion.IdEmpleado);
                 if (empleado == null)
                 {
                     TempData["error"] = "Error: Empleado no encontrado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Verificar si ya hay un registro para el año actual del IdEmpleado
+                var registroActual = await _context.Vacacions
+                    .FirstOrDefaultAsync(v => v.IdEmpleado == vacacion.IdEmpleado && v.PeriodoVacacional == vacacion.PeriodoVacacional);
+
+                if (registroActual != null)
+                {
+                    TempData["error"] = "Error: Ya existe un registro con este año.";
+                    
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -184,7 +196,6 @@ namespace PlanillaPM.Controllers
             return Json(new { antiguedad = empleado.Antiguedad });
         }
 
-
         [HttpGet]
         public async Task<JsonResult> CalcularVacaciones(int idEmpleado, int year)
         {
@@ -227,12 +238,24 @@ namespace PlanillaPM.Controllers
                     .Where(v => v.PeriodoVacacional == year || (v.DiasPendientes > 0 && v.PeriodoVacacional < year))
                     .ToList();
 
-                // Sumar días pendientes de años anteriores si existen
-                int diasPendientesAnteriores = historialVacaciones
-                    .Where(v => v.DiasPendientes > 0 && v.PeriodoVacacional < year)
-                    .Sum(v => v.DiasPendientes);
+                // Verificar si ya hay un registro para el año actual
+                var registroActual = historialVacaciones.FirstOrDefault(v => v.PeriodoVacacional == year);
 
-                diasPendientes += diasPendientesAnteriores;
+                if (registroActual != null)
+                {
+                    // Si ya hay un registro para el año actual, devolver 0 días pendientes
+                    diasPendientes = 0;
+                    return Json(new { success = false, message = "Ya existe un registro con este año." });
+                }
+                else
+                {
+                    // Sumar días pendientes de años anteriores si no hay registro para el año actual
+                    int diasPendientesAnteriores = historialVacaciones
+                        .Where(v => v.DiasPendientes > 0 && v.PeriodoVacacional < year)
+                        .Sum(v => v.DiasPendientes);
+
+                    diasPendientes += diasPendientesAnteriores;
+                }
 
                 return Json(new
                 {

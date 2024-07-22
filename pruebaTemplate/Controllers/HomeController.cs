@@ -18,6 +18,7 @@ using static PlanillaPM.Models.EmpleadoAusencium;
 using MiradorHRM.Models;
 using static PlanillaPM.Models.VacacionDetalle;
 using DocumentFormat.OpenXml.Spreadsheet;
+using static PlanillaPM.Models.Viatico;
 
 
 
@@ -147,6 +148,8 @@ public class HomeController : Controller
         var totales = await ObtenerYCalcularTotalesAsync();
             var solicituddetalle = await SolicitudTomarAccion();
             var nomina = await NominaTomarAccion();
+            var viatico = await SolicitudViaticoTomarAccion();
+
 
             
 
@@ -158,7 +161,7 @@ public class HomeController : Controller
                 TotalEmpleadosEnNomina = totales.TotalEmpleadosEnNomina,
                 VacacionDetalle = solicituddetalle,
                 NominaAprovacion = nomina,
-                
+                Viatico=viatico
         };
 
        
@@ -199,6 +202,8 @@ public class HomeController : Controller
 
             return empleadoAusencias;
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -281,7 +286,70 @@ public class HomeController : Controller
             return Json(new { success = true });
         }
 
- 
+
+        private async Task<List<Viatico>> SolicitudViaticoTomarAccion()
+        {
+            var empleadoViaticos = await _context.Viaticos
+                .Include(e => e.IdEmpleadoNavigation)              
+                .Where(e => e.Activo && e.Estado == TipoEstado.Pendiente)
+                .ToListAsync();
+
+            return empleadoViaticos;
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarEstadoViatico([FromBody] NominaTotales request)
+        {
+            var empleadoViaticos = await _context.Viaticos.FindAsync(request.Id);
+            if (empleadoViaticos == null)
+            {
+                return Json(new { success = false, message = "Viatico no encontrad." });
+            }
+
+            // Acceder al usuario actual
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            if (usuarioActual == null)
+            {
+                return Json(new { success = false, message = "Usuario no encontrado." });
+            }
+
+            // Actualizar el estado y el usuario que aprueba la ausencia
+            empleadoViaticos.Estado = request.EstadoViatico;
+            empleadoViaticos.AprobadoPor = usuarioActual.Email; // Asignar directamente el usuario actual
+            empleadoViaticos.FechaAprobacion = DateOnly.FromDateTime(DateTime.Now); 
+
+
+            // Establecer campos de auditoría
+            SetCamposAuditoria3(empleadoViaticos, false); 
+
+            _context.Update(empleadoViaticos);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Estado actualizado correctamente." });
+        }
+        private void SetCamposAuditoria3(Viatico record, bool bNewRecord)
+            {
+                var now = DateTime.Now;
+                var CurrentUser = _userManager.GetUserName(User);
+
+                if (bNewRecord)
+                {
+                    record.FechaCreacion = now;
+                    record.CreadoPor = CurrentUser;
+                    record.FechaModificacion = now;
+                    record.ModificadoPor = CurrentUser;
+                    record.Activo = true;
+                }
+                else
+                {
+                    record.FechaModificacion = now;
+                    record.ModificadoPor = CurrentUser;
+                }
+            }
+
+
     //index
     private async Task<List<Empleado>> ObtenerProximosCumpleañeros()
             {

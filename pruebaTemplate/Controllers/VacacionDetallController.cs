@@ -156,7 +156,6 @@ namespace PlanillaPM.Controllers
             return Json(vacaciones);
         }
 
-
         [HttpGet]
         public async Task<JsonResult> ObtenerDiasDisponibles(int idEmpleado, int idVacacion)
         {
@@ -205,27 +204,97 @@ namespace PlanillaPM.Controllers
             return diasFestivosEnRango;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CalcularDiasVacaciones([FromBody] CalcularDiasVacacionesRequest request)
         {
-            DateOnly fechaInicio = DateOnly.Parse(request.FechaInicio);
-            DateOnly fechaFin = DateOnly.Parse(request.FechaFin);
+            try
+            {
+                DateOnly fechaInicio = DateOnly.Parse(request.FechaInicio);
+                DateOnly fechaFin = DateOnly.Parse(request.FechaFin);
 
-            int diasFestivos = await CalcularDiasFestivosAsync(fechaInicio, fechaFin);
-            int diasAprobados = request.NumeroDiasSolicitados - diasFestivos;
+                var empleado = await _context.Empleados
+                    .Include(e => e.IdClaseEmpleadoNavigation)
+                    .ThenInclude(ce => ce.IdHorarioNavigation)
+                    .FirstOrDefaultAsync(e => e.IdEmpleado == request.IdEmpleado);
 
-            if (diasAprobados < 0) diasAprobados = 0;
+                if (empleado == null || empleado.IdClaseEmpleadoNavigation == null || empleado.IdClaseEmpleadoNavigation.IdHorarioNavigation == null)
+                {
+                    return Json(new { success = false, message = "No se encontró el empleado o no tiene una clase asignada con un horario." });
+                }
 
-            return Json(new { success = true, diasAprobados,  diasFestivos });
+                var horario = empleado.IdClaseEmpleadoNavigation.IdHorarioNavigation;
+                var diasFestivos = await CalcularDiasFestivosAsync(fechaInicio, fechaFin);
+
+                var diasLaborables = new List<DateOnly>();
+                var diasNoLaborables = new List<DateOnly>();
+
+                for (var date = fechaInicio; date <= fechaFin; date = date.AddDays(1))
+                {
+                    bool esLaborable = false;
+                    switch (date.DayOfWeek)
+                    {
+                        case DayOfWeek.Monday:
+                            esLaborable = horario.IndLunes;
+                            break;
+                        case DayOfWeek.Tuesday:
+                            esLaborable = horario.IndMartes;
+                            break;
+                        case DayOfWeek.Wednesday:
+                            esLaborable = horario.IndMiercoles;
+                            break;
+                        case DayOfWeek.Thursday:
+                            esLaborable = horario.IndJueves;
+                            break;
+                        case DayOfWeek.Friday:
+                            esLaborable = horario.IndViernes;
+                            break;
+                        case DayOfWeek.Saturday:
+                            esLaborable = horario.IndSabado;
+                            break;
+                        case DayOfWeek.Sunday:
+                            esLaborable = horario.IndDomingo;
+                            break;
+                    }
+
+                    if (esLaborable)
+                    {
+                        diasLaborables.Add(date);
+                    }
+                    else
+                    {
+                        diasNoLaborables.Add(date);
+                    }
+                }
+
+                int totalDiasNoLaborables = diasNoLaborables.Count;
+                int diasAprobados = request.NumeroDiasSolicitados - diasFestivos - totalDiasNoLaborables;
+                if (diasAprobados < 0) diasAprobados = 0;
+
+                return Json(new
+                {
+                    success = true,
+                    diasAprobados,
+                    diasFestivos,
+                    diasLaborables,
+                    diasNoLaborables
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "Ocurrió un error al calcular los días de vacaciones.", error = ex.Message });
+            }
         }
-
 
         public class CalcularDiasVacacionesRequest
         {
+            public int IdEmpleado { get; set; }
             public string FechaInicio { get; set; }
             public string FechaFin { get; set; }
             public int NumeroDiasSolicitados { get; set; }
         }
+ 
 
 
         // POST: VacacionDetall/Create
@@ -238,13 +307,14 @@ namespace PlanillaPM.Controllers
             if (ModelState.IsValid)
             {
 
+            
                 var vacacion = _context.Vacacions
                     .FirstOrDefault(v => v.IdEmpleado == vacacionDetalle.IdEmpleado && v.IdVacacion == vacacionDetalle.IdVacacion);
 
                 // Si hay menos días pendientes que los solicitados, mostrar error
-                if (vacacion != null && vacacion.DiasPendientes < vacacionDetalle.NumeroDiasSolicitados)
+                if (vacacion != null && vacacion.DiasPendientes < vacacionDetalle.NumeroDiasSolicitados || vacacionDetalle.NumeroDiasSolicitados == 0)
                 {
-                    TempData["error"] = "Error: El empleado no cuenta con suficientes días.";
+                    TempData["error"] = "Error: El empleado no cuenta con suficientes días o el numero de dias es cero(0).";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -257,6 +327,19 @@ namespace PlanillaPM.Controllers
                 } 
                 else
                 {
+                    // Verificar si el rango de fechas ya ha sido solicitado
+                    bool fechasSolapadas = _context.VacacionDetalles
+                        .Any(v => v.IdEmpleado == vacacionDetalle.IdEmpleado &&
+                                  ((vacacionDetalle.FechaInicio >= v.FechaInicio && vacacionDetalle.FechaInicio <= v.FechaFin) ||
+                                   (vacacionDetalle.FechaFin >= v.FechaInicio && vacacionDetalle.FechaFin <= v.FechaFin) ||
+                                   (vacacionDetalle.FechaInicio <= v.FechaInicio && vacacionDetalle.FechaFin >= v.FechaFin)));
+
+                    if (fechasSolapadas)
+                    {
+                        TempData["error"] = "Error: El rango de fechas ya ha sido solicitado.";
+                        return RedirectToAction(nameof(Index));
+                    }
+
                     SetCamposAuditoria(vacacionDetalle, true);
                     _context.Add(vacacionDetalle);
                     await _context.SaveChangesAsync();

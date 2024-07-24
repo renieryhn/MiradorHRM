@@ -3,6 +3,7 @@
 
         @{
         ViewData["Title"] = "Index";
+        var userPermissions = ViewData["UserPermissions"] as List<string>;
         Pager pager = new Pager();
         int PageNo = 0;
         if (ViewBag.Pager != null)
@@ -50,8 +51,11 @@
                                                                             <div class="col-sm-3 btn-toolbar btn-group-sm" role="toolbar" id="toolbar">
                                                                                 <div class="btn-group btn-group-justified" role="group">
                                                                                     <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
-                                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                                     @if (userPermissions.Contains("Create"))
+                                                                                    {
+                                                                                        <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                                        <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -93,9 +97,15 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                                            @* <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-pencil" style="color: white;"></i></a> *@
+                                                                            @if (userPermissions.Contains("Edit"))
+                                                                            {
+                                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-pencil" style="color: white;"></i></a>
                                                                             @* <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
+                                                                            }
+                                                                            @if (userPermissions.Contains("Delete"))
+                                                                            {
                                                                             <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdDiaFestivo"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                                            }
                                                                         </div>
                                                                     </td>
                                                                 </tr>

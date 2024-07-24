@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using PlanillaPM.Constants;
 using System.Security.Claims;
+using PlanillaPM.Servicio;
 
 
 
@@ -75,7 +76,7 @@ builder.Services.AddControllersWithViews(opciones =>
     opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
 }).AddRazorRuntimeCompilation();
 
-builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddDbContext<PlanillaContext>(opciones =>
     opciones.UseSqlServer("name=sDBConnection"));
@@ -108,7 +109,6 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
         Opciones.LoginPath = "/usuario/login";
         Opciones.AccessDeniedPath = "/Home/NoPermissionAccess";
     });
-
 
 
 
@@ -171,6 +171,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

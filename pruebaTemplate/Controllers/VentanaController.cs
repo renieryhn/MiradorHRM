@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Identity;
 using PlanillaPM.ViewModel;
 
 using PlanillaPM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlanillaPM.Controllers
 {
+   
     public class VentanaController : Controller
     {
         private readonly PlanillaContext _context;

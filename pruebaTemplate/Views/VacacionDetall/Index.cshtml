@@ -5,6 +5,7 @@
 
         @{
         ViewData["Title"] = "Index";
+    var userPermissions = ViewData["UserPermissions"] as List<string>;
         Pager pager = new Pager();
         int PageNo = 0;
         if (ViewBag.Pager != null)
@@ -65,8 +66,18 @@
                     <div class="col-sm-6">
                         <div class="btn-group btn-group-justified" role="group">                            
                             <a asp-controller="VacacionDetall" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh " style="color: white; "></i></a>
+                            @if (userPermissions.Contains("Create"))
+                                                                    {
                             <a asp-controller="VacacionDetall" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;  "></i></a>
                             <a asp-controller="VacacionDetall" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
+                               
+                            }
+                             @if (userPermissions.Contains("View"))
+                                                        {
+                            <a class="btn" data-toggle="modal" data-target="#calendarModal" style="background-color: var(--blue);">
+                                <i class="fa fa-calendar" style="color: white;"></i>
+                            </a>
+                                                        }
                         </div>
                     </div>
                 </div>
@@ -166,17 +177,28 @@
                                                 <th scope="row">@count</th>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group" style="font-size: 12px; padding: 4px;">
-                                                        @if (item.EstadoSolicitud == Estado.Aprobada || item.EstadoSolicitud == Estado.Rechazada)
+                                                        @if (userPermissions.Contains("Edit"))
                                                         {
-                                                            <a class="btn disabled" style="background-color: var(--blue)"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            @if (item.EstadoSolicitud == Estado.Aprobada || item.EstadoSolicitud == Estado.Rechazada)
+                                                            {
+                                                                <a class="btn disabled" style="background-color: var(--blue)"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdVacacionDetalle"><i class="fa fa-pencil" style="color: white;"></i></a>
+                                                            }
+                                                        
                                                         }
-                                                        else
+                                                        @if (userPermissions.Contains("View"))
                                                         {
-                                                            <a asp-action="Edit" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdVacacionDetalle"><i class="fa fa-pencil" style="color: white;"></i></a>
-                                                        }
                                                             <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdVacacionDetalle"><i class="fa fa-address-card-o" style="color: white;"></i></a>
-                                                            <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdVacacionDetalle"><i class="fa fa-trash-o" style="color: white;"></i></a>
-                                                        </div>
+
+                                                        }
+                                                        @if (userPermissions.Contains("Delete"))
+                                                        {
+                                                        <a asp-action="Delete" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdVacacionDetalle"><i class="fa fa-trash-o" style="color: white;"></i></a>
+                                                        }
+                                                    </div>
                                                     </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
@@ -258,9 +280,7 @@
                     </div>
                     <div class="card-footer">
                     <partial name="_Pager" model="@pager" />
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calendarModal" style="background-color: var(--blue);">
-                        Mostrar Calendario
-                    </button>
+                   
 
                     </div>
                 </div>

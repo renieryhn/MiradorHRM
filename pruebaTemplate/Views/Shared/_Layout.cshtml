@@ -1,8 +1,18 @@
-﻿@using PlanillaPM.Models;
+﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.AspNetCore.Mvc.Routing
+@using MiradorHRM.Helpers
+@using PlanillaPM.Models;
 ﻿@using Microsoft.AspNetCore.Identity
 
 
 @inject SignInManager<Usuario> SignInManager
+@{
+    var menuPermissions = ViewData["MenuPermissions"] as Dictionary<string, bool>;
+
+    bool hasNominaPermissions = PermissionHelper.HasNominaPermissions(menuPermissions);
+    bool hasRecursosHumanosPermissions = PermissionHelper.HasRecursosHumanosPermissions(menuPermissions);
+    bool hasEmpresaPermissions = PermissionHelper.HasEmpresaPermissions(menuPermissions);
+}
 
 
 <!DOCTYPE html>
@@ -16,7 +26,7 @@
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-   
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -89,17 +99,15 @@
                 margin: 0 auto;
                 border-radius: 50%;
             }
-    
+
             .profile .role {
                 font-size: 20px;
                 color: #cfcfcf;
             }
 
         .table-avatar {
-            
             height: 50px;
             width: 50px;
-           
             border-radius: 50%;
         }
 
@@ -119,9 +127,7 @@
             .navbar-nav .nav-link img {
                 margin-right: 10px;
             }
-       
-
- </style>
+    </style>
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -133,15 +139,15 @@
                 @* <partial name="_MenuDinamico.cshtml" id="PartialMenu" /> *@
             </li>
         </ul>
-        <ul class="navbar-nav ml-auto">         
+        <ul class="navbar-nav ml-auto">
             <partial name="_LinksLogin" model="@User" />
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
-        </ul>                         
-       
+        </ul>
+
     </nav>
 
     <!-- /.navbar -->
@@ -155,45 +161,34 @@
                 </div>
             </div>
 
-           
+
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                     @if (User.IsInRole("rrhh"))
-                    {
-                        <li class="nav-item active">
+                    <li class="nav-item active">
+                        @if (menuPermissions != null && menuPermissions.ContainsKey("Home") && menuPermissions["Home"])
+                        {
                             <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Home" asp-action="Index">
                                 <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
                                 <p style="color: var(--GrisMenu);">
                                     <strong>Dashboard RRHH</strong>
                                 </p>
                             </a>
-                        </li>
-                    }
-                    @if (User.IsInRole("Nomina"))
-                    {
-                        <li class="nav-item active">
+                        }
+                    </li>
+
+                    <li class="nav-item active">
+                        @if (menuPermissions != null && menuPermissions.ContainsKey("Home") && menuPermissions["Home"])
+                        {
                             <a class="nav-link" asp-controller="Home" asp-action="DashboardNomina">
                                 <i class="nav-icon fas fa-home" style="color: var(--GrisMenu);"></i>
                                 <p style="color: var(--GrisMenu);">
                                     <strong>Dashboard Nomina</strong>
                                 </p>
                             </a>
-                        </li>
-                    }
-                    
-                   
+                        }
+                    </li>
 
-                    <li class="nav-item active">
-                        <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Empleado" asp-action="Index">
-                            <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
-                            <p style="color: var(--GrisMenu);">
-                                <strong>Empleado</strong>
-                            </p>
-                        </a>
-                    </li>               
-
-                    
                     <li class="nav-item active">
                         <a class="nav-link" onclick="mostrarContenido('Perfil')" asp-controller="Usuario" asp-action="PersonalData">
                             <i class="nav-icon fas fa-id-card" style="color: var(--GrisMenu);"></i>
@@ -203,204 +198,284 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-home"></i>
-                            <p>
-                                <strong>Empresa</strong>
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Empresa" asp-action="Index">
-                                    <i class="nav-icon fa fa-id-card-o" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Datos Generales
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Banco" asp-action="Index">
-                                    <i class="nav-icon fas fa-university" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Banco
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Monedum" asp-action="Index">
-                                    <i class="nav-icon fas fa-money" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Moneda
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="TipoHorario" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Tipo de Horario
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Horario" asp-action="Index">
-                                    <i class="nav-icon fas fa-calendar-check-o" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Horario
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="DiaFestivo" asp-action="Index">
-                                    <i class="nav-icon fas fa-calendar" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Días Festivos
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Producto" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Producto/Activo Fijo
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Ubicacion" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Ubicación
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Employee" asp-action="Index2">
-                                    <i class="nav-icon fas fa-project-diagram" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Diagrama Empleado
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-briefcase"></i>
-                            <p>
-                                <strong>Recursos Humanos</strong>
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Division" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        División
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Departamento" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Departamento
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Cargo" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Cargo
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="ClaseEmpleado" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Clase de Empleado
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="TipoAusencium" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Tipo de Ausencia
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="TipoContrato" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Tipo de Contrato
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
+                    <li class="nav-item active">
+                        @if (menuPermissions != null && menuPermissions.ContainsKey("Empleado") && menuPermissions["Empleado"])
+                        {
+                            <a class="nav-link" onclick="mostrarContenido('Empleado')" asp-controller="Empleado" asp-action="Index">
+                                <i class="nav-icon fas fa-th" style="color: var(--GrisMenu);"></i>
+                                <p style="color: var(--GrisMenu);">
+                                    <strong>Empleado</strong>
+                                </p>
+                            </a>
+                        }
                     </li>
 
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-list-alt"></i>
-                            <p>
-                                <strong>Nómina</strong>
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="NominaEmpleado" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Funciones de Nómina
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="TipoNomina" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Tipo de Nómina
-                                    </p>
-                                </a>
-                            </li>         
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Ingreso" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Ingresos
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Deduccion" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Deducciones
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Impuesto" asp-action="Index">
-                                    <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
-                                    <p style="color: var(--GrisMenu);">
-                                        Impuestos
-                                    </p>
-                                </a>
-                            </li>                          
-                        </ul>
-                    </li>
 
-                      @if (User.IsInRole("SuperAdmin"))
+                    @if (hasEmpresaPermissions)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>
+                                    <strong>Empresa</strong>
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Empresa") && menuPermissions["Empresa"])
+                                    {
+                                        <a class="nav-link" asp-controller="Empresa" asp-action="Index">
+                                            <i class="nav-icon fa fa-id-card-o" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Datos Generales
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Banco") && menuPermissions["Banco"])
+                                    {
+                                        <a class="nav-link" asp-controller="Banco" asp-action="Index">
+                                            <i class="nav-icon fas fa-university" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Banco
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Monedum") && menuPermissions["Monedum"])
+                                    {
+                                        <a class="nav-link" asp-controller="Monedum" asp-action="Index">
+                                            <i class="nav-icon fas fa-money" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Moneda
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("TipoHorario") && menuPermissions["TipoHorario"])
+                                    {
+                                        <a class="nav-link" asp-controller="TipoHorario" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Tipo de Horario
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Horario") && menuPermissions["Horario"])
+                                    {
+                                        <a class="nav-link" asp-controller="Horario" asp-action="Index">
+                                            <i class="nav-icon fas fa-calendar-check-o" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Horario
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("DiaFestivo") && menuPermissions["DiaFestivo"])
+                                    {
+                                        <a class="nav-link" asp-controller="DiaFestivo" asp-action="Index">
+                                            <i class="nav-icon fas fa-calendar" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Días Festivos
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Producto") && menuPermissions["Producto"])
+                                    {
+                                        <a class="nav-link" asp-controller="Producto" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Producto/Activo Fijo
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Ubicacion") && menuPermissions["Ubicacion"])
+                                    {
+                                        <a class="nav-link" asp-controller="Ubicacion" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Ubicación
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Ubicacion") && menuPermissions["Ubicacion"])
+                                    {
+                                        <a class="nav-link" asp-controller="Employee" asp-action="Index2">
+                                            <i class="nav-icon fas fa-project-diagram" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Diagrama Empleado
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (hasRecursosHumanosPermissions)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-briefcase"></i>
+                                <p>
+                                    <strong>Recursos Humanos</strong>
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Division") && menuPermissions["Division"])
+                                    {
+                                        <a class="nav-link" asp-controller="Division" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                División
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Departamento") && menuPermissions["Departamento"])
+                                    {
+                                        <a class="nav-link" asp-controller="Departamento" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Departamento
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Cargo") && menuPermissions["Cargo"])
+                                    {
+                                        <a class="nav-link" asp-controller="Cargo" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Cargo
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("ClaseEmpleado") && menuPermissions["ClaseEmpleado"])
+                                    {
+                                        <a class="nav-link" asp-controller="ClaseEmpleado" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Clase de Empleado
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("TipoAusencium") && menuPermissions["TipoAusencium"])
+                                    {
+                                        <a class="nav-link" asp-controller="TipoAusencium" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Tipo de Ausencia
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("TipoContrato") && menuPermissions["TipoContrato"])
+                                    {
+                                        <a class="nav-link" asp-controller="TipoContrato" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Tipo de Contrato
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (hasNominaPermissions)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-list-alt"></i>
+                                <p>
+                                    <strong>Nómina</strong>
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("NominaEmpleado") && menuPermissions["NominaEmpleado"])
+                                    {
+                                        <a class="nav-link" asp-controller="NominaEmpleado" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Funciones de Nómina
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("TipoNomina") && menuPermissions["TipoNomina"])
+                                    {
+                                        <a class="nav-link" asp-controller="TipoNomina" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Tipo de Nómina
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Ingreso") && menuPermissions["Ingreso"])
+                                    {
+                                        <a class="nav-link" asp-controller="Ingreso" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Ingresos
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Deduccion") && menuPermissions["Deduccion"])
+                                    {
+                                        <a class="nav-link" asp-controller="Deduccion" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Deducciones
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                                <li class="nav-item">
+                                    @if (menuPermissions != null && menuPermissions.ContainsKey("Impuesto") && menuPermissions["Impuesto"])
+                                    {
+                                        <a class="nav-link" asp-controller="Impuesto" asp-action="Index">
+                                            <i class="nav-icon fas fa-square" style="color: var(--GrisMenu);"></i>
+                                            <p style="color: var(--GrisMenu);">
+                                                Impuestos
+                                            </p>
+                                        </a>
+                                    }
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (User.IsInRole("SuperAdmin"))
                     {
                         <li class="nav-item">
                             <a href="#" class="nav-link">
@@ -501,7 +576,7 @@
         <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
         <script src="~/plugins/flot/plugins/jquery.flot.resize.js"></script>
         <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
-        <script src="~/plugins/flot/plugins/jquery.flot.pie.js"></script>   
+        <script src="~/plugins/flot/plugins/jquery.flot.pie.js"></script>
         <!-- Bootstrap4 Duallistbox -->
         <script src="~/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
         <!-- JQVMap -->
@@ -533,7 +608,7 @@
 
             //Initialize Select2 Elements
             $('.select2').select2()
-            
+
             $(document).ready(function () {
                 LoadUsrData();
 
@@ -571,7 +646,7 @@
                 bsCustomFileInput.init();
             });
             function LoadUsrData() {
-                
+
                 $.ajax({
                     url: '/Usuario/Photo',
                     type: 'GET',
@@ -597,11 +672,11 @@
             }
 
 
-           
-           
-           
 
-           
+
+
+
+
         </script>
 
 
@@ -610,14 +685,14 @@
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
         <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
         <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/export/bootstrap-table-export.min.js"></script>
-       
+
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
 
-        
+
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-      
+
 
         @await RenderSectionAsync("Scripts", required: false)
 

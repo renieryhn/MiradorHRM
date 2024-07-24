@@ -12,32 +12,40 @@
 @{
     Layout = "_Layout";
     List<string> userPermissions = new List<string>();
+    var menuPermissions = new Dictionary<string, bool>(); // Usar un diccionario para almacenar permisos
 
     try
     {
         var urlHelper = UrlHelperFactory.GetUrlHelper(ViewContext);
         var controllerName = ViewContext.RouteData.Values["controller"].ToString();
         var actionName = ViewContext.RouteData.Values["action"].ToString();
-        var viewName = ViewContext.View.Path;
         var userName = User.Identity.Name;
-
-        if (!User.IsInRole("SuperAdmin"))
-        {
+  
             if (controllerName != "Usuario" && controllerName != "Home" && controllerName != "NoPermissionAccess")
             {
-                var ventana = _context.Ventana.FirstOrDefault(v => v.Nombre == $"{controllerName}");
+                var ventana = _context.Ventana.FirstOrDefault(v => v.Nombre == controllerName);
                 if (ventana != null)
                 {
                     var user = await UserManager.FindByNameAsync(userName);
                     var roles = await UserManager.GetRolesAsync(user);
 
+                    // Obtener permisos de usuario basados en RoleVentana
                     foreach (var role in roles)
                     {
                         var roleId = _context.Roles.FirstOrDefault(r => r.Name == role)?.Id;
                         if (roleId != null)
                         {
-                            var roleClaims = _context.RoleClaims.Where(rc => rc.RoleId == roleId && rc.ClaimType == "Permission").ToList();
-                            userPermissions.AddRange(roleClaims.Select(rc => rc.ClaimValue));
+                            var roleVentanas = _context.RoleVentana
+                                .Where(rv => rv.RoleId == roleId && rv.VentanaId == ventana.Id)
+                                .FirstOrDefault();
+
+                            if (roleVentanas != null)
+                            {
+                                if (roleVentanas.Ver) userPermissions.Add("View");
+                                if (roleVentanas.Crear) userPermissions.Add("Create");
+                                if (roleVentanas.Editar) userPermissions.Add("Edit");
+                                if (roleVentanas.Eliminar) userPermissions.Add("Delete");
+                            }
                         }
                     }
                 }
@@ -68,11 +76,46 @@
                     Context.Response.Redirect(noPermissionUrl);
                 }
             }
+        
+   
+        // Obtener los roles del usuario
+        var usermenu = await UserManager.FindByNameAsync(userName);
+        var rolesmenu = await UserManager.GetRolesAsync(usermenu);
+
+        var userRoleIds = _context.Roles
+            .Where(r => rolesmenu.Contains(r.Name))
+            .Select(r => r.Id)
+            .ToList();
+
+        // Filtrar las ventanas activas y sus permisos basados en los roles del usuario
+        var menuVentanas = _context.Ventana.Where(v => v.Activo).ToList();
+
+        foreach (var ventana in menuVentanas)
+        {
+            var ventanaPermissions = _context.RoleVentana
+                .Where(rv => rv.VentanaId == ventana.Id && userRoleIds.Contains(rv.RoleId))
+                .Select(rv => new
+                {
+                    Ventana = rv.Ventana.Nombre,
+                    View = rv.Ver
+                })
+                .FirstOrDefault();
+
+            if (ventanaPermissions != null)
+            {
+                // Solo almacenamos permisos de visualización para el menú
+                if (ventanaPermissions.View)
+                {
+                    menuPermissions[ventanaPermissions.Ventana] = true; // Almacena si el usuario tiene permiso de ver
+                }
+            }
         }
+
+        ViewData["MenuPermissions"] = menuPermissions;
+        ViewData["UserPermissions"] = userPermissions;
     }
     catch (Exception ex)
     {
         Console.WriteLine(ex.Message);
     }
-    ViewData["UserPermissions"] = userPermissions;
 }

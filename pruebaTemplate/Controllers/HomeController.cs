@@ -35,11 +35,26 @@ public class HomeController : Controller
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> IndexAsync()
-        {
 
-            // Consulta para contar la cantidad de empleados
-            var cantidadEmpleados = await _context.Empleados.Where(e => e.Activo).CountAsync();
+    public IActionResult Bienvenido()
+    {
+        return View();
+    }
+    public async Task<IActionResult> IndexAsync()
+        {
+        
+        var userName = User.Identity?.Name;     
+        var user = await _userManager.FindByNameAsync(userName);     
+        var roles = await _userManager.GetRolesAsync(user);
+        if (roles == null || !roles.Any())
+        {
+          
+            return RedirectToAction("Bienvenido");
+        }
+
+
+        // Consulta para contar la cantidad de empleados
+        var cantidadEmpleados = await _context.Empleados.Where(e => e.Activo).CountAsync();
             var cantidadUsuarios = await _userManager.Users.CountAsync();
             var cantidadCargos = await _context.Cargos.CountAsync();
             int cantidadPerfilesCompletos = await _context.Empleados
@@ -97,8 +112,7 @@ public class HomeController : Controller
 
             try
             {
-                var user = await _userManager.GetUserAsync(User);
-
+               
                 var viewModel = new InicioFiltros
                 {
                     Profile = new ProfileViewModel
@@ -578,19 +592,24 @@ public class HomeController : Controller
         }
 
 
-    public IActionResult NoPermissionAccess()
-    {
-        return View();
-    }
-    public IActionResult Privacy()
+        public IActionResult NoPermissionAccess()
         {
             return View();
         }
+        public IActionResult Privacy()
+        {
+                return View();
+        }
+        
+
+    
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 

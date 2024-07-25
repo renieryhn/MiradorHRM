@@ -100,11 +100,29 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(tipoHorario, true);
-                _context.Add(tipoHorario);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    SetCamposAuditoria(tipoHorario, true);
+                    _context.Add(tipoHorario);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("IX_TipoHorario"))
+                    {
+                        TempData["error"] = "Error: El nombre del tipo de horario ya está registrado. Por favor, ingrese un nombre diferente.";
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error: Ocurrió un error al intentar crear el registro. Por favor, inténtelo de nuevo.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["error"] = "Error: Ocurrió un error inesperado. Por favor, inténtelo de nuevo.";
+                }
             }
             else
             {

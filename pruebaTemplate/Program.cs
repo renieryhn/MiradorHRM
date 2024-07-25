@@ -45,7 +45,7 @@ builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler
 
 builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
 {
-    opciones.SignIn.RequireConfirmedAccount = true;
+    opciones.SignIn.RequireConfirmedAccount = false;
     opciones.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 })
 .AddEntityFrameworkStores<PlanillaContext>()

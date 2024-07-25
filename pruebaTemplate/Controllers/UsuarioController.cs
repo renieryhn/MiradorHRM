@@ -69,11 +69,11 @@ namespace PlanillaPM.Controllers
             return View();
         }
 
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Registro(Registro modelo)
         {
-           
             if (!ModelState.IsValid)
             {
                 return View(modelo);
@@ -86,64 +86,137 @@ namespace PlanillaPM.Controllers
                 return View(modelo);
             }
 
-            var usuario = new Usuario() { Email = modelo.Email, UserName = modelo.Email, PhoneNumber = modelo.PhoneNumber };
+            var usuarioExistente = await context.Users.FirstOrDefaultAsync(u => u.Email == modelo.Email);
+            if (usuarioExistente != null)
+            {
+                ViewData["mensaje"] = "El correo electrónico ya está registrado.";
+                return View(modelo);
+            }
+
+
+            var usuario = new Usuario()
+            {
+                Email = modelo.Email,
+                UserName = modelo.Email,
+                PhoneNumber = modelo.PhoneNumber,
+                EmailConfirmed = true
+            };
+
             var resultado = await userManager.CreateAsync(usuario, password: modelo.Password);
 
             if (resultado.Succeeded)
             {
-                var userId = await userManager.GetUserIdAsync(usuario);
-                var code = await userManager.GenerateEmailConfirmationTokenAsync(usuario);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                await signInManager.SignInAsync(usuario, isPersistent: false);
+                ViewData["mensaje"] = "Registro exitoso. Has iniciado sesión automáticamente.";
 
-                // URL de confirmación personalizada
-                var callbackUrl = Url.Action("ConfirmarEmail", "Usuario", new { userId = userId, code = code }, protocol: Request.Scheme);
+                // Obtener los roles del usuario
+                var userName = usuario.UserName; 
+                var usermenu = await userManager.FindByNameAsync(userName);
+                var rolesmenu = await userManager.GetRolesAsync(usermenu);
 
-
-                // Verificar que el valor de 'modelo.Email' no sea null antes de enviar el correo electrónico
-                if (modelo.Email != null)
+                if (rolesmenu == null || !rolesmenu.Any())
                 {
-                    try
-                    {
-                        // Enviar correo electrónico de confirmación
-                        await emailService.EnviarEmail(modelo.Email, "Confirmación de correo electrónico", $"Por favor, confirma tu correo electrónico haciendo clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>.");
-
-                        if (userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            ViewData["mensaje"] = "Registro exitoso. Por favor, confirma tu correo electrónico para iniciar sesión";
-                            return RedirectToAction("RegistrarseConfirmación", "Usuario");
-
-                        }
-                       
-                       else
-                        {
-                            await signInManager.SignInAsync(usuario, isPersistent: false);
-                            ViewData["mensaje"] = "Registro exitoso. Has iniciado sesión automáticamente.";
-                            return RedirectToAction("Index", "Home"); // Ajusta la ruta según tus necesidades
-                        }
-                    }
-                    
-                    catch (Exception ex)
-                    {
-                        // Registra el error o imprímelo en la consola para depuración
-                        Console.WriteLine($"Error al enviar el correo electrónico: {ex.Message}");
-
-                       
-
-                        ViewData["mensaje"] = "Usuario no registrado. Hubo un problema al enviar el correo electrónico. Por favor, intenta registrarte de nuevo o contacta al soporte.";
-                        return View(modelo);
-                    }
+                    return RedirectToAction("Bienvenido", "Home");
                 }
+
+                return RedirectToAction("Index", "Home");
             }
             else
             {
                 foreach (var error in resultado.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }  
+                }
+                ViewData["Error"] = "Error al registrarse";
             }
 
             return View(modelo);
         }
+
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Registro(Registro modelo)
+        //{
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(modelo);
+        //    }
+
+        //    // Verificar si las contraseñas coinciden
+        //    if (modelo.Password != modelo.RetypePassword)
+        //    {
+        //        ViewData["mensaje"] = "Las contraseñas no coinciden.";
+        //        return View(modelo);
+        //    }
+
+        //    // Verificar si el correo ya existe
+        //    var usuarioExistente = await userManager.FindByEmailAsync(modelo.Email);
+        //    if (usuarioExistente != null)
+        //    {
+        //        ViewData["mensaje"] = "El correo electrónico ya está registrado.";
+        //        return View(modelo);
+        //    }
+
+        //    var usuario = new Usuario() { Email = modelo.Email, UserName = modelo.Email, PhoneNumber = modelo.PhoneNumber, EmailConfirmed = true };
+        //    var resultado = await userManager.CreateAsync(usuario, password: modelo.Password);
+
+        //    if (resultado.Succeeded)
+        //    {
+        //        var userId = await userManager.GetUserIdAsync(usuario);
+        //        var code = await userManager.GenerateEmailConfirmationTokenAsync(usuario);
+        //        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        //        // URL de confirmación personalizada
+        //        var callbackUrl = Url.Action("ConfirmarEmail", "Usuario", new { userId = userId, code = code }, protocol: Request.Scheme);
+
+
+        //        // Verificar que el valor de 'modelo.Email' no sea null antes de enviar el correo electrónico
+        //        if (modelo.Email != null)
+        //        {
+        //            try
+        //            {
+        //                // Enviar correo electrónico de confirmación
+        //                await emailService.EnviarEmail(modelo.Email, "Confirmación de correo electrónico", $"Por favor, confirma tu correo electrónico haciendo clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>.");
+
+        //                if (userManager.Options.SignIn.RequireConfirmedAccount)
+        //                {
+        //                    ViewData["mensaje"] = "Registro exitoso. Por favor, confirma tu correo electrónico para iniciar sesión";
+        //                    return RedirectToAction("RegistrarseConfirmación", "Usuario");
+
+        //                }
+
+        //               else
+        //                {
+        //                    await signInManager.SignInAsync(usuario, isPersistent: false);
+        //                    ViewData["mensaje"] = "Registro exitoso. Has iniciado sesión automáticamente.";
+        //                    return RedirectToAction("Index", "Home"); // Ajusta la ruta según tus necesidades
+        //                }
+        //            }
+
+        //            catch (Exception ex)
+        //            {
+        //                // Registra el error o imprímelo en la consola para depuración
+        //                Console.WriteLine($"Error al enviar el correo electrónico: {ex.Message}");
+
+
+
+        //                ViewData["mensaje"] = "Usuario no registrado. Hubo un problema al enviar el correo electrónico. Por favor, intenta registrarte de nuevo o contacta al soporte.";
+        //                return View(modelo);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var error in resultado.Errors)
+        //        {
+        //            ModelState.AddModelError(string.Empty, error.Description);
+        //        }  
+        //    }
+
+        //    return View(modelo);
+        //}
 
 
         [AllowAnonymous]

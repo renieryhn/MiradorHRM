@@ -104,11 +104,29 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(claseEmpleado, true);
-                _context.Add(claseEmpleado);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    SetCamposAuditoria(claseEmpleado, true);
+                    _context.Add(claseEmpleado);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("IX_ClaseEmpleado"))
+                    {
+                        TempData["error"] = "Error: El nombre de la clase de empleado ya está registrado. Por favor, ingrese un nombre diferente.";
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error: Ocurrió un error al intentar crear el registro. Por favor, inténtelo de nuevo.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["error"] = "Error: Ocurrió un error inesperado. Por favor, inténtelo de nuevo.";
+                }
             }
             else
             {

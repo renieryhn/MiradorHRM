@@ -64,10 +64,21 @@
                         break;
                     case "Details":
                         hasAccess = userPermissions.Contains("View");
+                        break;                 
+                    case "FichaEmpleado":
+                    case "IDIEmpleado":               
+                        hasAccess = userPermissions.Contains("View");
                         break;
                     case "Delete":
                         hasAccess = userPermissions.Contains("Delete");
                         break;
+                }
+
+                if (actionName == "Details" && !hasAccess)
+                {
+                    hasAccess = userPermissions.Contains("View") &&
+                        (await HasAccessToAdditionalWindow(userName, _context, UserManager, "FichaEmpleado") ||
+                     await HasAccessToAdditionalWindow(userName, _context, UserManager, "IDIEmpleado"));
                 }
 
                 if (!hasAccess)
@@ -75,13 +86,14 @@
                     var noPermissionUrl = urlHelper.Action("NoPermissionAccess", "Home");
                     Context.Response.Redirect(noPermissionUrl);
                 }
+
             }
         
    
         // Obtener los roles del usuario
         var usermenu = await UserManager.FindByNameAsync(userName);
         var rolesmenu = await UserManager.GetRolesAsync(usermenu);
-
+       
         var userRoleIds = _context.Roles
             .Where(r => rolesmenu.Contains(r.Name))
             .Select(r => r.Id)
@@ -112,10 +124,46 @@
         }
 
         ViewData["MenuPermissions"] = menuPermissions;
-        ViewData["UserPermissions"] = userPermissions;
+        ViewData["UserPermissions"] = userPermissions;        
     }
     catch (Exception ex)
     {
         Console.WriteLine(ex.Message);
     }
+
+    async Task<bool> HasAccessToAdditionalWindow(string userName, PlanillaContext context, UserManager<Usuario> userManager, string windowName)
+    {
+        var userPermissions = new List<string>();
+        var ventana = context.Ventana.FirstOrDefault(v => v.Nombre == windowName);
+
+        if (ventana != null)
+        {
+            var user = await userManager.FindByNameAsync(userName);
+            var roles = await userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                var roleId = context.Roles.FirstOrDefault(r => r.Name == role)?.Id;
+                if (roleId != null)
+                {
+                    var roleVentanas = context.RoleVentana
+                        .Where(rv => rv.RoleId == roleId && rv.VentanaId == ventana.Id)
+                        .FirstOrDefault();
+
+                    if (roleVentanas != null)
+                    {
+                        if (roleVentanas.Ver) userPermissions.Add("View");
+                        if (roleVentanas.Crear) userPermissions.Add("Create");
+                        if (roleVentanas.Editar) userPermissions.Add("Edit");
+                        if (roleVentanas.Eliminar) userPermissions.Add("Delete");
+                    }
+                }
+            }
+        }
+
+        return userPermissions.Contains("View");
+    }
+
+
+
 }

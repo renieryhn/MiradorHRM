@@ -100,11 +100,25 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(tipoAusencium, true);
-                _context.Add(tipoAusencium);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    SetCamposAuditoria(tipoAusencium, true);
+                    _context.Add(tipoAusencium);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        TempData["error"] = "Error: El nombre del tipo de ausencia ya está registrado.";
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error: No se pudo guardar el registro. Inténtalo de nuevo.";
+                    }
+                }
             }
             else
             {

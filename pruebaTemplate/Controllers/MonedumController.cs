@@ -99,11 +99,29 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(monedum, true);
-                _context.Add(monedum);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    SetCamposAuditoria(monedum, true);
+                    _context.Add(monedum);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("IX_Moneda"))
+                    {
+                        TempData["error"] = "Error: El nombre de la moneda ya está registrado. Por favor, ingrese un nombre diferente.";
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error: Ocurrió un error al intentar crear el registro. Por favor, inténtelo de nuevo.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["error"] = "Error: Ocurrió un error inesperado. Por favor, inténtelo de nuevo.";
+                }
             }
             else
             {

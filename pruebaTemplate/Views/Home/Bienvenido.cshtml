@@ -1,0 +1,62 @@
+﻿<style>
+    .welcome-container {
+        margin-top: 50px;
+    }
+
+    .welcome-card {
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-header {
+        background-color: #1797C0;
+        color: white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        text-align: center;
+    }
+
+        .welcome-header h4 {
+            margin: 0;
+            padding: 15px;
+            font-size: 1.5rem;
+        }
+
+    .welcome-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .welcome-message {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .welcome-logo {
+        width: 200px;
+        height: auto;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="container welcome-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card welcome-card">
+                <div class="card-header welcome-header">
+                    <h4>¡Bienvenido a nuestro sistema!</h4>
+                </div>
+                <div class="card-body welcome-body">
+                    <div class="welcome-message">
+                        <p>Hola @User.Identity.Name,</p>
+                       
+                        <p>Gracias por registrarte en nuestro sistema. Tu cuenta ha sido creada exitosamente. Para comenzar a utilizar todas las funcionalidades del sistema, por favor solicita los permisos necesarios al administrador.</p>
+                        <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en ponerte en contacto con el soporte técnico.</p>
+                    </div>
+                    <img src="~/img/LoadProyectoMirador.png" alt="Logo" class="welcome-logo">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

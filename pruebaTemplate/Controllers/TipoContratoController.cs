@@ -100,11 +100,25 @@ namespace PlanillaPM.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetCamposAuditoria(tipoContrato, true);
-                _context.Add(tipoContrato);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    SetCamposAuditoria(tipoContrato, true);
+                    _context.Add(tipoContrato);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        TempData["error"] = "Error: El nombre del tipo de contrato ya está registrado.";
+                    }
+                    else
+                    {
+                        TempData["error"] = "Error: No se pudo guardar el registro. Inténtalo de nuevo.";
+                    }
+                }
             }
             else
             {

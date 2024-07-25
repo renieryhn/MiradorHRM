@@ -12,36 +12,36 @@ using System.Web;
 
 namespace PlanillaPM.Controllers
 {
-    public class EmployeeController : Controller
+    public class DiagramaController : Controller
     {
 
         private readonly PlanillaContext _context;
         private readonly UserManager<Usuario> _userManager;
 
-        public EmployeeController(PlanillaContext context, UserManager<Usuario> userManager)
+        public DiagramaController(PlanillaContext context, UserManager<Usuario> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+        //public async Task<IActionResult> Index()
+        //{
+        //    var empleados = await _context.Empleados
+        //        .Include(e => e.IdEncargadoNavigation)
+        //        .Include(e => e.IdCargoNavigation)
+        //        .ToListAsync();
+
+        //    ViewBag.nodes = empleados.Select(e => new {
+        //        IdEmpleado = e.IdEmpleado,
+        //        NombreCompleto = e.NombreCompleto,
+        //        Cargo = e.IdCargoNavigation.NombreCargo,
+        //        IdEncargado = e.IdEncargado.HasValue ? e.IdEncargadoNavigation.IdEmpleado.ToString() : null,
+        //        Image = e.FotografiaPath
+        //    }).ToList();
+
+        //    return View(empleados);
+        //}
+
         public async Task<IActionResult> Index()
-        {
-            var empleados = await _context.Empleados
-                .Include(e => e.IdEncargadoNavigation)
-                .Include(e => e.IdCargoNavigation)
-                .ToListAsync();
-
-            ViewBag.nodes = empleados.Select(e => new {
-                IdEmpleado = e.IdEmpleado,
-                NombreCompleto = e.NombreCompleto,
-                Cargo = e.IdCargoNavigation.NombreCargo,
-                IdEncargado = e.IdEncargado.HasValue ? e.IdEncargadoNavigation.IdEmpleado.ToString() : null,
-                Image = e.FotografiaPath
-            }).ToList();
-
-            return View(empleados);
-        }
-
-        public async Task<IActionResult> Index2()
         {
             var empleados = await _context.Empleados
                 .Include(e => e.IdEncargadoNavigation)

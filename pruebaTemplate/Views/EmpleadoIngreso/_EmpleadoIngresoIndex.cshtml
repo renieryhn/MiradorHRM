@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    var userPermissions = ViewData["UserPermissions"] as List<string>;
     Pager pager = new Pager();
     int PageNo = 0;
     if (ViewBag.Pager != null)
@@ -38,7 +39,10 @@
                                                     <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                         <div class="btn-group btn-group-justified" role="group">
                                                             @* <a asp-controller="EmpleadoIngreso" asp-action="Index" class="btn "  style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
+                                                            @if (userPermissions.Contains("Create"))
+                                                            {
                                                             <a asp-controller="EmpleadoIngreso" asp-action="Create" class="btn " asp-route-id="1" style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                            }
                                                             <a asp-controller="EmpleadoIngreso" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                         </div>
                                                     </div>

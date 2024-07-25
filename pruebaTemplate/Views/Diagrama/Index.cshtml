@@ -1,10 +1,15 @@
 ﻿@model IEnumerable<PlanillaPM.Models.Empleado>
 
-
+@{
+    var userPermissions = ViewData["UserPermissions"] as List<string>; 
+}
 <script src="~/js/orgchart.js"></script>
 
 <div class="btn-container">
+      @if (userPermissions.Contains("View"))
+      { 
     <div id="tree"></div>
+      }
 </div>
 
 

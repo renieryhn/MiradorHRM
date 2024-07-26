@@ -118,6 +118,9 @@
                                             <tr>
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Empresa)
                                                         </th>
@@ -148,9 +151,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                                        </th>
+                                                        
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -177,6 +178,9 @@
                                                         }
                                                         </div>
                                                     </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                        </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.Empresa)
                                                         </td>
@@ -216,9 +220,7 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                        </td>
+                                                       
                                             </tr>
                                             }
                                         </tbody>

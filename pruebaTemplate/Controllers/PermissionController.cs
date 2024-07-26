@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using MiradorHRM.Models;
 using PlanillaPM.Constants;
 using PlanillaPM.Helpers;
@@ -44,7 +45,7 @@ namespace PlanillaPM.Controllers
             return RedirectToAction("Index", new { roleId = selectedRoleId });
         }
 
-        public async Task<IActionResult> Index(string roleId)
+        public async Task<IActionResult> Index(int pg, string roleId)
         {
             if (string.IsNullOrEmpty(roleId))
             {
@@ -57,6 +58,7 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
 
+           
 
             var allPermissions = Permissions.GeneratePermissionsForModule();
 
@@ -80,6 +82,19 @@ namespace PlanillaPM.Controllers
                 VentanasAsignadas = roleVentanas
 
             };
+
+            // Agregar paginación
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCount = model.VentanasAsignadas.Count(); // Ajustar según la colección que deseas paginar
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+            var data = model.VentanasAsignadas.Skip(recSkip).Take(pager.PageSize).ToList(); // Ajustar según la colección que deseas paginar
+            this.ViewBag.Pager = pager;
+            this.ViewBag.RoleId = roleId; // Pasar roleId a la vista
+
+            model.VentanasAsignadas = data; // Actualizar el modelo con los datos paginados
+
             return View(model);
         }
 

@@ -107,6 +107,9 @@
                                         <tr>
                                             <th data-sortable="true">No.</th>
                                             <th></th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                            </th>
                                             <th data-sortable="true">
                                                 @Html.DisplayNameFor(model => model.NombreContacto)
                                             </th>
@@ -134,9 +137,7 @@
                                             <th data-sortable="true">
                                                 @Html.DisplayNameFor(model => model.ModificadoPor)
                                             </th>
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                            </th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -163,6 +164,9 @@
                                                         <a asp-action="Delete" asp-route-numero="2" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdContactoEmergencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         }
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.NombreContacto)
@@ -200,9 +204,7 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                 </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                </td>
+                                                
                                             </tr>
                                         }
                                     </tbody>

@@ -3,7 +3,7 @@
 
         @{
         ViewData["Title"] = "Index";
-    var userPermissions = ViewData["UserPermissions"] as List<string>;
+        var userPermissions = ViewData["UserPermissions"] as List<string>;
         Pager pager = new Pager();
         int PageNo = 0;
         if (ViewBag.Pager != null)

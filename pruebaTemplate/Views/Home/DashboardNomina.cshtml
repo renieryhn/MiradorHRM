@@ -220,8 +220,8 @@
                                                 <td style="display: none;">@Html.DisplayFor(modelItem => nomina.IdNomina)</td>
                                                 <td>@Html.DisplayFor(modelItem => nomina.PeriodoFiscal)</td>
                                                 <td>@Html.DisplayFor(modelItem => nomina.Mes)</td>
-                                                <td>@Html.DisplayFor(modelItem => nomina.FechaPago)</td>
-                                                <td>@Html.DisplayFor(modelItem => nomina.PagoNeto)</td>
+                                                <td>@Html.DisplayFor(modelItem => nomina.FechaPago)</td>                                    
+                                                <td>@string.Format("{0:N2}", nomina.PagoNeto)</td>
                                                 <td>
                                                     <button class="btn btn-primary btn-sm"
                                                             data-idnomina="@nomina.IdNomina"
@@ -328,9 +328,9 @@
                                         {
                                             <tr>
                                                 <td>@Html.DisplayFor(modelItem => empleado.IdEmpleadoNavigation.NombreCompleto)</td>
-                                                <td>@Html.DisplayFor(modelItem => empleado.TotalGastos)</td>
-                                                <td>@Html.DisplayFor(modelItem => empleado.AdelantoRecibido)</td>
-                                                <td>@Html.DisplayFor(modelItem => empleado.BalancePendiente)</td>
+                                                <td>@string.Format("{0:N2}", empleado.TotalGastos)</td>
+                                                <td>@string.Format("{0:N2}", empleado.AdelantoRecibido)</td>
+                                                <td>@string.Format("{0:N2}", empleado.BalancePendiente)</td>
                                                 <td>
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

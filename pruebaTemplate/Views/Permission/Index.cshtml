@@ -1,8 +1,18 @@
 ﻿@model PlanillaPM.Models.PermissionViewModel
 @using MiradorHRM.Models
-@using PlanillaPM.Models;
+@using PlanillaPM.Models
 
-
+@{
+      
+    Pager pager = new Pager();
+    string roleId = ViewBag.RoleId as string;
+    int PageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+    }
+}
 
 <div class="container-fluid">
     <div>
@@ -108,36 +118,9 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                           @*  <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Ver</th>
-                                        <th>Crear</th>
-                                        <th>Editar</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="selectedVentanasTableBody">
-                                    @foreach (var roleVentana in Model.VentanasAsignadas)
-                                    {
-                                        var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
-                                        if (ventana != null)
-                                        {
-                                            <tr data-ventana-id="@ventana.Id">
-                                                <td>@ventana.Nombre</td>
-                                                <td><input type="checkbox" name="ver_@ventana.Id" @(roleVentana.Ver ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'ver', this.checked, '@ventana.Nombre')" /></td>
-                                                <td><input type="checkbox" name="crear_@ventana.Id" @(roleVentana.Crear ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'crear', this.checked, '@ventana.Nombre')" /></td>
-                                                <td><input type="checkbox" name="editar_@ventana.Id" @(roleVentana.Editar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'editar', this.checked, '@ventana.Nombre')" /></td>
-                                                <td><input type="checkbox" name="eliminar_@ventana.Id" @(roleVentana.Eliminar ? "checked" : "") onclick="updatePermission('@Model.RoleId', @ventana.Id, 'eliminar', this.checked, '@ventana.Nombre')" /></td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table> *@
+                                                   
 
-                            <table class="table table-bordered">
+                            <table id="table" cellspacing="0" class="table table-striped projects" data-toggle="table">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
@@ -177,6 +160,33 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="card-footer">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                    @if (pager.TotalPages > 1)
+                                    {
+                                        <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", new { pg = 1, roleId = roleId })">Primero</a>
+                                        </li>
+                                        <li class="page-item @(pager.CurrentPage == 1 ? "disabled" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", new { pg = pager.CurrentPage - 1, roleId = roleId })">Anterior</a>
+                                        </li>
+                                        @for (int i = pager.StartPage; i <= pager.EndPage; i++)
+                                        {
+                                            <li class="page-item @(pager.CurrentPage == i ? "active" : "")">
+                                                <a class="page-link" href="@Url.Action("Index", new { pg = i, roleId = roleId })">@i</a>
+                                            </li>
+                                        }
+                                        <li class="page-item @(pager.CurrentPage == pager.TotalPages ? "disabled" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", new { pg = pager.CurrentPage + 1, roleId = roleId })">Siguiente</a>
+                                        </li>
+                                        <li class="page-item @(pager.CurrentPage == pager.TotalPages ? "disabled" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", new { pg = pager.TotalPages, roleId = roleId })">Último</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </section>
                 </div>
@@ -212,7 +222,7 @@
                 success: function () {
                     toastr.success('Rol clonado exitosamente.');
                     $('#cloneRoleModal').modal('hide');
-                    // Aquí puedes agregar código para actualizar la lista de roles si es necesario
+                    location.reload(); // Refresca la página
                 },
                 error: function (xhr, status, error) {
                     toastr.error('Error al clonar el rol:', error);
@@ -257,7 +267,7 @@
             });
         });
 
-
+       
 
         let bulkUpdate = false;
 

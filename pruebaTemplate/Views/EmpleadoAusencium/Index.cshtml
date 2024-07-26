@@ -108,6 +108,12 @@
                                             <tr>
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.DiaCompleto)
                                                         </th>
@@ -147,12 +153,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                                        </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)
-                                                        </th>
+                                                       
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -179,6 +180,12 @@
                                                         }
                                                         </div>
                                                     </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.IdTipoAusenciaNavigation.NombreTipoAusencia)
+                                                        </td>
                                                         <td class="text-center">
                                                             @if (item.DiaCompleto)
                                                             {
@@ -244,12 +251,7 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                        </td>
-                                                        <td>
-                                                    @Html.DisplayFor(modelItem => item.IdTipoAusenciaNavigation.NombreTipoAusencia)
-                                                        </td>
+                                                       
                                             </tr>
                                             }
                                         </tbody>

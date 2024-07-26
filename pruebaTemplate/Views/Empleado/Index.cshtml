@@ -244,7 +244,7 @@
                                                     @Html.DisplayFor(modelItem => item.NumeroRegistroTributario)
                                                 </td>
                                                 <td>
-                                                    @Html.DisplayFor(modelItem => item.SalarioBase)
+                                                    @string.Format("{0:N2}", item.SalarioBase)
                                                 </td>
                                             </tr>
                                         }

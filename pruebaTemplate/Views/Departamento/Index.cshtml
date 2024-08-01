@@ -64,6 +64,9 @@
                                             <tr>
                                                 <th data-sortable="true">No.</th>
                                                 <th></th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.IdDivisionNavigation)
+                                                        </th>
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.NombreDepartamento)
                                                         </th>
@@ -82,9 +85,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.ModificadoPor)
                                                         </th>
-                                                        <th>
-                                                            @Html.DisplayNameFor(model => model.IdDivisionNavigation)
-                                                        </th>
+                                                      
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -112,6 +113,9 @@
                                                     </div>
                                                     </td>
                                                         <td>
+                                                            @Html.DisplayFor(modelItem => item.IdDivisionNavigation.NombreDivision)
+                                                        </td>
+                                                        <td>
                                                             @Html.DisplayFor(modelItem => item.NombreDepartamento)
                                                         </td>
                                                          <td>
@@ -135,9 +139,7 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.ModificadoPor)
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.IdDivisionNavigation.NombreDivision)
-                                                        </td>
+                                                        
                                             </tr>
                                             }
                                         </tbody>

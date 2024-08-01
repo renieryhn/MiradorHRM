@@ -64,7 +64,7 @@ namespace PlanillaPM.Controllers
                 name = "Proyecto Mirador LLC",
                 pid = "null",
                 title = "main",
-                img = ConvertToBase64("/img/MiEmpresa.jpeg")
+                img = ConvertToBase64("/img/MiEmpresa.png")
             });
 
             ViewBag.nodes = nodes;

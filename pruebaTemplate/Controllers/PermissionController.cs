@@ -98,6 +98,8 @@ namespace PlanillaPM.Controllers
             return View(model);
         }
 
+       
+
         [HttpPost]
         public async Task<IActionResult> AssignInitialVentanas(string roleId, List<int> ventanaIds)
         {
@@ -112,28 +114,47 @@ namespace PlanillaPM.Controllers
                 return NotFound("Role not found.");
             }
 
-            // Eliminar todas las asignaciones anteriores para este rol
+            // Obtener todas las asignaciones existentes para este rol
             var existingRoleVentanas = _context.RoleVentana.Where(rv => rv.RoleId == roleId).ToList();
-            _context.RoleVentana.RemoveRange(existingRoleVentanas);
 
-            // Crear nuevas asignaciones para las ventanas seleccionadas
+            // Crear un conjunto de IDs de ventanas existentes para una búsqueda rápida
+            var existingVentanaIds = new HashSet<int>(existingRoleVentanas.Select(rv => rv.VentanaId));
+
+            // Identificar las ventanas que ya no están en ventanaIds y eliminarlas
+            var ventanasToRemove = existingRoleVentanas.Where(rv => !ventanaIds.Contains(rv.VentanaId)).ToList();
+            _context.RoleVentana.RemoveRange(ventanasToRemove);
+
+            // Crear nuevas asignaciones para las ventanas seleccionadas y actualizar permisos existentes
             foreach (var ventanaId in ventanaIds)
             {
-                _context.RoleVentana.Add(new RoleVentana
+                if (existingVentanaIds.Contains(ventanaId))
                 {
-                    RoleId = roleId,
-                    VentanaId = ventanaId,
-                    Ver = true, // Valor predeterminado, ajustar según sea necesario
-                    Crear = false,
-                    Editar = false,
-                    Eliminar = false
-                });
+                    // Si la ventana ya está asignada, mantener los permisos existentes
+                    var existingRoleVentana = existingRoleVentanas.First(rv => rv.VentanaId == ventanaId);
+                    existingRoleVentana.Ver = true; // Mantener los valores existentes para Crear, Editar y Eliminar
+                }
+                else
+                {
+                    // Si la ventana no está asignada, agregar una nueva asignación
+                    _context.RoleVentana.Add(new RoleVentana
+                    {
+                        RoleId = roleId,
+                        VentanaId = ventanaId,
+                        Ver = true, // Valor predeterminado, ajustar según sea necesario
+                        Crear = false,
+                        Editar = false,
+                        Eliminar = false
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();
 
             return Ok(); // Retornar Ok para indicar que la operación fue exitosa
         }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateVentanas(string roleId, int ventanaId, string permissionType, bool isSelected)

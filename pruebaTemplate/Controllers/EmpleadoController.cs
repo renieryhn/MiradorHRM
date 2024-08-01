@@ -573,7 +573,7 @@ namespace PlanillaPM.Controllers
             ViewData["IdBanco"] = new SelectList(_context.Bancos.Where(r => r.Activo), "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos.Where(r => r.Activo), "IdCargo", "NombreCargo", empleado.IdCargo);
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos.Where(r => r.Activo), "IdDepartamento", "NombreDepartamento", empleado.IdDepartamento);
-            ViewData["IdEncargado"] = new SelectList(_context.Empleados.Where(r => r.Activo), "IdEmpleado", "NombreEmpleado", empleado.IdEncargado);
+            ViewData["IdEncargado"] = new SelectList(_context.Empleados.Where(r => r.Activo), "IdEmpleado", "NombreCompleto", empleado.IdEncargado);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos.Where(r => r.Activo), "IdTipoContrato", "NombreTipoContrato", empleado.IdTipoContrato);
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas.Where(r => r.Activo), "IdTipoNomina", "NombreTipoNomina", empleado.IdTipoNomina);
             ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion", empleado.IdUbicacion);
@@ -657,7 +657,7 @@ namespace PlanillaPM.Controllers
             ViewData["IdBanco"] = new SelectList(_context.Bancos, "IdBanco", "NombreBanco", empleado.IdBanco);
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo", empleado.IdCargo);
             ViewData["IdDepartamento"] = new SelectList(_context.Departamentos, "IdDepartamento", "NombreDepartamento", empleado.IdDepartamento);
-            ViewData["IdEncargado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreEmpleado", empleado.IdEncargado);
+            ViewData["IdEncargado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleado.IdEncargado);
             ViewData["IdTipoContrato"] = new SelectList(_context.TipoContratos, "IdTipoContrato", "NombreTipoContrato", empleado.IdTipoContrato);
             ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina", empleado.IdTipoNomina);
             ViewData["IdUbicacion"] = new SelectList(_context.Ubicaciones.Where(r => r.Activo), "IdUbicacion", "NombreUbicacion", empleado.IdUbicacion);

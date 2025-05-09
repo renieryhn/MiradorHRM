@@ -58,7 +58,10 @@ namespace PlanillaPM.Controllers
 
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                //query = query.Where(r => r.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                query = query.AsEnumerable()
+                .Where(r => r.NombreCompleto != null && r.NombreCompleto.ToLower().Contains(filter.ToLower()))
+                .AsQueryable();
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -82,7 +85,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentIdTipoNomina = idTipoNomina;
             ViewBag.CurrentEstado = estado;
@@ -209,17 +212,60 @@ namespace PlanillaPM.Controllers
 
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoActivo>? data = null;
-            if (data == null)
+            // Crear un DataTable manualmente para incluir todas las columnas deseadas
+            DataTable table = new DataTable("Empleados");
+
+            // Añadir las columnas manualmente
+            table.Columns.Add("IdEmpleado", typeof(int));
+            table.Columns.Add("Nombre del Empleado", typeof(string));   
+            table.Columns.Add("Número de Identidad", typeof(string));
+            table.Columns.Add("Teléfono", typeof(string));
+            table.Columns.Add("Cargo", typeof(string));
+            table.Columns.Add("Departamento", typeof(string));
+            table.Columns.Add("Tipo de Nomina", typeof(string));                                
+            table.Columns.Add("Fecha de Inicio", typeof(DateOnly));
+            table.Columns.Add("Banco", typeof(string));          
+            table.Columns.Add("No. de Cuenta", typeof(string));     
+            table.Columns.Add("Salario Base", typeof(decimal));
+          
+
+            // Poblar el DataTable con datos de la base de datos
+            var empleados = _context.Empleados.Include(e => e.IdCargoNavigation)
+                                              .Include(e => e.IdDepartamentoNavigation)
+                                              .Include(e => e.IdTipoContratoNavigation)
+                                              .Include(e => e.IdTipoNominaNavigation)
+                                              .Include(e => e.IdUbicacionNavigation)
+                                              .Include(e => e.IdEncargadoNavigation)
+                                              .Include(e => e.IdBancoNavigation)
+                                              .ToList();
+
+            foreach (var empleado in empleados)
             {
-                data = _context.EmpleadoActivos.ToList();
+                table.Rows.Add(
+                    empleado.IdEmpleado,
+                    empleado.IdEncargadoNavigation?.NombreCompleto,
+                    empleado.NumeroIdentidad,              
+                    empleado.Telefono,              
+                    empleado.IdCargoNavigation?.NombreCargo,
+                    empleado.IdDepartamentoNavigation?.NombreDepartamento,                
+                    empleado.IdTipoNominaNavigation?.NombreTipoNomina,                                 
+                    empleado.FechaInicio,
+                    empleado.IdBancoNavigation?.NombreBanco,                
+                    empleado.CuentaBancaria,                 
+                    empleado.SalarioBase
+                    
+                );
             }
-            DataTable table = converter.ToDataTable(data);
-            string fileName = "EmpleadoActivo.xlsx";
+
+            // Crear el archivo Excel con ClosedXML
+            string fileName = "NominaEmpleado.xlsx";
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var ws = wb.Worksheets.Add(table, "Empleados");
+
+                // Configurar formato de celdas, como ajustar ancho de columnas
+                ws.Columns().AdjustToContents();
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -227,6 +273,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
         public async Task<IActionResult> Details(int? id)
         {

@@ -34,6 +34,7 @@ namespace PlanillaPM.Controllers
        
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Ingreso> registros;
             if (filter != null)
             {
@@ -53,26 +54,58 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
+        [HttpGet]
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Ingreso>? data = null;
-             if (data == null)
-             {
-                data = _context.Ingresos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Ingresos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            // Obtener la lista de todos los ingresos
+            var data = _context.Ingresos
+                        .Select(i => new
+                        {
+                            i.IdIngreso,
+                            NombreIngreso = i.NombreIngreso,
+                            TipoIngreso = i.TipoIngreso.ToString(), 
+                            TipoCalculo = i.TipoCalculo.ToString(), 
+                            Monto = i.Monto.HasValue ? i.Monto.Value.ToString("F2") : "",
+                            Formula = i.Formula,
+                            Grabable = i.Grabable ? "Sí" : "No",
+                            AsignacionAutomatica = i.AsignacionAutomatica ? "Sí" : "No",
+                            Orden = i.Orden,
+                            Activo = i.Activo ? "Sí" : "No",                          
+                            FechaInicial = i.FechaInicial.HasValue ? i.FechaInicial.Value.ToString("dd/MM/yyyy") : "",
+                            FechaFinal = i.FechaFinal.HasValue ? i.FechaFinal.Value.ToString("dd/MM/yyyy") : "",
+                            Periodo = i.Periodo
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Ingresos.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Ingresos");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Ingreso/Details/5
         public async Task<IActionResult> Details(int? id)
         {

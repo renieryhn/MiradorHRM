@@ -29,6 +29,7 @@ namespace PlanillaPM.Controllers
         // GET: Banco
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Banco> registros;
             if (filter != null)
             {
@@ -50,16 +51,34 @@ namespace PlanillaPM.Controllers
         public ActionResult Download()
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Banco>? data = null;
-            if (data == null)
+
+            // Obtener los datos de Banco desde la base de datos
+            var data = _context.Bancos
+                .Select(b => new
+                {
+                    b.IdBanco,
+                    b.NombreBanco,
+                    b.Activo                                 
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.Bancos.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista a DataTable
             DataTable table = converter.ToDataTable(data);
+
             string fileName = "Bancos.xlsx";
+
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "Bancos");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -67,6 +86,8 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
+
         // GET: Banco/Details/5
         public async Task<IActionResult> Details(int? id)
         {

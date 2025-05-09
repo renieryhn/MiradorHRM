@@ -84,7 +84,7 @@
                              @if (userPermissions.Contains("Create"))
                              {
                             <a asp-controller="CuentaPorCobrar" asp-action="Create"  class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;  "></i></a>
-                            <a asp-controller="CuentaPorCobrar" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
+                            <a asp-controller="CuentaPorCobrar" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
                              }
                         </div>
                     </div>
@@ -166,18 +166,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Activo)
                                                         </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaCreacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaModificacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.CreadoPor)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.ModificadoPor)
-                                                        </th>
+                                                       
                                                         
                                             </tr>
                                         </thead>
@@ -251,18 +240,7 @@
                                                                 <span class="badge badge-danger">Inactivo</span>
                                                             }
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaCreacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaModificacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.CreadoPor)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.ModificadoPor)
-                                                        </td>
+                                                     
                                                         
                                             </tr>
                                             }

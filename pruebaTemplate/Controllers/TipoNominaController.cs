@@ -29,6 +29,9 @@ namespace PlanillaPM.Controllers
         // GET: TipoNomina
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+
+            ViewBag.Filter = filter;
+
             List<TipoNomina> registros;
             if (filter != null)
             {
@@ -47,26 +50,50 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<TipoNomina>? data = null;
-             if (data == null)
-             {
-                data = _context.TipoNominas.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "TipoNominas.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+
+        public ActionResult Download()
+        {
+            // Obtener la lista de todos los tipos de nómina
+            var data = _context.TipoNominas
+                        .Select(tn => new
+                        {
+                            tn.IdTipoNomina,
+                            NombreTipoNomina = tn.NombreTipoNomina,
+                            PagadaCadaNdias = tn.PagadaCadaNdias,
+                            Activo = tn.Activo ? "Sí" : "No"
+                            
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron tipos de nómina.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "TipoNominas.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Tipos de Nómina");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: TipoNomina/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -29,6 +29,7 @@ namespace PlanillaPM.Controllers
         // GET: TipoAusencium
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<TipoAusencium> registros;
             if (filter != null)
             {
@@ -47,26 +48,48 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<TipoAusencium>? data = null;
-             if (data == null)
-             {
-                data = _context.TipoAusencia.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "TipoAusencia.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        public ActionResult Download()
+        {
+            // Obtener la lista de todos los tipos de ausencia
+            var data = _context.TipoAusencia
+                        .Select(ta => new
+                        {
+                            ta.IdTipoAusencia,
+                            NombreTipoAusencia = ta.NombreTipoAusencia,
+                            GoseSueldo = ta.GoseSueldo ? "Sí" : "No",
+                            Activo = ta.Activo ? "Sí" : "No"
+                          
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron tipos de ausencia.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "TipoAusencia.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Tipo de Ausencia");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: TipoAusencium/Details/5
         public async Task<IActionResult> Details(int? id)
         {

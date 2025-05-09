@@ -30,6 +30,7 @@ namespace PlanillaPM.Controllers
         // GET: Deduccion
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Deduccion> registros;
             if (filter != null)
             {
@@ -48,26 +49,55 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Deduccion>? data = null;
-             if (data == null)
-             {
-                data = _context.Deduccions.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Deduccions.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener los datos de Deduccion desde la base de datos
+            var data = _context.Deduccions
+                .Select(d => new
+                {
+                    d.IdDeduccion,
+                    d.NombreDeduccion,
+                    MetodoCalculo = d.MetodoCalculo.ToString(), 
+                    TipoDeduccion = d.TipoDeduccion.ToString(), 
+                    TipoCalculo = d.TipoCalculo.ToString(),
+                    d.Monto,
+                    d.Formula,
+                    d.Orden,
+                    DeducibleImpuesto = d.DeducibleImpuesto ? "Sí" : "No",
+                    BasadoEnTodo = d.BasadoEnTodo ? "Sí" : "No",
+                    AsignacionAutomatica = d.AsignacionAutomatica ? "Sí" : "No", 
+                    Activo = d.Activo ? "Sí" : "No" 
+                   
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista a DataTable
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "Deducciones.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "Deducciones");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Deduccion/Details/5
         public async Task<IActionResult> Details(int? id)
         {

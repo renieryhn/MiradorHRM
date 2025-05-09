@@ -51,7 +51,7 @@ namespace PlanillaPM.Controllers
                 query = query.Where(r => r.AprobadoPor.ToLower().Contains(filter.ToLower()));
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
 
@@ -83,22 +83,44 @@ namespace PlanillaPM.Controllers
 
         }
 
+        [HttpGet]
         public ActionResult Download(int id)
         {
-            // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoAusencium> data = _context.EmpleadoAusencia.Where(ec => ec.IdEmpleado == id).ToList();
+            // Filtrar las ausencias del empleado por el IdEmpleado recibido
+            var data = _context.EmpleadoAusencia
+                .Where(ec => ec.IdEmpleado == id)
+                .Select(ec => new
+                {
+                    ec.IdEmpleadoAusencia,
+                    Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                    TipoAusencia = ec.IdTipoAusenciaNavigation.NombreTipoAusencia,
+                    ec.DiaCompleto,
+                    EstadoAusencia = ec.Estado.ToString(),
+                    FechaDesde = ec.FechaDesde.ToString("yyyy-MM-dd"),
+                    FechaHasta = ec.FechaHasta.ToString("yyyy-MM-dd"),
+                    HoraDesde = ec.HoraDesde.HasValue ? ec.HoraDesde.Value.ToString("HH:mm") : "N/A",
+                    HoraHasta = ec.HoraHasta.HasValue ? ec.HoraHasta.Value.ToString("HH:mm") : "N/A",
+                    ec.AprobadoPor,
+                    ec.Comentarios,
+                    Activo = ec.Activo ? "Sí" : "No"
+                    
+                })
+                .ToList();
 
-            // Convertir la lista de contactos en una tabla de datos
+          
+
+            // Convertir la lista de ausencias en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
             // Nombre del archivo de Excel
-            string fileName = $"EmpleadoAusencia{id}.xlsx";
+            string fileName = $"EmpleadoAusencia_{id}.xlsx";
 
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                wb.Worksheets.Add(table, "EmpleadoAusencia");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -108,27 +130,58 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
-        
+
+
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoAusencium>? data = null;
-            if (data == null)
+            var data = _context.EmpleadoAusencia
+                .Select(ec => new
+                {
+                    ec.IdEmpleadoAusencia,
+                    Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                    TipoAusencia = ec.IdTipoAusenciaNavigation.NombreTipoAusencia,
+                    ec.DiaCompleto,
+                    EstadoAusencia = ec.Estado.ToString(),
+                    FechaDesde = ec.FechaDesde.ToString("yyyy-MM-dd"),
+                    FechaHasta = ec.FechaHasta.ToString("yyyy-MM-dd"),
+                    HoraDesde = ec.HoraDesde.HasValue ? ec.HoraDesde.Value.ToString("HH:mm") : "N/A",
+                    HoraHasta = ec.HoraHasta.HasValue ? ec.HoraHasta.Value.ToString("HH:mm") : "N/A",
+                    ec.AprobadoPor,
+                    ec.Comentarios,
+                    Activo = ec.Activo ? "Sí" : "No"
+                    
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.EmpleadoAusencia.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista de ausencias en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
             string fileName = "EmpleadoAusencia.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                wb.Worksheets.Add(table, "EmpleadoAusencia");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
+
+                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
+
         // GET: EmpleadoAusencium/Details/5
         public async Task<IActionResult> Details(int? id)
         {

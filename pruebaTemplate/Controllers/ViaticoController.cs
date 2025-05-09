@@ -31,11 +31,16 @@ namespace PlanillaPM.Controllers
 
         public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
-            IQueryable<Viatico> query = _context.Viaticos;
+            //IQueryable<Viatico> query = _context.Viaticos;
+            IQueryable<Viatico> query = _context.Viaticos
+    .Include(v => v.IdEmpleadoNavigation);
 
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r =>
+        r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
+        r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -56,7 +61,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;          
             ViewBag.CurrentEstado = estado;
 
@@ -84,25 +89,57 @@ namespace PlanillaPM.Controllers
 
         }
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Viatico>? data = null;
-             if (data == null)
-             {
-                data = _context.Viaticos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Viaticos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            // Obtener la lista de todos los viáticos
+            var data = _context.Viaticos
+                        .Select(v => new
+                        {
+                            v.IdViatico,
+                            Empleado = v.IdEmpleadoNavigation.NombreCompleto, // Asumiendo que hay una propiedad que contiene el nombre del empleado
+                            v.Descripcion,
+                            Fecha = v.Fecha.ToString("dd/MM/yyyy"),
+                            TotalGastos = v.TotalGastos.ToString("C"),
+                            AdelantoRecibido = v.AdelantoRecibido.ToString("C"),
+                            BalancePendiente = v.BalancePendiente.ToString("C"),
+                            Estado = v.Estado.ToString(), // Convertir el enum en cadena
+                            FechaAprobacion = v.FechaAprobacion.HasValue ? v.FechaAprobacion.Value.ToString("dd/MM/yyyy") : "",
+                            v.AprobadoPor,
+                            v.NotasAdicionales,
+                            Pagado = v.Pagado ? "Sí" : "No",
+                            FechaPago = v.FechaPago.HasValue ? v.FechaPago.Value.ToString("dd/MM/yyyy") : "",
+                            Activo = v.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si hay datos
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron viáticos.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo Excel
+            string fileName = "Viaticos.xlsx";
+
+            // Crear el archivo de Excel
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Viaticos");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Viatico/Details/5
         public async Task<IActionResult> Details(int? id)
         {

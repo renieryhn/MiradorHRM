@@ -25,6 +25,7 @@ namespace PlanillaPM.Controllers
         // GET: ImpuestosController
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Ubicacion> registros;
             if (filter != null)
             {
@@ -48,17 +49,41 @@ namespace PlanillaPM.Controllers
 
         public ActionResult Download()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<Ubicacion>? data = null;
-            if (data == null)
+            // Obtener la lista de todas las ubicaciones
+            var data = _context.Ubicaciones
+                        .Select(u => new
+                        {
+                            u.IdUbicacion,
+                            NombreUbicacion = u.NombreUbicacion,
+                            Ciudad = u.Ciudad ?? "N/A",
+                            Direccion = u.Direccion ?? "N/A",
+                            Telefono = u.Telefono,
+                            Email = u.Email ?? "N/A",
+                            Activo = u.Activo ? "Sí" : "No"
+                          
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.Ubicaciones.ToList();
+                TempData["error"] = "No se encontraron ubicaciones.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
             string fileName = "Ubicaciones.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "Ubicaciones");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -66,6 +91,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
         // GET: ImpuestosController/Details/5
         public async Task<IActionResult> Details(int? id)

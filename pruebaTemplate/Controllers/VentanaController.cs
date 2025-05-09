@@ -35,10 +35,12 @@ namespace PlanillaPM.Controllers
             if (filter != null)
             {
                 registros = await _context.Ventana.Where(r => r.Nombre.ToLower().Contains(filter.ToLower())).ToListAsync();
+                ViewBag.Filter = filter;
             }
             else
             {
                 registros = await _context.Ventana.ToListAsync();
+                ViewBag.Filter = string.Empty;
             }
             const int pageSize = 10;
             if (pg < 1) pg = 1;
@@ -49,26 +51,47 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Ventana>? data = null;
-             if (data == null)
-             {
-                data = _context.Ventana.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Ventanas.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener los datos de Ventana desde la base de datos
+            var data = _context.Ventana
+                .Select(v => new
+                {
+                    v.Id,
+                    v.Nombre,
+                    Activo = v.Activo ? "Sí" : "No"
+                  
+                  
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de ventana.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista a DataTable
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "Ventanas.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "Ventanas");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Ventana/Details/5
         public async Task<IActionResult> Details(int? id)
         {

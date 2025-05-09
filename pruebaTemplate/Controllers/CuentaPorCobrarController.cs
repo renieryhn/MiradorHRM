@@ -94,25 +94,58 @@ namespace PlanillaPM.Controllers
         }
 
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<CuentaPorCobrar>? data = null;
-             if (data == null)
-             {
-                data = _context.CuentaPorCobrars.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "CuentaPorCobrars.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            // Obtener la lista de cuentas por cobrar con la información relevante
+            var data = _context.CuentaPorCobrars
+                        .Select(cpc => new
+                        {
+                            cpc.IdCuentaPorCobrar,
+                            Empleado = cpc.IdEmpleadoNavigation.NombreCompleto, 
+                            Descripcion = cpc.Descripcion ?? "N/A",
+                            Deduccion = cpc.IdDeduccionNavigation.NombreDeduccion, 
+                            FechaInicio = cpc.FechaInicio.ToString("dd/MM/yyyy"),
+                            Monto = cpc.Monto,
+                            InteresAplicado = cpc.InteresAplicado,
+                            NumeroPagos = cpc.NumeroPagos,
+                            FechaFinalizacion = cpc.FechaFinalizacion.ToString("dd/MM/yyyy"),
+                            EstadoCuenta = cpc.EstadoCuentaPorCobrar.ToString(), 
+                            EstadoAprobacion = cpc.EstadoAprobacion.ToString(), 
+                            AprobadoPor = cpc.AprobadoPor ?? "N/A",
+                            ComentarioAprobacion = cpc.ComentarioAprobacion ?? "N/A",
+                            Activo = cpc.Activo ? "Sí" : "No"
+                          
+                        })
+                        .ToList();
+
+            // Verificar si hay datos
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron cuentas por cobrar.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en DataTable
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo Excel
+            string fileName = "CuentaPorCobrars.xlsx";
+
+            // Crear el archivo de Excel
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "CuentaPorCobrar");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: CuentaPorCobrar/Details/5
         public async Task<IActionResult> Details(int? id)
         {

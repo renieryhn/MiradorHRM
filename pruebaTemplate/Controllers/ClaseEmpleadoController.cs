@@ -29,6 +29,7 @@ namespace PlanillaPM.Controllers
         // GET: ClaseEmpleado
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<ClaseEmpleado> registros;
             if (filter != null)
             {
@@ -49,26 +50,48 @@ namespace PlanillaPM.Controllers
             var IdHorarioNavigation = await _context.Horarios.ToListAsync();
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<ClaseEmpleado>? data = null;
-             if (data == null)
-             {
-                data = _context.ClaseEmpleados.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "ClaseEmpleados.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener los datos de ClaseEmpleado desde la base de datos
+            var data = _context.ClaseEmpleados
+                .Select(c => new
+                {
+                    c.IdClaseEmpleado,
+                    c.NombreClaseEmpleado,
+                    Horario = c.IdHorarioNavigation != null ? c.IdHorarioNavigation.NombreHorario : "Sin Horario", 
+                    c.Activo
+                   
+                   
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista a DataTable
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "ClaseEmpleados.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "ClaseEmpleados");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: ClaseEmpleado/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -25,25 +25,64 @@
                     @if (Model.CurrentPage >= 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" action="Index" asp-route-pg="1">Inicio</a>
+                            <a class="page-link" action="Index" asp-route-pg="1" 
+                            asp-route-filter="@ViewBag.Filter"
+                          
+                               asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                               asp-route-estado="@ViewBag.CurrentEstado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-idIngreso="@ViewBag.CurrentIdIngreso"
+                               asp-route-idDeduccion="@ViewBag.CurrentIdidDeduccion"
+                            >Inicio</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" action="Index" asp-route-pg="@(Model.CurrentPage-1)"><i class="fa fa-arrow-left"></i></a>
+                            <a class="page-link" action="Index" asp-route-pg="@(Model.CurrentPage-1)" 
+                            asp-route-filter="@ViewBag.Filter"
+                              
+                            asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                            asp-route-estado="@ViewBag.CurrentEstado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-idIngreso="@ViewBag.CurrentIdIngreso"
+                               asp-route-idDeduccion="@ViewBag.CurrentIdidDeduccion"
+                            ><i class="fa fa-arrow-left"></i></a>
                         </li>
                     }
-                    @for (var pge = Model.StartPage; pge < Model.EndPage; pge++)
+                    @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
                     {
                         <li class="page-item @(pge == Model.CurrentPage ?  "active" :"")">
-                            <a class="page-link" action="Index" asp-route-pg="@pge">@pge</a>
+                            <a class="page-link" action="Index" asp-route-pg="@pge" 
+                            asp-route-filter="@ViewBag.Filter"
+                         
+                            asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                            asp-route-estado="@ViewBag.CurrentEstado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-idIngreso="@ViewBag.CurrentIdIngreso"
+                               asp-route-idDeduccion="@ViewBag.CurrentIdidDeduccion"
+                            >@pge</a>
                         </li>
                     }
                     @if (Model.CurrentPage < Model.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" action="Index" asp-route-pg="@(Model.CurrentPage+1)"><i class="fa fa-arrow-right"></i></a>
+                            <a class="page-link" action="Index" asp-route-pg="@(Model.CurrentPage+1)" 
+                            asp-route-filter="@ViewBag.Filter"
+                            
+                               asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                               asp-route-estado="@ViewBag.CurrentEstado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-idIngreso="@ViewBag.CurrentIdIngreso"
+                               asp-route-idDeduccion="@ViewBag.CurrentIdidDeduccion"
+                            ><i class="fa fa-arrow-right"></i></a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" action="Index" asp-route-pg="@(Model.TotalPages)">Fin</a>
+                            <a class="page-link" action="Index" asp-route-pg="@(Model.TotalPages)" 
+                            asp-route-filter="@ViewBag.Filter"
+                            asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                            asp-route-estado="@ViewBag.CurrentEstado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-idIngreso="@ViewBag.CurrentIdIngreso"
+                               asp-route-idDeduccion="@ViewBag.CurrentIdidDeduccion"
+                            >Fin</a>
                         </li>
                     }
                 }

@@ -54,8 +54,36 @@
         </form>
     </div>
 </div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    <script>
+
+        function validarFechas() {
+            var FechaDesde = new Date($("#FechaDesde").val());
+            var FechaHasta = new Date($("#FechaHasta").val());
+
+            // Verifica que ambas fechas sean válidas
+            if (!FechaDesde || !FechaHasta || isNaN(FechaDesde) || isNaN(FechaHasta)) {
+                toastr.error("Por favor ingresa fechas válidas.");
+                return false;
+            }
+
+            if (FechaDesde > FechaHasta) {
+                toastr.error("La Fecha de Fin debe ser igual o posterior a la Fecha de Inicio.");
+                return false;
+            }
+            return true;
+        }
+
+        // Asigna la validación al evento submit del formulario
+        $("form").submit(function (e) {
+            if (!validarFechas() || !validarHoras()) {
+                e.preventDefault();
+            }
+        });
+    </script>
     }
 }

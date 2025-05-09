@@ -6,7 +6,7 @@ using PlanillaPM.Models;
 
 namespace PlanillaPM.Controllers
 {
-    [AllowAnonymous]
+   
     public class ConstanciaController : Controller
     {
 

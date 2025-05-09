@@ -53,7 +53,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
 
@@ -88,12 +88,32 @@ namespace PlanillaPM.Controllers
         }
 
 
+        [HttpGet]
         public ActionResult Download(int id)
         {
-            // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoContrato> data = _context.EmpleadoContratos.Where(ec => ec.IdEmpleado == id).ToList();
+            // Filtrar los contratos de empleado por el id recibido
+            var data = _context.EmpleadoContratos
+                        .Where(ec => ec.IdEmpleado == id)
+                        .Select(ec => new
+                        {
+                            ec.IdEmpleadoContrato,
+                            ec.CodigoContrato,
+                            TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato, // Asumiendo que tienes un campo para el nombre del tipo de contrato
+                            Cargo = ec.IdCargoNavigation.NombreCargo, // Asumiendo que tienes un campo para el nombre del cargo
+                            Estado = ec.Estado.ToString(),
+                            VigenciaMeses = ec.VigenciaMeses,
+                            FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
+                            FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
+                            Salario = ec.Salario.ToString("C"),
+                            Descripcion = ec.Descripcion ?? "N/A",
+                            Activo = ec.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
 
-            // Convertir la lista de contactos en una tabla de datos
+          
+
+            // Convertir la lista de contratos en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
@@ -103,7 +123,9 @@ namespace PlanillaPM.Controllers
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "ContratosEmpleado");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -114,19 +136,48 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        [HttpGet]
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoContrato>? data = null;
-            if (data == null)
+            // Obtener todos los contratos de empleados
+            var data = _context.EmpleadoContratos
+                        .Select(ec => new
+                        {
+                            ec.IdEmpleadoContrato,
+                            Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                            ec.CodigoContrato,
+                            TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato, // Asumiendo que tienes un campo para el nombre del tipo de contrato
+                            Cargo = ec.IdCargoNavigation.NombreCargo, // Asumiendo que tienes un campo para el nombre del cargo
+                            Estado = ec.Estado.ToString(),
+                            VigenciaMeses = ec.VigenciaMeses,
+                            FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
+                            FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
+                            Salario = ec.Salario.ToString("C"),
+                            Descripcion = ec.Descripcion ?? "N/A",
+                            Activo = ec.Activo ? "Sí" : "No"
+                            
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.EmpleadoContratos.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+            // Convertir la lista de contratos en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
             string fileName = "EmpleadoContrato.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "ContratosEmpleados");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -134,6 +185,9 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
+
+
 
         // GET: EmpleadoContrato/Details/5
         public async Task<IActionResult> Details(int? id)

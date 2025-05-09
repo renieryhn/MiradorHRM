@@ -30,6 +30,7 @@ namespace PlanillaPM.Controllers
         // GET: Impuesto
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Impuesto> registros;
             if (filter != null)
             {
@@ -48,26 +49,54 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Impuesto>? data = null;
-             if (data == null)
-             {
-                data = _context.Impuestos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Impuestos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        [HttpGet]
+        public ActionResult Download()
+        {
+            // Obtener la lista de todos los impuestos
+            var data = _context.Impuestos
+                        .Select(i => new
+                        {
+                            i.IdImpuesto,
+                            NombreImpuesto = i.NombreImpuesto,
+                            TipoImpuesto = i.Tipo.ToString(), 
+                            Monto = i.Monto.HasValue ? i.Monto.Value.ToString("F2") : "",
+                            Formula = i.Formula,
+                            Orden = i.Orden,
+                            AsignacionAutomatica = i.AsignacionAutomatica ? "Sí" : "No",
+                            Activo = i.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Impuestos.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Impuestos");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Impuesto/Details/5
         public async Task<IActionResult> Details(int? id)
         {

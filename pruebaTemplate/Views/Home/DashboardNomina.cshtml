@@ -1,10 +1,18 @@
-﻿
-@model PlanillaPM.Models.NominaTotales
+﻿@model PlanillaPM.Models.NominaTotales
 @using Newtonsoft.Json
+@using PlanillaPM.Models
 
 @{
     ViewData["Title"] = "Nomina Dashboard";
     var hasNominasData = ViewBag.NominasData != null && ViewBag.NominasData.Count > 0;
+
+    Pager pager = new Pager(); 
+    int PageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+    }
 }
 
 <style>
@@ -186,6 +194,14 @@
                                 </tbody>
                             </table>
                         </div>
+                         <!-- Paginación -->
+                        <div class="card-footer">
+                            @if (ViewBag.PagerVacacionDetalle != null)
+                            {
+                                <partial name="_Pager" model="ViewBag.PagerVacacionDetalle" />
+                            }
+                          
+                        </div>
                     </div>
                 </section>
                 <section class="col-lg-6 connectedSortable">
@@ -240,6 +256,14 @@
                                     }
                                 </tbody>
                             </table>
+                        </div>
+                         <!-- Paginación -->
+                        <div class="card-footer">
+                            @if (ViewBag.PagerNominaAprovacion != null)
+                            {
+                                <partial name="_Pager" model="ViewBag.PagerNominaAprovacion" />
+                            }
+                          
                         </div>
                     </div>
                 </section>               
@@ -356,6 +380,14 @@
                                 </tbody>
                             </table>
                         </div>
+                         <!-- Paginación -->
+                        <div class="card-footer">
+                            @if (ViewBag.PagerViatico != null)
+                            {
+                                <partial name="_Pager" model="ViewBag.PagerViatico" />
+                            }
+                          
+                        </div>
                     </div>
                 </section>
                 <!-- Modal Nomina-->         
@@ -430,7 +462,7 @@
                         </div>
                         <div class="card-body">
                             <div class="chart" id="lineChartContainer">
-                                <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                <canvas id="lineChart" style="min-height: 350px; height: 350px; max-height: 350px; max-width: 150%;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -451,7 +483,7 @@
                         </div>
                         <div class="card-body">
                             <div class="chart" id="barChartContainer">
-                                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                <canvas id="barChart" style="min-height: 350px; height: 350px; max-height: 350px; max-width: 150%;"></canvas>
                                 
                             </div>
                         </div>
@@ -741,6 +773,7 @@
 
 
         $(function () {
+
             var hasNominasData = @hasNominasData.ToString().ToLower();
             console.log("hasNominasData:", hasNominasData);
 

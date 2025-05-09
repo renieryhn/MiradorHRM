@@ -32,7 +32,10 @@ namespace PlanillaPM.Controllers
 
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r =>
+       r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
+       r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -53,7 +56,7 @@ namespace PlanillaPM.Controllers
                 
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
 
@@ -81,27 +84,53 @@ namespace PlanillaPM.Controllers
 
         }
 
-
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Vacacion>? data = null;
-             if (data == null)
-             {
-                data = _context.Vacacions.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Vacacions.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            // Obtener la lista de todas las vacaciones
+            var data = _context.Vacacions
+                        .Select(v => new
+                        {
+                            v.IdVacacion,
+                            IdEmpleado = v.IdEmpleadoNavigation.NombreCompleto, // Supongo que tienes el nombre del empleado
+                            v.Observaciones,
+                            v.PeriodoVacacional,
+                            v.TotalDiasPeriodo,
+                            v.DiasGozados,
+                            v.DiasPendientes,
+                            Activo = v.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si hay datos
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron vacaciones.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo Excel
+            string fileName = "Vacaciones.xlsx";
+
+            // Crear el archivo de Excel
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Vacaciones");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: Vacacion/Details/5
         public async Task<IActionResult> Details(int? id)
         {

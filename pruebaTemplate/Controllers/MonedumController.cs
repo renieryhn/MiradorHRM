@@ -28,6 +28,8 @@ namespace PlanillaPM.Controllers
         // GET: Monedum
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+
+            ViewBag.Filter = filter;
             List<Monedum> registros;
             if (filter != null)
             {
@@ -46,26 +48,52 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;         
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Monedum>? data = null;
-             if (data == null)
-             {
-                data = _context.Moneda.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Moneda.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+
+        [HttpGet]
+        public ActionResult Download()
+        {
+            // Obtener la lista de todas las monedas
+            var data = _context.Moneda
+                        .Select(m => new
+                        {
+                            m.IdMoneda,
+                            NombreMoneda = m.NombreMoneda,
+                            Simbolo = m.Simbolo,
+                            Activo = m.Activo ? "Sí" : "No"
+                            
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Moneda.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Monedas");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: Monedum/Details/5
         public async Task<IActionResult> Details(int? id)
         {

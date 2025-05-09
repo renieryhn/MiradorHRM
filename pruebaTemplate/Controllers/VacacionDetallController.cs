@@ -47,7 +47,10 @@ namespace PlanillaPM.Controllers
 
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r =>
+       r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
+       r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -68,7 +71,7 @@ namespace PlanillaPM.Controllers
 
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
 
@@ -97,25 +100,55 @@ namespace PlanillaPM.Controllers
 
         }
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<VacacionDetalle>? data = null;
-             if (data == null)
-             {
-                data = _context.VacacionDetalles.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "VacacionDetalles.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            // Obtener la lista de todos los detalles de vacaciones
+            var data = _context.VacacionDetalles
+                        .Select(vd => new
+                        {
+                            vd.IdVacacionDetalle,
+                            Periodo = vd.IdVacacionNavigation.PeriodoVacacional, // Asumiendo que la navegación te da acceso al periodo
+                            Empleado = vd.IdEmpleadoNavigation.NombreCompleto, // Asumiendo que hay una propiedad que contiene el nombre del empleado
+                            FechaSolicitud = vd.FechaSolicitud.ToString("dd/MM/yyyy"),
+                            FechaInicio = vd.FechaInicio.ToString("dd/MM/yyyy"),
+                            FechaFin = vd.FechaFin.ToString("dd/MM/yyyy"),
+                            vd.NumeroDiasSolicitados,
+                            Estado = vd.EstadoSolicitud.ToString(), // Convertir el enum en cadena
+                            AprobadoPor = vd.AprobadoPor ?? "N/A",
+                            vd.DiasAprobados,
+                            ComentariosAprobador = vd.ComentariosAprobador ?? "N/A",
+                            Activo = vd.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si hay datos
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron detalles de vacaciones.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo Excel
+            string fileName = "VacacionDetalles.xlsx";
+
+            // Crear el archivo de Excel
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "VacacionDetalles");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: VacacionDetall/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -29,6 +29,7 @@ namespace PlanillaPM.Controllers
         // GET: Horario
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
             List<Horario> registros;
             if (filter != null)
             {
@@ -48,26 +49,78 @@ namespace PlanillaPM.Controllers
             var planillaContext = _context.Horarios.Include(h => h.IdTipoHorarioNavigation);
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Horario>? data = null;
-             if (data == null)
-             {
-                data = _context.Horarios.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Horarios.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+
+        [HttpGet]
+        public ActionResult Download()
+        {
+            // Obtener la lista de todos los horarios
+            var data = _context.Horarios
+                        .Select(h => new
+                        {
+                            h.IdHorario,
+                            Horario = h.NombreHorario,
+                            TipoHorario = h.IdTipoHorarioNavigation.NombreTipoHorario, // Asumiendo que TipoHorario tiene una propiedad NombreTipoHorario
+                            Turno = h.TurnoNumero,
+                            TrabajaLunes = h.IndLunes ? "Sí" : "No",
+                            TrabajaMartes = h.IndMartes ? "Sí" : "No",
+                            TrabajaMiércoles = h.IndMiercoles ? "Sí" : "No",
+                            TrabajaJueves = h.IndJueves ? "Sí" : "No",
+                            TrabajaViernes = h.IndViernes ? "Sí" : "No",
+                            TrabajaSábado = h.IndSabado ? "Sí" : "No",
+                            TrabajaDomingo = h.IndDomingo ? "Sí" : "No",
+                            LunDesde = h.LunDesde.HasValue ? h.LunDesde.Value.ToString("hh\\:mm") : "",
+                            LunHasta = h.LunHasta.HasValue ? h.LunHasta.Value.ToString("hh\\:mm") : "",
+                            MarDesde = h.MarDesde.HasValue ? h.MarDesde.Value.ToString("hh\\:mm") : "",
+                            MarHasta = h.MarHasta.HasValue ? h.MarHasta.Value.ToString("hh\\:mm") : "",
+                            MieDesde = h.MieDesde.HasValue ? h.MieDesde.Value.ToString("hh\\:mm") : "",
+                            MieHasta = h.MieHasta.HasValue ? h.MieHasta.Value.ToString("hh\\:mm") : "",
+                            JueDesde = h.JueDesde.HasValue ? h.JueDesde.Value.ToString("hh\\:mm") : "",
+                            JueHasta = h.JueHasta.HasValue ? h.JueHasta.Value.ToString("hh\\:mm") : "",
+                            VieDesde = h.VieDesde.HasValue ? h.VieDesde.Value.ToString("hh\\:mm") : "",
+                            VieHasta = h.VieHasta.HasValue ? h.VieHasta.Value.ToString("hh\\:mm") : "",
+                            SabDesde = h.SabDesde.HasValue ? h.SabDesde.Value.ToString("hh\\:mm") : "",
+                            SabHasta = h.SabHasta.HasValue ? h.SabHasta.Value.ToString("hh\\:mm") : "",
+                            DomDesde = h.DomDesde.HasValue ? h.DomDesde.Value.ToString("hh\\:mm") : "",
+                            DomHasta = h.DomHasta.HasValue ? h.DomHasta.Value.ToString("hh\\:mm") : "",
+                            RecesoComida = h.IndComida ? "Sí" : "No",
+                            ComidaDesde = h.ComidaDesde.HasValue ? h.ComidaDesde.Value.ToString("hh\\:mm") : "",
+                            ComidaHasta = h.ComidaHasta.HasValue ? h.ComidaHasta.Value.ToString("hh\\:mm") : "",
+                            TotalHorasSemana = h.TotalHorasSemana,
+                            Activo = h.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Horarios.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Horarios");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: Horario/Details/5
         public async Task<IActionResult> Details(int? id)
         {

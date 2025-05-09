@@ -49,7 +49,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
             //ViewBag.CurrentEstado = estado;
@@ -80,25 +80,43 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
 
-
         [HttpGet]
         public ActionResult Download(int id)
         {
-           
-            // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();
+            // Obtener los datos del empleado activo filtrado por el IdEmpleadoActivo
+            var data = _context.EmpleadoActivos
+                .Where(ea => ea.IdEmpleado == id)
+                .Select(ea => new
+                {
+                    ea.IdEmpleadoActivo,
+                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado, 
+                    Producto = ea.IdProductoNavigation.NombreProducto, 
+                    ea.Model,
+                    ea.NumeroSerie,
+                    Estado = ea.Estado.ToString(), 
+                    ea.Cantidad,
+                    ea.PrecioEstimado,
+                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"), 
+                    ea.Descripcion,
+                    Activo = ea.Activo ? "Sí" : "No"
+                   
+                })
+                .ToList();
 
-            // Convertir la lista de contactos en una tabla de datos
+         
+
+            // Convertir la lista en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
             // Nombre del archivo de Excel
-            string fileName = $"EmpleadoActivo{id}.xlsx";
+            string fileName = $"EmpleadoActivo_{id}.xlsx";
 
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                wb.Worksheets.Add(table, "EmpleadoActivo");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -109,26 +127,56 @@ namespace PlanillaPM.Controllers
             }
         }
 
+
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoActivo>? data = null;
-            if (data == null)
+            // Obtener todos los datos de empleados activos
+            var data = _context.EmpleadoActivos
+                .Select(ea => new
+                {
+                    ea.IdEmpleadoActivo,
+                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado, 
+                    Producto = ea.IdProductoNavigation.NombreProducto, 
+                    ea.Model,
+                    ea.NumeroSerie,
+                    Estado = ea.Estado.ToString(), 
+                    ea.Cantidad,
+                    ea.PrecioEstimado,
+                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"), 
+                    ea.Descripcion,
+                    Activo = ea.Activo ? "Sí" : "No"
+                   
+                })
+                .ToList();
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.EmpleadoActivos.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
-            string fileName = "EmpleadoActivo.xlsx";
+
+            // Nombre del archivo de Excel
+            string fileName = "EmpleadosActivos.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                wb.Worksheets.Add(table, "EmpleadosActivos");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
+
+                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
+
         // GET: EmpleadoActivo/Details/5
         public async Task<IActionResult> Details(int? id)
         {

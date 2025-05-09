@@ -28,7 +28,7 @@ namespace PlanillaPM.Controllers
         }
 
 
-        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? idIngresoBuscar, int? estado)
+        public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, string? IdIngreso, int? estado)
         {
             IQueryable<EmpleadoIngreso> query = _context.EmpleadoIngresos;
 
@@ -40,9 +40,9 @@ namespace PlanillaPM.Controllers
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
             }
-            if (!String.IsNullOrEmpty(idIngresoBuscar))
+            if (!String.IsNullOrEmpty(IdIngreso))
             {
-                query = query.Where(r => r.IdIngreso.ToString().Contains(idIngresoBuscar));
+                query = query.Where(r => r.IdIngreso.ToString().Contains(IdIngreso));
             }
 
             if (estado.HasValue)
@@ -58,9 +58,9 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
-            ViewBag.CurrentIdidIngresoBuscar = idIngresoBuscar;
+            ViewBag.CurrentIdIngreso = IdIngreso;
             ViewBag.CurrentEstado = estado;
 
 
@@ -82,34 +82,64 @@ namespace PlanillaPM.Controllers
                 ViewData["IdEmpleado"] = new SelectList(IdEmpleadoNavigation, "IdEmpleado", "NombreCompleto");
             }
 
-            var idIngreso = await _context.Ingresos.ToListAsync();
-            ViewBag.IdIngreso = new SelectList(idIngreso, "IdIngreso", "TipoIngreso");
+            //var idIngreso = await _context.Ingresos.ToListAsync();
+            //ViewBag.IdIngreso = new SelectList(IdIngreso, "IdIngreso", "TipoIngreso");
+            var ingresos = await _context.Ingresos.ToListAsync();
+            ViewBag.IdIngreso = new SelectList(ingresos, "IdIngreso", "TipoIngreso");
 
             return View(data);
 
         }
         // GET: EmpleadoIngreso
-       
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<EmpleadoIngreso>? data = null;
-             if (data == null)
-             {
-                data = _context.EmpleadoIngresos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "EmpleadoIngresos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+
+        public ActionResult Download()
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener los datos de EmpleadoIngreso desde la base de datos
+            var data = _context.EmpleadoIngresos
+                .Select(e => new
+                {
+                    e.IdEmpleadoIngreso,
+                    e.IdIngreso,
+                    IngresoNombre = e.IdIngresoNavigation.NombreIngreso, 
+                    e.IdEmpleado,
+                    EmpleadoNombre = e.IdEmpleadoNavigation.NombreCompleto, 
+                    Tipo = e.Tipo.ToString(), 
+                    e.Monto,
+                    e.Formula,
+                    e.Orden,
+                    Activo = e.Activo ? "Sí" : "No"
+                  
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de empleado ingreso.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista a DataTable
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "EmpleadoIngresos.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "Empleado Ingresos");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: EmpleadoIngreso/Details/5
         public async Task<IActionResult> Details(int? id)
         {

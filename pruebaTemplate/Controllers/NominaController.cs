@@ -60,7 +60,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentIdTipoNomina = idTipoNomina;
             ViewBag.CurrentEstado = estado;
@@ -91,27 +91,62 @@ namespace PlanillaPM.Controllers
 
         }
 
-       
-        public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Nomina>? data = null;
-             if (data == null)
-             {
-                data = _context.Nominas.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Nominas.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+
+        [HttpGet]
+        public ActionResult DownloadAll()
+        {
+            // Obtener la lista de todas las nóminas
+            var data = _context.Nominas
+                        .Select(n => new
+                        {
+                            n.IdNomina,
+                            TipoNomina = n.IdTipoNominaNavigation.NombreTipoNomina, 
+                            n.Comentarios,
+                            n.PeriodoFiscal,
+                            Mes = n.Mes.ToString(), 
+                            FechaPago = n.FechaPago.ToString("dd/MM/yyyy"),
+                            n.TotalIngresos,
+                            n.TotalDeducciones,
+                            n.TotalImpuestos,
+                            n.TotalEmpleadosEnNomina,
+                            n.PagoNeto,
+                            EstadoNomina = n.EstadoNomina.ToString(), 
+                            n.AprobadaPor,
+                            n.ComentariosAprobador,
+                            Activo = n.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                
+                TempData["error"] = "No se encontraron nóminas.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Nominas.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Nóminas");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Nomina/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -139,37 +174,7 @@ namespace PlanillaPM.Controllers
             return View();
         }
 
-        // POST: Nomina/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("IdNomina,IdTipoNomina,Comentarios,PeriodoFiscal,Mes,FechaPago,TotalIngresos,TotalDeducciones,TotalImpuestos,TotalEmpleadosEnNomina,PagoNeto,EstadoNomina,AprobadaPor,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Nomina nomina)
-        //{
-        //    try
-        //    {
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            SetCamposAuditoria(nomina, true);
-        //            _context.Add(nomina);
-        //            await _context.SaveChangesAsync();
-        //            TempData["success"] = "El registro ha sido creado exitosamente.";
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        else
-        //        {
-        //            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-        //            TempData["error"] = "Error: " + message;
-        //        }
-        //        ViewData["IdTipoNomina"] = new SelectList(_context.TipoNominas, "IdTipoNomina", "NombreTipoNomina", nomina.IdTipoNomina);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        TempData["error"] = "Error: " + ex.Message;
-        //    }
-        //        return View(nomina);
-        //}
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdNomina,IdTipoNomina,Comentarios,PeriodoFiscal,Mes,FechaPago,TotalIngresos,TotalDeducciones,TotalImpuestos,TotalEmpleadosEnNomina,PagoNeto,EstadoNomina,AprobadaPor,ComentariosAprobador,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Nomina nomina)

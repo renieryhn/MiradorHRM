@@ -15,7 +15,7 @@
         }
     <div class="container-fluid">
     <div class="alert alert-info alert-dismissible" style="background-color: var(--blue);">
-        <form id="fSearch" method="post" asp-action="Index">
+        <form id="fSearch" method="get" asp-action="Index">
             <div class="row">
                 <h3 style="color: #ffffff;">
                     <label>Filtros</label>
@@ -68,8 +68,8 @@
                 </div>
                 <div class="col-sm-2">
                     <div class="btn-group btn-group-justified" role="group">
-                        <input type="hidden" name="filter" value="@ViewBag.CurrentFilter">
-                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar...">
+                      @*   <input type="hidden" name="filter" value="@ViewBag.CurrentFilter"> *@
+                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar por Tipo Nomina..." value="@ViewBag.Filter">
                         <button style="background-color: var(--blue);" type="submit" class="btn btn-info">
                             <i class="fa fa-search" style="color: white; font-size: 22px; font-weight: bold;"></i>
                         </button>
@@ -170,18 +170,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Activo)
                                                         </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaCreacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaModificacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.CreadoPor)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.ModificadoPor)
-                                                        </th>
+                                                        
                                                       
                                             </tr>
                                         </thead>
@@ -258,18 +247,7 @@
                                                                 <span class="badge badge-danger">Inactivo</span>
                                                             }
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaCreacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaModificacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.CreadoPor)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.ModificadoPor)
-                                                        </td>
+                                                        
                                                        
                                             </tr>
                                             }
@@ -306,6 +284,17 @@
                     }
                 });
             });
+
+            var estado = "@ViewBag.CurrentEstado"; // Obtener el valor del ViewBag en JavaScript
+
+            // Seleccionar la opción correspondiente al estado actual
+            var selectElement = document.getElementById("estado");
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === estado) {
+                    selectElement.options[i].selected = true;
+                    break;
+                }
+            }
       
         </script>
     }

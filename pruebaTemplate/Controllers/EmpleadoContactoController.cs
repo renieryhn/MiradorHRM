@@ -53,7 +53,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado; 
 
@@ -85,24 +85,41 @@ namespace PlanillaPM.Controllers
 
         }
 
-       
 
+
+        [HttpGet]
         public ActionResult Download(int id)
         {
             // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoContacto> data = _context.EmpleadoContactos.Where(ec => ec.IdEmpleado == id).ToList();
+            var data = _context.EmpleadoContactos
+                        .Where(ec => ec.IdEmpleado == id)
+                        .Select(ec => new
+                        {
+                            ec.IdContactoEmergencia,
+                            ec.NombreContacto,
+                            ec.Relacion,
+                            ec.Celular,
+                            TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
+                            Activo = ec.Activo ? "Sí" : "No"
+                            
+                        })
+                        .ToList();
+
+           
 
             // Convertir la lista de contactos en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
             // Nombre del archivo de Excel
-            string fileName = $"EmpleadoContacto{id}.xlsx";
+            string fileName = $"EmpleadoContacto_{id}.xlsx";
 
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -112,19 +129,45 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
+        [HttpGet]
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoContacto>? data = null;
-            if (data == null)
+            // Obtener todos los contactos de emergencia
+            var data = _context.EmpleadoContactos
+                        .Select(ec => new
+                        {
+                            ec.IdContactoEmergencia,
+                            Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                            ec.NombreContacto,
+                            ec.Relacion,
+                            ec.Celular,
+                            TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
+                            Activo = ec.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.EmpleadoContactos.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista de contactos en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
             string fileName = "EmpleadoContacto.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -132,6 +175,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
 
         public async Task<IActionResult> FichaEmpleado(int? id)

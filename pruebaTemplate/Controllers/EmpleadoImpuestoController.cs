@@ -58,7 +58,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentIdidImpuesto = idImpuesto;
             ViewBag.CurrentEstado = estado;
@@ -96,26 +96,54 @@ namespace PlanillaPM.Controllers
             return View(data);
 
         }
+
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<EmpleadoImpuesto>? data = null;
-             if (data == null)
-             {
-                data = _context.EmpleadoImpuestos.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "EmpleadoImpuestos.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener los datos de EmpleadoImpuesto desde la base de datos
+            var data = _context.EmpleadoImpuestos
+                .Select(e => new
+                {
+                    e.IdEmpleadoImpuesto,
+                    e.IdImpuesto,
+                    ImpuestoNombre = e.IdImpuestoNavigation.NombreImpuesto, 
+                    e.IdEmpleado,
+                    EmpleadoNombre = e.IdEmpleadoNavigation.NombreCompleto, 
+                    Exento = e.Excento ? "Sí" : "No",
+                    e.Orden,
+                    Activo = e.Activo ? "Sí" : "No"
+                   
+                })
+                .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de empleado impuesto.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista a DataTable
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "EmpleadoImpuestos.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                // Añadir la tabla al workbook con un nombre significativo para la hoja
+                wb.Worksheets.Add(table, "Empleado Impuestos");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
+
         // GET: EmpleadoImpuesto/Details/5
         public async Task<IActionResult> Details(int? id)
         {

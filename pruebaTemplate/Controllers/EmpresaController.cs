@@ -32,6 +32,8 @@ namespace PlanillaPM.Controllers
         // GET: Empresa
         public async Task<IActionResult> Index(int pg, string? filter)
         {
+            ViewBag.Filter = filter;
+
             List<Empresa> registros;
             if (filter != null)
             {
@@ -53,26 +55,55 @@ namespace PlanillaPM.Controllers
             var IdMonedaNavigation = await _context.Moneda.ToListAsync();
             return View(data);
         }
-         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<Empresa>? data = null;
-             if (data == null)
-             {
-                data = _context.Empresas.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "Empresas.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        [HttpGet]
+        public ActionResult Download()
+        {
+            // Obtener la lista de todas las empresas
+            var data = _context.Empresas
+                        .Select(e => new
+                        {
+                            e.IdEmpresa,
+                            Nombre = e.NombreEmpresa,
+                            Moneda = e.IdMonedaNavigation.NombreMoneda, // Asumiendo que la clase Monedum tiene un campo NombreMoneda
+                            Dirección = e.Direccion,
+                            Teléfono = e.Telefono,
+                            Email = e.Email,
+                            RTN = e.Rtn,
+                            Contacto = e.NombreContacto,
+                            e.TelefonoContacto,
+                            Activo = e.Activo ? "Sí" : "No",                         
+                            e.Comentarios
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
+            string fileName = "Empresas.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Empresas");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: Empresa/Details/5
         public async Task<IActionResult> Details(int? id)
         {

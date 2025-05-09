@@ -50,7 +50,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentEstado = estado;
 
@@ -79,12 +79,32 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
 
+        [HttpGet]
         public ActionResult Download(int id)
         {
-            // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoHabilidad> data = _context.EmpleadoHabilidads.Where(ec => ec.IdEmpleado == id).ToList();
+            // Filtrar las habilidades del empleado por el id recibido
+            var data = _context.EmpleadoHabilidads
+                        .Where(h => h.IdEmpleado == id)
+                        .Select(h => new
+                        {
+                            h.IdEmpleadoHabilidad,
+                            Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
+                            h.Habilidad,
+                            Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value.ToString() + "" : "N/A",
+                            h.Comentarios,
+                            Activo = h.Activo ? "Sí" : "No"
+                            
+                        })
+                        .ToList();
 
-            // Convertir la lista de contactos en una tabla de datos
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron Registros.";
+              
+            }
+
+            // Convertir la lista en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
@@ -94,30 +114,55 @@ namespace PlanillaPM.Controllers
             // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "Habilidades");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
 
+
+        [HttpGet]
         public ActionResult DownloadAll()
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
-            List<EmpleadoHabilidad>? data = null;
-            if (data == null)
+            // Obtener todas las habilidades de los empleados
+            var data = _context.EmpleadoHabilidads
+                        .Select(h => new
+                        {
+                            h.IdEmpleadoHabilidad,
+                            Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
+                            h.Habilidad,
+                            Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value.ToString() + " " : "N/A",
+                            h.Comentarios,
+                            Activo = h.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
             {
-                data = _context.EmpleadoHabilidads.ToList();
+                TempData["error"] = "No se encontraron Registros.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Convertir la lista en una tabla de datos
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
+
+            // Nombre del archivo de Excel
             string fileName = "EmpleadoHabilidad.xlsx";
+
+            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                var worksheet = wb.Worksheets.Add(table, "Habilidades");
+                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
@@ -125,6 +170,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
         // GET: EmpleadoHabilidad/Details/5
         public async Task<IActionResult> Details(int? id)

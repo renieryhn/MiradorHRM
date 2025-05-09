@@ -58,7 +58,7 @@ namespace PlanillaPM.Controllers
                 // No hace falta ningún filtro si el estado es null o no es 0 ni 1 (es decir, se quieren mostrar todos los registros)
             }
 
-            ViewBag.CurrentFilter = filter;
+            ViewBag.Filter = filter;
             ViewBag.CurrentIdEmpleado = idEmpleado;
             ViewBag.CurrentIdidDeduccion = idDeduccion;
             ViewBag.CurrentEstado = estado;
@@ -90,25 +90,48 @@ namespace PlanillaPM.Controllers
 
         }
         public ActionResult Download()
-         {
-             ListtoDataTableConverter converter = new ListtoDataTableConverter();
-             List<EmpleadoDeduccion>? data = null;
-             if (data == null)
-             {
-                data = _context.EmpleadoDeduccions.ToList();
-             }
-             DataTable table = converter.ToDataTable(data);
-             string fileName = "EmpleadoDeduccions.xlsx";
-             using (XLWorkbook wb = new XLWorkbook())
-             {
-                 wb.Worksheets.Add(table);
-                 using (MemoryStream stream = new MemoryStream())
-                 {
-                     wb.SaveAs(stream);
-                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                 }
-             }
-        }    
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener la lista de todas las deducciones de empleados
+            var data = _context.EmpleadoDeduccions
+                        .Select(ed => new
+                        {
+                            ed.IdEmpleadoDeduccion,
+                            ed.IdEmpleado,
+                            EmpleadoNombre = ed.IdEmpleadoNavigation.NombreEmpleado,
+                            ed.IdDeduccion,
+                            DeduccionNombre = ed.IdDeduccionNavigation.NombreDeduccion,
+                            Tipo = ed.Tipo.ToString(),
+                            ed.Monto,
+                            ed.Formula,
+                            ed.Orden,
+                            Activo = ed.Activo ? "Sí" : "No"
+                           
+                        })
+                        .ToList();
+
+            // Verificar si la lista está vacía
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de deducciones de empleados.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "EmpleadoDeduccions.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
         // GET: EmpleadoDeduccion/Details/5
         public async Task<IActionResult> Details(int? id)
         {

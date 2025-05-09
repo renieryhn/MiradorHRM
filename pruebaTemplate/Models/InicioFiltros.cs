@@ -1,4 +1,5 @@
-﻿using PlanillaPM.ViewModel;
+﻿using MiradorHRM.Models;
+using PlanillaPM.ViewModel;
 using static PlanillaPM.Models.EmpleadoAusencium;
 
 
@@ -18,7 +19,6 @@ namespace PlanillaPM.Models
         public List<InicioFiltros> EmpleadoDepartamento { get; set; }
         public int Id { get; set; }
         public EstadoAusencia NuevoEstado { get; set; }
-       
        
         //depto
         public string NombreDepartamento { get; set; }

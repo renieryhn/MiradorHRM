@@ -36,7 +36,7 @@
                                                     <form id="fSearch" method="post" asp-action="Index">
                                                         <div class="row">
                                                             <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                                <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
                                                                 <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                             </div>
                                                             <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
@@ -70,18 +70,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Activo)
                                                         </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaCreacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.FechaModificacion)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.CreadoPor)
-                                                        </th>
-                                                        <th data-sortable="true">
-                                                            @Html.DisplayNameFor(model => model.ModificadoPor)
-                                                        </th>
+                                                       
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -123,18 +112,7 @@
                                                             }
 
                                                         </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaCreacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.FechaModificacion)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.CreadoPor)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.ModificadoPor)
-                                                        </td>
+                                                       
                                             </tr>
                                             }
                                         </tbody>

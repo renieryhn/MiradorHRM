@@ -19,6 +19,7 @@ using MiradorHRM.Models;
 using static PlanillaPM.Models.VacacionDetalle;
 using DocumentFormat.OpenXml.Spreadsheet;
 using static PlanillaPM.Models.Viatico;
+using Microsoft.Win32;
 
 
 
@@ -40,7 +41,8 @@ public class HomeController : Controller
     {
         return View();
     }
-    public async Task<IActionResult> IndexAsync()
+
+    public async Task<IActionResult> IndexAsync(int pg)
         {
         
         var userName = User.Identity?.Name;     
@@ -90,13 +92,16 @@ public class HomeController : Controller
             //&& string.IsNullOrEmpty(e.MotivoInactivacion))
             .CountAsync();
 
-            var proximosCumpleañeros = await ObtenerProximosCumpleañeros();
-            var licenciasPorVencer = await ObtenerLicenciasPorVencer();
+       
+
+        var proximosCumpleañeros = await ObtenerProximosCumpleañeros();
+        var licenciasPorVencer = await ObtenerLicenciasPorVencer();
             var contratosPorVencer = await ObtenerContratosPorVencer();
             var empleadoAusencias = await AusenciasTomarAccion();
             var empleadoDepartamento = await EmpleadoDepartamento();
 
-            var totalHombres = await _context.Empleados.CountAsync(e => e.Genero == "Masculino");
+
+        var totalHombres = await _context.Empleados.CountAsync(e => e.Genero == "Masculino");
             var totalMujeres = await _context.Empleados.CountAsync(e => e.Genero == "Femenino");
 
             var empleados = await _context.Empleados.Include(e => e.IdUbicacionNavigation).ToListAsync();
@@ -133,9 +138,52 @@ public class HomeController : Controller
                     TotalHombres = totalHombres,
                     TotalMujeres = totalMujeres,
                     EmpleadosPorUbicacion = empleadosPorUbicacion
+                    
                 };
 
-                return View(viewModel);
+            // Paginación para ProximosCumpleañeros
+            const int pageSize = 10;
+            if (pg < 1) pg = 1;
+            int recsCountCumple = viewModel.ProximosCumpleañeros.Count();
+            var pagerCumple = new Pager(recsCountCumple, pg, pageSize);
+            int recSkipCumple = (pg - 1) * pageSize;
+            viewModel.ProximosCumpleañeros = viewModel.ProximosCumpleañeros
+                .Skip(recSkipCumple)
+                .Take(pagerCumple.PageSize)
+                .ToList();
+            this.ViewBag.PagerCumple = pagerCumple;
+
+            // Paginación para LicenciasPorVencer
+            int recsCountLicencias = viewModel.LicenciasPorVencer.Count();
+            var pagerLicencias = new Pager(recsCountLicencias, pg, pageSize);
+            int recSkipLicencias = (pg - 1) * pageSize;
+            viewModel.LicenciasPorVencer = viewModel.LicenciasPorVencer
+                .Skip(recSkipLicencias)
+                .Take(pagerLicencias.PageSize)
+                .ToList();
+            this.ViewBag.PagerLicencias = pagerLicencias;
+
+            // Paginación para ContratosPorVencer
+            int recsCountContratos = viewModel.ContratosPorVencer.Count();
+            var pagerContratos = new Pager(recsCountContratos, pg, pageSize);
+            int recSkipContratos = (pg - 1) * pageSize;
+            viewModel.ContratosPorVencer = viewModel.ContratosPorVencer
+                .Skip(recSkipContratos)
+                .Take(pagerContratos.PageSize)
+                .ToList();
+            this.ViewBag.PagerContratos = pagerContratos;
+
+            // Paginación para EmpleadoAusencias
+            int recsCountAusencias = viewModel.EmpleadoAusencias.Count();
+            var pagerAusencias = new Pager(recsCountAusencias, pg, pageSize);
+            int recSkipAusencias = (pg - 1) * pageSize;
+            viewModel.EmpleadoAusencias = viewModel.EmpleadoAusencias
+                .Skip(recSkipAusencias)
+                .Take(pagerAusencias.PageSize)
+                .ToList();
+            this.ViewBag.PagerAusencias = pagerAusencias;
+
+            return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -143,7 +191,8 @@ public class HomeController : Controller
                 return NotFound();
             }
         }
-        public async Task<IActionResult> DashboardNomina()
+
+        public async Task<IActionResult> DashboardNomina(int pg)
         {
 
             var nominasData = await _context.Nominas
@@ -159,7 +208,7 @@ public class HomeController : Controller
 
             ViewBag.NominasData = nominasData;
 
-        var totales = await ObtenerYCalcularTotalesAsync();
+            var totales = await ObtenerYCalcularTotalesAsync();
             var solicituddetalle = await SolicitudTomarAccion();
             var nomina = await NominaTomarAccion();
             var viatico = await SolicitudViaticoTomarAccion();
@@ -178,7 +227,40 @@ public class HomeController : Controller
                 Viatico=viatico
         };
 
-       
+        // Paginación para VacacionDetalle
+        const int pageSize = 10;
+        if (pg < 1) pg = 1;
+
+        // Paginación para VacacionDetalle
+        int recsCountVacacionDetalle = viewModel.VacacionDetalle.Count();
+        var pagerVacacionDetalle = new Pager(recsCountVacacionDetalle, pg, pageSize);
+        int recSkipVacacionDetalle = (pg - 1) * pageSize;
+        viewModel.VacacionDetalle = viewModel.VacacionDetalle
+            .Skip(recSkipVacacionDetalle)
+            .Take(pagerVacacionDetalle.PageSize)
+            .ToList();
+        this.ViewBag.PagerVacacionDetalle = pagerVacacionDetalle;
+
+        // Paginación para NominaAprovacion
+        int recsCountNominaAprovacion = viewModel.NominaAprovacion.Count();
+        var pagerNominaAprovacion = new Pager(recsCountNominaAprovacion, pg, pageSize);
+        int recSkipNominaAprovacion = (pg - 1) * pageSize;
+        viewModel.NominaAprovacion = viewModel.NominaAprovacion
+            .Skip(recSkipNominaAprovacion)
+            .Take(pagerNominaAprovacion.PageSize)
+            .ToList();
+        this.ViewBag.PagerNominaAprovacion = pagerNominaAprovacion;
+
+        // Paginación para Viatico
+        int recsCountViatico = viewModel.Viatico.Count();
+        var pagerViatico = new Pager(recsCountViatico, pg, pageSize);
+        int recSkipViatico = (pg - 1) * pageSize;
+        viewModel.Viatico = viewModel.Viatico
+            .Skip(recSkipViatico)
+            .Take(pagerViatico.PageSize)
+            .ToList();
+        this.ViewBag.PagerViatico = pagerViatico;
+
 
         return View(viewModel);
 
@@ -216,7 +298,6 @@ public class HomeController : Controller
 
             return empleadoAusencias;
         }
-
 
 
         [HttpPost]
@@ -384,14 +465,13 @@ public class HomeController : Controller
                     .Where(e => e.Activo &&
                         (e.FechaNacimiento.DayOfYear >= hoy.DayOfYear && e.FechaNacimiento.DayOfYear <= haceVeinteDias.DayOfYear))
                     .OrderBy(e => e.FechaNacimiento)
-                    .Take(10)
                     .ToListAsync();
                     return proximosCumpleañeros;
                 }
                 catch (Exception ex)
                 {
                     TempData["Error"] = ex.Message;
-                    return proximosCumpleañeros;
+                    return new List<Empleado>();
                 }
             }
 

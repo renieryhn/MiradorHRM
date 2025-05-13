@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<PlanillaPM.Models.EmpleadoIngreso>
 @using PlanillaPM.Models;
+@using PlanillaPM.ViewModel;
+
 
 @{
     ViewData["Title"] = "Index";
@@ -30,7 +32,7 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <form id="fSearch" method="post" asp-action="Index">
+                                            <form id="fSearch" method="get" asp-action="Index">
                                                 <div class="row">
                                                     <div class="col-sm-6 btn-group btn-group-justified" role="group">
                                                         <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
@@ -42,7 +44,12 @@
                                                             
                                                             <a asp-controller="EmpleadoIngreso" asp-action="Create" class="btn " asp-route-id="1" style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
                                                             
-                                                            <a asp-controller="EmpleadoIngreso" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoIngreso" asp-action="Download" class="btn " style="background-color: var(--blue);"
+                                                               asp-route-filter="@Convert.ToString(ViewBag.Filter)"
+                                                               asp-route-idEmpleado="@Convert.ToString(ViewBag.CurrentIdEmpleado)"
+                                                               asp-route-IdIngreso="@Convert.ToString(ViewBag.CurrentIdIngreso)"
+                                                               asp-route-estado="@Convert.ToString(ViewBag.CurrentEstado)"
+                                                            ><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>

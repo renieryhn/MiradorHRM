@@ -34,7 +34,7 @@ namespace PlanillaPM.Controllers
 
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.Descripcion.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r => r.IdCargoNavigation.NombreCargo.ToLower().Contains(filter.ToLower()));
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -134,58 +134,81 @@ namespace PlanillaPM.Controllers
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
-        }
+        }     
 
         [HttpGet]
-        public ActionResult DownloadAll()
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
         {
-            // Obtener todos los contratos de empleados
-            var data = _context.EmpleadoContratos
-                        .Select(ec => new
-                        {
-                            ec.IdEmpleadoContrato,
-                            Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
-                            ec.CodigoContrato,
-                            TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato, // Asumiendo que tienes un campo para el nombre del tipo de contrato
-                            Cargo = ec.IdCargoNavigation.NombreCargo, // Asumiendo que tienes un campo para el nombre del cargo
-                            Estado = ec.Estado.ToString(),
-                            VigenciaMeses = ec.VigenciaMeses,
-                            FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
-                            FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
-                            Salario = ec.Salario.ToString("C"),
-                            Descripcion = ec.Descripcion ?? "N/A",
-                            Activo = ec.Activo ? "Sí" : "No"
-                            
-                        })
-                        .ToList();
+            IQueryable<EmpleadoContrato> query = _context.EmpleadoContratos
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Include(ec => ec.IdTipoContratoNavigation)
+                .Include(ec => ec.IdCargoNavigation);
 
-            // Verificar si la lista está vacía
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdCargoNavigation.NombreCargo.ToLower().Contains(filter.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(ec => new
+                {
+                    ec.IdEmpleadoContrato,
+                    Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                    ec.CodigoContrato,
+                    TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato,
+                    Cargo = ec.IdCargoNavigation.NombreCargo,
+                    Estado = ec.Estado.ToString(),
+                    VigenciaMeses = ec.VigenciaMeses,
+                    FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
+                    FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
+                    Salario = ec.Salario.ToString("C"),
+                    Descripcion = ec.Descripcion ?? "N/A",
+                    Activo = ec.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
             if (!data.Any())
             {
-                TempData["error"] = "No se encontraron Registros.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "No se encontraron registros con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
             }
-            // Convertir la lista de contratos en una tabla de datos
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = "EmpleadoContrato.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "ContratosEmpleados");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
-
 
 
 

@@ -32,10 +32,10 @@ namespace PlanillaPM.Controllers
         {
             IQueryable<EmpleadoImpuesto> query = _context.EmpleadoImpuestos;
 
-            if (!String.IsNullOrEmpty(filter))
-            {
-                query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
-            }
+            //if (!String.IsNullOrEmpty(filter))
+            //{
+            //    query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
+            //}
             if (!String.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
@@ -134,6 +134,75 @@ namespace PlanillaPM.Controllers
                 // Añadir la tabla al workbook con un nombre significativo para la hoja
                 wb.Worksheets.Add(table, "Empleado Impuestos");
 
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, string? idImpuesto, int? estado)
+        {
+            IQueryable<EmpleadoImpuesto> query = _context.EmpleadoImpuestos
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdImpuestoNavigation);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (!string.IsNullOrEmpty(idImpuesto))
+            {
+                query = query.Where(r => r.IdImpuesto.ToString().Contains(idImpuesto));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(e => new
+                {
+                    e.IdEmpleadoImpuesto,
+                    e.IdImpuesto,
+                    ImpuestoNombre = e.IdImpuestoNavigation.NombreImpuesto,
+                    e.IdEmpleado,
+                    EmpleadoNombre = e.IdEmpleadoNavigation.NombreCompleto,
+                    Exento = e.Excento ? "Sí" : "No",
+                    e.Orden,
+                    Activo = e.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de empleado impuesto con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, idImpuesto, estado });
+            }
+
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "EmpleadoImpuestos.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table, "Empleado Impuestos");
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);

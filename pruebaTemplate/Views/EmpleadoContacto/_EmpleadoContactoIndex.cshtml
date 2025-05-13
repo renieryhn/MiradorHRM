@@ -31,21 +31,23 @@
                                     <div class="row ">
                                         <div class="col-sm-9 pl-4">
                                             <div class="form-group">
+                                                <form method="get">
                                                 <div id="fSearch">
                                                     <div class="row">
                                                         <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombreContacto" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.CurrentFilter">
+                                                            <input type="text" style="width: 300px;" id="inNombreContacto" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
                                                             <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadContactos','inNombreContacto');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                         </div>
                                                         <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-controller="EmpleadoContacto" asp-action="_EmpleadoContactoIndex" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
                                                                 <a asp-controller="EmpleadoContacto" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" asp-route-filter="@ViewBag.Filter" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>

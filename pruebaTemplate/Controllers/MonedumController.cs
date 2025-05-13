@@ -50,19 +50,24 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todas las monedas
-            var data = _context.Moneda
-                        .Select(m => new
-                        {
-                            m.IdMoneda,
-                            NombreMoneda = m.NombreMoneda,
-                            Simbolo = m.Simbolo,
-                            Activo = m.Activo ? "Sí" : "No"
-                            
-                        })
-                        .ToList();
+            var monedasQuery = _context.Moneda.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                monedasQuery = monedasQuery.Where(m => m.NombreMoneda.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = monedasQuery
+                .Select(m => new
+                {
+                    m.IdMoneda,
+                    NombreMoneda = m.NombreMoneda,
+                    Simbolo = m.Simbolo,
+                    Activo = m.Activo ? "Sí" : "No"
+                })
+                .ToList();
 
             // Verificar si la lista está vacía
             if (!data.Any())

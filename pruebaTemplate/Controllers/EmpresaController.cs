@@ -56,25 +56,33 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
         [HttpGet]
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todas las empresas
-            var data = _context.Empresas
-                        .Select(e => new
-                        {
-                            e.IdEmpresa,
-                            Nombre = e.NombreEmpresa,
-                            Moneda = e.IdMonedaNavigation.NombreMoneda, // Asumiendo que la clase Monedum tiene un campo NombreMoneda
-                            Dirección = e.Direccion,
-                            Teléfono = e.Telefono,
-                            Email = e.Email,
-                            RTN = e.Rtn,
-                            Contacto = e.NombreContacto,
-                            e.TelefonoContacto,
-                            Activo = e.Activo ? "Sí" : "No",                         
-                            e.Comentarios
-                        })
-                        .ToList();
+            var empresasQuery = _context.Empresas.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                empresasQuery = empresasQuery
+                    .Where(e => e.NombreEmpresa.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = empresasQuery
+                .Select(e => new
+                {
+                    e.IdEmpresa,
+                    Nombre = e.NombreEmpresa,
+                    Moneda = e.IdMonedaNavigation.NombreMoneda,
+                    Dirección = e.Direccion,
+                    Teléfono = e.Telefono,
+                    Email = e.Email,
+                    RTN = e.Rtn,
+                    Contacto = e.NombreContacto,
+                    e.TelefonoContacto,
+                    Activo = e.Activo ? "Sí" : "No",
+                    e.Comentarios
+                })
+                .ToList();
+
 
             // Verificar si la lista está vacía
             if (!data.Any())

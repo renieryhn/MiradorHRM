@@ -51,11 +51,17 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
 
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todos los tipos de nómina
-            var data = _context.TipoNominas
-                        .Select(tn => new
+            var query = _context.TipoNominas.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(tn => EF.Functions.Like(tn.NombreTipoNomina, $"%{filter}%"));
+            }
+
+            var data = query
+                                .Select(tn => new
                         {
                             tn.IdTipoNomina,
                             NombreTipoNomina = tn.NombreTipoNomina,

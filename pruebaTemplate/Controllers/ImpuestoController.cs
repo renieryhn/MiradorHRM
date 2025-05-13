@@ -49,53 +49,109 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        [HttpGet]
-        public ActionResult Download()
-        {
-            // Obtener la lista de todos los impuestos
-            var data = _context.Impuestos
-                        .Select(i => new
-                        {
-                            i.IdImpuesto,
-                            NombreImpuesto = i.NombreImpuesto,
-                            TipoImpuesto = i.Tipo.ToString(), 
-                            Monto = i.Monto.HasValue ? i.Monto.Value.ToString("F2") : "",
-                            Formula = i.Formula,
-                            Orden = i.Orden,
-                            AsignacionAutomatica = i.AsignacionAutomatica ? "Sí" : "No",
-                            Activo = i.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
 
-            // Verificar si la lista está vacía
+        [HttpGet]
+        public ActionResult Download(string? filter)
+        {
+            var query = _context.Impuestos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(i => EF.Functions.Like(i.NombreImpuesto, $"%{filter}%"));
+            }
+
+            var data = query
+                .OrderBy(i => i.Orden)
+                .Select(i => new
+                {
+                    i.IdImpuesto,
+                    NombreImpuesto = i.NombreImpuesto,
+                    TipoImpuesto = i.Tipo.ToString(),
+                    Monto = i.Monto.HasValue ? i.Monto.Value.ToString("F2") : "",
+                    i.Formula,
+                    i.Orden,
+                    AsignacionAutomatica = i.AsignacionAutomatica ? "Sí" : "No",
+                    Activo = i.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
             if (!data.Any())
             {
-
-                TempData["error"] = "No se encontraron Registros.";
+                TempData["error"] = "No se encontraron registros.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Convertir la lista en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
-            string fileName = "Impuestos.xlsx";
+            string fileName = string.IsNullOrWhiteSpace(filter)
+                ? "Impuestos.xlsx"
+                : $"Impuestos_{filter}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Impuestos");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
+
+
+        //[HttpGet]
+        //public ActionResult Download()
+        //{
+        //    // Obtener la lista de todos los impuestos
+        //    var data = _context.Impuestos
+        //                .Select(i => new
+        //                {
+        //                    i.IdImpuesto,
+        //                    NombreImpuesto = i.NombreImpuesto,
+        //                    TipoImpuesto = i.Tipo.ToString(), 
+        //                    Monto = i.Monto.HasValue ? i.Monto.Value.ToString("F2") : "",
+        //                    Formula = i.Formula,
+        //                    Orden = i.Orden,
+        //                    AsignacionAutomatica = i.AsignacionAutomatica ? "Sí" : "No",
+        //                    Activo = i.Activo ? "Sí" : "No"
+
+        //                })
+        //                .ToList();
+
+        //    // Verificar si la lista está vacía
+        //    if (!data.Any())
+        //    {
+
+        //        TempData["error"] = "No se encontraron Registros.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    // Convertir la lista en una tabla de datos
+        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
+        //    DataTable table = converter.ToDataTable(data);
+
+        //    // Nombre del archivo de Excel
+        //    string fileName = "Impuestos.xlsx";
+
+        //    // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        var worksheet = wb.Worksheets.Add(table, "Impuestos");
+        //        worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(stream);
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //        }
+        //    }
+        //}
 
         // GET: Impuesto/Details/5
         public async Task<IActionResult> Details(int? id)

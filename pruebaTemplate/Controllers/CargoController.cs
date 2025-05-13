@@ -48,13 +48,19 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de Cargo desde la base de datos
-            var data = _context.Cargos
-                .Select(c => new
+            var query = _context.Cargos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(c => EF.Functions.Like(c.NombreCargo, $"%{filter}%"));
+            }
+
+            var data = query
+                        .Select(c => new
                 {
                     c.IdCargo,
                     c.NombreCargo,

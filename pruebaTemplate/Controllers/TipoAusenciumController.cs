@@ -48,11 +48,17 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todos los tipos de ausencia
-            var data = _context.TipoAusencia
-                        .Select(ta => new
+            var query = _context.TipoAusencia.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(ta => EF.Functions.Like(ta.NombreTipoAusencia, $"%{filter}%"));
+            }
+
+            var data = query
+                                .Select(ta => new
                         {
                             ta.IdTipoAusencia,
                             NombreTipoAusencia = ta.NombreTipoAusencia,

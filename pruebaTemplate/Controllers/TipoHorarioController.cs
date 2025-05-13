@@ -49,18 +49,23 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
 
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todos los tipos de horario
-            var data = _context.TipoHorarios
-                        .Select(th => new
-                        {
-                            th.IdTipoHorario,
-                            NombreTipoHorario = th.NombreTipoHorario,
-                            Activo = th.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            var query = _context.TipoHorarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(th => th.NombreTipoHorario.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = query
+                .Select(th => new
+                {
+                    th.IdTipoHorario,
+                    NombreTipoHorario = th.NombreTipoHorario,
+                    Activo = th.Activo ? "Sí" : "No"
+                })
+                .ToList();
 
             // Verificar si la lista está vacía
             if (!data.Any())

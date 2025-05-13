@@ -43,15 +43,15 @@ namespace PlanillaPM.Controllers
         }
         public async Task<IActionResult> Index(int pg, string? filter, string? idEmpleado, int? estado)
         {
-            IQueryable<VacacionDetalle> query = _context.VacacionDetalles;
-
-            if (!String.IsNullOrEmpty(filter))
+            IQueryable<VacacionDetalle> query = _context.VacacionDetalles
+                .Include(vd => vd.IdVacacionNavigation)
+                .Include(vd => vd.IdEmpleadoNavigation)
+                ;
+            if (int.TryParse(filter, out int periodo))
             {
-                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
-                query = query.Where(r =>
-       r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
-       r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r => r.IdVacacionNavigation.PeriodoVacacional == periodo);
             }
+
             if (!String.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
@@ -99,47 +99,66 @@ namespace PlanillaPM.Controllers
             return View(data);
 
         }
-        public ActionResult Download()
+        [HttpGet]
+        public ActionResult Download(string? filter, string? idEmpleado, int? estado)
         {
-            // Obtener la lista de todos los detalles de vacaciones
-            var data = _context.VacacionDetalles
-                        .Select(vd => new
-                        {
-                            vd.IdVacacionDetalle,
-                            Periodo = vd.IdVacacionNavigation.PeriodoVacacional, // Asumiendo que la navegación te da acceso al periodo
-                            Empleado = vd.IdEmpleadoNavigation.NombreCompleto, // Asumiendo que hay una propiedad que contiene el nombre del empleado
-                            FechaSolicitud = vd.FechaSolicitud.ToString("dd/MM/yyyy"),
-                            FechaInicio = vd.FechaInicio.ToString("dd/MM/yyyy"),
-                            FechaFin = vd.FechaFin.ToString("dd/MM/yyyy"),
-                            vd.NumeroDiasSolicitados,
-                            Estado = vd.EstadoSolicitud.ToString(), // Convertir el enum en cadena
-                            AprobadoPor = vd.AprobadoPor ?? "N/A",
-                            vd.DiasAprobados,
-                            ComentariosAprobador = vd.ComentariosAprobador ?? "N/A",
-                            Activo = vd.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            IQueryable<VacacionDetalle> query = _context.VacacionDetalles
+                .Include(vd => vd.IdVacacionNavigation)
+                .Include(vd => vd.IdEmpleadoNavigation);
 
-            // Verificar si hay datos
-            if (!data.Any())
+            if (int.TryParse(filter, out int periodo))
             {
-                TempData["error"] = "No se encontraron detalles de vacaciones.";
-                return RedirectToAction(nameof(Index));
+                query = query.Where(r => r.IdVacacionNavigation.PeriodoVacacional == periodo);
+            }
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
             }
 
-            // Convertir la lista en una tabla de datos
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(vd => new
+                {
+                    vd.IdVacacionDetalle,
+                    Periodo = vd.IdVacacionNavigation.PeriodoVacacional,
+                    Empleado = vd.IdEmpleadoNavigation.NombreCompleto,
+                    FechaSolicitud = vd.FechaSolicitud.ToString("dd/MM/yyyy"),
+                    FechaInicio = vd.FechaInicio.ToString("dd/MM/yyyy"),
+                    FechaFin = vd.FechaFin.ToString("dd/MM/yyyy"),
+                    vd.NumeroDiasSolicitados,
+                    Estado = vd.EstadoSolicitud.ToString(),
+                    AprobadoPor = vd.AprobadoPor ?? "N/A",
+                    vd.DiasAprobados,
+                    ComentariosAprobador = vd.ComentariosAprobador ?? "N/A",
+                    Activo = vd.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron detalles de vacaciones con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
-
-            // Nombre del archivo Excel
             string fileName = "VacacionDetalles.xlsx";
 
-            // Crear el archivo de Excel
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "VacacionDetalles");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -148,6 +167,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
         // GET: VacacionDetall/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -51,11 +51,18 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todos los horarios
-            var data = _context.Horarios
-                        .Select(h => new
+            var horariosQuery = _context.Horarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                horariosQuery = horariosQuery
+                    .Where(h => h.NombreHorario.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = horariosQuery
+                                .Select(h => new
                         {
                             h.IdHorario,
                             Horario = h.NombreHorario,

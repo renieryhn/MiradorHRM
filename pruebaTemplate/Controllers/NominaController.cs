@@ -92,60 +92,88 @@ namespace PlanillaPM.Controllers
         }
 
 
-        [HttpGet]
-        public ActionResult DownloadAll()
-        {
-            // Obtener la lista de todas las nóminas
-            var data = _context.Nominas
-                        .Select(n => new
-                        {
-                            n.IdNomina,
-                            TipoNomina = n.IdTipoNominaNavigation.NombreTipoNomina, 
-                            n.Comentarios,
-                            n.PeriodoFiscal,
-                            Mes = n.Mes.ToString(), 
-                            FechaPago = n.FechaPago.ToString("dd/MM/yyyy"),
-                            n.TotalIngresos,
-                            n.TotalDeducciones,
-                            n.TotalImpuestos,
-                            n.TotalEmpleadosEnNomina,
-                            n.PagoNeto,
-                            EstadoNomina = n.EstadoNomina.ToString(), 
-                            n.AprobadaPor,
-                            n.ComentariosAprobador,
-                            Activo = n.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+       
 
-            // Verificar si la lista está vacía
-            if (!data.Any())
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, string? idTipoNomina, int? estado)
+        {
+            IQueryable<Nomina> query = _context.Nominas
+                .Include(n => n.IdTipoNominaNavigation);
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                
-                TempData["error"] = "No se encontraron nóminas.";
-                return RedirectToAction(nameof(Index));
+                query = query.Where(r => r.IdTipoNominaNavigation.NombreTipoNomina.ToLower().Contains(filter.ToLower()));
             }
 
-            // Convertir la lista en una tabla de datos
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdNomina.ToString().Contains(idEmpleado));
+            }
+
+            if (!string.IsNullOrEmpty(idTipoNomina))
+            {
+                query = query.Where(r => r.IdTipoNomina.ToString().Contains(idTipoNomina));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(n => new
+                {
+                    n.IdNomina,
+                    TipoNomina = n.IdTipoNominaNavigation.NombreTipoNomina,
+                    n.Comentarios,
+                    n.PeriodoFiscal,
+                    Mes = n.Mes.ToString(),
+                    FechaPago = n.FechaPago.ToString("dd/MM/yyyy"),
+                    n.TotalIngresos,
+                    n.TotalDeducciones,
+                    n.TotalImpuestos,
+                    n.TotalEmpleadosEnNomina,
+                    n.PagoNeto,
+                    EstadoNomina = n.EstadoNomina.ToString(),
+                    n.AprobadaPor,
+                    n.ComentariosAprobador,
+                    Activo = n.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron nóminas con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, idTipoNomina, estado });
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = "Nominas.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Nóminas");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
         // GET: Nomina/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -203,7 +231,9 @@ namespace PlanillaPM.Controllers
                 }
                 else
                 {
-                    TempData["error"] = "Error: " + dbEx.Message;
+                    //TempData["error"] = "Error: " + dbEx.Message;
+                    TempData["error"] = "Error: " + (dbEx.InnerException?.Message ?? dbEx.Message);
+
                 }
             }
             catch (Exception ex)

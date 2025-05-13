@@ -28,6 +28,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using PdfSharp.Pdf.Filters;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PlanillaPM.Controllers
 {
@@ -58,10 +59,10 @@ namespace PlanillaPM.Controllers
 
             if (!String.IsNullOrEmpty(filter))
             {
-                //query = query.Where(r => r.NombreCompleto.ToLower().Contains(filter.ToLower()));
-                query = query.AsEnumerable()
-                .Where(r => r.NombreCompleto != null && r.NombreCompleto.ToLower().Contains(filter.ToLower()))
-                .AsQueryable();
+                query = query.Where(r => r.IdDepartamentoNavigation.NombreDepartamento.ToLower().Contains(filter.ToLower()));
+                //query = query.AsEnumerable()
+                //.Where(r => r.NombreCompleto != null && r.NombreCompleto.ToLower().Contains(filter.ToLower()))
+                //.AsQueryable();
             }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
@@ -182,97 +183,184 @@ namespace PlanillaPM.Controllers
             return View(viewModel);
         }
 
+        //[HttpGet]
+        //public ActionResult Download(int id)
+        //{
+
+        //    // Filtrar los contactos de empleado por el id recibido
+        //    List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();
+
+        //    // Convertir la lista de contactos en una tabla de datos
+        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
+        //    DataTable table = converter.ToDataTable(data);
+
+        //    // Nombre del archivo de Excel
+        //    string fileName = $"EmpleadoActivo{id}.xlsx";
+
+        //    // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        wb.Worksheets.Add(table);
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(stream);
+
+        //            // Devolver el archivo como una descarga de archivo Excel
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //        }
+        //    }
+        //}
+
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(string? filter, string? idEmpleado, string? idTipoNomina, int? estado)
         {
+            var query = _context.EmpleadoActivos
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdProductoNavigation)
+                .AsQueryable();
 
-            // Filtrar los contactos de empleado por el id recibido
-            List<EmpleadoActivo> data = _context.EmpleadoActivos.Where(ec => ec.IdEmpleado == id).ToList();
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query
+                    .Where(e => e.IdEmpleadoNavigation.NombreCompleto != null &&
+                                EF.Functions.Like(e.IdEmpleadoNavigation.NombreCompleto, $"%{filter}%"));
+            }
 
-            // Convertir la lista de contactos en una tabla de datos
+            if (!string.IsNullOrWhiteSpace(idEmpleado))
+            {
+                query = query.Where(e => e.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (!string.IsNullOrWhiteSpace(idTipoNomina))
+            {
+                query = query.Where(e => e.IdEmpleadoNavigation.IdTipoNomina.ToString().Contains(idTipoNomina));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(e => e.IdEmpleadoNavigation.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(e => e.IdEmpleadoNavigation.Activo == true);
+                }
+            }
+
+            var data = query.ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros para exportar.";
+                return RedirectToAction(nameof(Index));
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
-            string fileName = $"EmpleadoActivo{id}.xlsx";
+            string fileName = "EmpleadoActivos_Filtrados.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(table);
+                wb.Worksheets.Add(table, "EmpleadoActivos");
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
 
-        public ActionResult DownloadAll()
+
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, string? idTipoNomina, int? estado)
         {
-            // Crear un DataTable manualmente para incluir todas las columnas deseadas
             DataTable table = new DataTable("Empleados");
 
-            // Añadir las columnas manualmente
             table.Columns.Add("IdEmpleado", typeof(int));
-            table.Columns.Add("Nombre del Empleado", typeof(string));   
+            table.Columns.Add("Nombre del Empleado", typeof(string));
             table.Columns.Add("Número de Identidad", typeof(string));
             table.Columns.Add("Teléfono", typeof(string));
             table.Columns.Add("Cargo", typeof(string));
             table.Columns.Add("Departamento", typeof(string));
-            table.Columns.Add("Tipo de Nomina", typeof(string));                                
+            table.Columns.Add("Tipo de Nomina", typeof(string));
             table.Columns.Add("Fecha de Inicio", typeof(DateOnly));
-            table.Columns.Add("Banco", typeof(string));          
-            table.Columns.Add("No. de Cuenta", typeof(string));     
+            table.Columns.Add("Banco", typeof(string));
+            table.Columns.Add("No. de Cuenta", typeof(string));
             table.Columns.Add("Salario Base", typeof(decimal));
-          
 
-            // Poblar el DataTable con datos de la base de datos
-            var empleados = _context.Empleados.Include(e => e.IdCargoNavigation)
-                                              .Include(e => e.IdDepartamentoNavigation)
-                                              .Include(e => e.IdTipoContratoNavigation)
-                                              .Include(e => e.IdTipoNominaNavigation)
-                                              .Include(e => e.IdUbicacionNavigation)
-                                              .Include(e => e.IdEncargadoNavigation)
-                                              .Include(e => e.IdBancoNavigation)
-                                              .ToList();
+            var empleados = _context.Empleados
+                .Include(e => e.IdCargoNavigation)
+                .Include(e => e.IdDepartamentoNavigation)
+                .Include(e => e.IdTipoContratoNavigation)
+                .Include(e => e.IdTipoNominaNavigation)
+                .Include(e => e.IdUbicacionNavigation)
+                .Include(e => e.IdEncargadoNavigation)
+                .Include(e => e.IdBancoNavigation)
+                .AsQueryable();
 
-            foreach (var empleado in empleados)
+            // Aplicar filtros
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                empleados = empleados.Where(r => r.IdDepartamentoNavigation.NombreDepartamento.ToLower().Contains(filter.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(idEmpleado))
+            {
+                empleados = empleados.Where(e => e.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (!string.IsNullOrWhiteSpace(idTipoNomina))
+            {
+                empleados = empleados.Where(e => e.IdTipoNomina.ToString().Contains(idTipoNomina));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                    empleados = empleados.Where(e => e.Activo == false);
+                else if (estado == 0)
+                    empleados = empleados.Where(e => e.Activo == true);
+            }
+
+            var lista = empleados.ToList();
+
+            foreach (var empleado in lista)
             {
                 table.Rows.Add(
                     empleado.IdEmpleado,
-                    empleado.IdEncargadoNavigation?.NombreCompleto,
-                    empleado.NumeroIdentidad,              
-                    empleado.Telefono,              
+                    empleado.NombreCompleto,
+                    empleado.NumeroIdentidad,
+                    empleado.Telefono,
                     empleado.IdCargoNavigation?.NombreCargo,
-                    empleado.IdDepartamentoNavigation?.NombreDepartamento,                
-                    empleado.IdTipoNominaNavigation?.NombreTipoNomina,                                 
+                    empleado.IdDepartamentoNavigation?.NombreDepartamento,
+                    empleado.IdTipoNominaNavigation?.NombreTipoNomina,
                     empleado.FechaInicio,
-                    empleado.IdBancoNavigation?.NombreBanco,                
-                    empleado.CuentaBancaria,                 
+                    empleado.IdBancoNavigation?.NombreBanco,
+                    empleado.CuentaBancaria,
                     empleado.SalarioBase
-                    
                 );
             }
 
-            // Crear el archivo Excel con ClosedXML
             string fileName = "NominaEmpleado.xlsx";
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var ws = wb.Worksheets.Add(table, "Empleados");
-
-                // Configurar formato de celdas, como ajustar ancho de columnas
                 ws.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
 
         public async Task<IActionResult> Details(int? id)

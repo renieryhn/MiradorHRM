@@ -128,54 +128,76 @@ namespace PlanillaPM.Controllers
         }
 
 
-        public ActionResult DownloadAll()
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
         {
-            // Obtener todos los datos de empleados activos
-            var data = _context.EmpleadoActivos
+            IQueryable<EmpleadoActivo> query = _context.EmpleadoActivos
+                .Include(ea => ea.IdEmpleadoNavigation)
+                .Include(ea => ea.IdProductoNavigation);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.NumeroSerie.ToLower().Contains(filter.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
                 .Select(ea => new
                 {
                     ea.IdEmpleadoActivo,
-                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado, 
-                    Producto = ea.IdProductoNavigation.NombreProducto, 
+                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado,
+                    Producto = ea.IdProductoNavigation.NombreProducto,
                     ea.Model,
                     ea.NumeroSerie,
-                    Estado = ea.Estado.ToString(), 
+                    Estado = ea.Estado.ToString(),
                     ea.Cantidad,
                     ea.PrecioEstimado,
-                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"), 
+                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"),
                     ea.Descripcion,
                     Activo = ea.Activo ? "Sí" : "No"
-                   
                 })
                 .ToList();
-            // Verificar si la lista está vacía
+
             if (!data.Any())
             {
-                TempData["error"] = "No se encontraron Registros.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "No se encontraron registros con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
             }
 
-            // Convertir la lista en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = "EmpleadosActivos.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table, "EmpleadosActivos");
-
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
         // GET: EmpleadoActivo/Details/5
         public async Task<IActionResult> Details(int? id)

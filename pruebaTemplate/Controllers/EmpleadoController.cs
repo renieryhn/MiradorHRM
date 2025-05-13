@@ -383,40 +383,48 @@ namespace PlanillaPM.Controllers
         }
 
 
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
+            // Aplicar el filtro como en Index
+            var empleadosQuery = _context.Empleados.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                empleadosQuery = empleadosQuery.Where(e => e.NombreEmpleado.ToLower().Contains(filter.ToLower()));
+            }
             // Obtener la lista de todos los empleados
-            var data = _context.Empleados
-                .Select(e => new
-                {
-                    e.IdEmpleado,
-                    CodigoInterno = e.CodigoInterno ?? "N/A",
-                    NombreCompleto = $"{e.NombreEmpleado} {e.ApellidoEmpleado}",
-                    NumeroIdentidad = e.NumeroIdentidad ?? "N/A",
-                    NumeroLicencia = e.NumeroLicencia ?? "N/A",
-                    FechaVencimientoLicencia = e.FechaVencimientoLicencia.HasValue ? e.FechaVencimientoLicencia.Value.ToString("dd/MM/yyyy") : "N/A",
-                    Nacionalidad = e.Nacionalidad,
-                    FechaNacimiento = e.FechaNacimiento.ToString("dd/MM/yyyy"),
-                    Edad = e.Edad,
-                    Genero = e.Genero ?? "N/A",
-                    Direccion = e.Direccion ?? "N/A",
-                    Telefono = e.Telefono,
-                    CiudadResidencia = e.CiudadResidencia,
-                    Email = e.Email ?? "N/A",
-                    Activo = e.Activo ? "Sí" : "No",
-                    Cargo = e.IdCargoNavigation.NombreCargo,
-                    Departamento = e.IdDepartamentoNavigation.NombreDepartamento,
-                    TipoContrato = e.IdTipoContratoNavigation.NombreTipoContrato,
-                    TipoNomina = e.IdTipoNominaNavigation != null ? e.IdTipoNominaNavigation.NombreTipoNomina : "N/A",
-                    FechaInicio = e.FechaInicio.HasValue ? e.FechaInicio.Value.ToString("dd/MM/yyyy") : "N/A",
-                    SalarioBase = e.SalarioBase,
-                    Antiguedad = e.Antiguedad,
-                    NumeroSeguroSocial = e.NumeroSeguroSocial ?? "N/A",                  
-                    e.Comentarios
-                })
-                .ToList();
+            var data = empleadosQuery
+         .Select(e => new
+         {
+             e.IdEmpleado,
+             CodigoInterno = e.CodigoInterno ?? "N/A",
+             NombreCompleto = $"{e.NombreEmpleado} {e.ApellidoEmpleado}",
+             NumeroIdentidad = e.NumeroIdentidad ?? "N/A",
+             NumeroLicencia = e.NumeroLicencia ?? "N/A",
+             FechaVencimientoLicencia = e.FechaVencimientoLicencia.HasValue ? e.FechaVencimientoLicencia.Value.ToString("dd/MM/yyyy") : "N/A",
+             Nacionalidad = e.Nacionalidad,
+             FechaNacimiento = e.FechaNacimiento.ToString("dd/MM/yyyy"),
+             Edad = e.Edad,
+             Genero = e.Genero ?? "N/A",
+             Direccion = e.Direccion ?? "N/A",
+             Telefono = e.Telefono,
+             CiudadResidencia = e.CiudadResidencia,
+             Email = e.Email ?? "N/A",
+             Activo = e.Activo ? "Sí" : "No",
+             Cargo = e.IdCargoNavigation.NombreCargo,
+             Departamento = e.IdDepartamentoNavigation.NombreDepartamento,
+             TipoContrato = e.IdTipoContratoNavigation.NombreTipoContrato,
+             TipoNomina = e.IdTipoNominaNavigation != null ? e.IdTipoNominaNavigation.NombreTipoNomina : "N/A",
+             FechaInicio = e.FechaInicio.HasValue ? e.FechaInicio.Value.ToString("dd/MM/yyyy") : "N/A",
+             SalarioBase = e.SalarioBase,
+             Antiguedad = e.Antiguedad,
+             NumeroSeguroSocial = e.NumeroSeguroSocial ?? "N/A",
+             e.Comentarios
+         })
+         .ToList();
+
 
             // Verificar si la lista está vacía
             if (!data.Any())

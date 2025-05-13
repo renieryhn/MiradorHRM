@@ -86,92 +86,162 @@ namespace PlanillaPM.Controllers
         }
 
 
-
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
-            // Filtrar los contactos de empleado por el id recibido
-            var data = _context.EmpleadoContactos
-                        .Where(ec => ec.IdEmpleado == id)
-                        .Select(ec => new
-                        {
-                            ec.IdContactoEmergencia,
-                            ec.NombreContacto,
-                            ec.Relacion,
-                            ec.Celular,
-                            TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
-                            Activo = ec.Activo ? "Sí" : "No"
-                            
-                        })
-                        .ToList();
+            var query = _context.EmpleadoContactos
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Where(ec => ec.IdEmpleado == id)
+                .AsQueryable();
 
-           
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(ec =>
+                    EF.Functions.Like(ec.NombreContacto, $"%{filter}%") ||
+                    EF.Functions.Like(ec.Relacion, $"%{filter}%"));
+            }
 
-            // Convertir la lista de contactos en una tabla de datos
+            var data = query.Select(ec => new
+            {
+                ec.IdContactoEmergencia,
+                Empleado = ec.IdEmpleadoNavigation.NombreCompleto,
+                ec.NombreContacto,
+                ec.Relacion,
+                ec.Celular,
+                TelefonoFijo = ec.TelefonoFijo ?? "N/A",
+                Activo = ec.Activo ? "Sí" : "No"
+            }).ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros para exportar.";
+                return RedirectToAction(nameof(Index));
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
-            string fileName = $"EmpleadoContacto_{id}.xlsx";
-
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            string fileName = $"ContactosEmpleado_{id}.xlsx";
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
 
-        [HttpGet]
-        public ActionResult DownloadAll()
-        {
-            // Obtener todos los contactos de emergencia
-            var data = _context.EmpleadoContactos
-                        .Select(ec => new
-                        {
-                            ec.IdContactoEmergencia,
-                            Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
-                            ec.NombreContacto,
-                            ec.Relacion,
-                            ec.Celular,
-                            TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
-                            Activo = ec.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
 
-            // Verificar si la lista está vacía
-            if (!data.Any())
+        //[HttpGet]
+        //public ActionResult Download(int id)
+        //{
+        //    // Filtrar los contactos de empleado por el id recibido
+        //    var data = _context.EmpleadoContactos
+        //                .Where(ec => ec.IdEmpleado == id)
+        //                .Select(ec => new
+        //                {
+        //                    ec.IdContactoEmergencia,
+        //                    ec.NombreContacto,
+        //                    ec.Relacion,
+        //                    ec.Celular,
+        //                    TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
+        //                    Activo = ec.Activo ? "Sí" : "No"
+
+        //                })
+        //                .ToList();        
+
+        //    // Convertir la lista de contactos en una tabla de datos
+        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
+        //    DataTable table = converter.ToDataTable(data);
+
+        //    // Nombre del archivo de Excel
+        //    string fileName = $"EmpleadoContacto_{id}.xlsx";
+
+        //    // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
+        //        worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(stream);
+
+        //            // Devolver el archivo como una descarga de archivo Excel
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //        }
+        //    }
+        //}
+
+
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
+        {
+            IQueryable<EmpleadoContacto> query = _context.EmpleadoContactos.Include(ec => ec.IdEmpleadoNavigation);
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                TempData["error"] = "No se encontraron Registros.";
-                return RedirectToAction(nameof(Index));
+                query = query.Where(r => r.NombreContacto.ToLower().Contains(filter.ToLower()));
             }
 
-            // Convertir la lista de contactos en una tabla de datos
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(ec => new
+                {
+                    ec.IdContactoEmergencia,
+                    Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                    ec.NombreContacto,
+                    ec.Relacion,
+                    ec.Celular,
+                    TelefonoFijo = ec.TelefonoFijo ?? "N/A",
+                    Activo = ec.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = "EmpleadoContacto.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }

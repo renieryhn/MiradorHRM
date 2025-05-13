@@ -48,7 +48,7 @@ namespace PlanillaPM.Controllers
             }
             if (!String.IsNullOrEmpty(filter))
             {
-                query = query.Where(r => r.AprobadoPor.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r => r.IdTipoAusenciaNavigation.NombreTipoAusencia.ToLower().Contains(filter.ToLower()));
             }
 
             ViewBag.Filter = filter;
@@ -132,9 +132,36 @@ namespace PlanillaPM.Controllers
         }
 
 
-        public ActionResult DownloadAll()
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
         {
-            var data = _context.EmpleadoAusencia
+            IQueryable<EmpleadoAusencium> query = _context.EmpleadoAusencia
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Include(ec => ec.IdTipoAusenciaNavigation);
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdTipoAusenciaNavigation.NombreTipoAusencia.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = query
                 .Select(ec => new
                 {
                     ec.IdEmpleadoAusencia,
@@ -149,38 +176,32 @@ namespace PlanillaPM.Controllers
                     ec.AprobadoPor,
                     ec.Comentarios,
                     Activo = ec.Activo ? "Sí" : "No"
-                    
                 })
                 .ToList();
 
-            // Verificar si la lista está vacía
             if (!data.Any())
             {
-                TempData["error"] = "No se encontraron Registros.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "No se encontraron registros con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
             }
 
-            // Convertir la lista de ausencias en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
-
-            // Nombre del archivo de Excel
             string fileName = "EmpleadoAusencia.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table, "EmpleadoAusencia");
-
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
         // GET: EmpleadoAusencium/Details/5
         public async Task<IActionResult> Details(int? id)

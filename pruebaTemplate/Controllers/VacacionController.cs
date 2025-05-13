@@ -30,13 +30,11 @@ namespace PlanillaPM.Controllers
         {
             IQueryable<Vacacion> query = _context.Vacacions;
 
-            if (!String.IsNullOrEmpty(filter))
+            if (!string.IsNullOrEmpty(filter))
             {
-                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
-                query = query.Where(r =>
-       r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
-       r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
+                query = query.Where(r => r.PeriodoVacacional.ToString().Contains(filter));
             }
+
             if (!String.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
@@ -84,43 +82,62 @@ namespace PlanillaPM.Controllers
 
         }
 
-        public ActionResult Download()
+        [HttpGet]
+        public ActionResult Download(string? filter, string? idEmpleado, int? estado)
         {
-            // Obtener la lista de todas las vacaciones
-            var data = _context.Vacacions
-                        .Select(v => new
-                        {
-                            v.IdVacacion,
-                            IdEmpleado = v.IdEmpleadoNavigation.NombreCompleto, // Supongo que tienes el nombre del empleado
-                            v.Observaciones,
-                            v.PeriodoVacacional,
-                            v.TotalDiasPeriodo,
-                            v.DiasGozados,
-                            v.DiasPendientes,
-                            Activo = v.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            IQueryable<Vacacion> query = _context.Vacacions
+                .Include(v => v.IdEmpleadoNavigation);
 
-            // Verificar si hay datos
-            if (!data.Any())
+            if (!string.IsNullOrEmpty(filter))
             {
-                TempData["error"] = "No se encontraron vacaciones.";
-                return RedirectToAction(nameof(Index));
+                query = query.Where(r => r.PeriodoVacacional.ToString().Contains(filter));
             }
 
-            // Convertir la lista en una tabla de datos
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(v => new
+                {
+                    v.IdVacacion,
+                    Empleado = v.IdEmpleadoNavigation.NombreCompleto,
+                    v.Observaciones,
+                    v.PeriodoVacacional,
+                    v.TotalDiasPeriodo,
+                    v.DiasGozados,
+                    v.DiasPendientes,
+                    Activo = v.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron vacaciones con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
-
-            // Nombre del archivo Excel
             string fileName = "Vacaciones.xlsx";
 
-            // Crear el archivo de Excel
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Vacaciones");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas automáticamente
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -129,6 +146,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
 
         // GET: Vacacion/Details/5

@@ -48,17 +48,25 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de Banco desde la base de datos
-            var data = _context.Bancos
+            // Filtrar si se proporciona un valor
+            var bancosQuery = _context.Bancos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                bancosQuery = bancosQuery.Where(b => b.NombreBanco.ToLower().Contains(filter.ToLower()));
+            }
+
+            // Obtener los datos filtrados
+            var data = bancosQuery
                 .Select(b => new
                 {
                     b.IdBanco,
                     b.NombreBanco,
-                    b.Activo                                 
+                    Activo = b.Activo ? "Sí" : "No"
                 })
                 .ToList();
 

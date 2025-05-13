@@ -127,49 +127,71 @@ namespace PlanillaPM.Controllers
 
 
         [HttpGet]
-        public ActionResult DownloadAll()
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
         {
-            // Obtener todas las habilidades de los empleados
-            var data = _context.EmpleadoHabilidads
-                        .Select(h => new
-                        {
-                            h.IdEmpleadoHabilidad,
-                            Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
-                            h.Habilidad,
-                            Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value.ToString() + " " : "N/A",
-                            h.Comentarios,
-                            Activo = h.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            IQueryable<EmpleadoHabilidad> query = _context.EmpleadoHabilidads
+                .Include(h => h.IdEmpleadoNavigation);
 
-            // Verificar si la lista está vacía
-            if (!data.Any())
+            if (!string.IsNullOrEmpty(filter))
             {
-                TempData["error"] = "No se encontraron Registros.";
-                return RedirectToAction(nameof(Index));
+                query = query.Where(r => r.Habilidad.ToLower().Contains(filter.ToLower()));
             }
 
-            // Convertir la lista en una tabla de datos
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(h => new
+                {
+                    h.IdEmpleadoHabilidad,
+                    Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
+                    h.Habilidad,
+                    Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value + " años" : "N/A",
+                    h.Comentarios,
+                    Activo = h.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, estado });
+            }
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = "EmpleadoHabilidad.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Habilidades");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
 
         // GET: EmpleadoHabilidad/Details/5

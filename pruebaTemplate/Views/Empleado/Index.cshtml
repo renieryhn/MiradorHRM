@@ -49,7 +49,7 @@
                                                                  @if (userPermissions.Contains("Create"))
                                                                 {
                                                                 <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);" asp-route-filter="@ViewBag.Filter"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                                 }
                                                             </div>
                                                         </div>

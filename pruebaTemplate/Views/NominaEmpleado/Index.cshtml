@@ -70,7 +70,7 @@
                 <div class="col-sm-2">
                     <div class="btn-group btn-group-justified" role="group">
                        @*  <input type="hidden" name="filter" value="@ViewBag.CurrentFilter"> *@
-                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar por Nombre Completo..." value="@ViewBag.Filter">
+                        <input type="text" style="width: 320px;" id="filter" class="form-control" name="filter" placeholder="Buscar por Departamento..." value="@ViewBag.Filter">
                         <button style="background-color: var(--blue);" type="submit" class="btn btn-info">
                             <i class="fa fa-search" style="color: white; font-size: 22px; font-weight: bold;"></i>
                         </button>
@@ -83,7 +83,12 @@
                         <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
                         @if (userPermissions.Contains("View"))
                         {
-                        <a asp-controller="NominaEmpleado" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                        <a asp-controller="NominaEmpleado" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"
+                               asp-route-filter="@ViewBag.Filter"
+                               asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                               asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                               asp-route-estado="@ViewBag.CurrentEstado"
+                        ><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                         }
                     </div>
                 </div>

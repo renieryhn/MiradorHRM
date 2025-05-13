@@ -51,13 +51,19 @@ namespace PlanillaPM.Controllers
 
 
 
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de Division desde la base de datos
-            var data = _context.Divisions
-                .Select(d => new
+            var query = _context.Divisions.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(d => d.NombreDivision.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = query
+                        .Select(d => new
                 {
                     d.IdDivision,
                     d.NombreDivision,

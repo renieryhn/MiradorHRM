@@ -29,7 +29,9 @@ namespace PlanillaPM.Controllers
         // GET: Departamento
         public async Task<IActionResult> Index(int pg, string? filter)
         {
-            ViewBag.Filter = filter;
+            try
+            {
+                ViewBag.Filter = filter;
             List<Departamento> registros;
             if (filter != null)
             {
@@ -51,15 +53,28 @@ namespace PlanillaPM.Controllers
 
             var IdDivisionNavigation = await _context.Divisions.ToListAsync();
             return View(data);
-        }
 
-        public ActionResult Download()
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Hubo un problema al cargar la página." + ex.Message;
+                return View();
+            }
+        }
+        
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de Departamento desde la base de datos
-            var data = _context.Departamentos
-                .Select(d => new
+            var query = _context.Departamentos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(d => d.NombreDepartamento.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = query
+                        .Select(d => new
                 {
                     d.IdDepartamento,
                     d.NombreDepartamento,

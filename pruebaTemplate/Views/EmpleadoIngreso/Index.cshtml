@@ -84,7 +84,12 @@
                            @if (userPermissions.Contains("Create"))
                                                                     {
                             <a asp-controller="EmpleadoIngreso" asp-action="Create" asp-route-id="2" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;  "></i></a>
-                            <a asp-controller="EmpleadoIngreso" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
+                            <a asp-controller="EmpleadoIngreso" asp-action="DownloadAll" class="btn " style="background-color: var(--blue);"
+                                   asp-route-filter="@ViewBag.Filter"
+                                   asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado"
+                                   asp-route-idTipoNomina="@ViewBag.CurrentIdTipoNomina"
+                                   asp-route-estado="@ViewBag.CurrentEstado"
+                            ><i class="fa fa-file-excel-o" style="color: white;  "></i></a>
                                                                     }
                         </div>
                     </div>

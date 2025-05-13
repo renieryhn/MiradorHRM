@@ -50,13 +50,19 @@ namespace PlanillaPM.Controllers
             var IdHorarioNavigation = await _context.Horarios.ToListAsync();
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de ClaseEmpleado desde la base de datos
-            var data = _context.ClaseEmpleados
-                .Select(c => new
+            var query = _context.ClaseEmpleados.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(c => EF.Functions.Like(c.NombreClaseEmpleado, $"%{filter}%"));
+            }
+
+            var data = query
+                        .Select(c => new
                 {
                     c.IdClaseEmpleado,
                     c.NombreClaseEmpleado,

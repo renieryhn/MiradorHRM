@@ -35,13 +35,11 @@ namespace PlanillaPM.Controllers
             IQueryable<Viatico> query = _context.Viaticos
     .Include(v => v.IdEmpleadoNavigation);
 
-            if (!String.IsNullOrEmpty(filter))
-            {
-                //query = query.Where(r => r.IdEmpleadoNavigation.NombreCompleto.ToLower().Contains(filter.ToLower()));
-                query = query.Where(r =>
-        r.IdEmpleadoNavigation.NombreEmpleado.ToLower().Contains(filter.ToLower()) ||
-        r.IdEmpleadoNavigation.ApellidoEmpleado.ToLower().Contains(filter.ToLower()));
-            }
+            //if (!string.IsNullOrEmpty(filter) && Enum.TryParse<Viatico.TipoEstado>(filter, out var estadoEnum))
+            //{
+            //    query = query.Where(r => r.Estado == estadoEnum);
+            //}
+
             if (!String.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
@@ -140,6 +138,73 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult DownloadAll(string? idEmpleado, int? estado)
+        {
+            IQueryable<Viatico> query = _context.Viaticos
+                .Include(v => v.IdEmpleadoNavigation);
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(v => new
+                {
+                    v.IdViatico,
+                    Empleado = v.IdEmpleadoNavigation.NombreCompleto,
+                    v.Descripcion,
+                    Fecha = v.Fecha.ToString("dd/MM/yyyy"),
+                    TotalGastos = v.TotalGastos.ToString("C"),
+                    AdelantoRecibido = v.AdelantoRecibido.ToString("C"),
+                    BalancePendiente = v.BalancePendiente.ToString("C"),
+                    Estado = v.Estado.ToString(),
+                    FechaAprobacion = v.FechaAprobacion.HasValue ? v.FechaAprobacion.Value.ToString("dd/MM/yyyy") : "",
+                    v.AprobadoPor,
+                    v.NotasAdicionales,
+                    Pagado = v.Pagado ? "Sí" : "No",
+                    FechaPago = v.FechaPago.HasValue ? v.FechaPago.Value.ToString("dd/MM/yyyy") : "",
+                    Activo = v.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron viáticos con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { idEmpleado, estado });
+            }
+
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "Viaticos.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "Viaticos");
+                worksheet.Columns().AdjustToContents();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
         // GET: Viatico/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -170,26 +235,62 @@ namespace PlanillaPM.Controllers
         // POST: Viatico/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdViatico,IdEmpleado,Descripcion,Fecha,TotalGastos,AdelantoRecibido,BalancePendiente,Estado,FechaAprobacion,AprobadoPor,NotasAdicionales,Pagado,FechaPago,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Viatico viatico)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(viatico, true);
+        //        _context.Add(viatico);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+        //    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", viatico.IdEmpleado);
+        //    return View(viatico);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdViatico,IdEmpleado,Descripcion,Fecha,TotalGastos,AdelantoRecibido,BalancePendiente,Estado,FechaAprobacion,AprobadoPor,NotasAdicionales,Pagado,FechaPago,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Viatico viatico)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(viatico, true);
-                _context.Add(viatico);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(viatico, true);
+                    _context.Add(viatico);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var message = string.Join(" | ", ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error de validación: " + message;
+                }
             }
-            else
+            catch (DbUpdateException ex)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error al guardar los datos en la base de datos. Detalle técnico: " + ex.InnerException?.Message ?? ex.Message;
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Ocurrió un error inesperado: " + ex.Message;
+            }
+
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", viatico.IdEmpleado);
             return View(viatico);
         }
+
 
         // GET: Viatico/Edit/5
         public async Task<IActionResult> Edit(int? id)

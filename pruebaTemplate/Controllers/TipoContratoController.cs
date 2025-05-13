@@ -49,11 +49,17 @@ namespace PlanillaPM.Controllers
             return View(data);
         }
 
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            // Obtener la lista de todos los tipos de contrato
-            var data = _context.TipoContratos
-                        .Select(tc => new
+            var query = _context.TipoContratos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(tc => EF.Functions.Like(tc.NombreTipoContrato, $"%{filter}%"));
+            }
+
+            var data = query
+                                .Select(tc => new
                         {
                             tc.IdTipoContrato,
                             NombreTipoContrato = tc.NombreTipoContrato,

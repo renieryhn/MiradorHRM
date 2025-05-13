@@ -58,13 +58,19 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
 
-            // Obtener los datos de DiaFestivo desde la base de datos
-            var data = _context.DiaFestivos
-                .Select(d => new
+            var query = _context.DiaFestivos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(d => d.NombreDiaFestivo.ToLower().Contains(filter.ToLower()));
+            }
+
+            var data = query
+                        .Select(d => new
                 {
                     d.IdDiaFestivo,
                     d.NombreDiaFestivo,

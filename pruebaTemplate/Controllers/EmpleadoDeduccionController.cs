@@ -132,6 +132,80 @@ namespace PlanillaPM.Controllers
             }
         }
 
+
+        [HttpGet]
+        public ActionResult DownloadAll(string? filter, string? idEmpleado, string? idDeduccion, int? estado)
+        {
+            IQueryable<EmpleadoDeduccion> query = _context.EmpleadoDeduccions
+                .Include(ed => ed.IdEmpleadoNavigation)
+                .Include(ed => ed.IdDeduccionNavigation);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdDeduccionNavigation.NombreDeduccion.ToLower().Contains(filter.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+
+            if (!string.IsNullOrEmpty(idDeduccion))
+            {
+                query = query.Where(r => r.IdDeduccion.ToString().Contains(idDeduccion));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                {
+                    query = query.Where(r => r.Activo == false);
+                }
+                else if (estado == 0)
+                {
+                    query = query.Where(r => r.Activo == true);
+                }
+            }
+
+            var data = query
+                .Select(ed => new
+                {
+                    ed.IdEmpleadoDeduccion,
+                    ed.IdEmpleado,
+                    EmpleadoNombre = ed.IdEmpleadoNavigation.NombreEmpleado,
+                    ed.IdDeduccion,
+                    DeduccionNombre = ed.IdDeduccionNavigation.NombreDeduccion,
+                    Tipo = ed.Tipo.ToString(),
+                    ed.Monto,
+                    ed.Formula,
+                    ed.Orden,
+                    Activo = ed.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros de deducciones de empleados con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, idDeduccion, estado });
+            }
+
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
+
+            string fileName = "EmpleadoDeduccions.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table, "Deducciones");
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
+
+
         // GET: EmpleadoDeduccion/Details/5
         public async Task<IActionResult> Details(int? id)
         {

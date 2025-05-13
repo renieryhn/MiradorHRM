@@ -49,12 +49,17 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             return View(data);
         }
-        public ActionResult Download()
+        public ActionResult Download(string? filter)
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            var query = _context.Deduccions.AsQueryable();
 
-            // Obtener los datos de Deduccion desde la base de datos
-            var data = _context.Deduccions
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(d => EF.Functions.Like(d.NombreDeduccion, $"%{filter}%"));
+            }
+
+            var data = query
+                .OrderBy(d => d.Orden)
                 .Select(d => new
                 {
                     d.IdDeduccion,
@@ -81,6 +86,7 @@ namespace PlanillaPM.Controllers
             }
 
             // Convertir la lista a DataTable
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
             string fileName = "Deducciones.xlsx";

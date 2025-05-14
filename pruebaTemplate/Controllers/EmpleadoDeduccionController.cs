@@ -89,48 +89,65 @@ namespace PlanillaPM.Controllers
             return View(data);
 
         }
-        public ActionResult Download()
+        [HttpGet]
+        public ActionResult Download(string? filter, string? idEmpleado, string? idDeduccion, int? estado)
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            IQueryable<EmpleadoDeduccion> query = _context.EmpleadoDeduccions
+                .Include(ed => ed.IdEmpleadoNavigation)
+                .Include(ed => ed.IdDeduccionNavigation);
 
-            // Obtener la lista de todas las deducciones de empleados
-            var data = _context.EmpleadoDeduccions
-                        .Select(ed => new
-                        {
-                            ed.IdEmpleadoDeduccion,
-                            ed.IdEmpleado,
-                            EmpleadoNombre = ed.IdEmpleadoNavigation.NombreEmpleado,
-                            ed.IdDeduccion,
-                            DeduccionNombre = ed.IdDeduccionNavigation.NombreDeduccion,
-                            Tipo = ed.Tipo.ToString(),
-                            ed.Monto,
-                            ed.Formula,
-                            ed.Orden,
-                            Activo = ed.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(ed => ed.IdDeduccionNavigation.NombreDeduccion.ToLower().Contains(filter.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(ed => ed.IdEmpleado.ToString().Contains(idEmpleado));
+            }
+            if (!string.IsNullOrEmpty(idDeduccion))
+            {
+                query = query.Where(ed => ed.IdDeduccion.ToString().Contains(idDeduccion));
+            }
 
-            // Verificar si la lista está vacía
+            if (estado.HasValue)
+            {
+                query = estado == 1
+                    ? query.Where(ed => !ed.Activo)
+                    : query.Where(ed => ed.Activo);
+            }
+
+            var data = query.Select(ed => new
+            {
+                ed.IdEmpleadoDeduccion,
+                ed.IdEmpleado,
+                EmpleadoNombre = ed.IdEmpleadoNavigation.NombreEmpleado,
+                ed.IdDeduccion,
+                DeduccionNombre = ed.IdDeduccionNavigation.NombreDeduccion,
+                Tipo = ed.Tipo.ToString(),
+                ed.Monto,
+                ed.Formula,
+                ed.Orden,
+                Activo = ed.Activo ? "Sí" : "No"
+            }).ToList();
+
             if (!data.Any())
             {
-                TempData["error"] = "No se encontraron registros de deducciones de empleados.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "No se encontraron registros de deducciones de empleados con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, idDeduccion, estado });
             }
 
-            DataTable table = converter.ToDataTable(data);
+            var table = new ListtoDataTableConverter().ToDataTable(data);
+            using var wb = new XLWorkbook();
+            wb.Worksheets.Add(table, "Empleado Deducciones");
 
-            string fileName = "EmpleadoDeduccions.xlsx";
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.Worksheets.Add(table);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
+            using var stream = new MemoryStream();
+            wb.SaveAs(stream);
+
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "EmpleadoDeduccions.xlsx");
         }
+
 
 
         [HttpGet]
@@ -227,7 +244,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoDeduccion/Create
-        public  IActionResult Create()
+        public  IActionResult Create(int? id, int? idEmpleado)
         {
             ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
                              .Cast<TipoEstado>()
@@ -264,61 +281,113 @@ namespace PlanillaPM.Controllers
             return Json(deduccion);
         }
 
-   
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion, int? id)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(empleadoDeduccion, true);
+        //        _context.Add(empleadoDeduccion);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+
+        //        if (id.HasValue)
+        //        {
+        //            if (id == 1)
+        //            {
+        //                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+        //            }
+        //            if (id == 2)
+        //            {
+        //                return RedirectToAction("Index");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+        //    ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion", empleadoDeduccion.IdDeduccion);
+        //    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoDeduccion.IdEmpleado);
+        //    // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+        //    if (id.HasValue)
+        //    {
+        //        if (id == 1)
+        //        {
+        //            return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
+        //        }
+        //        if (id == 2)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(empleadoDeduccion);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEmpleadoDeduccion,IdEmpleado,IdDeduccion,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoDeduccion empleadoDeduccion, int? id)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(empleadoDeduccion, true);
-                _context.Add(empleadoDeduccion);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                
-                if (id.HasValue)
+                // Validar si ya existe esa combinación
+                bool yaExiste = await _context.EmpleadoDeduccions
+                    .AnyAsync(d => d.IdEmpleado == empleadoDeduccion.IdEmpleado && d.IdDeduccion == empleadoDeduccion.IdDeduccion);
+
+                if (yaExiste)
                 {
+                    TempData["error"] = "Esta deducción ya ha sido asignada al empleado.";
+                    ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion", empleadoDeduccion.IdDeduccion);
+                    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoDeduccion.IdEmpleado);
+                    return View(empleadoDeduccion);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(empleadoDeduccion, true);
+                    _context.Add(empleadoDeduccion);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+
                     if (id == 1)
-                    {
                         return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
-                    }
                     if (id == 2)
-                    {
                         return RedirectToAction("Index");
-                    }
                 }
                 else
                 {
-                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                    return RedirectToAction("Index");
+                    var errores = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error: " + errores;
                 }
             }
-            else
+            catch (DbUpdateException)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error: ya existe esta deducción para el empleado.";
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Error inesperado: " + ex.Message;
+            }
+
+            // Cargar combos y retornar vista si algo falló
             ViewData["IdDeduccion"] = new SelectList(_context.Deduccions, "IdDeduccion", "NombreDeduccion", empleadoDeduccion.IdDeduccion);
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoDeduccion.IdEmpleado);
-            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
-            if (id.HasValue)
-            {
-                if (id == 1)
-                {
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoDeduccion.IdEmpleado}?tab=settings");
-                }
-                if (id == 2)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                return RedirectToAction("Index");
-            }
             return View(empleadoDeduccion);
         }
+
 
         // GET: EmpleadoDeduccion/Edit/5
         public async Task<IActionResult> Edit(int? id, string? numero)

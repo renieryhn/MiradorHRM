@@ -398,6 +398,7 @@
             // Si pasa la validación, mostrar la vista previa de la imagen
             previewImage(event);
         }     
+        
         function previewImage(event) {
             var input = event.target;
             var reader = new FileReader();
@@ -408,13 +409,7 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
-
-        // $(document).ready(function () {
-        //     var empleadoId = "@Model.IdEmpleado";
-        //     pasarIDConstancia(empleadoId);
-        // });
-
-
+    
         function pasarIDConstancia1(id) {
             $.ajax({
                 url: "/Empleado/PasarIDConstancia1?id=" + id,

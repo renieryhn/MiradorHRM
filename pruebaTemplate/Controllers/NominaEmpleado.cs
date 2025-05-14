@@ -29,6 +29,7 @@ using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using PdfSharp.Pdf.Filters;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using MiradorHRM.Models;
 
 namespace PlanillaPM.Controllers
 {
@@ -408,83 +409,163 @@ namespace PlanillaPM.Controllers
             return View(empleado);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> LoadIngreso(int id, string filter)
-        {
-            try
-            {
-                ViewBag.IdEmpleado = id;
-
-                var query = _context.EmpleadoIngresos.Where(e => e.IdEmpleado == id && e.Activo == true);
-                if (!string.IsNullOrEmpty(filter))
-                {
-                    query = query.Where(e => e.IdIngresoNavigation.NombreIngreso.Contains(filter));
-                }
-
-                var registros = await query.ToListAsync();
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                var IdIngresoNavigation = await _context.Ingresos.ToListAsync();
-                return PartialView("~/Views/EmpleadoIngreso/_EmpleadoIngresoIndex.cshtml", registros);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+      
 
         [HttpGet]
-        public async Task<IActionResult> LoadImpuesto(int id, string filter)
+        public async Task<IActionResult> LoadIngreso(int id, string filter, int pg = 1)
         {
-            try
+            const int pageSize = 10;
+
+            // Construir base de consulta
+            var baseQuery = _context.EmpleadoIngresos
+                .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                ViewBag.IdEmpleado = id;
-
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                var IdCargoNavigation = await _context.Cargos.ToListAsync();
-                var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
-                var IdImpuestoNavigation = await _context.Impuestos.ToListAsync();
-
-                var query = _context.EmpleadoImpuestos.Where(e => e.IdEmpleado == id && e.Activo == true);
-
-                if (!string.IsNullOrEmpty(filter))
-                {
-                    query = query.Where(e => e.IdEmpleadoNavigation.NombreCompleto.Contains(filter));
-                }
-
-                var registros = await query.ToListAsync();
-
-                return PartialView("~/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml", registros);
-
+                baseQuery = baseQuery.Where(e => e.IdIngresoNavigation.NombreIngreso.Contains(filter));
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            // Contar registros para paginación
+            int totalRegistros = await baseQuery.CountAsync();
+            var pager = new Pager(totalRegistros, pg, pageSize);
+            ViewBag.Pager = pager;
+
+            // Incluir relaciones y paginar
+            var registros = await baseQuery
+                .Include(e => e.IdIngresoNavigation)
+                .Include(e => e.IdEmpleadoNavigation)
+                .Skip((pg - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Mantener los filtros en ViewBag
+            ViewBag.Filter = filter;
+            ViewBag.CurrentIdEmpleado = id;
+            ViewBag.CurrentIdIngreso = null;
+            ViewBag.CurrentEstado = null;
+
+            return PartialView("~/Views/EmpleadoIngreso/_EmpleadoIngresoIndex.cshtml", registros);
         }
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> LoadImpuesto(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        var query = _context.EmpleadoImpuestos
+        //            .Include(e => e.IdImpuestoNavigation)
+        //            .Include(e => e.IdEmpleadoNavigation)
+        //            .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.IdImpuestoNavigation.NombreImpuesto.Contains(filter));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+
+        //        ViewBag.CurrentIdEmpleado = id;
+        //        ViewBag.Filter = filter;
+
+        //        return PartialView("~/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml", registros);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
         [HttpGet]
-        public async Task<IActionResult> LoadDeduccion(int id, string filter)
+        public async Task<IActionResult> LoadImpuesto(int id, string filter, int pg = 1)
         {
-            try
-            {
-                ViewBag.IdEmpleado = id;
-                var query = _context.EmpleadoDeduccions.Where(e => e.IdEmpleado == id && e.Activo == true);
-                if (!string.IsNullOrEmpty(filter))
-                {
-                    query = query.Where(e => e.IdDeduccionNavigation.NombreDeduccion.Contains(filter));
-                }
+            const int pageSize = 10;
 
-                var registros = await query.ToListAsync();
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                var IdDeduccionNavigation = await _context.Deduccions.ToListAsync();
-                return PartialView("~/Views/EmpleadoDeduccion/_EmpleadoDeduccionIndex.cshtml", registros);
-            }
-            catch (Exception)
+            var baseQuery = _context.EmpleadoImpuestos
+                .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                throw;
+                baseQuery = baseQuery.Where(e => e.IdImpuestoNavigation.NombreImpuesto.Contains(filter));
             }
+
+            int totalRegistros = await baseQuery.CountAsync();
+            var pager = new Pager(totalRegistros, pg, pageSize);
+            ViewBag.Pager = pager;
+
+            var registros = await baseQuery
+                .Include(e => e.IdImpuestoNavigation)
+                .Include(e => e.IdEmpleadoNavigation)
+                .Skip((pg - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentIdEmpleado = id;
+            ViewBag.Filter = filter;
+
+            return PartialView("~/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml", registros);
         }
-       
-       
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> LoadDeduccion(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        var query = _context.EmpleadoDeduccions
+        //            .Include(e => e.IdDeduccionNavigation)
+        //            .Include(e => e.IdEmpleadoNavigation)
+        //            .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.IdDeduccionNavigation.NombreDeduccion.Contains(filter));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+
+        //        ViewBag.CurrentIdEmpleado = id;
+        //        ViewBag.Filter = filter;
+
+        //        return PartialView("~/Views/EmpleadoDeduccion/_EmpleadoDeduccionIndex.cshtml", registros);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> LoadDeduccion(int id, string filter, int pg = 1)
+        {
+            const int pageSize = 10;
+
+            var baseQuery = _context.EmpleadoDeduccions
+                .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                baseQuery = baseQuery.Where(e => e.IdDeduccionNavigation.NombreDeduccion.Contains(filter));
+            }
+
+            int totalRegistros = await baseQuery.CountAsync();
+            var pager = new Pager(totalRegistros, pg, pageSize);
+            ViewBag.Pager = pager;
+
+            var registros = await baseQuery
+                .Include(e => e.IdDeduccionNavigation)
+                .Include(e => e.IdEmpleadoNavigation)
+                .Skip((pg - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentIdEmpleado = id;
+            ViewBag.Filter = filter;
+
+            return PartialView("~/Views/EmpleadoDeduccion/_EmpleadoDeduccionIndex.cshtml", registros);
+        }
+
+
+
     }
 }

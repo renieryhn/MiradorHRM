@@ -21,6 +21,7 @@
                 <div class="card-tools">
                 </div>
             </div>
+            <input type="hidden" id="hiddenEmpleadoId" value="@ViewBag.CurrentIdEmpleado" />
             <div class="card-body">
                 <div class="">
                     <div class="panel panel-default">
@@ -29,17 +30,22 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <form id="fSearch" method="post" asp-action="Index">
+                                            <form id="fSearch" method="get" asp-controller="EmpleadoImpuesto" asp-action="Index">
                                                 <div class="row">
                                                     <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                        <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
-                                                        <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                        <input type="text" id="filterInput" class="form-control" placeholder="Buscar por Impuesto..." value="@ViewBag.Filter">
+                                                        <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarImpuesto()">
+                                                            <i class="fa fa-search" style="color: white;"></i>
+                                                        </button>
                                                     </div>
                                                     <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                         <div class="btn-group btn-group-justified" role="group">
                                                             @* <a asp-controller="EmpleadoImpuesto" asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                            <a asp-controller="EmpleadoImpuesto" asp-action="Create" class="btn " asp-route-id="1" style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                            <a asp-controller="EmpleadoImpuesto" asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoImpuesto" asp-action="Create" class="btn " asp-route-id="1" asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado" style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                            <a asp-controller="EmpleadoImpuesto" asp-action="Download" class="btn " style="background-color: var(--blue);"
+                                                               asp-route-filter="@Convert.ToString(ViewBag.Filter)"
+                                                               asp-route-idEmpleado="@Convert.ToString(ViewBag.CurrentIdEmpleado)"
+                                                            ><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -171,3 +177,35 @@
     <br />
 </div>
 
+<script>
+
+    function paginarImpuesto(pagina) {
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+        var filtro = $('#filterInput').val();
+
+        $.get(`/NominaEmpleado/LoadImpuesto?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
+            $('#custom-tabs-two-messages').html(data);
+        });
+    }
+
+
+
+    function buscarImpuesto() {
+        var filter = $('#filterInput').val();
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+
+        if (!idEmpleado) {
+            toastr.warning('Empleado no identificado.');
+            return;
+        }
+
+        var url = `/NominaEmpleado/LoadImpuesto?id=${idEmpleado}&filter=${encodeURIComponent(filter)}&pg=1`;
+
+        $.get(url, function (data) {
+            $('#custom-tabs-two-messages').html(data);
+        }).fail(function () {
+            toastr.error('Error al cargar los impuestos filtrados.');
+        });
+    }
+
+</script>

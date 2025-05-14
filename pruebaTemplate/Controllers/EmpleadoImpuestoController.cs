@@ -32,10 +32,10 @@ namespace PlanillaPM.Controllers
         {
             IQueryable<EmpleadoImpuesto> query = _context.EmpleadoImpuestos;
 
-            //if (!String.IsNullOrEmpty(filter))
-            //{
-            //    query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
-            //}
+            if (!String.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
+            }
             if (!String.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(r => r.IdEmpleado.ToString().Contains(idEmpleado));
@@ -97,50 +97,59 @@ namespace PlanillaPM.Controllers
 
         }
 
-        public ActionResult Download()
+        public IActionResult Download(string? filter, string? idEmpleado, string? idImpuesto, int? estado)
         {
-            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            IQueryable<EmpleadoImpuesto> query = _context.EmpleadoImpuestos
+                .Include(e => e.IdEmpleadoNavigation)
+                .Include(e => e.IdImpuestoNavigation);
 
-            // Obtener los datos de EmpleadoImpuesto desde la base de datos
-            var data = _context.EmpleadoImpuestos
-                .Select(e => new
-                {
-                    e.IdEmpleadoImpuesto,
-                    e.IdImpuesto,
-                    ImpuestoNombre = e.IdImpuestoNavigation.NombreImpuesto, 
-                    e.IdEmpleado,
-                    EmpleadoNombre = e.IdEmpleadoNavigation.NombreCompleto, 
-                    Exento = e.Excento ? "Sí" : "No",
-                    e.Orden,
-                    Activo = e.Activo ? "Sí" : "No"
-                   
-                })
-                .ToList();
+            if (!string.IsNullOrEmpty(idEmpleado))
+            {
+                query = query.Where(e => e.IdEmpleado.ToString().Contains(idEmpleado));
+            }
 
-            // Verificar si la lista está vacía
+            if (!string.IsNullOrEmpty(idImpuesto))
+            {
+                query = query.Where(e => e.IdImpuesto.ToString().Contains(idImpuesto));
+            }
+
+            if (estado.HasValue)
+            {
+                if (estado == 1)
+                    query = query.Where(e => !e.Activo);
+                else if (estado == 0)
+                    query = query.Where(e => e.Activo);
+            }
+
+            var data = query.Select(e => new
+            {
+                e.IdEmpleadoImpuesto,
+                e.IdImpuesto,
+                ImpuestoNombre = e.IdImpuestoNavigation.NombreImpuesto,
+                e.IdEmpleado,
+                EmpleadoNombre = e.IdEmpleadoNavigation.NombreCompleto,
+                Exento = e.Excento ? "Sí" : "No",
+                e.Orden,
+                Activo = e.Activo ? "Sí" : "No"
+            }).ToList();
+
             if (!data.Any())
             {
-                TempData["error"] = "No se encontraron registros de empleado impuesto.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "No se encontraron registros de empleado impuesto con los filtros aplicados.";
+                return RedirectToAction(nameof(Index), new { filter, idEmpleado, idImpuesto, estado });
             }
 
-            // Convertir la lista a DataTable
-            DataTable table = converter.ToDataTable(data);
+            DataTable table = new ListtoDataTableConverter().ToDataTable(data);
+            using var wb = new XLWorkbook();
+            wb.Worksheets.Add(table, "Empleado Impuestos");
 
-            string fileName = "EmpleadoImpuestos.xlsx";
-
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                // Añadir la tabla al workbook con un nombre significativo para la hoja
-                wb.Worksheets.Add(table, "Empleado Impuestos");
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                }
-            }
+            using var stream = new MemoryStream();
+            wb.SaveAs(stream);
+            return File(stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "EmpleadoImpuestos.xlsx");
         }
+
 
         [HttpGet]
         public ActionResult DownloadAll(string? filter, string? idEmpleado, string? idImpuesto, int? estado)
@@ -234,7 +243,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoImpuesto/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto");
@@ -264,61 +273,116 @@ namespace PlanillaPM.Controllers
         // POST: EmpleadoImpuesto/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto, int? id)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(empleadoImpuesto, true);
+        //        _context.Add(empleadoImpuesto);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+
+        //        if (id.HasValue)
+        //        {
+        //            if (id == 1)
+        //            {
+        //                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+        //            }
+        //            if (id == 2)
+        //            {
+        //                return RedirectToAction("Index");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+        //    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
+        //    ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
+
+        //    // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+        //    if (id.HasValue)
+        //    {
+        //        if (id == 1)
+        //        {
+        //            return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
+        //        }
+        //        if (id == 2)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(empleadoImpuesto);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEmpleadoImpuesto,IdImpuesto,IdEmpleado,Excento,Orden,FechaCreacion,Activo,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoImpuesto empleadoImpuesto, int? id)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(empleadoImpuesto, true);
-                _context.Add(empleadoImpuesto);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                               
-                if (id.HasValue)
+                // Verifica si ya existe esa combinación
+                bool yaExiste = await _context.EmpleadoImpuestos
+                    .AnyAsync(e => e.IdEmpleado == empleadoImpuesto.IdEmpleado && e.IdImpuesto == empleadoImpuesto.IdImpuesto);
+
+                if (yaExiste)
                 {
+                    TempData["error"] = "Ya existe un registro con este empleado e impuesto.";
+                    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
+                    ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
+                    return View(empleadoImpuesto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(empleadoImpuesto, true);
+                    _context.Add(empleadoImpuesto);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+
                     if (id == 1)
-                    {
                         return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
-                    }
+
                     if (id == 2)
-                    {
                         return RedirectToAction("Index");
-                    }
                 }
                 else
                 {
-                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                    return RedirectToAction("Index");
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error: " + message;
                 }
             }
-            else
+            catch (DbUpdateException ex)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error al guardar los datos: posible clave duplicada u otro problema de base de datos.";
+                // Opcional: log ex.InnerException?.Message para más detalles
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Ocurrió un error inesperado. " + ex.Message;
+            }
+
+            // En caso de error, volver a cargar combos y mostrar la vista
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoImpuesto.IdEmpleado);
             ViewData["IdImpuesto"] = new SelectList(_context.Impuestos, "IdImpuesto", "NombreImpuesto", empleadoImpuesto.IdImpuesto);
-            
-            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
-            if (id.HasValue)
-            {
-                if (id == 1)
-                {
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoImpuesto.IdEmpleado}?tab=messages");
-                }
-                if (id == 2)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                return RedirectToAction("Index");
-            }
+
             return View(empleadoImpuesto);
         }
+
 
         // GET: EmpleadoImpuesto/Edit/5
         public async Task<IActionResult> Edit(int? id, string? numero)

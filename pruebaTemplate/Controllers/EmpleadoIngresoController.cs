@@ -87,6 +87,9 @@ namespace PlanillaPM.Controllers
             var ingresos = await _context.Ingresos.ToListAsync();
             ViewBag.IdIngreso = new SelectList(ingresos, "IdIngreso", "TipoIngreso");
 
+
+            
+
             return View(data);
 
         }
@@ -254,7 +257,7 @@ namespace PlanillaPM.Controllers
 
 
         // GET: EmpleadoIngreso/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
                              .Cast<TipoEstado>()
@@ -295,64 +298,116 @@ namespace PlanillaPM.Controllers
         // POST: EmpleadoIngreso/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso, int? id)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(empleadoIngreso, true);
+        //        _context.Add(empleadoIngreso);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+
+        //        if (id.HasValue)
+        //        {
+        //            if (id == 1)
+        //            {
+        //                return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+        //            }
+        //            if (id == 2)
+        //            {
+        //                return RedirectToAction("Index");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+
+        //    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
+        //    ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
+
+        //    // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
+        //    if (id.HasValue)
+        //    {
+        //        if (id == 1)
+        //        {
+        //            return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
+        //        }
+        //        if (id == 2)
+        //        {
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TempData["error"] = "Error: No se encontró el valor de la dirección.";
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    // Devolver una vista en caso de que todo falle (aunque no debería alcanzarse este punto)
+        //    return View(empleadoIngreso);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEmpleadoIngreso,IdIngreso,IdEmpleado,Tipo,Monto,Formula,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] EmpleadoIngreso empleadoIngreso, int? id)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(empleadoIngreso, true);
-                _context.Add(empleadoIngreso);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
+                // Validación de duplicados
+                bool yaExiste = await _context.EmpleadoIngresos
+                    .AnyAsync(e => e.IdEmpleado == empleadoIngreso.IdEmpleado && e.IdIngreso == empleadoIngreso.IdIngreso);
 
-                if (id.HasValue)
+                if (yaExiste)
                 {
+                    TempData["error"] = "Este ingreso ya ha sido asignado al empleado.";
+                    ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
+                    ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
+                    return View(empleadoIngreso);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(empleadoIngreso, true);
+                    _context.Add(empleadoIngreso);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+
                     if (id == 1)
-                    {
                         return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
-                    }
                     if (id == 2)
-                    {
                         return RedirectToAction("Index");
-                    }
                 }
                 else
                 {
-                    TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                    return RedirectToAction("Index");
+                    var errores = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error: " + errores;
                 }
             }
-            else
+            catch (DbUpdateException)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error al guardar: posible clave duplicada u otro problema con los datos.";
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Ocurrió un error inesperado: " + ex.Message;
             }
 
+            // Si llegamos aquí es porque algo falló
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
-
-            // Si el modelo no es válido o si no se encuentra el valor de dirección, siempre redirigir.
-            if (id.HasValue)
-            {
-                if (id == 1)
-                {
-                    return Redirect($"/NominaEmpleado/IDIEmpleado/{empleadoIngreso.IdEmpleado}?tab=profile");
-                }
-                if (id == 2)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                TempData["error"] = "Error: No se encontró el valor de la dirección.";
-                return RedirectToAction("Index");
-            }
-
-            // Devolver una vista en caso de que todo falle (aunque no debería alcanzarse este punto)
             return View(empleadoIngreso);
         }
+
 
         // GET: EmpleadoIngreso/Edit/5
         public async Task<IActionResult> Edit(int? id, string? numero)

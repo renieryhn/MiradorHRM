@@ -38,7 +38,7 @@
                                                 <div class="row">
                                                     <div class="col-sm-6 btn-group btn-group-justified" role="group">
                                                      
-                                                        <input type="text" id="filterInput" class="form-control" placeholder="Buscar por Ingreso..." value="@ViewBag.Filter">
+                                                        <input type="text" id="filterInputIngreso" class="form-control" placeholder="Buscar por Ingreso..." value="@ViewBag.Filter">
                                                         <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarIngreso()">
                                                             <i class="fa fa-search" style="color: white;"></i>
                                                         </button>
@@ -198,7 +198,7 @@
 
     function paginarIngreso(pagina) {
         var idEmpleado = $('#hiddenEmpleadoId').val();
-        var filtro = $('#filterInput').val();
+        var filtro = $('#filterInputIngreso').val();
 
         $.get(`/NominaEmpleado/LoadIngreso?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
             $('#custom-tabs-two-profile').html(data);
@@ -207,7 +207,7 @@
 
 
     function buscarIngreso() {
-        var filter = $('#filterInput').val();
+        var filter = $('#filterInputIngreso').val();
         var idEmpleado = '@ViewBag.CurrentIdEmpleado'; // este debe venir del controller
 
         if (!idEmpleado) {

@@ -33,7 +33,7 @@
                                             <form id="fSearch" method="get" asp-controller="EmpleadoDeduccion" asp-action="Index">
                                                 <div class="row">
                                                     <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                        <input type="text" id="filterInput" class="form-control" placeholder="Buscar por deduccion..." value="@ViewBag.Filter">
+                                                        <input type="text" id="filterInputDeduccion" class="form-control" placeholder="Buscar por deduccion..." value="@ViewBag.Filter">
                                                         <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarDeduccion()">
                                                             <i class="fa fa-search" style="color: white;"></i>
                                                         </button>
@@ -186,7 +186,7 @@
 
     function paginarDeduccion(pagina) {
         var idEmpleado = $('#hiddenEmpleadoId').val();
-        var filtro = $('#filterInput').val();
+        var filtro = $('#filterInputDeduccion').val();
 
         $.get(`/NominaEmpleado/LoadDeduccion?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
             $('#custom-tabs-two-settings').html(data);
@@ -195,7 +195,7 @@
 
 
     function buscarDeduccion() {
-        var filter = $('#filterInput').val();
+        var filter = $('#filterInputDeduccion').val();
         var idEmpleado = '@ViewBag.CurrentIdEmpleado'; // este debe venir del controller
 
         if (!idEmpleado) {

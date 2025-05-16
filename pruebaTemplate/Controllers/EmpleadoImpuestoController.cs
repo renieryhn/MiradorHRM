@@ -103,6 +103,11 @@ namespace PlanillaPM.Controllers
                 .Include(e => e.IdEmpleadoNavigation)
                 .Include(e => e.IdImpuestoNavigation);
 
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.IdImpuestoNavigation.NombreImpuesto.ToLower().Contains(filter.ToLower()));
+            }
             if (!string.IsNullOrEmpty(idEmpleado))
             {
                 query = query.Where(e => e.IdEmpleado.ToString().Contains(idEmpleado));

@@ -23,6 +23,7 @@
                        
                     </div>
                 </div>
+                <input type="hidden" id="hiddenEmpleadoId" value="@ViewBag.CurrentIdEmpleado" />
                 <div class="card-body">
                     <div class="row">
                         <div class="panel panel-default">
@@ -31,18 +32,28 @@
                                     <div class="row ">
                                         <div class="col-sm-9 pl-4">
                                             <div class="form-group">
-                                                <form method="get">
+                                                <form method="get" asp-controller="EmpleadoContacto" asp-action="Index">
                                                 <div id="fSearch">
                                                     <div class="row">
                                                         <div class="col-sm-4 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombreContacto" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
-                                                            <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadContactos','inNombreContacto');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            @* <input type="text" style="width: 300px;" id="inNombreContacto" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
+                                                            <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadContactos','inNombreContacto');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button> *@
+                                                                <input type="text" id="filterInputContacto" class="form-control" placeholder="Buscar por nombre..." value="@ViewBag.Filter">
+                                                                <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarContacto()">
+                                                                    <i class="fa fa-search" style="color: white;"></i>
+                                                                </button>
+
                                                         </div>
                                                         <div class="col-sm-3 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-controller="EmpleadoContacto" asp-action="_EmpleadoContactoIndex" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoContacto" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" asp-route-filter="@ViewBag.Filter" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                    <a asp-controller="EmpleadoContacto" asp-action="Create" asp-route-id="1" asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-controller="EmpleadoContacto" asp-action="Downloadetalle"
+                                                                       class="btn" style="background-color: var(--blue);"
+                                                                       asp-route-id="@ViewBag.CurrentIdEmpleado"
+                                                                       asp-route-filter="@ViewBag.Filter">
+                                                                        <i class="fa fa-file-excel-o" style="color: white;"></i>
+                                                                    </a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -133,75 +144,104 @@
                        
                     </div>
                 </div>  
+                <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                </div>
             </div>
         </div>
     </div>
     <br />
 </div>
 
+<script>
+    function buscarContacto() {
+        console.log("Ejecutando buscarContacto()");
+        var filter = $('#filterInputContacto').val();
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+
+        if (!idEmpleado) {
+            toastr.warning('Empleado no identificado.');
+            return;
+        }
+
+        var url = `/Empleado/LoadContactos?id=${idEmpleado}&filter=${encodeURIComponent(filter)}`;
+        $.get(url, function (data) {
+            $('#custom-tabs-two-profile').html(data);
+        }).fail(function () {
+            toastr.error('Error al cargar los contactos filtrados.');
+        });
+    }
+
+    function paginarContacto(pagina) {
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+        var filtro = $('#filterInputContacto').val();
+
+        $.get(`/Empleado/LoadContactos?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
+            $('#custom-tabs-two-profile').html(data);
+        });
+    }
+
+    ///////////////////
+
+    // $(document).ready(function () {
+    //     var url = $("#liMenuDinamico");
+    //     var $table = $('#table');
+    //     $.ajax({
+    //         url: "Empleado/ObtenerMenuDinamico",
+    //         type: "GET",
+    //         success: function (data) {
+    //             $("#liMenuDinamico").html(data);
+    //         },
+    //         error: function () {
+    //             console.error("Error al cargar el menú dinámico");
+    //         }
+    //     });
+
+    //     cargarEmpleados();
+    // });
+
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     var mensaje = '@Html.Raw(TempData["mensaje"])';
+    //     if (mensaje) {
+    //         toastr.success(mensaje);
+    //     }
+
+    //     var error = '@Html.Raw(TempData["Error"])';
+    //     if (error) {
+    //         toastr.error(error);
+    //     }}
+
+
+
+    // });
+
+    // function cargarEmpleados() {
+    //     $.ajax({
+    //         url: '/EmpleadoContacto/Filtros', // URL del método Filtros en el controlador EmpleadoContactoController
+    //         type: 'GET',
+    //         success: function (data) {
+    //             // Aquí manejas la respuesta del servidor, que contendrá la lista de empleados
+    //             // Actualiza las opciones del select con los datos recibidos
+    //             $.each(data, function (index, empleado) {
+    //                 $('#IdEmpleado').append($('<option>', {
+    //                     value: empleado.value,
+    //                     text: empleado.text
+    //                 }));
+    //             });
+    //         },
+    //         error: function (xhr, status, error) {
+    //             // Maneja cualquier error que ocurra durante la solicitud AJAX
+    //             console.error('Error al cargar los empleados:', error);
+    //         }
+    //     });
+    // }
+
+</script>
+
+
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-
-
-            $(document).ready(function () {
-                var url = $("#liMenuDinamico");
-                var $table = $('#table');
-                $.ajax({
-                    url: "Empleado/ObtenerMenuDinamico",
-                    type: "GET",
-                    success: function (data) {
-                        $("#liMenuDinamico").html(data);
-                    },
-                    error: function () {
-                        console.error("Error al cargar el menú dinámico");
-                    }
-                });
-
-                cargarEmpleados();
-            });
-
-           
-
-
-            document.addEventListener('DOMContentLoaded', function () {
-                var mensaje = '@Html.Raw(TempData["mensaje"])';
-                if (mensaje) {
-                    toastr.success(mensaje);
-                }
-
-                var error = '@Html.Raw(TempData["Error"])';
-                if (error) {
-                    toastr.error(error);
-                }}
-
-                      
-
-            });
-
-            function cargarEmpleados() {
-                $.ajax({
-                    url: '/EmpleadoContacto/Filtros', // URL del método Filtros en el controlador EmpleadoContactoController
-                    type: 'GET',
-                    success: function (data) {
-                        // Aquí manejas la respuesta del servidor, que contendrá la lista de empleados
-                        // Actualiza las opciones del select con los datos recibidos
-                        $.each(data, function (index, empleado) {
-                            $('#IdEmpleado').append($('<option>', {
-                                value: empleado.value,
-                                text: empleado.text
-                            }));
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        // Maneja cualquier error que ocurra durante la solicitud AJAX
-                        console.error('Error al cargar los empleados:', error);
-                    }
-                });
-            }
-
-        </script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");       
     }
 }

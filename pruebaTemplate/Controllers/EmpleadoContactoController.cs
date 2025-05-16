@@ -137,47 +137,58 @@ namespace PlanillaPM.Controllers
             }
         }
 
+        public ActionResult Downloadetalle(int id, string? filter)
+        {
+            var query = _context.EmpleadoContactos
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Where(ec => ec.IdEmpleado == id)
+                .AsQueryable();
 
-        //[HttpGet]
-        //public ActionResult Download(int id)
-        //{
-        //    // Filtrar los contactos de empleado por el id recibido
-        //    var data = _context.EmpleadoContactos
-        //                .Where(ec => ec.IdEmpleado == id)
-        //                .Select(ec => new
-        //                {
-        //                    ec.IdContactoEmergencia,
-        //                    ec.NombreContacto,
-        //                    ec.Relacion,
-        //                    ec.Celular,
-        //                    TelefonoFijo = ec.TelefonoFijo ?? "N/A", 
-        //                    Activo = ec.Activo ? "Sí" : "No"
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(ec =>
+                    EF.Functions.Like(ec.NombreContacto, $"%{filter}%") ||
+                    EF.Functions.Like(ec.Relacion, $"%{filter}%"));
+            }
 
-        //                })
-        //                .ToList();        
+            var data = query.Select(ec => new
+            {
+                ec.IdContactoEmergencia,
+                Empleado = ec.IdEmpleadoNavigation.NombreCompleto,
+                ec.NombreContacto,
+                ec.Relacion,
+                ec.Celular,
+                TelefonoFijo = ec.TelefonoFijo ?? "N/A",
+                Activo = ec.Activo ? "Sí" : "No"
+            }).ToList();
 
-        //    // Convertir la lista de contactos en una tabla de datos
-        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
-        //    DataTable table = converter.ToDataTable(data);
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron registros para exportar.";
+                return RedirectToAction(nameof(Index));
+            }
 
-        //    // Nombre del archivo de Excel
-        //    string fileName = $"EmpleadoContacto_{id}.xlsx";
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+            DataTable table = converter.ToDataTable(data);
 
-        //    // Crear el archivo de Excel y guardarlo en una secuencia de memoria
-        //    using (XLWorkbook wb = new XLWorkbook())
-        //    {
-        //        var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
-        //        worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+            string fileName = $"ContactosEmpleado_{id}.xlsx";
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var worksheet = wb.Worksheets.Add(table, "ContactosEmergencia");
+                worksheet.Columns().AdjustToContents();
 
-        //        using (MemoryStream stream = new MemoryStream())
-        //        {
-        //            wb.SaveAs(stream);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
+                }
+            }
+        }
 
-        //            // Devolver el archivo como una descarga de archivo Excel
-        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-        //        }
-        //    }
-        //}
+
+
 
 
         [HttpGet]
@@ -325,10 +336,11 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContacto/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
 
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
+
             return View();
         }
 

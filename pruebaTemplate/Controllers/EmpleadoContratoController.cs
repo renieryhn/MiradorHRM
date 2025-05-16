@@ -88,53 +88,100 @@ namespace PlanillaPM.Controllers
         }
 
 
+        //[HttpGet]
+        //public ActionResult Download(int id)
+        //{
+        //    // Filtrar los contratos de empleado por el id recibido
+        //    var data = _context.EmpleadoContratos
+        //                .Where(ec => ec.IdEmpleado == id)
+        //                .Select(ec => new
+        //                {
+        //                    ec.IdEmpleadoContrato,
+        //                    ec.CodigoContrato,
+        //                    TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato, // Asumiendo que tienes un campo para el nombre del tipo de contrato
+        //                    Cargo = ec.IdCargoNavigation.NombreCargo, // Asumiendo que tienes un campo para el nombre del cargo
+        //                    Estado = ec.Estado.ToString(),
+        //                    VigenciaMeses = ec.VigenciaMeses,
+        //                    FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
+        //                    FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
+        //                    Salario = ec.Salario.ToString("C"),
+        //                    Descripcion = ec.Descripcion ?? "N/A",
+        //                    Activo = ec.Activo ? "Sí" : "No"
+
+        //                })
+        //                .ToList();
+
+
+
+        //    // Convertir la lista de contratos en una tabla de datos
+        //    ListtoDataTableConverter converter = new ListtoDataTableConverter();
+        //    DataTable table = converter.ToDataTable(data);
+
+        //    // Nombre del archivo de Excel
+        //    string fileName = $"EmpleadoContrato_{id}.xlsx";
+
+        //    // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        var worksheet = wb.Worksheets.Add(table, "ContratosEmpleado");
+        //        worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+
+        //        using (MemoryStream stream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(stream);
+
+        //            // Devolver el archivo como una descarga de archivo Excel
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //        }
+        //    }
+        //}     
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
-            // Filtrar los contratos de empleado por el id recibido
-            var data = _context.EmpleadoContratos
-                        .Where(ec => ec.IdEmpleado == id)
-                        .Select(ec => new
-                        {
-                            ec.IdEmpleadoContrato,
-                            ec.CodigoContrato,
-                            TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato, // Asumiendo que tienes un campo para el nombre del tipo de contrato
-                            Cargo = ec.IdCargoNavigation.NombreCargo, // Asumiendo que tienes un campo para el nombre del cargo
-                            Estado = ec.Estado.ToString(),
-                            VigenciaMeses = ec.VigenciaMeses,
-                            FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
-                            FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
-                            Salario = ec.Salario.ToString("C"),
-                            Descripcion = ec.Descripcion ?? "N/A",
-                            Activo = ec.Activo ? "Sí" : "No"
-                           
-                        })
-                        .ToList();
+            var query = _context.EmpleadoContratos
+                .Where(ec => ec.IdEmpleado == id);
 
-          
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(ec =>
+                    ec.IdTipoContratoNavigation.NombreTipoContrato.Contains(filter) ||
+                    ec.IdCargoNavigation.NombreCargo.Contains(filter));
+            }
 
-            // Convertir la lista de contratos en una tabla de datos
+            var data = query.Select(ec => new
+            {
+                ec.IdEmpleadoContrato,
+                ec.CodigoContrato,
+                TipoContrato = ec.IdTipoContratoNavigation.NombreTipoContrato,
+                Cargo = ec.IdCargoNavigation.NombreCargo,
+                Estado = ec.Estado.ToString(),
+                VigenciaMeses = ec.VigenciaMeses,
+                FechaInicio = ec.FechaInicio.ToString("yyyy-MM-dd"),
+                FechaFin = ec.FechaFin.ToString("yyyy-MM-dd"),
+                Salario = ec.Salario.ToString("C"),
+                Descripcion = ec.Descripcion ?? "N/A",
+                Activo = ec.Activo ? "Sí" : "No"
+            }).ToList();
+
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = $"EmpleadoContrato_{id}.xlsx";
-
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "ContratosEmpleado");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
-        }     
+        }
+
 
         [HttpGet]
         public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
@@ -233,7 +280,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoContrato/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewBag.EstadoContrato = Enum.GetValues(typeof(EstadoContrato));
             ViewData["IdCargo"] = new SelectList(_context.Cargos, "IdCargo", "NombreCargo");

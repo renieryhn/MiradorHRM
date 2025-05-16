@@ -448,34 +448,6 @@ namespace PlanillaPM.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> LoadImpuesto(int id, string filter)
-        //{
-        //    try
-        //    {
-        //        var query = _context.EmpleadoImpuestos
-        //            .Include(e => e.IdImpuestoNavigation)
-        //            .Include(e => e.IdEmpleadoNavigation)
-        //            .Where(e => e.IdEmpleado == id && e.Activo == true);
-
-        //        if (!string.IsNullOrEmpty(filter))
-        //        {
-        //            query = query.Where(e => e.IdImpuestoNavigation.NombreImpuesto.Contains(filter));
-        //        }
-
-        //        var registros = await query.ToListAsync();
-
-        //        ViewBag.CurrentIdEmpleado = id;
-        //        ViewBag.Filter = filter;
-
-        //        return PartialView("~/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml", registros);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
         [HttpGet]
         public async Task<IActionResult> LoadImpuesto(int id, string filter, int pg = 1)
         {
@@ -505,35 +477,7 @@ namespace PlanillaPM.Controllers
 
             return PartialView("~/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml", registros);
         }
-
-
-        //[HttpGet]
-        //public async Task<IActionResult> LoadDeduccion(int id, string filter)
-        //{
-        //    try
-        //    {
-        //        var query = _context.EmpleadoDeduccions
-        //            .Include(e => e.IdDeduccionNavigation)
-        //            .Include(e => e.IdEmpleadoNavigation)
-        //            .Where(e => e.IdEmpleado == id && e.Activo == true);
-
-        //        if (!string.IsNullOrEmpty(filter))
-        //        {
-        //            query = query.Where(e => e.IdDeduccionNavigation.NombreDeduccion.Contains(filter));
-        //        }
-
-        //        var registros = await query.ToListAsync();
-
-        //        ViewBag.CurrentIdEmpleado = id;
-        //        ViewBag.Filter = filter;
-
-        //        return PartialView("~/Views/EmpleadoDeduccion/_EmpleadoDeduccionIndex.cshtml", registros);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+  
 
         [HttpGet]
         public async Task<IActionResult> LoadDeduccion(int id, string filter, int pg = 1)

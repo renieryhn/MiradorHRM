@@ -537,12 +537,15 @@
             success: function (data) {
                 if (tab === 'custom-tabs-two-profile-tab') {
                     $('#custom-tabs-two-profile').html(data);
+                    inicializarIngreso();
                 }
                 else if (tab === 'custom-tabs-two-messages-tab') {
                     $('#custom-tabs-two-messages').html(data);
+                    inicializarIngreso();
                 }
                 else if (tab === 'custom-tabs-two-settings-tab') {
                     $('#custom-tabs-two-settings').html(data);
+                    inicializarIngreso();
                 }
                 
 

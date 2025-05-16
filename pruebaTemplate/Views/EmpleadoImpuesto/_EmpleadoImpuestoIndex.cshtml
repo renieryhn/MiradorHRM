@@ -33,7 +33,7 @@
                                             <form id="fSearch" method="get" asp-controller="EmpleadoImpuesto" asp-action="Index">
                                                 <div class="row">
                                                     <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                        <input type="text" id="filterInput" class="form-control" placeholder="Buscar por Impuesto..." value="@ViewBag.Filter">
+                                                        <input type="text" id="filterInputImpuesto" class="form-control" placeholder="Buscar por Impuesto..." value="@ViewBag.Filter">
                                                         <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarImpuesto()">
                                                             <i class="fa fa-search" style="color: white;"></i>
                                                         </button>
@@ -181,7 +181,7 @@
 
     function paginarImpuesto(pagina) {
         var idEmpleado = $('#hiddenEmpleadoId').val();
-        var filtro = $('#filterInput').val();
+        var filtro = $('#filterInputImpuesto').val();
 
         $.get(`/NominaEmpleado/LoadImpuesto?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
             $('#custom-tabs-two-messages').html(data);
@@ -191,7 +191,7 @@
 
 
     function buscarImpuesto() {
-        var filter = $('#filterInput').val();
+        var filter = $('#filterInputImpuesto').val();
         var idEmpleado = $('#hiddenEmpleadoId').val();
 
         if (!idEmpleado) {

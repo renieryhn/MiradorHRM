@@ -80,42 +80,43 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
-            // Filtrar las habilidades del empleado por el id recibido
-            var data = _context.EmpleadoHabilidads
-                        .Where(h => h.IdEmpleado == id)
-                        .Select(h => new
-                        {
-                            h.IdEmpleadoHabilidad,
-                            Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
-                            h.Habilidad,
-                            Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value.ToString() + "" : "N/A",
-                            h.Comentarios,
-                            Activo = h.Activo ? "Sí" : "No"
-                            
-                        })
-                        .ToList();
+            var query = _context.EmpleadoHabilidads
+                .Include(h => h.IdEmpleadoNavigation)
+                .Where(h => h.IdEmpleado == id);
 
-            // Verificar si la lista está vacía
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(h => h.Habilidad.ToLower().Contains(filter.ToLower()));
+            }            
+
+            var data = query.Select(h => new
+            {
+                h.IdEmpleadoHabilidad,
+                Empleado = h.IdEmpleadoNavigation.NombreEmpleado + " " + h.IdEmpleadoNavigation.ApellidoEmpleado,
+                h.Habilidad,
+                Experiencia = h.ExperienciaYears.HasValue ? h.ExperienciaYears.Value.ToString() + "" : "N/A",
+                h.Comentarios,
+                Activo = h.Activo ? "Sí" : "No"
+            }).ToList();
+
             if (!data.Any())
             {
                 TempData["error"] = "No se encontraron Registros.";
-              
+                return RedirectToAction("Index"); // o algún mensaje de retorno según tu lógica
             }
 
-            // Convertir la lista en una tabla de datos
+            // Convertir la lista a DataTable
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = $"EmpleadoHabilidad_{id}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Habilidades");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -124,6 +125,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
 
         [HttpGet]
@@ -214,7 +216,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoHabilidad/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();

@@ -369,9 +369,28 @@ namespace PlanillaPM.Controllers
 
                 if (yaExiste)
                 {
-                    TempData["error"] = "Este ingreso ya ha sido asignado al empleado.";
+                    var empleado = await _context.Empleados
+        .Where(e => e.IdEmpleado == empleadoIngreso.IdEmpleado)
+        .Select(e => e.NombreCompleto)
+        .FirstOrDefaultAsync();
+
+                    var ingreso = await _context.Ingresos
+                        .Where(i => i.IdIngreso == empleadoIngreso.IdIngreso)
+                        .Select(i => i.NombreIngreso)
+                        .FirstOrDefaultAsync();
+
+                    TempData["error"] = $"El ingreso \"{ingreso}\" ya ha sido asignado previamente al empleado {empleado}.";
+
+                    //TempData["error"] = "Este ingreso ya ha sido asignado al empleado.";
                     ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
                     ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
+                    ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
+                             .Cast<TipoEstado>()
+                             .Select(e => new SelectListItem
+                             {
+                                 Value = ((int)e).ToString(),
+                                 Text = e.ToString()
+                             }).ToList();
                     return View(empleadoIngreso);
                 }
 

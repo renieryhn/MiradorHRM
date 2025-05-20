@@ -1123,75 +1123,233 @@ namespace PlanillaPM.Controllers
         }
 
 
+        //[HttpGet]
+        //public async Task<IActionResult> LoadHabilidad(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        ViewBag.IdEmpleado = id;
+
+        //        var query = _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id && e.Activo == true);
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.Habilidad.Contains(filter));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+        //        var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+        //        return PartialView("~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml", registros);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> LoadHabilidad(int id, string filter)
+        public async Task<IActionResult> LoadHabilidad(int id, string filter, int pg = 1)
         {
+            const int pageSize = 10;
+
             try
             {
                 ViewBag.IdEmpleado = id;
 
-                var query = _context.EmpleadoHabilidads.Where(e => e.IdEmpleado == id && e.Activo == true);
+                var baseQuery = _context.EmpleadoHabilidads
+                    .Include(e => e.IdEmpleadoNavigation)
+                    .Where(e => e.IdEmpleado == id && e.Activo == true);
+
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    query = query.Where(e => e.Habilidad.Contains(filter));
+                    baseQuery = baseQuery.Where(e => e.Habilidad.Contains(filter));
                 }
 
-                var registros = await query.ToListAsync();
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                // Obtener todos los registros primero para evitar errores en múltiples lecturas
+                var allRecords = await baseQuery.ToListAsync();
+
+                int totalRegistros = allRecords.Count();
+                var pager = new Pager(totalRegistros, pg, pageSize);
+                ViewBag.Pager = pager;
+
+                var registros = allRecords
+                    .Skip((pg - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                ViewBag.Filter = filter;
+                ViewBag.CurrentIdEmpleado = id;
+
                 return PartialView("~/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml", registros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return Content($"ERROR: {ex.Message}<br>{ex.StackTrace}", "text/html");
             }
         }
 
+
+        //[HttpGet]
+        //public async Task<IActionResult> LoadAusencias(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        ViewBag.IdEmpleado = id;
+
+
+        //        var query = _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id && e.Activo == true);
+
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.IdTipoAusenciaNavigation.EmpleadoAusencia.Any(ec => ec.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter)));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+        //        var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+        //        var IdTipoAusenciaNavigation = await _context.TipoAusencia.ToListAsync();
+        //        return PartialView("~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml", registros);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> LoadAusencias(int id, string filter)
+        public async Task<IActionResult> LoadAusencias(int id, string filter, int pg = 1)
         {
+            const int pageSize = 10;
+
             try
             {
                 ViewBag.IdEmpleado = id;
 
-
-                var query = _context.EmpleadoAusencia.Where(e => e.IdEmpleado == id && e.Activo == true);
+                var query = _context.EmpleadoAusencia
+                    .Include(e => e.IdTipoAusenciaNavigation)
+                    .Include(e => e.IdEmpleadoNavigation)
+                    .Where(e => e.IdEmpleado == id && e.Activo == true);
 
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    query = query.Where(e => e.IdTipoAusenciaNavigation.EmpleadoAusencia.Any(ec => ec.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter)));
+                    query = query.Where(e => e.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter));
                 }
 
-                var registros = await query.ToListAsync();
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                var IdTipoAusenciaNavigation = await _context.TipoAusencia.ToListAsync();
+                var allRecords = await query.ToListAsync();
+
+                int totalRegistros = allRecords.Count();
+                var pager = new Pager(totalRegistros, pg, pageSize);
+                ViewBag.Pager = pager;
+
+                var registros = allRecords
+                    .Skip((pg - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                ViewBag.Filter = filter;
+                ViewBag.CurrentIdEmpleado = id;
+
                 return PartialView("~/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml", registros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return Content($"ERROR: {ex.Message}<br>{ex.StackTrace}", "text/html");
             }
         }
 
+
+        //[HttpGet]
+        //public async Task<IActionResult> LoadEmpleado(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        ViewBag.IdEmpleado = id;
+        //        var query = _context.EmpleadoActivos.Where(e => e.IdEmpleado == id && e.Activo == true);
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.IdProductoNavigation.EmpleadoActivos.Any(ec => ec.IdProductoNavigation.NombreProducto.Contains(filter)));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+        //        var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+        //        var IdProductoNavigation = await _context.Productos.ToListAsync();
+        //        return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        //[HttpGet]
+        //public async Task<IActionResult> LoadEmpleado(int id, string filter)
+        //{
+        //    try
+        //    {
+        //        ViewBag.IdEmpleado = id;
+
+        //        var query = _context.EmpleadoActivos
+        //            .Include(e => e.IdProductoNavigation)
+        //            .Include(e => e.IdEmpleadoNavigation)
+        //            .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+        //        if (!string.IsNullOrEmpty(filter))
+        //        {
+        //            query = query.Where(e => e.IdProductoNavigation.NombreProducto.Contains(filter));
+        //        }
+
+        //        var registros = await query.ToListAsync();
+
+        //        ViewBag.IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+        //        ViewBag.IdProductoNavigation = await _context.Productos.ToListAsync();
+        //        ViewBag.Filter = filter;
+
+        //        return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Content($"ERROR: {ex.Message}<br>{ex.StackTrace}", "text/html");
+        //    }
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> LoadEmpleado(int id, string filter)
+        public async Task<IActionResult> LoadEmpleado(int id, string filter, int pg = 1)
         {
+            const int pageSize = 10;
+
             try
             {
                 ViewBag.IdEmpleado = id;
-                var query = _context.EmpleadoActivos.Where(e => e.IdEmpleado == id && e.Activo == true);
-                if (!string.IsNullOrEmpty(filter))
+
+                var query = _context.EmpleadoActivos
+                    .Include(e => e.IdProductoNavigation)
+                    .Include(e => e.IdEmpleadoNavigation)
+                    .Where(e => e.IdEmpleado == id && e.Activo == true);
+
+                if (!String.IsNullOrEmpty(filter))
                 {
-                    query = query.Where(e => e.IdProductoNavigation.EmpleadoActivos.Any(ec => ec.IdProductoNavigation.NombreProducto.Contains(filter)));
+                    query = query.Where(r => r.NumeroSerie.ToLower().Contains(filter.ToLower()));
                 }
 
-                var registros = await query.ToListAsync();
-                var IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
-                var IdProductoNavigation = await _context.Productos.ToListAsync();
+                var allRecords = await query.ToListAsync();
+
+                int totalRegistros = allRecords.Count();
+                var pager = new Pager(totalRegistros, pg, pageSize);
+                ViewBag.Pager = pager;
+
+                var registros = allRecords
+                    .Skip((pg - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                ViewBag.IdEmpleadoNavigation = await _context.Empleados.ToListAsync();
+                ViewBag.IdProductoNavigation = await _context.Productos.ToListAsync();
+                ViewBag.Filter = filter;
+                ViewBag.CurrentIdEmpleado = id;
+
                 return PartialView("~/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml", registros);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return Content($"ERROR: {ex.Message}<br>{ex.StackTrace}", "text/html");
             }
         }
 

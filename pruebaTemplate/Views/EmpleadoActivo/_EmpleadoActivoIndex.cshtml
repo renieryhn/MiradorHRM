@@ -24,6 +24,7 @@
                         
                     </div>
                 </div>
+                <input type="hidden" id="hiddenEmpleadoId" value="@ViewBag.CurrentIdEmpleado" />
                 <div class="card-body">
                     <div class="">
                         <div class="panel panel-default">
@@ -32,21 +33,28 @@
                                     <div class="row m-1">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                
+                                                <form method="get" asp-controller="EmpleadoActivo" asp-action="Index">
                                                     <div class="row">
                                                         <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                        <input type="text" style="width: 300px;" id="inNombreEmpleado" class="form-control" name="filter" placeholder="Buscar...">
-                                                        <button id="btnBuscar" class="btn" style="background-color: var(--blue)" onclick="Buscar('LoadEmpleado','inNombreEmpleado');"><i class="fa fa-search" style="color: white;"></i></button>
+                                                        @* <input type="text" style="width: 300px;" id="inNombreEmpleado" class="form-control" name="filter" placeholder="Buscar...">
+                                                        <button id="btnBuscar" class="btn" style="background-color: var(--blue)" onclick="Buscar('LoadEmpleado','inNombreEmpleado');"><i class="fa fa-search" style="color: white;"></i></button> *@
+                                                            <input type="text" id="filterInputActivo" class="form-control" placeholder="Buscar por numero de serie..." value="@ViewBag.Filter">
+                                                            <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarActivo()">
+                                                                <i class="fa fa-search" style="color: white;"></i>
+                                                            </button>
                                                         </div>
                                                         <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoActivo" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoActivo" asp-action="Download" asp-route-id="@ViewBag.IdEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoActivo" asp-action="Create" asp-route-id="1" asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoActivo" asp-action="Download"  class="btn " style="background-color: var(--blue);"
+                                                                   asp-route-id="@ViewBag.CurrentIdEmpleado"
+                                                                   asp-route-filter="@ViewBag.Filter"
+                                                                ><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
                                                     </div>
-                                              
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -168,53 +176,89 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                </div>
             </div>
         </div>
     </div>
     <br />
 </div>
 
+<script>
+    function buscarActivo() {
+        console.log("Ejecutando buscarContacto()");
+        var filter = $('#filterInputActivo').val();
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+
+        if (!idEmpleado) {
+            toastr.warning('Empleado no identificado.');
+            return;
+        }
+
+        var url = `/Empleado/LoadEmpleado?id=${idEmpleado}&filter=${encodeURIComponent(filter)}`;
+        $.get(url, function (data) {
+            $('#custom-tabs-two-Empleado').html(data);
+        }).fail(function () {
+            toastr.error('Error al cargar los contactos filtrados.');
+        });
+    }
+
+    function paginarActivo(pagina) {
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+        var filtro = $('#filterInputActivo').val();
+
+        $.get(`/Empleado/LoadEmpleado?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
+            $('#custom-tabs-two-Empleado').html(data);
+        });
+    }
+
+
+
+</script>
+
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            $(document).ready(function () {
-                var url = $("#liMenuDinamico");
-                var $table = $('#table');
-                $.ajax({
-                    url: "Empleado/ObtenerMenuDinamico",
-                    type: "GET",
-                    success: function (data) {
-                        $("#liMenuDinamico").html(data);
-                    },
-                    error: function () {
-                        console.error("Error al cargar el menú dinámico");
-                    }
-                });
-            });
+        // <script>
+        //     $(document).ready(function () {
+        //         var url = $("#liMenuDinamico");
+        //         var $table = $('#table');
+        //         $.ajax({
+        //             url: "Empleado/ObtenerMenuDinamico",
+        //             type: "GET",
+        //             success: function (data) {
+        //                 $("#liMenuDinamico").html(data);
+        //             },
+        //             error: function () {
+        //                 console.error("Error al cargar el menú dinámico");
+        //             }
+        //         });
+        //     });
 
-            // $(document).ready(function () {
-            //     $('#btnBuscar').on('click', function () {
-            //         // Obtiene el valor del campo de entrada
-            //         var filtro = $('#inNombre').val();
-            //         var idEmpleado = '@ViewBag.IdEmpleado'; // Obtener el id desde ViewBag
+        //     // $(document).ready(function () {
+        //     //     $('#btnBuscar').on('click', function () {
+        //     //         // Obtiene el valor del campo de entrada
+        //     //         var filtro = $('#inNombre').val();
+        //     //         var idEmpleado = '@ViewBag.IdEmpleado'; // Obtener el id desde ViewBag
 
-            //         // Realiza la solicitud AJAX
-            //         $.ajax({
-            //             url: '@Url.Action("loadContacto", "Empleado")',
-            //             method: 'POST',
-            //             data: { filter: filtro, id: idEmpleado }, 
-            //             success: function (response) {
+        //     //         // Realiza la solicitud AJAX
+        //     //         $.ajax({
+        //     //             url: '@Url.Action("loadContacto", "Empleado")',
+        //     //             method: 'POST',
+        //     //             data: { filter: filtro, id: idEmpleado }, 
+        //     //             success: function (response) {
                             
-            //                 console.log(response);
-            //             },
-            //             error: function (xhr, status, error) {
+        //     //                 console.log(response);
+        //     //             },
+        //     //             error: function (xhr, status, error) {
                             
-            //                 console.error(error);
-            //             }
-            //         });
-            //     });
-            // });
-        </script>
+        //     //                 console.error(error);
+        //     //             }
+        //     //         });
+        //     //     });
+        //     // });
+        // </script>
     }
 }

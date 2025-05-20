@@ -84,11 +84,20 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
             // Filtrar las ausencias del empleado por el IdEmpleado recibido
-            var data = _context.EmpleadoAusencia
-                .Where(ec => ec.IdEmpleado == id)
+            var query = _context.EmpleadoAusencia
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Include(ec => ec.IdTipoAusenciaNavigation)
+                .Where(ec => ec.IdEmpleado == id);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(ec => ec.IdTipoAusenciaNavigation.NombreTipoAusencia.Contains(filter));
+            }
+
+            var data = query
                 .Select(ec => new
                 {
                     ec.IdEmpleadoAusencia,
@@ -103,11 +112,8 @@ namespace PlanillaPM.Controllers
                     ec.AprobadoPor,
                     ec.Comentarios,
                     Activo = ec.Activo ? "Sí" : "No"
-                    
                 })
                 .ToList();
-
-          
 
             // Convertir la lista de ausencias en una tabla de datos
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
@@ -116,7 +122,7 @@ namespace PlanillaPM.Controllers
             // Nombre del archivo de Excel
             string fileName = $"EmpleadoAusencia_{id}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            // Crear el archivo de Excel y devolverlo
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table, "EmpleadoAusencia");
@@ -124,8 +130,6 @@ namespace PlanillaPM.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
@@ -224,7 +228,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoAusencium/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
 
             //ViewBag.EstadoAusencia = Enum.GetValues(typeof(EstadoAusencia));

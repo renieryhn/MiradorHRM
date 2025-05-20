@@ -81,38 +81,46 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
-            // Obtener los datos del empleado activo filtrado por el IdEmpleadoActivo
-            var data = _context.EmpleadoActivos
-                .Where(ea => ea.IdEmpleado == id)
+            // Construir la consulta base
+            var query = _context.EmpleadoActivos
+                .Include(ea => ea.IdEmpleadoNavigation)
+                .Include(ea => ea.IdProductoNavigation)
+                .Where(ea => ea.IdEmpleado == id);
+
+            // Aplicar filtro si existe
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(ea => ea.NumeroSerie.Contains(filter));
+            }
+
+            // Obtener los datos
+            var data = query
                 .Select(ea => new
                 {
                     ea.IdEmpleadoActivo,
-                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado, 
-                    Producto = ea.IdProductoNavigation.NombreProducto, 
+                    Empleado = ea.IdEmpleadoNavigation.NombreEmpleado + " " + ea.IdEmpleadoNavigation.ApellidoEmpleado,
+                    Producto = ea.IdProductoNavigation.NombreProducto,
                     ea.Model,
                     ea.NumeroSerie,
-                    Estado = ea.Estado.ToString(), 
+                    Estado = ea.Estado.ToString(),
                     ea.Cantidad,
                     ea.PrecioEstimado,
-                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"), 
+                    FechaAsignacion = ea.FechaAsignacion.ToString("yyyy-MM-dd"),
                     ea.Descripcion,
                     Activo = ea.Activo ? "Sí" : "No"
-                   
                 })
                 .ToList();
 
-         
-
-            // Convertir la lista en una tabla de datos
+            // Convertir a DataTable
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
+            // Nombre del archivo
             string fileName = $"EmpleadoActivo_{id}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
+            // Generar y devolver el archivo
             using (XLWorkbook wb = new XLWorkbook())
             {
                 wb.Worksheets.Add(table, "EmpleadoActivo");
@@ -120,12 +128,11 @@ namespace PlanillaPM.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
         }
+
 
 
         [HttpGet]
@@ -220,7 +227,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoActivo/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewBag.EstadoActual = Enum.GetValues(typeof(EstadoActual));
             //ViewBag.EstadoOpcion = new SelectList(Enum.GetValues(typeof(EstadoActual)));

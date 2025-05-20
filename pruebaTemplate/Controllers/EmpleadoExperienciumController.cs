@@ -82,38 +82,39 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string? filter)
         {
-            // Filtrar las experiencias del empleado por el id recibido
-            var data = _context.EmpleadoExperiencia
-                        .Where(ec => ec.IdEmpleado == id)
-                        .Select(ec => new
-                        {
-                            ec.IdEmpleadoExperiencia,
-                            Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
-                            ec.Empresa,
-                            ec.Cargo,
-                            ec.FechaDesde,
-                            ec.FechaHasta,
-                            Descripcion = ec.Descripcion ?? "N/A",
-                            Activo = ec.Activo ? "Sí" : "No"
-                          
-                        })
-                        .ToList();
-         
+            var query = _context.EmpleadoExperiencia
+                .Include(ec => ec.IdEmpleadoNavigation)
+                .Where(ec => ec.IdEmpleado == id);
 
-            // Convertir la lista en una tabla de datos
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(ec => ec.Empresa.ToLower().Contains(filter.ToLower()));
+            }
+           
+            var data = query.Select(ec => new
+            {
+                ec.IdEmpleadoExperiencia,
+                Empleado = ec.IdEmpleadoNavigation.NombreEmpleado + " " + ec.IdEmpleadoNavigation.ApellidoEmpleado,
+                ec.Empresa,
+                ec.Cargo,
+                FechaDesde = ec.FechaDesde.ToString("dd/MM/yyyy"),
+                FechaHasta = ec.FechaHasta.ToString("dd/MM/yyyy"),
+                Descripcion = ec.Descripcion ?? "N/A",
+                Activo = ec.Activo ? "Sí" : "No"
+            }).ToList();
+
+            // Convertir a DataTable
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = $"EmpleadoExperiencia_{id}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Experiencia");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -122,6 +123,7 @@ namespace PlanillaPM.Controllers
                 }
             }
         }
+
 
         [HttpGet]
         public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
@@ -214,7 +216,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoExperiencium/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();

@@ -68,7 +68,7 @@ public partial class Ingreso
     [Display(Name = "Fecha Final")]
     public DateOnly? FechaFinal { get; set; }
 
-    [Display(Name = "Período")]
+    [Display(Name = "Periodo de Pago")]
     [Required(ErrorMessage = "El período es requerido")]
     public int Periodo { get; set; }
 

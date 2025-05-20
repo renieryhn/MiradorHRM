@@ -82,48 +82,52 @@ namespace PlanillaPM.Controllers
         }
 
         [HttpGet]
-        public ActionResult Download(int id)
+        public ActionResult Download(int id, string filter)
         {
-            // Filtrar las educaciones del empleado por el id recibido
-            var data = _context.EmpleadoEducacions
-                        .Where(ec => ec.IdEmpleado == id)
-                        .Select(ec => new
-                        {
-                            ec.IdEmpleadoEducacion,
-                            ec.Institucion,
-                            ec.TituloObtenido,
-                            FechaDesde = ec.FechaDesde.ToString("dd/MM/yyyy"),
-                            FechaHasta = ec.FechaHasta.ToString("dd/MM/yyyy"),
-                            ec.Comentarios,
-                            Activo = ec.Activo ? "Sí" : "No"
-                            
-                        })
-                        .ToList();
+            // Aplicar los filtros necesarios
+            var query = _context.EmpleadoEducacions
+                                .Where(ec => ec.IdEmpleado == id);
 
-          
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(ec => ec.Institucion.ToLower().Contains(filter.ToLower()));
+            }
 
-            // Convertir la lista de educaciones en una tabla de datos
+            // Seleccionar los datos que se exportarán
+            var data = query
+                .Select(ec => new
+                {
+                    ec.IdEmpleadoEducacion,
+                    ec.Institucion,
+                    ec.TituloObtenido,
+                    FechaDesde = ec.FechaDesde.ToString("dd/MM/yyyy"),
+                    FechaHasta = ec.FechaHasta.ToString("dd/MM/yyyy"),
+                    ec.Comentarios,
+                    Activo = ec.Activo ? "Sí" : "No"
+                })
+                .ToList();
+
+            // Convertir la lista a DataTable
             ListtoDataTableConverter converter = new ListtoDataTableConverter();
             DataTable table = converter.ToDataTable(data);
 
-            // Nombre del archivo de Excel
             string fileName = $"EmpleadoEducacion_{id}.xlsx";
 
-            // Crear el archivo de Excel y guardarlo en una secuencia de memoria
             using (XLWorkbook wb = new XLWorkbook())
             {
                 var worksheet = wb.Worksheets.Add(table, "Educacion");
-                worksheet.Columns().AdjustToContents(); // Ajustar el ancho de las columnas
+                worksheet.Columns().AdjustToContents();
 
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-
-                    // Devolver el archivo como una descarga de archivo Excel
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                fileName);
                 }
             }
         }
+
 
         [HttpGet]
         public ActionResult DownloadAll(string? filter, string? idEmpleado, int? estado)
@@ -215,7 +219,7 @@ namespace PlanillaPM.Controllers
         }
 
         // GET: EmpleadoEducacion/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id, int? idEmpleado)
         {
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto");
             return View();

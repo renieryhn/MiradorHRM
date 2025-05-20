@@ -23,6 +23,7 @@
                     <div class="card-tools">
                     </div>
                 </div>
+                <input type="hidden" id="hiddenEmpleadoId" value="@ViewBag.CurrentIdEmpleado" />
                 <div class="card-body">
                     <div class="">
                         <div class="panel panel-default">
@@ -30,20 +31,29 @@
                                 <div class="form-vertical">
                                     <div class="row m-1">
                                         <div class="col-sm-6">
-                                            <div class="form-group">                                              
+                                            <div class="form-group">
+                                                <form method="get" asp-controller="EmpleadoAusencium" asp-action="Index">
                                                     <div class="row">
                                                         <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                        <input type="text" style="width: 300px;" id="inNombreAusencias" class="form-control" name="filter" placeholder="Buscar...">
-                                                        <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadAusencias','inNombreAusencias');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                        @* <input type="text" style="width: 300px;" id="inNombreAusencias" class="form-control" name="filter" placeholder="Buscar...">
+                                                        <button class="btn " style="background-color: var(--blue)" onclick="Buscar('LoadAusencias','inNombreAusencias');" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button> *@
+                                                            <input type="text" id="filterInputAusencium" class="form-control" placeholder="Buscar por tipo de ausencia..." value="@ViewBag.Filter">
+                                                            <button type="button" class="btn" style="background-color: var(--blue);" onclick="buscarAusencium()">
+                                                                <i class="fa fa-search" style="color: white;"></i>
+                                                            </button>
                                                         </div>
                                                         <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
                                                                 @* <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a> *@
-                                                                <a asp-controller="EmpleadoAusencium" asp-action="Create" asp-route-id="1" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                                <a asp-controller="EmpleadoAusencium" asp-action="Download" asp-route-id="@ViewBag.idEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoAusencium" asp-action="Create" asp-route-id="1" asp-route-idEmpleado="@ViewBag.CurrentIdEmpleado" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                <a asp-controller="EmpleadoAusencium" asp-action="Download" class="btn " style="background-color: var(--blue);"
+                                                                   asp-route-id="@ViewBag.CurrentIdEmpleado"
+                                                                   asp-route-filter="@ViewBag.Filter"
+                                                                ><i class="fa fa-file-excel-o" style="color: white;"></i></a>
                                                             </div>
                                                         </div>
-                                                    </div>                                           
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -57,6 +67,12 @@
                                         <tr>
                                             <th data-sortable="true">No.</th>
                                             <th></th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)
+                                            </th>
                                             <th data-sortable="true">
                                                 @Html.DisplayNameFor(model => model.DiaCompleto)
                                             </th>
@@ -81,12 +97,7 @@
                                             <th data-sortable="true">
                                                 @Html.DisplayNameFor(model => model.Comentarios)
                                             </th>                                          
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-                                            </th>
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.IdTipoAusenciaNavigation)
-                                            </th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -106,6 +117,12 @@
                                                             @* <a asp-action="Details" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-address-card-o" style="color: white;"></i></a> *@
                                                             <a asp-controller="EmpleadoAusencium" asp-action="Delete" asp-route-numero="1" class="btn " style="background-color: var(--blue)" asp-route-id="@item.IdEmpleadoAusencia"><i class="fa fa-trash-o" style="color: white;"></i></a>
                                                         </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdTipoAusenciaNavigation.NombreTipoAusencia)
                                                     </td>
                                                     <td>
                                                         @* @Html.DisplayFor(modelItem => item.Activo) *@
@@ -141,12 +158,7 @@
                                                         @Html.DisplayFor(modelItem => item.Comentarios)
                                                     </td>
                                                
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.IdEmpleadoNavigation.NombreCompleto)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.IdTipoAusenciaNavigation.NombreTipoAusencia)
-                                                    </td>
+                                                   
                                                 </tr>
                                             }
                                         }
@@ -162,31 +174,64 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                </div>
             </div>
         </div>
     </div>
     <br />
 </div>
 
+<script>
+    function buscarAusencium() {
+        var filter = $('#filterInputAusencium').val();
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+
+        if (!idEmpleado) {
+            toastr.warning('Empleado no identificado.');
+            return;
+        }
+
+        var url = `/Empleado/LoadAusencias?id=${idEmpleado}&filter=${encodeURIComponent(filter)}`;
+        $.get(url, function (data) {
+            $('#custom-tabs-two-Ausencias').html(data);
+        }).fail(function () {
+            toastr.error('Error al cargar los contactos filtrados.');
+        });
+    }
+
+    function paginarAusencium(pagina) {
+        var idEmpleado = $('#hiddenEmpleadoId').val();
+        var filtro = $('#filterInputAusencium').val();
+
+        $.get(`/Empleado/LoadAusencias?id=${idEmpleado}&filter=${encodeURIComponent(filtro)}&pg=${pagina}`, function (data) {
+            $('#custom-tabs-two-Ausencias').html(data);
+        });
+    }
+
+
+</script>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        <script>
-            $(document).ready(function () {
-                var url = $("#liMenuDinamico");
-                var $table = $('#table');
-                $.ajax({
-                    url: "Empleado/ObtenerMenuDinamico",
-                    type: "GET",
-                    success: function (data) {
-                        $("#liMenuDinamico").html(data);
-                    },
-                    error: function () {
-                        console.error("Error al cargar el menú dinámico");
-                    }
-                });
-            });
+        // <script>
+        //     $(document).ready(function () {
+        //         var url = $("#liMenuDinamico");
+        //         var $table = $('#table');
+        //         $.ajax({
+        //             url: "Empleado/ObtenerMenuDinamico",
+        //             type: "GET",
+        //             success: function (data) {
+        //                 $("#liMenuDinamico").html(data);
+        //             },
+        //             error: function () {
+        //                 console.error("Error al cargar el menú dinámico");
+        //             }
+        //         });
+        //     });
 
-        </script>
+        // </script>
     }
 }

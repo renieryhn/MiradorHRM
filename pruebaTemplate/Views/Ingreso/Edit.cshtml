@@ -63,11 +63,9 @@
                                 
 
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Orden" class="control-label"></label>
-                                <input asp-for="Orden" class="form-control" readonly />
-                                <span asp-validation-for="Orden" class="text-danger"></span>
-                            </div>
+                            
+                            <input asp-for="Orden" type="hidden" readonly />
+                           
 
                             <div class="form-group">
                                 <label asp-for="FechaInicial" class="control-label"></label>
@@ -81,7 +79,8 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Periodo" class="control-label"></label>
-                                <input asp-for="Periodo" class="form-control" required />
+                                @* <input asp-for="Periodo" class="form-control" required /> *@
+                                @Html.DropDownListFor(model => model.Periodo, new SelectList(ViewBag.PeriodoPago), "Seleccione un periodo", new { @class = "form-control select2bs4" })
                                 <span asp-validation-for="Periodo" class="text-danger"></span>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using static PlanillaPM.Models.Ingreso;
 
 namespace PlanillaPM.Models;
 
@@ -42,7 +43,7 @@ public partial class Deduccion
 
     [Display(Name = "Orden")]
     [Required(ErrorMessage = "El orden es requerido")]
-    public int Orden { get; set; }
+    public int? Orden { get; set; }
 
     [Display(Name = "Deducible de Impuesto")]
     [Required(ErrorMessage = "El campo deducible de impuesto es requerido")]
@@ -68,6 +69,10 @@ public partial class Deduccion
 
     public string ModificadoPor { get; set; } = null!;
 
+    [Display(Name = "Periodo de Pago")]
+    [Required(ErrorMessage = "El período es requerido")]
+    public periodopago? Periodo { get; set; }
+
     public virtual ICollection<CuentaPorCobrar> CuentaPorCobrars { get; set; } = new List<CuentaPorCobrar>();
 
     public virtual ICollection<DeduccionIngreso> DeduccionIngresos { get; set; } = new List<DeduccionIngreso>();
@@ -81,6 +86,14 @@ public partial class Deduccion
         Fijo = 1,
         Fórmula = 2,
         Porcentaje = 3        
+    }
+
+    public enum periodopago
+    {
+        Mensual = 1,
+        Quincenal = 2,
+        Bisemanal = 3,
+        Semanal = 4
     }
 
     public enum MetodoCalculoEstado

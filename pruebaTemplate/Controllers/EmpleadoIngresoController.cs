@@ -424,6 +424,13 @@ namespace PlanillaPM.Controllers
             // Si llegamos aquí es porque algo falló
             ViewData["IdEmpleado"] = new SelectList(_context.Empleados, "IdEmpleado", "NombreCompleto", empleadoIngreso.IdEmpleado);
             ViewData["IdIngreso"] = new SelectList(_context.Ingresos, "IdIngreso", "NombreIngreso", empleadoIngreso.IdIngreso);
+            ViewBag.TipoEstado = Enum.GetValues(typeof(TipoEstado))
+                             .Cast<TipoEstado>()
+                             .Select(e => new SelectListItem
+                             {
+                                 Value = ((int)e).ToString(),
+                                 Text = e.ToString()
+                             }).ToList();
             return View(empleadoIngreso);
         }
 

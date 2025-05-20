@@ -70,7 +70,7 @@ public partial class Ingreso
 
     [Display(Name = "Periodo de Pago")]
     [Required(ErrorMessage = "El período es requerido")]
-    public int Periodo { get; set; }
+    public periodopago Periodo { get; set; }
 
     public virtual ICollection<DeduccionIngreso> DeduccionIngresos { get; set; } = new List<DeduccionIngreso>();
 
@@ -85,7 +85,14 @@ public partial class Ingreso
         Fórmula = 2,
         Porcentaje = 3
     }
-    
+    public enum periodopago
+    {
+       Mensual=1,
+       Quincenal=2,
+       Bisemanal=3,
+       Semanal=4
+    }
+
     public enum TipoIngresoEstado
     {
         [Display(Name = "Salario")]
@@ -133,5 +140,7 @@ public partial class Ingreso
         [Display(Name = "Otros")]
         Otros = 15
     }
+
+
 
 }

@@ -31,9 +31,10 @@
                             </div>
                             
                             <div class="form-group">
-                                <label asp-for="Orden" class="control-label"></label>
+                                @* <label asp-for="Orden" class="control-label"></label>
                                 <input asp-for="Orden" id="OrdenIngreso" class="form-control" required readonly/>
-                                <span asp-validation-for="Orden" class="text-danger"></span>
+                                <span asp-validation-for="Orden" class="text-danger"></span> *@
+                                <input asp-for="Orden" type="hidden" id="OrdenIngreso" value="@ViewBag.NextOrden" readonly />
                             </div>
                             <div class="form-group form-check form-switch ml-4">
                                 <label class="form-check-label">

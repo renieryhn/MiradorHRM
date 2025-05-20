@@ -51,9 +51,10 @@
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Orden" class="control-label"></label>
+                               @*  <label asp-for="Orden" class="control-label"></label>
                                 <input asp-for="Orden" id="OrdenIngreso" class="form-control" type="number" required />
-                                <span asp-validation-for="Orden" class="text-danger"></span>
+                                <span asp-validation-for="Orden" class="text-danger"></span> *@
+                                <input asp-for="Orden" type="hidden" id="OrdenIngreso" value="@ViewBag.NextOrden" readonly />
                             </div>
                         </div>                           
                 </div>

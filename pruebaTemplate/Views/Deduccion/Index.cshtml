@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<PlanillaPM.Models.Deduccion>
 @using PlanillaPM.Models;
+@using static PlanillaPM.Models.Deduccion
 
         @{
         ViewData["Title"] = "Index";
@@ -69,6 +70,9 @@
                                                             @Html.DisplayNameFor(model => model.NombreDeduccion)
                                                         </th>
                                                         <th data-sortable="true">
+                                                            @Html.DisplayNameFor(model => model.Periodo)
+                                                        </th>
+                                                        <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.MetodoCalculo)
                                                         </th>
                                                         <th data-sortable="true">
@@ -95,6 +99,7 @@
                                                         <th data-sortable="true">
                                                             @Html.DisplayNameFor(model => model.Activo)
                                                         </th>
+                                                        
                                                         
                                             </tr>
                                         </thead>
@@ -127,6 +132,9 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.NombreDeduccion)
                                                         </td>
+                                                <td>
+                                                    @(Enum.GetName(typeof(periodopago), item.Periodo))
+                                                </td>
                                                         <td>
                                                             @Html.DisplayFor(modelItem => item.MetodoCalculo)
                                                         </td>
@@ -182,6 +190,7 @@
                                                                 <span class="badge badge-danger">Inactivo</span>
                                                             }
                                                         </td>
+                                                        
                                                        
                                             </tr>
                                             }

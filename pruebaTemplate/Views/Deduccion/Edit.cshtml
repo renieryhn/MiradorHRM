@@ -38,7 +38,11 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="TipoCalculo"></label>
-                                @Html.DropDownListFor(model => model.TipoCalculo, new SelectList(ViewBag.TipoCalculoEstado), "Seleccione un Tipo Calculo", new { @class = "form-control select2bs4 is-invalid" })
+                               @*  @Html.DropDownListFor(model => model.TipoCalculo, new SelectList(ViewBag.TipoCalculoEstado), "Seleccione un Tipo Calculo", new { @class = "form-control select2bs4 is-invalid" }) *@
+                                @Html.DropDownListFor(model => model.TipoCalculo,
+                                         new SelectList(ViewBag.TipoCalculoEstado),
+                                         "Seleccione un Tipo Cálculo",
+                                         new { @class = "form-control select2bs4 is-invalid", @id = "TipoCalculo" }) 
                                 <span asp-validation-for="TipoCalculo" class="text-danger"></span>
                             </div>
                             <div class="form-group form-check form-switch ml-4">
@@ -76,10 +80,17 @@
                                 <span asp-validation-for="Formula" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="Orden" class="control-label"></label>
-                                <input asp-for="Orden" class="form-control" readonly />
-                                <span asp-validation-for="Orden" class="text-danger"></span>
+                                <label asp-for="Periodo" class="control-label"></label>
+                                @Html.DropDownListFor(model => model.Periodo, new SelectList(ViewBag.PeriodoPago), "Seleccione un periodo", new { @class = "form-control select2bs4" })
+                                <span asp-validation-for="Periodo" class="text-danger"></span>
                             </div>
+                            <div class="form-group">
+                                @* <label asp-for="Orden" class="control-label"></label>
+                                <input asp-for="Orden" class="form-control" readonly />
+                                <span asp-validation-for="Orden" class="text-danger"></span> *@
+                                <input asp-for="Orden" type="hidden" readonly />
+                            </div>
+
                            
                         </div>                                                           
                     
@@ -130,6 +141,47 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        var tipoCalculoDropdown = $('#TipoCalculo');
+        var montoInput = $('#Monto');
+        var formulaInput = $('#Formula');
+        var botonTabla = $('#botonTabla');
+
+        function toggleCamposSegunTipo() {
+            var selectedTipo = tipoCalculoDropdown.find(":selected").text().trim();
+
+            montoInput.prop('disabled', true);
+            formulaInput.prop('disabled', true).val('');
+            botonTabla.prop('disabled', true);
+
+            if (selectedTipo === 'Fijo' || selectedTipo === 'Porcentaje') {
+                montoInput.prop('disabled', false);
+            } else if (selectedTipo === 'Fórmula') {
+                formulaInput.prop('disabled', false);
+                montoInput.val('0');
+            } else if (selectedTipo === 'Tabla') {
+                botonTabla.prop('disabled', false);
+            }
+        }
+
+        // Ejecutar al cargar
+        toggleCamposSegunTipo();
+
+        // Ejecutar al cambiar valor
+        tipoCalculoDropdown.change(function () {
+            toggleCamposSegunTipo();
+        });
+
+        // Evento del botón tabla
+        botonTabla.click(function () {
+            var deduccionId = $('#IdDeduccion').val();
+            // Puedes reutilizar lógica de carga de modal si lo necesitas aquí
+            console.log("Abrir modal para Deducción ID: " + deduccionId);
+            // Aquí podrías llamar una función como cargarModalDeduccionTabla(deduccionId)
+        });
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

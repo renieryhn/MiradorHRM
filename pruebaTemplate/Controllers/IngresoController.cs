@@ -192,6 +192,8 @@ namespace PlanillaPM.Controllers
 
             ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado));
 
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago));
+
             // Obtener lista de TipoIngresoEstado
             ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
                                               .Cast<TipoIngresoEstado>()
@@ -210,25 +212,85 @@ namespace PlanillaPM.Controllers
         // POST: Ingreso/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso, int? id)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(ingreso, true);
+        //        _context.Add(ingreso);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+        //    return View(ingreso);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdIngreso,NombreIngreso,TipoIngreso,TipoCalculo,Monto,Formula,Grabable,AsignacionAutomatica,Orden,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,FechaInicial,FechaFinal,Periodo")] Ingreso ingreso, int? id)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(ingreso, true);
-                _context.Add(ingreso);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(ingreso, true);
+                    _context.Add(ingreso);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error: " + message;
+                }
             }
-            else
+            catch (DbUpdateException dbEx)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error al guardar en la base de datos: " + dbEx.Message;
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Ocurrió un error inesperado: " + ex.Message;
+            }
+
+            // Restaurar ViewBag en caso de error para recargar los combos
+            ViewBag.NextOrden = ingreso.Orden;
+
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado))
+                .Cast<TipoCalculoEstado>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                }).ToList();
+
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago))
+                .Cast<periodopago>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                }).ToList();
+
+            ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
+                .Cast<TipoIngresoEstado>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.GetDisplayName()
+                }).ToList();
+
             return View(ingreso);
         }
+
 
         // GET: Ingreso/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -245,6 +307,7 @@ namespace PlanillaPM.Controllers
             }
 
             ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(Ingreso.TipoCalculoEstado));
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago));
             ViewBag.TipoIngresoEstado = Enum.GetValues(typeof(TipoIngresoEstado))
                                   .Cast<TipoIngresoEstado>()
                                   .Select(e => new SelectListItem

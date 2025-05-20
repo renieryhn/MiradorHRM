@@ -23,8 +23,8 @@
                                 <span asp-validation-for="NombreIngreso" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="TipoIngreso"></label>
-                                @Html.DropDownListFor(model => model.TipoIngreso, (List<SelectListItem>)ViewBag.TipoIngresoEstado, "Seleccione un Tipo de Ingreso", new { @class = "form-control select2bs4 is-invalid" })
+                                <label asp-for="TipoIngreso"></label>                             
+                                @Html.DropDownListFor(model => model.TipoIngreso, ViewBag.TipoIngresoEstado as IEnumerable<SelectListItem>, "Seleccione un Tipo de Ingreso", new { @class = "form-control select2bs4 is-invalid" })
                                 <span asp-validation-for="TipoIngreso" class="text-danger"></span>
                             </div>
 
@@ -55,11 +55,11 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="Orden" class="control-label"></label>
-                                <input asp-for="Orden" class="form-control" value="@ViewBag.NextOrden" readonly />
-                                <span asp-validation-for="Orden" class="text-danger"></span>
-                            </div>
+                           
+                           <input asp-for="Orden" type="hidden" value="@ViewBag.NextOrden" readonly />
+                               
+
+                            
                             <div class="form-group">
                                 <label asp-for="FechaInicial" class="control-label"></label>
                                 <input asp-for="FechaInicial" class="form-control" type="date" />
@@ -72,9 +72,10 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Periodo" class="control-label"></label>
-                                <input asp-for="Periodo" class="form-control" type="number" required />
+                                @Html.DropDownListFor(model => model.Periodo, new SelectList(ViewBag.PeriodoPago), "Seleccione un periodo", new { @class = "form-control select2bs4" })
                                 <span asp-validation-for="Periodo" class="text-danger"></span>
                             </div>
+
                         </div>
                             
                            

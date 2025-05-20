@@ -131,6 +131,8 @@ namespace PlanillaPM.Controllers
             // Asignar el próximo valor de Orden al ViewBag
             ViewBag.NextOrden = maxOrden + 1;
 
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago));
+
             ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado));
             // Obtener lista de MetodoCalculoEstado
             ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
@@ -157,23 +159,90 @@ namespace PlanillaPM.Controllers
         // POST: Deduccion/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,Periodo")] Deduccion deduccion)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        SetCamposAuditoria(deduccion, true);
+        //        _context.Add(deduccion);
+        //        await _context.SaveChangesAsync();
+        //        TempData["success"] = "El registro ha sido creado exitosamente.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    else
+        //    {
+        //        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+        //        TempData["error"] = "Error: " + message;
+        //    }
+        //    return View(deduccion);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
+        public async Task<IActionResult> Create([Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,Periodo")] Deduccion deduccion)
         {
-            if (ModelState.IsValid)
+            try
             {
-                SetCamposAuditoria(deduccion, true);
-                _context.Add(deduccion);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "El registro ha sido creado exitosamente.";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    SetCamposAuditoria(deduccion, true);
+                    _context.Add(deduccion);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "El registro ha sido creado exitosamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    TempData["error"] = "Error de validación: " + message;
+                }
             }
-            else
+            catch (DbUpdateException dbEx)
             {
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                TempData["error"] = "Error: " + message;
+                TempData["error"] = "Error al guardar en la base de datos: " + dbEx.Message;
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Ocurrió un error inesperado: " + ex.Message;
+            }
+
+            // Recargar ViewBags para que los dropdowns no fallen
+            ViewBag.NextOrden = deduccion.Orden;
+
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago))
+                .Cast<periodopago>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                }).ToList();
+
+            ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(TipoCalculoEstado))
+                .Cast<TipoCalculoEstado>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                }).ToList();
+
+            ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
+                .Cast<MetodoCalculoEstado>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.GetDisplayName()
+                }).ToList();
+
+            ViewBag.TipoDeduccionEstado = Enum.GetValues(typeof(TipoDeduccionEstado))
+                .Cast<TipoDeduccionEstado>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.GetDisplayName()
+                }).ToList();
+
             return View(deduccion);
         }
 
@@ -191,6 +260,7 @@ namespace PlanillaPM.Controllers
                 return NotFound();
             }
             ViewBag.TipoCalculoEstado = Enum.GetValues(typeof(Deduccion.TipoCalculoEstado));
+            ViewBag.PeriodoPago = Enum.GetValues(typeof(periodopago));
             // Obtener lista de MetodoCalculoEstado
             ViewBag.MetodoCalculoEstado = Enum.GetValues(typeof(MetodoCalculoEstado))
                                               .Cast<MetodoCalculoEstado>()
@@ -237,7 +307,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Deduccion deduccion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdDeduccion,NombreDeduccion,MetodoCalculo,TipoDeduccion,TipoCalculo,Monto,Formula,Orden,DeducibleImpuesto,BasadoEnTodo,AsignacionAutomatica,Activo,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,Periodo")] Deduccion deduccion)
         {
             if (id != deduccion.IdDeduccion)
             {

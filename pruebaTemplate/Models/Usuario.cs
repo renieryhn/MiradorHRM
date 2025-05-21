@@ -8,6 +8,12 @@ namespace PlanillaPM.Models
     {
         //[DisplayName("Nombre de Usuario")]
         //public string UserName { get; set; }
+        [DisplayName("Nombre")]
+        public string NombreCompleto { get; set; }
+
+        [DisplayName("Activo")]
+        public bool Activo { get; set; }
+
         [DisplayName("Email")]
         public string Email { get; set; }
         [DisplayName("Fotografía")]

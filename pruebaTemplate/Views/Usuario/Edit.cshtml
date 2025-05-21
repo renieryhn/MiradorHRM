@@ -1,0 +1,72 @@
+﻿@model PlanillaPM.ViewModel.EditUsuarioViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Editar Usuario</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label"></label>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 form-check mb-3">
+                                <input asp-for="EmailConfirmed" class="form-check-input" />
+                                <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                            </div>
+                            <div class="col-6 form-check mb-3">
+                                <input asp-for="TwoFactorEnabled" class="form-check-input" />
+                                <label asp-for="TwoFactorEnabled" class="form-check-label"></label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                        </div>                    
+
+                        <div class="mb-3">
+                            <label asp-for="NombreCompleto" class="form-label"></label>
+                            <input asp-for="NombreCompleto" class="form-control" />
+                        </div>
+
+                        <div class="col-6 form-check mb-3">                          
+                            <!-- Checkbox real que el usuario puede marcar/desmarcar -->
+                            <input asp-for="Activo" class="form-check-input" />
+                            <label asp-for="Activo" class="form-check-label"></label>
+                        </div>
+
+
+                        <div class="d-flex justify-content-end">
+                            <a asp-action="IndexUsuario" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

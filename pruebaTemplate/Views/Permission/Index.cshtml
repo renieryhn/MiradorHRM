@@ -12,6 +12,8 @@
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
     }
+
+   
 }
 
 <div class="container-fluid">
@@ -53,8 +55,13 @@
                                                 <select id="cmbVentanas" name="ventanaIds" class="duallistbox" multiple="multiple" data-placeholder="Seleccione una ventana" data-dropdown-css-class="select2-blue" style="width: 100%;">
                                                     @foreach (var ventana in Model.Ventanas)
                                                     {
-                                                        bool isSelected = Model.VentanasAsignadas.Any(rv => rv.VentanaId == ventana.Id);
-                                                        <option value="@ventana.Id" selected="@isSelected">@ventana.Nombre</option>
+                                                        @* bool isSelected = Model.VentanasAsignadas.Any(rv => rv.VentanaId == ventana.Id); *@
+                                                        @* <option value="@ventana.Id" selected="@isSelected">@ventana.Nombre</option> *@
+                                                        var isSelected = Model.VentanasAsignadas.Any(rv => rv.VentanaId == ventana.Id);
+                                                        var selectedAttr = isSelected ? "selected" : "";
+                                                        
+                                                        @:<option value="@ventana.Id" @selectedAttr>@ventana.Nombre</option>
+
                                                     }
                                                 </select>
                                             </div>
@@ -143,7 +150,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="selectedVentanasTableBody">
-                                    @foreach (var roleVentana in Model.VentanasAsignadas)
+                                    @foreach (var roleVentana in Model.VentanasAsignadasPaginadas)
                                     {
                                         var ventana = Model.Ventanas.FirstOrDefault(v => v.Id == roleVentana.VentanaId);
                                         if (ventana != null)
@@ -245,8 +252,17 @@
 
 
         $(document).ready(function () {
+            // Destruir si ya está inicializado
+            if ($("#cmbVentanas").data('bootstrap-duallistbox')) {
+                $("#cmbVentanas").bootstrapDualListbox('destroy');
+            }
+
+            // Inicializar DualListBox correctamente
             $('#cmbVentanas').bootstrapDualListbox({
-                // Configuración adicional si es necesaria
+                nonSelectedListLabel: 'No asignadas',
+                selectedListLabel: 'Asignadas',
+                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false
             });
 
             $('#roleForm').submit(function (event) {
@@ -265,6 +281,8 @@
                     }
                 });
             });
+
+           
         });
 
        

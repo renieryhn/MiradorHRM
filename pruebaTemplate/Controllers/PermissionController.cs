@@ -93,12 +93,11 @@ namespace PlanillaPM.Controllers
             this.ViewBag.Pager = pager;
             this.ViewBag.RoleId = roleId; // Pasar roleId a la vista
 
-            model.VentanasAsignadas = data; // Actualizar el modelo con los datos paginados
+            model.VentanasAsignadasPaginadas = data; // Actualizar el modelo con los datos paginados
 
             return View(model);
         }
-
-       
+      
 
         [HttpPost]
         public async Task<IActionResult> AssignInitialVentanas(string roleId, List<int> ventanaIds)
@@ -152,8 +151,6 @@ namespace PlanillaPM.Controllers
 
             return Ok(); // Retornar Ok para indicar que la operación fue exitosa
         }
-
-
 
 
         [HttpPost]

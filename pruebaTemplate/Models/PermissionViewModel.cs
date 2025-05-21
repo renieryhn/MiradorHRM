@@ -9,6 +9,9 @@ namespace PlanillaPM.Models
         public List<RoleViewModel> Roles { get; set; }
         public List<Ventana> Ventanas { get; set; }
         public List<RoleVentana> VentanasAsignadas { get; set; }
+
+        public List<RoleVentana> VentanasAsignadasPaginadas { get; set; }
+
     }
 
     public class RoleClaimsViewModel

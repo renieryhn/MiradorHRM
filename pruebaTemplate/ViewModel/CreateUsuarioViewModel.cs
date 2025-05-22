@@ -11,7 +11,7 @@ namespace PlanillaPM.ViewModel
         [DisplayName("Password")]
         public string Password { get; set; }
 
-        [Required, DataType(DataType.Password), Compare("Password")]
+        [Required, DataType(DataType.Password)]
         [DisplayName("Confirmar Password")]
         public string ConfirmPassword { get; set; }
     }

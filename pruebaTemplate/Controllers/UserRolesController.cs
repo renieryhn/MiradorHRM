@@ -99,7 +99,7 @@ namespace PlanillaPM.Controllers
             //await Seeds.DefaultUsers.SeedSuperAdminAsync(_userManager, _roleManager);
 
             //return RedirectToAction("Index", new { userId = id });
-            return RedirectToAction("Index", "Users");
+            return RedirectToAction("IndexUsuario", "Usuario");
 
         }
 

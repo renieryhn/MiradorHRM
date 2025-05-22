@@ -20,6 +20,9 @@ using Syncfusion.EJ2.Notifications;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using ClosedXML.Excel;
+using static PlanillaPM.cGeneralFun;
+using System.Data;
 
 namespace PlanillaPM.Controllers
 {
@@ -533,39 +536,104 @@ namespace PlanillaPM.Controllers
             return "";
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> IndexUsuario(string filter, int pg = 1)
+        //{
+        //    // Obtén los usuarios incluyendo la entidad Unidad
+        //    var query = context.Users.AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(filter))
+        //    {
+        //        query = query.Where(u =>
+        //            u.UserName.Contains(filter) ||
+        //            u.Email.Contains(filter) ||
+        //            u.NombreCompleto.Contains(filter));
+        //    }
+
+        //    var listado = await query
+        //        .Select(u => new UsuarioListadoViewModel
+        //        {
+        //            Id = u.Id,
+        //            UserName = u.UserName,
+        //            Email = u.Email,
+        //            NombreCompleto = u.NombreCompleto,                  
+        //            PhoneNumber = u.PhoneNumber,
+        //            EmailConfirmed = u.EmailConfirmed,
+        //            TwoFactorEnabled = u.TwoFactorEnabled,
+        //            Activo = (u.Activo == true)
+
+        //        })
+        //        .ToListAsync();
+
+        //    // aquí podrías paginar listado y poner ViewBag.Pager si lo necesitas
+
+        //    return View(listado);
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> IndexUsuario(string filter, int pg = 1)
+        public async Task<IActionResult> IndexUsuario(string? filter, int pg = 1)
         {
-            // Obtén los usuarios incluyendo la entidad Unidad
-            var query = context.Users.AsQueryable();
-
-            if (!string.IsNullOrEmpty(filter))
+            try
             {
-                query = query.Where(u =>
-                    u.UserName.Contains(filter) ||
-                    u.Email.Contains(filter) ||
-                    u.NombreCompleto.Contains(filter));
-            }
+                ViewBag.Filter = filter;
 
-            var listado = await query
-                .Select(u => new UsuarioListadoViewModel
+                List<UsuarioListadoViewModel> registros;
+
+                // Obtener los usuarios (con proyección a ViewModel)
+                if (!string.IsNullOrEmpty(filter))
                 {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    Email = u.Email,
-                    NombreCompleto = u.NombreCompleto,                  
-                    PhoneNumber = u.PhoneNumber,
-                    EmailConfirmed = u.EmailConfirmed,
-                    TwoFactorEnabled = u.TwoFactorEnabled,
-                    Activo = (u.Activo == true)
+                    registros = await context.Users
+                        .Where(u =>
+                            u.UserName.Contains(filter) ||
+                            u.Email.Contains(filter) ||
+                            u.NombreCompleto.Contains(filter))
+                        .Select(u => new UsuarioListadoViewModel
+                        {
+                            Id = u.Id,
+                            UserName = u.UserName,
+                            Email = u.Email,
+                            NombreCompleto = u.NombreCompleto,
+                            PhoneNumber = u.PhoneNumber,
+                            EmailConfirmed = u.EmailConfirmed,
+                            TwoFactorEnabled = u.TwoFactorEnabled,
+                            Activo = u.Activo == true
+                        }).ToListAsync();
+                }
+                else
+                {
+                    registros = await context.Users
+                        .Select(u => new UsuarioListadoViewModel
+                        {
+                            Id = u.Id,
+                            UserName = u.UserName,
+                            Email = u.Email,
+                            NombreCompleto = u.NombreCompleto,
+                            PhoneNumber = u.PhoneNumber,
+                            EmailConfirmed = u.EmailConfirmed,
+                            TwoFactorEnabled = u.TwoFactorEnabled,
+                            Activo = u.Activo == true
+                        }).ToListAsync();
+                }
 
-                })
-                .ToListAsync();
+                // Paginación
+                const int pageSize = 10;
+                if (pg < 1) pg = 1;
+                int recsCount = registros.Count();
+                var pager = new Pager(recsCount, pg, pageSize);
+                int recSkip = (pg - 1) * pageSize;
+                var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
 
-            // aquí podrías paginar listado y poner ViewBag.Pager si lo necesitas
-
-            return View(listado);
+                ViewBag.Pager = pager;
+                return View(data);
+            }
+            catch (Exception)
+            {
+                TempData["mensaje"] = "Ocurrió un error al cargar la lista de usuarios.";
+                return RedirectToAction("Index"); // O a una vista de error si prefieres
+            }
         }
+
+
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
@@ -880,33 +948,153 @@ namespace PlanillaPM.Controllers
         }
 
         // POST: Usuario/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CreateUsuarioViewModel model)
+        //{
+        //    if (!ModelState.IsValid) return View(model);
+
+
+        //    // Verificar si las contraseñas coinciden
+        //    if (model.Password != model.ConfirmPassword)
+        //    {
+        //        ViewData["mensaje"] = "Las contraseñas no coinciden.";
+        //        return View(model);
+        //    }
+
+        //    var usuarioExistente = await context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+        //    if (usuarioExistente != null)
+        //    {
+        //        ViewData["mensaje"] = "El correo electrónico ya está registrado.";
+        //        return View(model);
+        //    }
+
+        //    var user = new Usuario
+        //    {
+        //        Email = model.Email,
+        //        UserName = model.UserName,
+        //        EmailConfirmed = model.EmailConfirmed,
+        //        PhoneNumber = model.PhoneNumber,
+        //        TwoFactorEnabled = model.TwoFactorEnabled,               
+        //        NombreCompleto = model.NombreCompleto,
+        //        Activo = model.Activo
+
+        //    };
+
+        //    var result = await userManager.CreateAsync(user, model.Password);
+        //    if (result.Succeeded)
+        //        return RedirectToAction(nameof(Index), new { mensaje = "Usuario creado." });
+
+        //    foreach (var error in result.Errors)
+        //        ModelState.AddModelError("", error.Description);
+
+        //    return View();
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateUsuarioViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            var user = new Usuario
+            try
             {
-                Email = model.Email,
-                UserName = model.UserName,
-                EmailConfirmed = model.EmailConfirmed,
-                PhoneNumber = model.PhoneNumber,
-                TwoFactorEnabled = model.TwoFactorEnabled,               
-                NombreCompleto = model.NombreCompleto,
-                Activo = model.Activo
+                // Verificar si las contraseñas coinciden
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ViewData["mensaje"] = "Las contraseñas no coinciden.";
+                    return View(model);
+                }
 
-            };
+                // Verificar si ya existe el usuario con ese correo
+                var usuarioExistente = await context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                if (usuarioExistente != null)
+                {
+                    ViewData["mensaje"] = "El correo electrónico ya está registrado.";
+                    return View(model);
+                }
 
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-                return RedirectToAction(nameof(Index), new { mensaje = "Usuario creado." });
+                var user = new Usuario
+                {
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    EmailConfirmed = model.EmailConfirmed,
+                    PhoneNumber = model.PhoneNumber,
+                    TwoFactorEnabled = model.TwoFactorEnabled,
+                    NombreCompleto = model.NombreCompleto,
+                    Activo = model.Activo
+                };
 
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+                var result = await userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(IndexUsuario), new { mensaje = "Usuario creado." });
 
-            return View();
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Puedes registrar el error si tienes logging implementado
+                // logger.LogError(ex, "Error al crear el usuario");
+
+                ViewData["mensaje"] = "Ha ocurrido un error inesperado al crear el usuario.";
+                return View(model);
+            }
         }
+
+
+        public async Task<IActionResult> Download(string? filter)
+        {
+            ListtoDataTableConverter converter = new ListtoDataTableConverter();
+
+            // Obtener la lista de usuarios con o sin filtro
+            var query = context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                query = query.Where(u =>
+                    u.UserName.Contains(filter) ||
+                    u.Email.Contains(filter) ||
+                    u.NombreCompleto.Contains(filter));
+            }
+
+            // Proyección a objeto anónimo para exportar solo lo necesario
+            var data = await query
+                .Select(u => new
+                {
+                    Usuario = u.UserName,
+                    NombreCompleto = u.NombreCompleto,
+                    Correo = u.Email,
+                    Teléfono = u.PhoneNumber,
+                    Confirmado = u.EmailConfirmed ? "Sí" : "No",
+                    DobleFactor = u.TwoFactorEnabled ? "Sí" : "No",
+                    Activo = u.Activo == true ? "Sí" : "No"
+                }).ToListAsync();
+
+            if (!data.Any())
+            {
+                TempData["error"] = "No se encontraron usuarios.";
+                return RedirectToAction(nameof(IndexUsuario));
+            }
+
+            DataTable table = converter.ToDataTable(data);
+            string fileName = "Usuarios.xlsx";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(table, "Usuarios");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
+
 
     }
 }

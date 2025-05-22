@@ -14,6 +14,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@if (ViewData["mensaje"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.success('@Html.Raw(ViewData["mensaje"])');
+        });
+    </script>
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -32,18 +41,18 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <form id="fSearch" method="post" asp-action="IndexUsuario">
+                                        <form id="fSearch" method="get" asp-action="IndexUsuario">
                                             <div class="row">
                                                 <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                    <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar...">
+                                                    <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
                                                     <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
                                                 </div>
                                                 <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                     <div class="btn-group btn-group-justified" role="group">
-                                                        <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                        <a asp-action="IndexUsuario" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
 
                                                         <a asp-controller="Usuario" asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
-                                                        <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                        <a asp-action="Download" class="btn " asp-route-filter="@ViewBag.Filter" style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
 
                                                     </div>
                                                 </div>
@@ -97,10 +106,7 @@
                                                         </small>
                                                     </a>
                                                 </td>
-                                                <td>
-                                                    @* <span class="badge @(user.Activo ? "bg-success" : "bg-secondary")">
-                                                        @(user.CargaTrabajo ? "Sí" : "No")
-                                                    </span> *@
+                                                <td>                                                  
                                                     <span class="badge @(user.Activo == true ? "bg-success" : "bg-secondary")">
                                                         @(user.Activo == true ? "Sí" : "No")
                                                     </span>

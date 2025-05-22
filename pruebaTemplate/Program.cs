@@ -25,9 +25,6 @@ using PlanillaPM.Servicio;
 
 
 var builder = WebApplication.CreateBuilder(args);
-//var connectionString = builder.Configuration.GetConnectionString("sDBConnection") ?? throw new InvalidOperationException("Connection string 'PlanillaContextConnection' not found.");
-
-
 
 
 var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
@@ -81,25 +78,6 @@ builder.Services.AddControllersWithViews(opciones =>
 builder.Services.AddDbContext<PlanillaContext>(opciones =>
     opciones.UseSqlServer("name=sDBConnection"));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<PlanillaContext>();
-
-
-//builder.Services.AddAuthentication().AddMicrosoftAccount(opciones =>
-//{
-//    opciones.ClientId = builder.Configuration["MicrosoftClientId"];
-//    opciones.ClientSecret = builder.Configuration["MicrosoftSecretId"];
-//});
-
-//builder.Services.AddIdentity<Usuario, IdentityRole>(opciones =>
-//{
-//    opciones.SignIn.RequireConfirmedAccount = true;
-//    opciones.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-
-//}).AddEntityFrameworkStores<PlanillaContext>()
-//.AddDefaultTokenProviders();
-
-//builder.Services.AddScoped<UserManager<Usuario>>();
-
 builder.Services.AddTransient<EmailService, EmailService>();
 
 //Utilizar nuestras propias ventanas
@@ -119,7 +97,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".PMPlanilla.Session";
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromHours(4);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });

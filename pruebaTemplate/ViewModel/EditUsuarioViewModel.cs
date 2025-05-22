@@ -9,15 +9,16 @@ namespace PlanillaPM.ViewModel
     {
         public string Id { get; set; }
 
-        [Required, EmailAddress]
+        [EmailAddress]
         [DisplayName("Email")]
+        [Required(ErrorMessage = "El Email es obligatorio.")]
         public string Email { get; set; }
 
         [DisplayName("Activo")]
         public bool Activo { get; set; }
-
-        [Required]
+      
         [DisplayName("UserName")]
+        [Required(ErrorMessage = "El UserName es obligatorio.")]
         public string UserName { get; set; }
 
         [DisplayName("Email confirmado")]

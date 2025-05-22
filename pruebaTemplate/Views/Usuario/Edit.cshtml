@@ -4,6 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+@if (ViewData["mensaje"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            toastr.error('@Html.Raw(ViewData["mensaje"])');
+        });
+    </script>
+
+}
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -69,4 +80,22 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+         const userNameInput = document.getElementById("UserName");
+
+        userNameInput.addEventListener("input", function () {
+            const value = this.value;
+            const regex = /^[a-zA-Z0-9]*$/; // Solo letras y números
+
+            const validationSpan = document.querySelector("span[data-valmsg-for='UserName']");
+
+            if (!regex.test(value)) {
+                validationSpan.textContent = "El nombre de usuario solo puede contener letras y números (sin espacios).";
+                validationSpan.classList.add("text-danger");
+            } else {
+                validationSpan.textContent = "";
+                validationSpan.classList.remove("text-danger");
+            }
+        });
+    </script>
 }

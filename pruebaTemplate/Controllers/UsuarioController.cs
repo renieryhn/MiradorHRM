@@ -902,45 +902,105 @@ namespace PlanillaPM.Controllers
         }
 
         // POST: Usuario/Edit
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(EditUsuarioViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {              
+        //        return View(model);
+        //    }
+
+        //    var user = await userManager.FindByIdAsync(model.Id);
+        //    if (user == null) return NotFound();
+
+        //    // Actualiza sólo los campos permitidos
+        //    user.Email = model.Email;
+        //    user.UserName = model.UserName;
+        //    user.EmailConfirmed = model.EmailConfirmed;
+        //    user.PhoneNumber = model.PhoneNumber;
+        //    user.TwoFactorEnabled = model.TwoFactorEnabled;          
+        //    user.NombreCompleto = model.NombreCompleto;
+        //    user.Activo = model.Activo;
+
+
+
+        //    var result = await userManager.UpdateAsync(user);
+        //    if (result.Succeeded)
+        //    {
+        //        TempData["mensaje"] = "Usuario actualizado.";
+        //        return RedirectToAction("IndexUsuario", "Usuario");
+        //    }
+
+        //    // Si falla, mostramos los errores y volvemos a la vista
+        //    foreach (var err in result.Errors)
+        //        ModelState.AddModelError("", err.Description);
+
+        //    return View(model);
+
+        //}
+
+        // GET: Usuario/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
-            {              
+            {
                 return View(model);
             }
 
-            var user = await userManager.FindByIdAsync(model.Id);
-            if (user == null) return NotFound();
-
-            // Actualiza sólo los campos permitidos
-            user.Email = model.Email;
-            user.UserName = model.UserName;
-            user.EmailConfirmed = model.EmailConfirmed;
-            user.PhoneNumber = model.PhoneNumber;
-            user.TwoFactorEnabled = model.TwoFactorEnabled;          
-            user.NombreCompleto = model.NombreCompleto;
-            user.Activo = model.Activo;
-
-
-
-            var result = await userManager.UpdateAsync(user);
-            if (result.Succeeded)
+            try
             {
-                TempData["mensaje"] = "Usuario actualizado.";
+
+                var usuarioExistente = await context.Users
+                        .FirstOrDefaultAsync(u => u.Email == model.Email && u.Id != model.Id);
+
+                if (usuarioExistente != null)
+                {
+                    ViewData["mensaje"] = "El correo electrónico ya está registrado por otro usuario.";
+                    return View(model);
+                }
+
+                var user = await userManager.FindByIdAsync(model.Id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                // Actualiza sólo los campos permitidos
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.EmailConfirmed = model.EmailConfirmed;
+                user.PhoneNumber = model.PhoneNumber;
+                user.TwoFactorEnabled = model.TwoFactorEnabled;
+                user.NombreCompleto = model.NombreCompleto;
+                user.Activo = model.Activo;
+
+                var result = await userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["mensaje"] = "Usuario actualizado.";
+                    return RedirectToAction("IndexUsuario", "Usuario");
+                }
+
+                // Mostrar errores de Identity
+                foreach (var err in result.Errors)
+                    ModelState.AddModelError("", err.Description);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Opcional: loggear el error
+                // _logger.LogError(ex, "Error al actualizar el usuario");
+
+                TempData["error"] = "Ocurrió un error inesperado al actualizar el usuario.";
                 return RedirectToAction("IndexUsuario", "Usuario");
             }
-
-            // Si falla, mostramos los errores y volvemos a la vista
-            foreach (var err in result.Errors)
-                ModelState.AddModelError("", err.Description);
-
-            return View(model);
-
         }
 
-        // GET: Usuario/Create
         [HttpGet]
         public IActionResult Create()
         {

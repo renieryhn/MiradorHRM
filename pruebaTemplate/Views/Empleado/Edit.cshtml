@@ -312,6 +312,13 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label asp-for="CodigoReloj" class="control-label"></label>
+                                <input asp-for="CodigoReloj" class="form-control" type="number" />
+                                <span asp-validation-for="CodigoReloj" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label asp-for="TipoCuentaBancaria"></label>
                                 @Html.DropDownListFor(model => model.TipoCuentaBancaria, new SelectList(ViewBag.TipoCuentaBancaria), "Seleccione el Tipo de Cuenta Bancaria", new { @class = "form-control select2bs4 is-invalid" })
                                 <span asp-validation-for="TipoCuentaBancaria" class="text-danger"></span>

@@ -1,0 +1,142 @@
+﻿@model IEnumerable<PlanillaPM.Models.EmpleadoHorasTrabajo>
+@using PlanillaPM.Models;
+
+        @{
+        ViewData["Title"] = "Index";
+        Pager pager = new Pager();
+        int PageNo = 0;
+        if (ViewBag.Pager != null)
+        {
+        pager = ViewBag.Pager;
+        PageNo = pager.CurrentPage;
+        }
+            Layout = "~/Views/Shared/_Layout.cshtml";
+        }
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary">
+                    <div class="card-header" style="background-color: var(--blue);">
+                        <h3 class="card-title">EmpleadoHorasTrabajo</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-vertical">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <form id="fSearch" method="post" asp-action="Index">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 btn-group btn-group-justified" role="group">
+                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
+                                                                <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                            </div>
+                                                            <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
+                                                                <div class="btn-group btn-group-justified" role="group">
+                                                                    <a asp-action="Index" class="btn " style="background-color: var(--blue);"><i class="fa fa-refresh" style="color: white;"></i></a>
+                                                                    <a asp-action="Create" class="btn " style="background-color: var(--blue);"><i class="fa fa-plus" style="color: white;"></i></a>
+                                                                    <a asp-action="Download" class="btn " style="background-color: var(--blue);"><i class="fa fa-file-excel-o" style="color: white;"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-1">
+                                <div id="resultados" class="table-responsive table-striped table-sm">
+                                <table id="tablaHorasEmpleado" class="table table-striped table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th></th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().IdEmpleado)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().DiaSemana)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Entrada)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Salida)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Receso_Desde)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Receso_Hasta)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().IdEmpleadoHorario)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalHorasReloj)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalNormales)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalDiurna)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalNocturna)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalMixta)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().TotalNoTrabajado)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Estado)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Activo)</th>
+                                            <th data-sortable="true">@Html.DisplayNameFor(model => model.First().Dispositivo)</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @if (Model != null && Model.Any())
+                                        {
+                                            int count = (pager?.CurrentPage ?? 1) * (pager?.PageSize ?? 10) - (pager?.PageSize ?? 10);
+                                            foreach (var item in Model)
+                                            {
+                                                count++;
+
+                                                <tr>
+                                                    <td>@count</td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <a asp-action="Edit" asp-route-id="@item.IdEmpleadoHorasTrabajo" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+                                                            <a asp-action="Details" asp-route-id="@item.IdEmpleadoHorasTrabajo" class="btn btn-sm btn-info"><i class="fa fa-address-card-o"></i></a>
+                                                            <a asp-action="Delete" asp-route-id="@item.IdEmpleadoHorasTrabajo" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
+                                                        </div>
+                                                    </td>
+                                                    <td>@item.IdEmpleadoNavigation?.NombreCompleto</td>
+                                                    <td>@item.DiaSemana</td>
+                                                    <td>@item.Entrada?.ToString(@"hh\:mm")</td>
+                                                    <td>@item.Salida?.ToString(@"hh\:mm")</td>
+                                                    <td>@item.Receso_Desde?.ToString(@"hh\:mm")</td>
+                                                    <td>@item.Receso_Hasta?.ToString(@"hh\:mm")</td>
+                                                    <td>
+                                                        @item.IdEmpleadoHorarioNavigation?.IdHorarioBaseNavigation?.NombreHorario
+                                                    </td>
+                                                    <td>@item.TotalHorasReloj?.ToString(@"hh\:mm")</td>
+                                                    <td>@item.TotalNormales?.ToString(@"hh\:mm")</td>
+                                                    <td>@item.TotalDiurna</td>
+                                                    <td>@item.TotalNocturna</td>
+                                                    <td>@item.TotalMixta</td>
+                                                    <td>@item.TotalNoTrabajado</td>
+                                                    <td>@item.Estado</td>
+                                                    <td>@item.Activo</td>
+                                                    <td>@item.Dispositivo</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td colspan="100%" class="text-center">No hay registros disponibles.</td></tr>
+                                        }
+                                    </tbody>
+
+
+                                </table>
+
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    <partial name="_Pager" model="@pager" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+

@@ -1,0 +1,158 @@
+﻿@model PlanillaPM.Models.EmpleadoHorasTrabajo
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+
+    <div class="alert alert-danger alert-dismissible">
+       
+        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+        ¿Estás seguro de que quieres eliminar esto?
+    </div>
+     <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Detalle de EmpleadoHorasTrabajo</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">   
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.IdEmpleado)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.IdEmpleado)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Fecha)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Fecha)
+                        </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Entrada)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Entrada)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Salida)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Salida)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Receso_Desde)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Receso_Desde)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Receso_Hasta)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Receso_Hasta)
+                    </dd>
+                    <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TotalNormales)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TotalNormales)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TotalDiurna)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TotalDiurna)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TotalNocturna)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TotalNocturna)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TotalMixta)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TotalMixta)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.TotalNoTrabajado)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.TotalNoTrabajado)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Estado)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Estado)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Activo)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Activo)
+                        </dd>                     
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Dispositivo)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Dispositivo)
+                        </dd>
+                </div>
+            </div>
+            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                <h5>Responsable</h5>
+                <br />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FechaCreacion" class="control-label"></label>
+                            <input asp-for="FechaCreacion" class="form-control" disabled />
+                            <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="FechaModificacion" class="control-label"></label>
+                            <input asp-for="FechaModificacion" class="form-control" disabled />
+                            <span asp-validation-for="FechaModificacion" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="CreadoPor" class="control-label"></label>
+                            <input asp-for="CreadoPor" class="form-control" disabled />
+                            <span asp-validation-for="CreadoPor" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="ModificadoPor" class="control-label"></label>
+                            <input asp-for="ModificadoPor" class="form-control" disabled />
+                            <span asp-validation-for="ModificadoPor" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+         <div class="card-footer">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="IdEmpleadoHorasTrabajo" />
+                <input type="submit" value="Delete" class="btn btn-danger" /> 
+                <a asp-action="Index"  class="btn btn-secondary">Regresar a la Lista</a>
+            </form>
+          </div>
+    </div>
+</div>
+

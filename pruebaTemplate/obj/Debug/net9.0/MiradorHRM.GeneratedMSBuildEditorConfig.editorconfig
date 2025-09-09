@@ -1,0 +1,1033 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = MiradorHRM
+build_property.RootNamespace = MiradorHRM
+build_property.ProjectDir = C:\Trabajo\Mirador\HRM\MiradorHRM\pruebaTemplate\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = true
+build_property.MSBuildProjectDirectory = C:\Trabajo\Mirador\HRM\MiradorHRM\pruebaTemplate
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Components/UploadImage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xVcGxvYWRJbWFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Banco/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuY29cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Banco/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuY29cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Banco/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuY29cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Banco/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuY29cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Banco/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuY29cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Cargo/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FyZ29cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Cargo/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FyZ29cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Cargo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FyZ29cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Cargo/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FyZ29cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Cargo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FyZ29cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/ClaseEmpleado/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VFbXBsZWFkb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/ClaseEmpleado/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VFbXBsZWFkb1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/ClaseEmpleado/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VFbXBsZWFkb1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/ClaseEmpleado/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VFbXBsZWFkb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/ClaseEmpleado/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xhc2VFbXBsZWFkb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/Constancia1.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxDb25zdGFuY2lhMS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/Constancia2.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxDb25zdGFuY2lhMi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/ConstanciaTrabajo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxDb25zdGFuY2lhVHJhYmFqby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/FContrato.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxGQ29udHJhdG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/FContratoCorto.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxGQ29udHJhdG9Db3J0by5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Constancia/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc3RhbmNpYVxfTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/CuentaPorCobrar/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VlbnRhUG9yQ29icmFyXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/CuentaPorCobrar/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VlbnRhUG9yQ29icmFyXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/CuentaPorCobrar/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VlbnRhUG9yQ29icmFyXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/CuentaPorCobrar/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VlbnRhUG9yQ29icmFyXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/CuentaPorCobrar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VlbnRhUG9yQ29icmFyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Deduccion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkdWNjaW9uXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Deduccion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkdWNjaW9uXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Deduccion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkdWNjaW9uXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Deduccion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkdWNjaW9uXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Deduccion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVkdWNjaW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Departamento/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Departamento/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Departamento/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Departamento/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Departamento/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/DiaFestivo/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhRmVzdGl2b1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/DiaFestivo/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhRmVzdGl2b1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/DiaFestivo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhRmVzdGl2b1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/DiaFestivo/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhRmVzdGl2b1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/DiaFestivo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhRmVzdGl2b1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Diagrama/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlhZ3JhbWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Division/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aXNpb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Division/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aXNpb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Division/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aXNpb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Division/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aXNpb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Division/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGl2aXNpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoActivo/_EmpleadoActivoIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BY3Rpdm9cX0VtcGxlYWRvQWN0aXZvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoAusencium/_EmpleadoAusenciumIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9BdXNlbmNpdW1cX0VtcGxlYWRvQXVzZW5jaXVtSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/FichaEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xGaWNoYUVtcGxlYWRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContacto/_EmpleadoContactoIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250YWN0b1xfRW1wbGVhZG9Db250YWN0b0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoContrato/_EmpleadoContratoIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Db250cmF0b1xfRW1wbGVhZG9Db250cmF0b0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoDeduccion/_EmpleadoDeduccionIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9EZWR1Y2Npb25cX0VtcGxlYWRvRGVkdWNjaW9uSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoEducacion/_EmpleadoEducacionIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FZHVjYWNpb25cX0VtcGxlYWRvRWR1Y2FjaW9uSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoExperiencium/_EmpleadoExperienciumIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9FeHBlcmllbmNpdW1cX0VtcGxlYWRvRXhwZXJpZW5jaXVtSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHabilidad/_EmpleadoHabilidadIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9IYWJpbGlkYWRcX0VtcGxlYWRvSGFiaWxpZGFkSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3JhcmlvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorario/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3JhcmlvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorario/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3JhcmlvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3JhcmlvXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3JhcmlvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorasTrabajo/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3Jhc1RyYWJham9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorasTrabajo/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3Jhc1RyYWJham9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorasTrabajo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3Jhc1RyYWJham9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorasTrabajo/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3Jhc1RyYWJham9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoHorasTrabajo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9Ib3Jhc1RyYWJham9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoImpuesto/_EmpleadoImpuestoIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbXB1ZXN0b1xfRW1wbGVhZG9JbXB1ZXN0b0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/EmpleadoIngreso/_EmpleadoIngresoIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9JbmdyZXNvXF9FbXBsZWFkb0luZ3Jlc29JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/FichaEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cRmljaGFFbXBsZWFkby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empleado/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empresa/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empresa/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empresa/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empresa/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Empresa/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wcmVzYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Home/Bienvenido.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxCaWVudmVuaWRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Home/NoPermissionAccess.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxOb1Blcm1pc3Npb25BY2Nlc3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Horario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Horario/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Horario/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Horario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Horario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/_CrearImpuestoTabla.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cX0NyZWFySW1wdWVzdG9UYWJsYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Impuesto/_EditarImpuestoTabla.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wdWVzdG9cX0VkaXRhckltcHVlc3RvVGFibGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ingreso/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5ncmVzb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ingreso/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5ncmVzb1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ingreso/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5ncmVzb1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ingreso/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5ncmVzb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ingreso/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5ncmVzb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/MenuSuperior/Empleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVN1cGVyaW9yXEVtcGxlYWRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/MenuSuperior/Perfil.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVN1cGVyaW9yXFBlcmZpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Monedum/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9uZWR1bVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Monedum/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9uZWR1bVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Monedum/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9uZWR1bVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Monedum/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9uZWR1bVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Monedum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9uZWR1bVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/NominaEmpleado/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hRW1wbGVhZG9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/NominaEmpleado/IDIEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hRW1wbGVhZG9cSURJRW1wbGVhZG8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/NominaEmpleado/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hRW1wbGVhZG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Nomina/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Nomina/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Nomina/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Nomina/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Nomina/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm9taW5hXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Permission/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVybWlzc2lvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Producto/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Producto/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Producto/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Producto/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Producto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Roles/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Roles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/Notification.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXE5vdGlmaWNhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_Empleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9FbXBsZWFkby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_LinksLogin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MaW5rc0xvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_MenuDinamico.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NZW51RGluYW1pY28uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_Pager.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoAusencium/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0F1c2VuY2l1bVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoAusencium/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0F1c2VuY2l1bVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoAusencium/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0F1c2VuY2l1bVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoAusencium/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0F1c2VuY2l1bVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoAusencium/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0F1c2VuY2l1bVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoContrato/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0NvbnRyYXRvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoContrato/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0NvbnRyYXRvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoContrato/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0NvbnRyYXRvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoContrato/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0NvbnRyYXRvXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoContrato/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0NvbnRyYXRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoHorario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0hvcmFyaW9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoHorario/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0hvcmFyaW9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoHorario/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0hvcmFyaW9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoHorario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0hvcmFyaW9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoHorario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0hvcmFyaW9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoNomina/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb05vbWluYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoNomina/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb05vbWluYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoNomina/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb05vbWluYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoNomina/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb05vbWluYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/TipoNomina/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb05vbWluYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ubicacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVWJpY2FjaW9uXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ubicacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVWJpY2FjaW9uXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ubicacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVWJpY2FjaW9uXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ubicacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVWJpY2FjaW9uXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ubicacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVWJpY2FjaW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/UserRoles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclJvbGVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Users/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ConfirmarEmail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDb25maXJtYXJFbWFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Email.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xFbWFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ForgotPasswordConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xGb3Jnb3RQYXNzd29yZENvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/IndexUsuario.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleFVzdWFyaW8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Listado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xMaXN0YWRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/PersonalData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xQZXJzb25hbERhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/RegistrarseConfirmación.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZWdpc3RyYXJzZUNvbmZpcm1hY2nDs24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/Registro.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZWdpc3Ryby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/ResetPasswordConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xSZXNldFBhc3N3b3JkQ29uZmlybWF0aW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Usuario/_layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xfbGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/VacacionDetall/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25EZXRhbGxcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/VacacionDetall/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25EZXRhbGxcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/VacacionDetall/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25EZXRhbGxcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/VacacionDetall/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25EZXRhbGxcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/VacacionDetall/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25EZXRhbGxcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Vacacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Vacacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Vacacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Vacacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Vacacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmFjYWNpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ventana/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFuYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ventana/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFuYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ventana/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFuYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ventana/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFuYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Ventana/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFuYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Viatico/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlhdGljb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Viatico/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlhdGljb1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Viatico/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlhdGljb1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Viatico/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlhdGljb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Viatico/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlhdGljb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Trabajo/Mirador/HRM/MiradorHRM/pruebaTemplate/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-1z1ea0i8zf

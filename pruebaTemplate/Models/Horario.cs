@@ -88,4 +88,7 @@ public partial class Horario
     public virtual ICollection<EmpleadoHorario> EmpleadoHorarios { get; set; } = new List<EmpleadoHorario>();
 
     public virtual TipoHorario IdTipoHorarioNavigation { get; set; } = null!;
+
+    
+
 }

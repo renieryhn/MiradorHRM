@@ -122,6 +122,11 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
 
     public DbSet<RoleVentana> RoleVentana { get; set; }
 
+
+
+    public DbSet<EmpleadoHorasTrabajo> EmpleadoHorasTrabajos { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:sDBConnection");
 
@@ -340,7 +345,25 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasForeignKey(d => d.IdUbicacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Empleado_Ubicacion");
+
+            entity.HasMany(e => e.EmpleadoHorasTrabajos)
+.WithOne(eht => eht.IdEmpleadoNavigation)
+.HasForeignKey(eht => eht.IdEmpleado)
+.OnDelete(DeleteBehavior.ClientSetNull)
+.HasConstraintName("FK_Empleado_EmpleadoHorasTrabajo");
+
+            entity.HasMany(e => e.EmpleadoHorarios)
+      .WithOne(eh => eh.IdEmpleadoNavigation)
+      .HasForeignKey(eh => eh.IdEmpleado)
+      .OnDelete(DeleteBehavior.ClientSetNull)
+      .HasConstraintName("FK_Empleado_EmpleadoHorario");
+
+           
+
+
         });
+
+
 
         modelBuilder.Entity<EmpleadoActivo>(entity =>
         {
@@ -613,6 +636,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasConstraintName("FK_EmpleadoHabilidad_Empleado");
         });
 
+
         modelBuilder.Entity<EmpleadoHorario>(entity =>
         {
             entity.HasKey(e => e.IdEmpleadoHorario).HasName("PK_EmpleadoTurno");
@@ -625,13 +649,7 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .HasDefaultValue("Admin")
                 .UseCollation("SQL_Latin1_General_CP1_CI_AS");
             entity.Property(e => e.FechaCreacion).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.IndComida).HasDefaultValue(false);
-            entity.Property(e => e.IndJueves).HasDefaultValue(true);
-            entity.Property(e => e.IndLunes).HasDefaultValue(true);
-            entity.Property(e => e.IndMartes).HasDefaultValue(true);
-            entity.Property(e => e.IndMiercoles).HasDefaultValue(true);
-            entity.Property(e => e.IndViernes).HasDefaultValue(true);
+            entity.Property(e => e.FechaModificacion).HasDefaultValueSql("(getdate())");                 
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50)
                 .HasDefaultValue("Admin")
@@ -643,11 +661,21 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_EmpleadoHorario_Horario");
 
-            entity.HasOne(d => d.IdempleadoNavigation).WithMany(p => p.EmpleadoHorarios)
-                .HasForeignKey(d => d.Idempleado)
+            entity.HasOne(d => d.IdEmpleadoNavigation).WithMany(p => p.EmpleadoHorarios)
+                .HasForeignKey(d => d.IdEmpleado)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_EmpleadoHorario_Empleado");
         });
+
+        modelBuilder.Entity<EmpleadoHorario>()
+    .HasOne(eh => eh.IdHorarioBaseNavigation)
+    .WithMany(h => h.EmpleadoHorarios)
+    .HasForeignKey(eh => eh.IdHorarioBase)
+    .OnDelete(DeleteBehavior.ClientSetNull)
+    .HasConstraintName("FK_EmpleadoHorario_Horario");
+
+
+
 
         modelBuilder.Entity<EmpleadoIngreso>(entity =>
         {
@@ -1666,6 +1694,50 @@ public partial class PlanillaContext : IdentityDbContext<Usuario>
             entity.Property(e => e.ModificadoPor)
                 .HasMaxLength(50);
         });
+
+
+
+        modelBuilder.Entity<EmpleadoHorasTrabajo>(entity =>
+        {
+            entity.ToTable("EmpleadoHorasTrabajo");
+
+            entity.HasKey(e => e.IdEmpleadoHorasTrabajo);
+
+            entity.Property(e => e.IdEmpleado).IsRequired();
+
+            entity.Property(e => e.Fecha)
+                  .HasColumnType("date")
+                  .IsRequired();
+
+
+          
+            // Totales
+            entity.Property(e => e.TotalNormales).HasColumnType("time(7)").IsRequired();
+            entity.Property(e => e.TotalDiurna).HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(e => e.TotalNocturna).HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(e => e.TotalMixta).HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(e => e.TotalNoTrabajado).HasColumnType("numeric(18,2)").IsRequired();
+
+            // Otros campos
+            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime").IsRequired();
+            entity.Property(e => e.FechaModificacion).HasColumnType("datetime").IsRequired();
+            entity.Property(e => e.CreadoPor).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.ModificadoPor).HasMaxLength(50).IsRequired();
+            entity.Property(e => e.Dispositivo).HasMaxLength(50).IsRequired();
+
+            // Relación
+            entity.HasOne(e => e.IdEmpleadoNavigation)
+                  .WithMany(e => e.EmpleadoHorasTrabajos)
+                  .HasForeignKey(e => e.IdEmpleado)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_EmpleadoHorasTrabajo_Empleado");
+
+           
+
+
+        });
+
 
 
 

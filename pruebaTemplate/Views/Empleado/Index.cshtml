@@ -12,6 +12,10 @@
         pager = ViewBag.Pager;
         PageNo = pager.CurrentPage;
     }
+
+    var estadoActual = Convert.ToString(ViewBag.CurrentEstado);
+    var currentTipoNomina = Convert.ToString(ViewBag.CurrentIdTipoNomina);
+    var currentGenero = Convert.ToString(ViewBag.CurrentGenero);
 }
 
 <div class="container-fluid">
@@ -34,13 +38,61 @@
                             <div class="panel-body">
                                 <div class="form-vertical">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-12">
                                             <div class="form-group">
                                                 <form id="fSearch" method="post" asp-action="Index">
                                                     <div class="row">
-                                                        <div class="col-sm-6 btn-group btn-group-justified" role="group">
-                                                            <input type="text" style="width: 300px;" id="inNombre" class="form-control" name="filter" placeholder="Buscar..." value="@ViewBag.Filter">
-                                                            <button class="btn " style="background-color: var(--blue)" type="submit" class="btn btn-info"><i class="fa fa-search" style="color: white;"></i></button>
+                                                        <div class="row mb-2">
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="filter" class="form-control" placeholder="Buscar por nombre" value="@ViewBag.Filter" />
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="telefono" class="form-control" placeholder="Teléfono" value="@ViewBag.CurrentTelefono" />
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <input type="text" name="identidad" class="form-control" placeholder="Identidad" value="@ViewBag.CurrentIdentidad" />
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <select name="genero" class="form-control">
+                                                                    <option value="">Seleccionar Género</option>
+                                                                    <option value="Masculino" selected="@(currentGenero == "Masculino")">Masculino</option>
+                                                                    <option value="Femenino" selected="@(currentGenero == "Femenino")">Femenino</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-2">
+                                                            <div class="col-sm-3">
+                                                                <select name="estado" class="form-control">
+                                                                    <option value="">Seleccionar Estado</option>
+                                                                    <option value="true" selected="@(estadoActual == "true")">Activo</option>
+                                                                    <option value="false" selected="@(estadoActual == "false")">Inactivo</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <select name="idTipoNomina" class="form-control">
+                                                                    <option value="">Seleccionar Tipo de Nómina</option>
+                                                                    @foreach (var tipo in ViewBag.TipoNominas as List<TipoNomina>)
+                                                                    {
+                                                                        <option value="@tipo.IdTipoNomina" selected="@(currentTipoNomina == tipo.IdTipoNomina.ToString())">
+                                                                            @tipo.NombreTipoNomina
+                                                                        </option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <button class="btn btn-primary w-100" type="submit" style="background-color: var(--blue);">
+                                                                    <i class="fa fa-search"></i> Buscar
+                                                                </button>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <a asp-action="Index" class="btn btn-secondary w-100" style="background-color: var(--blue);">
+                                                                    <i class="fa fa-times"></i> Limpiar
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                         <div class="col-sm-6 btn-toolbar" role="toolbar" id="toolbar">
                                                             <div class="btn-group btn-group-justified" role="group">
@@ -95,6 +147,9 @@
                                                 @Html.DisplayNameFor(model => model.Telefono)
                                             </th>
                                             <th>
+                                                @Html.DisplayNameFor(model => model.CodigoReloj)
+                                            </th>
+                                            <th>
                                                 @Html.DisplayNameFor(model => model.CiudadResidencia)
                                             </th>
                                             <th>
@@ -133,9 +188,7 @@
                                             <th>
                                                 @Html.DisplayNameFor(model => model.NumeroRegistroTributario)
                                             </th>
-                                            <th>
-                                                @Html.DisplayNameFor(model => model.SalarioBase)
-                                            </th>
+                                            
 
                                         </tr>
                                     </thead>
@@ -191,6 +244,9 @@
                                                 <!-- Continuar agregando más celdas según sea necesario -->
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.Telefono)
+                                                </td> 
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.CodigoReloj)
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.CiudadResidencia)
@@ -243,9 +299,7 @@
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.NumeroRegistroTributario)
                                                 </td>
-                                                <td>
-                                                    @string.Format("{0:N2}", item.SalarioBase)
-                                                </td>
+                                              
                                             </tr>
                                         }
                                     </tbody>

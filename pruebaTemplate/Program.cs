@@ -1,26 +1,27 @@
+using System.Configuration;
+using System.Globalization;
+using System.Security.Claims;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder.Extensions;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PlanillaPM.Constants;
 using PlanillaPM.Models;
 using PlanillaPM.Permission;
 using PlanillaPM.Services;
 using PlanillaPM.Servicio;
-using Syncfusion.Licensing;
-using System.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using PlanillaPM.Constants;
-using System.Security.Claims;
 using PlanillaPM.Servicio;
+using Syncfusion.Licensing;
 
 
 
@@ -111,6 +112,14 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = false;
 
     // Otros ajustes opcionales...
+});
+
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = long.MaxValue; // Aumenta límite del form completo
+    options.MultipartHeadersLengthLimit = int.MaxValue;
 });
 
 var app = builder.Build();

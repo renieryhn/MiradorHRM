@@ -11,6 +11,10 @@ namespace PlanillaPM.Models;
 public partial class Empleado
 {
     public int IdEmpleado { get; set; }
+
+
+    [DisplayName("Codigo Reloj")]
+    public int? CodigoReloj { get; set; }
     [DisplayName("Código Interno")]
     public string? CodigoInterno { get; set; }
 
@@ -186,6 +190,7 @@ public partial class Empleado
     public virtual ICollection<EmpleadoHorario> EmpleadoHorarios { get; set; } = new List<EmpleadoHorario>();
 
     public virtual ICollection<EmpleadoIngreso> EmpleadoIngresos { get; set; } = new List<EmpleadoIngreso>();
+    public virtual ICollection<EmpleadoHorasTrabajo> EmpleadoHorasTrabajos { get; set; } = new List<EmpleadoHorasTrabajo>();
 
     public virtual ICollection<EmpleadoSalarioHistorico> EmpleadoSalarioHistoricos { get; set; } = new List<EmpleadoSalarioHistorico>();
 

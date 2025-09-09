@@ -1,0 +1,405 @@
+﻿@model PlanillaPM.Models.EmpleadoHorasTrabajo
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    /* Agregar en tu CSS */
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .text-danger {
+        font-weight: bold;
+    }
+
+    .text-success {
+        font-weight: bold;
+    }
+
+    .table-responsive {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    /* Congelar la columna de empleado */
+    th:first-child, td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: white;
+        z-index: 1;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Crear Registro de Horas de Empleado</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <form id="formImportarHoras" enctype="multipart/form-data" method="post">
+                            <div class="form-group">
+                                <label for="archivo">Importar archivo de asistencias:</label>
+                                <input type="file" name="archivo" class="form-control" required accept=".csv,.xlsx" />
+                            </div>
+                            <button id="btnImportarHoras" class="btn btn-success">Importar Horas</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="formCrearHoras" method="post">
+            <input type="hidden" id="JsonRegistros" name="JsonRegistros" />
+            @Html.AntiForgeryToken()
+
+
+            <div class="card-body">
+                <div class="callout callout-info" style="border-left-color: var(--blue);">
+                    <h5>Información General</h5>
+
+                    <div class="row">
+                       
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Dispositivo" class="control-label"></label>
+                                <input asp-for="Dispositivo" class="form-control" readonly />
+                                <span asp-validation-for="Dispositivo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- System Fields -->
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="TotalNormales" class="control-label"></label>
+                                <input asp-for="TotalNormales" class="form-control" value="0" readonly />
+                                <span asp-validation-for="TotalNormales" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="TotalDiurna" class="control-label"></label>
+                                <input asp-for="TotalDiurna" class="form-control" value="0" readonly />
+                                <span asp-validation-for="TotalDiurna" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="TotalNocturna" class="control-label"></label>
+                                <input asp-for="TotalNocturna" class="form-control" value="0" readonly />
+                                <span asp-validation-for="TotalNocturna" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="TotalMixta" class="control-label"></label>
+                                <input asp-for="TotalMixta" class="form-control" value="0" readonly />
+                                <span asp-validation-for="TotalMixta" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Weekly Schedule Table -->
+                <div class="card mt-4">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0">Horario Semanal</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
+                            <table class="table table-bordered table-hover table-striped">
+                                <tr>
+                                    <th style="min-width: 200px;">Empleado</th>
+                                    <th style="min-width: 120px;">Día</th>
+                                    <th style="min-width: 100px;">Entrada</th>
+                                    <th style="min-width: 100px;">Salida</th>
+                                    <th style="min-width: 120px;">Receso Desde</th>
+                                    <th style="min-width: 120px;">Receso Hasta</th>
+                                    <th style="min-width: 100px;">Horas</th>
+                                    <th style="min-width: 120px;">Tipo Jornada</th>
+                                    <th style="min-width: 120px;">Estado de Captura</th>
+                                </tr>
+                                <tbody id="tablaHorasEmpleado">
+                                    <!-- Las filas se llenarán dinámicamente -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="Registros[${i}].IdEmpleado" value="${dia.idEmpleado}" />
+
+            </div>
+            <div class="card-footer">
+                @* <input type="submit" value="Crear" class="btn btn-primary" style="background-color: var(--blue);" /> *@
+                <button type="button" id="btnCrearHoras" class="btn btn-primary" style="background-color: var(--blue);">Crear</button>
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            // Initialize select2
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+
+            function parseTime(timeString) {
+                const parts = timeString.split(':');
+                return {
+                    hours: parseInt(parts[0]),
+                    minutes: parseInt(parts[1])
+                };
+            }
+
+
+            $(document).on('change', '.entrada, .salida, .receso-desde, .receso-hasta', function() {
+            const $row = $(this).closest('tr');
+            calcularHoras($row);
+        });
+
+        function calcularHoras($row) {
+            const entrada = $row.find('.entrada').val();
+            const salida = $row.find('.salida').val();
+            const recesoDesde = $row.find('.receso-desde').val();
+            const recesoHasta = $row.find('.receso-hasta').val();
+
+            if (!entrada || !salida || entrada === '00:00' || salida === '00:00') {
+                $row.find('.daily-hours').text('00:00').removeClass('text-success').addClass('text-danger');
+                return;
+            }
+
+            // Convertir a minutos
+            function toMinutes(time) {
+                const [h, m] = time.split(':').map(Number);
+                return h * 60 + m;
+            }
+
+            const totalMinutes = toMinutes(salida) - toMinutes(entrada);
+            let recesoMinutes = 0;
+
+            if (recesoDesde && recesoHasta && recesoDesde !== '00:00' && recesoHasta !== '00:00') {
+                recesoMinutes = toMinutes(recesoHasta) - toMinutes(recesoDesde);
+            }
+
+            const workedMinutes = totalMinutes - recesoMinutes;
+
+            if (workedMinutes <= 0) {
+                $row.find('.daily-hours').text('00:00').removeClass('text-success').addClass('text-danger');
+                return;
+            }
+
+            const hours = Math.floor(workedMinutes / 60);
+            const minutes = workedMinutes % 60;
+            const formatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+            $row.find('.daily-hours')
+                .text(formatted)
+                .removeClass('text-danger')
+                .addClass('text-success');
+        }
+
+
+        $('#btnImportarHoras').on('click', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData($('#formImportarHoras')[0]);
+
+            $.ajax({
+                url: '/EmpleadoHorasTrabajo/ImportarDesdeArchivo',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (data) {
+                    if (!data || !data.registros || data.registros.length === 0) {
+                        toastr.warning('No se encontraron datos.');
+                        return;
+                    }
+
+                    document.getElementById("Dispositivo").value = data.dispositivo || "";
+
+                    const $tbody = $("#tablaHorasEmpleado");
+                    $tbody.empty();
+
+
+                                data.registros.forEach((dia, i) => {
+            const abrev = dia.dia.substring(0, 3).toLowerCase();
+            const cap = abrev.charAt(0).toUpperCase() + abrev.slice(1);
+            const diaSemana = dia.dia.split('.').pop().trim(); // Extrae "Lunes" de "26 May. Lunes"
+
+
+        const idEmpleadoHorario = dia.idEmpleadoHorario || 0; // ✅ AQUÍ
+
+        // console.log(`Fila ${i}:`, {
+        //     Nombre: dia.nombre,
+        //     IdEmpleado: dia.idEmpleado,
+        //     Fecha: dia.fecha,
+        //     DiaSemana: diaSemana,
+        //     IdEmpleadoHorario: idEmpleadoHorario,
+        //     Entrada: dia.entrada,
+        //     Salida: dia.salida
+        // });
+
+            const row = `
+        <tr>
+            <td>${dia.nombre}</td>
+            <td>${dia.dia}</td>
+
+            <td><input type="time" class="form-control entrada" name="Registros[${i}].Entrada" value="${dia.entrada || '00:00'}" /></td>
+            <td><input type="time" class="form-control salida" name="Registros[${i}].Salida" value="${dia.salida || '00:00'}" /></td>
+            <td><input type="time" class="form-control receso-desde" name="Registros[${i}].RecesoDesde" value="${dia.recesoDesde || '00:00'}" /></td>
+            <td><input type="time" class="form-control receso-hasta" name="Registros[${i}].RecesoHasta" value="${dia.recesoHasta || '00:00'}" /></td>
+
+
+            <td class="daily-hours text-center ${dia.horas === '00:00' ? 'text-danger' : 'text-success'}">${dia.horas || '00:00'}</td>
+            <td>${dia.tipoJornada || '---'}</td>
+            <td>${dia.motivoCaptura || 'Reloj'}</td>
+
+            <!-- Hidden fields dentro del <tr> -->
+            <td style="display: none;" colspan="8">
+                <input type="hidden" name="Registros[${i}].IdEmpleado" value="${dia.idEmpleado}" />
+                <input type="hidden" name="Registros[${i}].IdEmpleadoHorario" value="${idEmpleadoHorario}" />
+                <input type="hidden" name="Registros[${i}].Fecha" value="${dia.fecha}" />
+                <input type="hidden" name="Registros[${i}].DiaSemana" value="${diaSemana}" />
+            </td>
+        </tr>`;
+
+            $tbody.append(row);
+        });
+
+
+
+                    toastr.success('Datos cargados correctamente');
+                },
+                error: function (xhr) {
+                    toastr.error('Error', 'Ocurrió un error al importar: ' + xhr.responseText);
+                }
+            });
+        });
+
+
+        $('#btnCrearHoras').on('click', function (e) {
+            e.preventDefault();
+
+            const registros = [];
+            let errorEncontrado = false;
+
+            $("#tablaHorasEmpleado tr").each(function () {
+                const $row = $(this);
+                const idEmpleado = $row.find('input[name*="IdEmpleado"]').val();
+
+                if (!idEmpleado || isNaN(parseInt(idEmpleado))) {
+                    errorEncontrado = true;
+                    toastr.error("Uno o más registros no tienen un IdEmpleado válido.");
+                    return false; // rompe el each
+                }
+
+                const idHorario = $row.find('input[name*="IdEmpleadoHorario"]').val();
+                const idEmpleadoHorario = idHorario && !isNaN(parseInt(idHorario)) ? parseInt(idHorario) : 0;
+
+                const registro = {
+                    IdEmpleado: parseInt(idEmpleado),
+                    Fecha: $row.find('input[name*="Fecha"]').val(),
+                    DiaSemana: $row.find('input[name*="DiaSemana"]').val(),
+                    Entrada: $row.find('input[name*="Desde"]').val(),
+                    Salida: $row.find('input[name*="Hasta"]').val(),
+                    RecesoDesde: $row.find('input[name*="RecesoDesde"]').val(),
+                    RecesoHasta: $row.find('input[name*="RecesoHasta"]').val(),
+                    IdEmpleadoHorario: idEmpleadoHorario
+                };
+
+               const horasTexto = $row.find('.daily-hours').text(); // formato HH:mm
+
+              if (horasTexto && horasTexto.includes(":")) {
+            const [hh, mm] = horasTexto.split(":").map(num => num.toString().padStart(2, '0'));
+            registro.TotalHorasReloj = `${hh}:${mm}:00`; // ✅ formato TimeSpan
+            } else {
+                registro.TotalHorasReloj = "00:00"; // o "00:00:00" si prefieres
+            }
+
+                    const normalesTexto = $row.find('.daily-normales').text();
+
+        if (normalesTexto && normalesTexto.includes(":")) {
+            const [hh, mm] = normalesTexto.split(":").map(num => num.toString().padStart(2, '0'));
+            registro.TotalNormales = `${hh}:${mm}:00`;
+        } else {
+            registro.TotalNormales = "00:00:00";
+        }
+    
+
+        registros.push(registro);
+            });
+
+            if (errorEncontrado) return; // no envía nada si hay errores
+
+             $('#JsonRegistros').val(JSON.stringify(registros));
+        console.log("✅ JsonRegistros generado:", $('#JsonRegistros').val());
+
+            const form = $('#formCrearHoras')[0];
+            const formData = new FormData(form);          
+          
+            $.ajax({
+                url: '/EmpleadoHorasTrabajo/Create',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                        if (res.success && res.redirectUrl) {
+            window.location.href = res.redirectUrl;
+        } else {
+            toastr.success('Registro guardado exitosamente');
+        }
+                    // window.location.href = '/EmpleadoHorasTrabajo/Index';
+                },
+                   error: function (xhr) {
+            console.error("XHR error:", xhr);
+
+            let mensaje = "Ocurrió un error desconocido";
+
+            if (xhr.responseText) {
+                mensaje = xhr.responseText;
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                mensaje = xhr.responseJSON.message;
+            }
+
+            toastr.error('Error al guardar: ' + mensaje);
+        }
+            });
+        });
+
+
+
+
+
+
+        });
+
+
+
+
+
+    </script>
+}

@@ -1,0 +1,181 @@
+﻿@model PlanillaPM.Models.EmpleadoHorario
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+
+    <div class="alert alert-danger alert-dismissible">
+
+        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+        ¿Estás seguro de que quieres eliminar esto?
+    </div>
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Detalle de EmpleadoHorario</h3>
+        </div>
+        <div class="card-body">
+            <!-- Sección de Información Básica -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Empleado</label>
+                        <input class="form-control text-center font-weight-bold" style="font-size: 1.5rem;" readonly
+                               value="@Model.IdEmpleadoNavigation?.NombreCompleto" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Horario Base</label>
+                        <input class="form-control text-center font-weight-bold" style="font-size: 1.5rem;" readonly
+                               value="@Model.IdHorarioBaseNavigation?.NombreHorario" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Días de Trabajo -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="form-check form-switch ms-4">
+                        <input class="form-check-input" type="checkbox" asp-for="IndSabado" id="sabadoCheck" disabled>
+                        <label class="form-check-label font-weight-bold" for="sabadoCheck">Trabaja Sábado</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch ms-4">
+                        <input class="form-check-input" type="checkbox" asp-for="IndDomingo" id="domingoCheck" disabled>
+                        <label class="form-check-label font-weight-bold" for="domingoCheck">Trabaja Domingo</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch ms-4">
+                        <input class="form-check-input" type="checkbox" asp-for="Activo" id="activoCheck" disabled>
+                        <label class="form-check-label font-weight-bold" for="activoCheck">Activo</label>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Tabla de horario semanal -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="tablaHorario">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Día</th>
+                            <th colspan="2" class="text-center">Hora Laboral</th>
+                            <th colspan="2" class="text-center">Receso</th>
+                            <th class="text-center">Horas Diarias</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dia in new[] {
+                                                new { Nombre = "Lunes", Desde = Model.LunDesde, Hasta = Model.LunHasta, RDesde = Model.LunRecesoDesde, RHasta = Model.LunRecesoHasta, Horas = Model.HorasLunes },
+                                                new { Nombre = "Martes", Desde = Model.MarDesde, Hasta = Model.MarHasta, RDesde = Model.MarRecesoDesde, RHasta = Model.MarRecesoHasta, Horas = Model.HorasMartes },
+                                                new { Nombre = "Miércoles", Desde = Model.MieDesde, Hasta = Model.MieHasta, RDesde = Model.MieRecesoDesde, RHasta = Model.MieRecesoHasta, Horas = Model.HorasMiercoles },
+                                                new { Nombre = "Jueves", Desde = Model.JueDesde, Hasta = Model.JueHasta, RDesde = Model.JueRecesoDesde, RHasta = Model.JueRecesoHasta, Horas = Model.HorasJueves },
+                                                new { Nombre = "Viernes", Desde = Model.VieDesde, Hasta = Model.VieHasta, RDesde = Model.VieRecesoDesde, RHasta = Model.VieRecesoHasta, Horas = Model.HorasViernes },
+                                                new { Nombre = "Sábado", Desde = Model.SabDesde, Hasta = Model.SabHasta, RDesde = Model.SabRecesoDesde, RHasta = Model.SabRecesoHasta, Horas = Model.HorasSabado },
+                                                new { Nombre = "Domingo", Desde = Model.DomDesde, Hasta = Model.DomHasta, RDesde = Model.DomRecesoDesde, RHasta = Model.DomRecesoHasta, Horas = Model.HorasDomingo },
+                                                })
+                        {
+                            if ((dia.Nombre == "Sábado" && !Model.IndSabado) || (dia.Nombre == "Domingo" && !Model.IndDomingo))
+                            {
+                                continue;
+                            }
+                            <tr>
+                                <td><strong>@dia.Nombre</strong></td>
+                                <td class="text-center">@($"{dia.Desde:hh\\:mm}")</td>
+                                <td class="text-center">@($"{dia.Hasta:hh\\:mm}")</td>
+                                <td class="text-center">@($"{dia.RDesde:hh\\:mm}")</td>
+                                <td class="text-center">@($"{dia.RHasta:hh\\:mm}")</td>
+                                <td class="text-center font-weight-bold text-primary">@dia.Horas</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Resumen -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                </div>
+
+            </div>
+
+            <!-- Resumen -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h4 class="card-title mb-0">Resumen</h4>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div class="form-group text-center">
+                                @*   <label><strong>Total Horas por Semana:</strong></label>
+                                <p class="form-control-plaintext font-weight-bold">@Html.DisplayFor(model => model.TotalHorasSemana)</p> *@
+                                <label asp-for="TotalHorasSemana" class="control-label font-weight-bold">Total Horas por Semana</label>
+                                <input name="TotalHorasSemana" id="TotalHorasSemana" asp-for="TotalHorasSemana" class="form-control text-center font-weight-bold" style="font-size: 1.5rem;" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auditoría -->
+            <div class="card mt-4">
+
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Creado por -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Creado por:</label>
+                                <p class="form-control-plaintext">@Html.DisplayFor(model => model.CreadoPor)</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Fecha Creación:</label>
+                                <p class="form-control-plaintext">@Html.DisplayFor(model => model.FechaCreacion)</p>
+                            </div>
+                        </div>
+
+                        <!-- Modificado por -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Modificado por:</label>
+                                <p class="form-control-plaintext">@Html.DisplayFor(model => model.ModificadoPor)</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Fecha Modificación:</label>
+                                <p class="form-control-plaintext">@Html.DisplayFor(model => model.FechaModificacion)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="IdEmpleadoHorario" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+            </form>
+        </div>
+    </div>
+</div>

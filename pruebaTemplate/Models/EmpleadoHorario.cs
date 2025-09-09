@@ -2,65 +2,69 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlanillaPM.Models;
 
-public partial class EmpleadoHorario
+public class EmpleadoHorario
 {
     public int IdEmpleadoHorario { get; set; }
+
     [Display(Name = "Empleado")]
-    public int Idempleado { get; set; }
-    [Display(Name = "Horario Base")]
-    public int IdHorarioBase { get; set; }
-    
-    [Display(Name = "Trabaja Lunes")]
-    public bool IndLunes { get; set; }
-    [Display(Name = "Trabaja Martes")]
-    public bool IndMartes { get; set; }
-    [Display(Name = "Trabaja Miércoles")]
-    public bool IndMiercoles { get; set; }
-    [Display(Name = "Trabaja Jueves")]
-    public bool IndJueves { get; set; }
-    [Display(Name = "Trabaja Viernes")]
-    public bool IndViernes { get; set; }
+    public int IdEmpleado { get; set; }
+
+    [Display(Name = "Horario")]
+    public int? IdHorarioBase { get; set; }
+
     [Display(Name = "Trabaja Sábado")]
     public bool IndSabado { get; set; }
+
     [Display(Name = "Trabaja Domingo")]
     public bool IndDomingo { get; set; }
+
     [Display(Name = "Lun. Desde")]
-    public TimeOnly? LunDesde { get; set; }
+    public TimeSpan? LunDesde { get; set; }
+
     [Display(Name = "Lun. Hasta")]
-    public TimeOnly? LunHasta { get; set; }
+    public TimeSpan? LunHasta { get; set; }
+
     [Display(Name = "Mar. Desde")]
-    public TimeOnly? MarDesde { get; set; }
+    public TimeSpan? MarDesde { get; set; }
+
     [Display(Name = "Mar. Hasta")]
-    public TimeOnly? MarHasta { get; set; }
+    public TimeSpan? MarHasta { get; set; }
+
     [Display(Name = "Mie. Desde")]
-    public TimeOnly? MieDesde { get; set; }
+    public TimeSpan? MieDesde { get; set; }
+
     [Display(Name = "Mie. Hasta")]
-    public TimeOnly? MieHasta { get; set; }
+    public TimeSpan? MieHasta { get; set; }
+
     [Display(Name = "Jue. Desde")]
-    public TimeOnly? JueDesde { get; set; }
+    public TimeSpan? JueDesde { get; set; }
+
     [Display(Name = "Jue. Hasta")]
-    public TimeOnly? JueHasta { get; set; }
+    public TimeSpan? JueHasta { get; set; }
+
     [Display(Name = "Vie. Desde")]
-    public TimeOnly? VieDesde { get; set; }
+    public TimeSpan? VieDesde { get; set; }
+
     [Display(Name = "Vie. Hasta")]
-    public TimeOnly? VieHasta { get; set; }
+    public TimeSpan? VieHasta { get; set; }
+
     [Display(Name = "Sab. Desde")]
-    public TimeOnly? SabDesde { get; set; }
+    public TimeSpan? SabDesde { get; set; }
+
     [Display(Name = "Sab. Hasta")]
-    public TimeOnly? SabHasta { get; set; }
+    public TimeSpan? SabHasta { get; set; }
+
     [Display(Name = "Dom. Desde")]
-    public TimeOnly? DomDesde { get; set; }
+    public TimeSpan? DomDesde { get; set; }
+
     [Display(Name = "Dom. Hasta")]
-    public TimeOnly? DomHasta { get; set; }
-    [Display(Name = "Receso a Hora de Comida")]
-    public bool? IndComida { get; set; }
-    [Display(Name = "Comidad Desde")]
-    public TimeOnly? ComidaDesde { get; set; }
-    [Display(Name = "Comifa Hasta")]
-    public TimeOnly? ComidaHasta { get; set; }
+    public TimeSpan? DomHasta { get; set; }
+ 
+
     [Display(Name = "Total de Horas por Semana")]
     public string? TotalHorasSemana { get; set; }
 
@@ -78,7 +82,67 @@ public partial class EmpleadoHorario
     [DisplayName("Modificado Por")]
     public string? ModificadoPor { get; set; }
 
-    public virtual Horario IdHorarioBaseNavigation { get; set; } = null!;
+    [DisplayName("Empleado")]
+    public virtual Empleado? IdEmpleadoNavigation { get; set; } = null!;
 
-    public virtual Empleado IdempleadoNavigation { get; set; } = null!;
+
+
+    [Display(Name = "Lun. Receso Desde")]
+    public TimeSpan? LunRecesoDesde { get; set; }
+
+    [Display(Name = "Lun. Receso Hasta")]
+    public TimeSpan? LunRecesoHasta { get; set; }
+
+    [Display(Name = "Mar. Receso Desde")]
+    public TimeSpan? MarRecesoDesde { get; set; }
+
+    [Display(Name = "Mar. Receso Hasta")]
+    public TimeSpan? MarRecesoHasta { get; set; }
+
+    [Display(Name = "Mie. Receso Desde")]
+    public TimeSpan? MieRecesoDesde { get; set; }
+
+    [Display(Name = "Mie. Receso Hasta")]
+    public TimeSpan? MieRecesoHasta { get; set; }
+
+    [Display(Name = "Jue. Receso Desde")]
+    public TimeSpan? JueRecesoDesde { get; set; }
+
+    [Display(Name = "Jue. Receso Hasta")]
+    public TimeSpan? JueRecesoHasta { get; set; }
+
+    [Display(Name = "Vie. Receso Desde")]
+    public TimeSpan? VieRecesoDesde { get; set; }
+
+    [Display(Name = "Vie. Receso Hasta")]
+    public TimeSpan? VieRecesoHasta { get; set; }
+
+    [Display(Name = "Sab. Receso Desde")]
+    public TimeSpan? SabRecesoDesde { get; set; }
+
+    [Display(Name = "Sab. Receso Hasta")]
+    public TimeSpan? SabRecesoHasta { get; set; }
+
+    [Display(Name = "Dom. Receso Desde")]
+    public TimeSpan? DomRecesoDesde { get; set; }
+
+    [Display(Name = "Dom. Receso Hasta")]
+    public TimeSpan? DomRecesoHasta { get; set; }
+
+    public virtual Horario? IdHorarioBaseNavigation { get; set; } = null!;
+
+    public string? HorasLunes { get; set; }
+
+    public string? HorasMartes { get; set; }
+
+    public string? HorasMiercoles { get; set; }
+
+    public string? HorasJueves { get; set; }
+
+    public string? HorasViernes { get; set; }
+
+    public string? HorasSabado { get; set; }
+
+    public string? HorasDomingo { get; set; }
+
 }

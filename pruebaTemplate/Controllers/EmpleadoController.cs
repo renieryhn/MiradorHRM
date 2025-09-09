@@ -315,59 +315,138 @@ namespace PlanillaPM.Controllers
 
 
         // GET: Empleado
-        public async Task<IActionResult> Index(int pg, string? filter)
+        //public async Task<IActionResult> Index(int pg, string? filter)
+        //{
+        //    try
+        //    {
+        //        ViewBag.Filter = filter;
+
+        //        List<Empleado> registros;
+
+        //        if (filter != null)
+        //        {
+        //            registros = await _context.Empleados.Where(r => r.NombreEmpleado.ToLower().Contains(filter.ToLower())).ToListAsync();
+        //        }
+        //        else
+        //        {
+        //            registros = await _context.Empleados.ToListAsync();
+        //        }
+
+        //        const int pageSize = 9;
+        //        if (pg < 1) pg = 1;
+        //        int recsCount = registros.Count();
+        //        var pager = new Pager(recsCount, pg, pageSize);
+        //        int recSkip = (pg - 1) * pageSize;
+        //        var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
+        //        this.ViewBag.Pager = pager;
+
+
+        //        foreach (var empleado in registros)
+        //        {
+        //            if (empleado.FotografiaName != null)
+        //            {
+        //                var nombreArchivo = empleado.FotografiaPath;
+
+        //            }
+        //            else
+        //            {
+        //                empleado.FotografiaPath = "EmpleadoImg/Employee.png";
+        //            }
+        //        }
+        //        var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
+        //        var IdCargoNavigation = await _context.Cargos.ToListAsync();
+        //        var IdEncargadoNavigation = await _context.Empleados.ToListAsync();
+        //        var IdBancoNavigation = await _context.Bancos.ToListAsync();
+        //        var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
+        //        var IdTipoNominaNavigation = await _context.TipoNominas.ToListAsync();
+
+        //        return View(data);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["Error"] = "Hubo un problema al cargar la página." + ex.Message;
+        //        return View();
+        //    }
+        //}
+
+        public async Task<IActionResult> Index(int pg = 1, string? filter = null, string? telefono = null, string? identidad = null,
+                                        string? genero = null, string? estado = null, int? idTipoNomina = null)
         {
             try
             {
+                // Guardar los filtros en ViewBag para mantenerlos
                 ViewBag.Filter = filter;
+                ViewBag.CurrentTelefono = telefono;
+                ViewBag.CurrentIdentidad = identidad;
+                ViewBag.CurrentGenero = genero;
+                ViewBag.CurrentEstado = estado;
+                ViewBag.CurrentIdTipoNomina = idTipoNomina?.ToString();
 
-                List<Empleado> registros;
+                // Cargar datos para dropdowns
+                ViewBag.TipoNominas = await _context.TipoNominas.ToListAsync();
 
-                if (filter != null)
-                {
-                    registros = await _context.Empleados.Where(r => r.NombreEmpleado.ToLower().Contains(filter.ToLower())).ToListAsync();
-                }
-                else
-                {
-                    registros = await _context.Empleados.ToListAsync();
-                }
+                // Preparar la consulta
+                var query = _context.Empleados
+                    .Include(e => e.IdCargoNavigation)
+                    .Include(e => e.IdDepartamentoNavigation)
+                    .Include(e => e.IdBancoNavigation)
+                    .Include(e => e.IdTipoContratoNavigation)
+                    .Include(e => e.IdTipoNominaNavigation)
+                    .Include(e => e.IdEncargadoNavigation)
+                    .AsQueryable();
 
+                // Aplicar filtros
+                if (!string.IsNullOrWhiteSpace(filter))
+                    query = query.Where(e => e.NombreEmpleado.ToLower().Contains(filter.ToLower()));
+
+                if (!string.IsNullOrWhiteSpace(telefono))
+                    query = query.Where(e => e.Telefono.Contains(telefono));
+
+                if (!string.IsNullOrWhiteSpace(identidad))
+                    query = query.Where(e => e.NumeroIdentidad.Contains(identidad));
+
+                if (!string.IsNullOrWhiteSpace(genero))
+                    query = query.Where(e => e.Genero == genero);
+
+                if (!string.IsNullOrEmpty(estado))
+                    query = query.Where(e => e.Activo == (estado == "true"));
+
+                if (idTipoNomina.HasValue)
+                    query = query.Where(e => e.IdTipoNomina == idTipoNomina.Value);
+
+                // Paginación
                 const int pageSize = 9;
-                if (pg < 1) pg = 1;
-                int recsCount = registros.Count();
+                int recsCount = await query.CountAsync();
                 var pager = new Pager(recsCount, pg, pageSize);
-                int recSkip = (pg - 1) * pageSize;
-                var data = registros.Skip(recSkip).Take(pager.PageSize).ToList();
-                this.ViewBag.Pager = pager;
+                ViewBag.Pager = pager;
 
+                var empleados = await query
+                    .OrderBy(e => e.NombreEmpleado)
+                    .Skip((pg - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
 
-                foreach (var empleado in registros)
+                // Asegurar imagen por defecto
+                foreach (var empleado in empleados)
                 {
-                    if (empleado.FotografiaName != null)
-                    {
-                        var nombreArchivo = empleado.FotografiaPath;
-
-                    }
-                    else
-                    {
+                    if (string.IsNullOrEmpty(empleado.FotografiaName))
                         empleado.FotografiaPath = "EmpleadoImg/Employee.png";
-                    }
                 }
-                var IdDepartamentoNavigation = await _context.Departamentos.ToListAsync();
-                var IdCargoNavigation = await _context.Cargos.ToListAsync();
-                var IdEncargadoNavigation = await _context.Empleados.ToListAsync();
-                var IdBancoNavigation = await _context.Bancos.ToListAsync();
-                var IdTipoContratoNavigation = await _context.TipoContratos.ToListAsync();
-                var IdTipoNominaNavigation = await _context.TipoNominas.ToListAsync();
 
-                return View(data);
+                return View(empleados);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Hubo un problema al cargar la página." + ex.Message;
-                return View();
+                TempData["Error"] = "Error al cargar los empleados";
+
+                // Si tenés un logger, podés usarlo aquí:
+                // _logger.LogError(ex, "Error en Index de EmpleadoController");
+
+                return View(new List<Empleado>()); // devolver vista vacía
             }
         }
+
+
 
         public IActionResult ObtenerMenuDinamico()
         {
@@ -524,7 +603,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion")] Empleado empleado, IFormFile Fotografia)
+        public async Task<IActionResult> Create([Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,CodigoReloj")] Empleado empleado, IFormFile Fotografia)
         {
 
             try
@@ -637,7 +716,7 @@ namespace PlanillaPM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor")] Empleado empleado, IFormFile Fotografia, bool IsImageRemoved)
+        public async Task<IActionResult> Edit(int id, [Bind("IdEmpleado,CodigoInterno,NombreEmpleado,ApellidoEmpleado,NumeroIdentidad,NumeroLicencia,FechaVencimientoLicencia,Nacionalidad,FechaNacimiento,Genero,Direccion,Telefono,CiudadResidencia,Email,Activo,IdCargo,IdDepartamento,IdTipoContrato,IdTipoNomina,IdEncargado,IdClaseEmpleado,IdUbicacion,EstadoCivil,FechaInicio,IdBanco,TipoCuentaBancaria,CuentaBancaria,NumeroRegistroTributario,SalarioBase,NumeroSeguroSocial,Comentarios,Observaciones,FechaInactivacion,MotivoInactivacion,FechaCreacion,FechaModificacion,CreadoPor,ModificadoPor,CodigoReloj")] Empleado empleado, IFormFile Fotografia, bool IsImageRemoved)
         {
 
 
@@ -1356,41 +1435,80 @@ namespace PlanillaPM.Controllers
 
 
 
+        //private void SetCamposAuditoria(Empleado record, bool bNewRecord)
+        //{
+
+        //    try
+        //    {
+        //    var now = DateTime.Now;
+        //    var CurrentUser = _userManager.GetUserName(User);
+
+        //    if (bNewRecord)
+        //    {
+        //        record.FechaCreacion = now;
+        //        record.CreadoPor = CurrentUser;
+        //        record.FechaModificacion = now;
+        //        record.ModificadoPor = CurrentUser;
+        //        record.Activo = true;
+        //    }
+        //    else
+        //    {
+        //        record.FechaModificacion = now;
+        //        record.ModificadoPor = CurrentUser;
+        //        if (record.FechaCreacion.ToString() == "1/1/0001 00:00:00")
+        //        {
+        //            record.FechaCreacion = now;
+        //        }
+        //        if (record.CreadoPor == null)
+        //        {
+        //            record.CreadoPor = CurrentUser;
+        //        }
+        //    }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
         private void SetCamposAuditoria(Empleado record, bool bNewRecord)
         {
-
             try
             {
-            var now = DateTime.Now;
-            var CurrentUser = _userManager.GetUserName(User);
+                var now = DateTime.Now;
+                var currentUser = _userManager.GetUserName(User);
 
-            if (bNewRecord)
-            {
-                record.FechaCreacion = now;
-                record.CreadoPor = CurrentUser;
-                record.FechaModificacion = now;
-                record.ModificadoPor = CurrentUser;
-                record.Activo = true;
-            }
-            else
-            {
-                record.FechaModificacion = now;
-                record.ModificadoPor = CurrentUser;
-                if (record.FechaCreacion.ToString() == "1/1/0001 00:00:00")
+                if (bNewRecord)
                 {
                     record.FechaCreacion = now;
+                    record.CreadoPor = currentUser;
+                    record.Activo = true;
                 }
-                if (record.CreadoPor == null)
+                else
                 {
-                    record.CreadoPor = CurrentUser;
+                    // Corregimos verificación para evitar valores fuera de rango
+                    if (record.FechaCreacion < new DateTime(1753, 1, 1))
+                    {
+                        record.FechaCreacion = now;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(record.CreadoPor))
+                    {
+                        record.CreadoPor = currentUser;
+                    }
                 }
-            }
+
+                // Esto siempre se actualiza
+                record.FechaModificacion = now;
+                record.ModificadoPor = currentUser;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
+
     }
 
 }

@@ -1,0 +1,184 @@
+﻿@using MiradorHRM.Models
+@model EmpleadoHorasTrabajoDetalleViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card card-primary">
+        <div class="card-header" style="background-color: var(--blue);">
+            <h3 class="card-title">Detalle de EmpleadoHorasTrabajo</h3>
+        </div>
+        <div class="card-body">
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <h5>Información General</h5>
+                <br/>
+                <div class="row">
+                        <div class="form-group row">
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.IdEmpleado)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Model.RegistroActual.IdEmpleado" />
+
+                                </div>
+                       </div> 
+                       
+                   
+
+                    <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.TotalNormales)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.TotalNormales)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.TotalDiurna)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.TotalDiurna)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.TotalNocturna)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.TotalNocturna)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.TotalMixta)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.TotalMixta)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.TotalNoTrabajado)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.TotalNoTrabajado)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.Estado)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.Estado)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.Activo)</label>
+                                </div>
+                                <div class="col-md-8">
+                            @Html.DisplayFor(model => @Model.RegistroActual.Activo)
+                                </div>
+                       </div>                      
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                            <label class="control-label">@Html.DisplayNameFor(model => @Model.RegistroActual.Dispositivo)</label>
+                                </div>
+                                <div class="col-md-8">
+                            <input type="text" class="form-control" disabled value="@Html.DisplayFor(model => @Model.RegistroActual.Dispositivo)" />
+                                </div>
+                       </div> 
+                        <div class="form-group row">
+                       </div> 
+                </div>
+            </div>
+            <div class="callout callout-info" style="border-left-color: var(--blue);">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Horario Mensual</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-striped mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Empleado</th>
+                                <th>Día</th>
+                                <th>Entrada</th>
+                                <th>Salida</th>
+                                <th>Receso Desde</th>
+                                <th>Receso Hasta</th>
+                                <th>Horas</th>
+                                <th>Tipo Jornada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RegistrosDelMes)
+                            {
+                                <tr>
+                                    <td>@item.IdEmpleadoNavigation.NombreCompleto</td>
+                                    <td>@item.DiaSemana</td>
+                                    <td>@item.Entrada?.ToString(@"hh\:mm")</td>
+                                    <td>@item.Salida?.ToString(@"hh\:mm")</td>
+                                    <td>@item.Receso_Desde?.ToString(@"hh\:mm")</td>
+                                    <td>@item.Receso_Hasta?.ToString(@"hh\:mm")</td>
+                                    <td>@item.TotalNormales?.ToString(@"hh\:mm")</td>
+                                    <td>@item.Estado</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="callout callout-info" style="border-left-color: var(--blue); ">
+                <h5>Responsable</h5>
+                <br />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="@Model.RegistroActual.FechaCreacion" class="control-label"></label>
+                            <input asp-for="@Model.RegistroActual.FechaCreacion" class="form-control" disabled />
+                            <span asp-validation-for="@Model.RegistroActual.FechaCreacion" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="@Model.RegistroActual.FechaModificacion" class="control-label"></label>
+                            <input asp-for="@Model.RegistroActual.FechaModificacion" class="form-control" disabled />
+                            <span asp-validation-for="@Model.RegistroActual.FechaModificacion" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="@Model.RegistroActual.CreadoPor" class="control-label"></label>
+                            <input asp-for="@Model.RegistroActual.CreadoPor" class="form-control" disabled />
+                            <span asp-validation-for="@Model.RegistroActual.CreadoPor" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="@Model.RegistroActual.ModificadoPor" class="control-label"></label>
+                            <input asp-for="@Model.RegistroActual.ModificadoPor" class="form-control" disabled />
+                            <span asp-validation-for="@Model.RegistroActual.ModificadoPor" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+         <div class="card-footer">
+            <a asp-action="Edit" asp-route-id="@Model.RegistroActual.IdEmpleadoHorasTrabajo" type="submit" class="btn btn-primary" style="background-color: var(--blue);">Editar</a>
+             <a asp-action="Index" class="btn btn-secondary">Regresar a la Lista</a>
+          </div>
+    </div>
+</div>
+
+

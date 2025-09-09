@@ -1,0 +1,363 @@
+﻿@model PlanillaPM.Models.EmpleadoHorario
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <form asp-action="Create">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="card-title">Registro de Horario del Empleado</h3>
+            </div>
+
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <!-- Sección de Información Básica -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdEmpleado" class="control-label font-weight-bold">Empleado</label>
+                            <select asp-for="IdEmpleado" class="form-control select2bs4" asp-items="ViewBag.IdEmpleado">
+                                <option value="">Seleccione un empleado...</option>
+                            </select>
+                            <span asp-validation-for="IdEmpleado" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="IdHorarioBase" class="control-label font-weight-bold">Horario Base</label>
+                            <select id="IdHorarioBase" name="IdHorarioBase" asp-for="IdHorarioBase" class="form-control select2bs4" asp-items="ViewBag.IdHorario">
+                                <option value="">Seleccione un horario base...</option>
+                            </select>
+                            <span asp-validation-for="IdHorarioBase" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Días de Trabajo -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch ms-4">
+                            <input class="form-check-input" type="checkbox" asp-for="IndSabado" id="sabadoCheck">
+                            <label class="form-check-label font-weight-bold" for="sabadoCheck">Trabaja Sábado</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check form-switch ms-4">
+                            <input class="form-check-input" type="checkbox" asp-for="IndDomingo" id="domingoCheck">
+                            <label class="form-check-label font-weight-bold" for="domingoCheck">Trabaja Domingo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horario Semanal -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0">Horario Semanal</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Día</th>
+                                        <th colspan="2" class="text-center">Hora Laboral</th>
+                                        <th colspan="2" class="text-center">Receso</th>                                      
+                                        <th>Horas Diarias</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>Entrada</th>
+                                        <th>Salida</th>
+                                        <th>Inicio</th>
+                                        <th>Fin</th>                                      
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen -->
+                <div class="row">
+                 
+                    <div class="col-md-12">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h4 class="card-title mb-0">Resumen</h4>
+                            </div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <div class="form-group text-center">
+                                    <label asp-for="TotalHorasSemana" class="control-label font-weight-bold">Total Horas por Semana</label>
+                                    <input name="TotalHorasSemana" id="TotalHorasSemana" asp-for="TotalHorasSemana" class="form-control text-center font-weight-bold" style="font-size: 1.5rem;" readonly />
+                                    <span asp-validation-for="TotalHorasSemana" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer text-right">
+                <button type="submit" class="btn btn-primary mr-2">
+                    <i class="fas fa-save mr-1"></i> Guardar Horario
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i> Regresar a la Lista
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+
+        $(document).ready(function () {
+            $('#IdEmpleado').on('change', function () {
+                const idEmpleado = $(this).val();
+                if (!idEmpleado) return;
+
+                $.ajax({
+                    url: `/EmpleadoHorario/ObtenerHorarioPorEmpleado`,
+                    method: 'GET',
+                    data: { idEmpleado: idEmpleado },
+                    success: function (response) {
+                        const horarioId = response.idHorario;
+                        if (horarioId) {
+                            $('#IdHorarioBase').val(horarioId).trigger('change');
+                        } else {
+                            toastr.warning("El empleado seleccionado no tiene clase activa o no tiene horario asignado.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                       toastr.error("Error al obtener el horario del empleado. Verifique que el empleado y su clase estén activos.");
+                        console.error("Error al obtener el horario por empleado:", error);
+                    }
+                });
+            });
+        });
+
+
+        const diasSemana = [
+            { nombre: "Lunes", prefijo: "Lun" },
+            { nombre: "Martes", prefijo: "Mar" },
+            { nombre: "Miércoles", prefijo: "Mie" },
+            { nombre: "Jueves", prefijo: "Jue" },
+            { nombre: "Viernes", prefijo: "Vie" },
+            { nombre: "Sábado", prefijo: "Sab", rowId: "sabadoRow" },
+            { nombre: "Domingo", prefijo: "Dom", rowId: "domingoRow" }
+        ];
+
+        $(document).ready(function () {
+            $('#IdHorarioBase').on('change', function () {
+                const id = $(this).val();
+                if (!id) return;
+
+                $.ajax({
+                    url: `/EmpleadoHorario/ObtenerHorarioBase`,
+                    method: 'GET',
+                    data: { id: id },
+                    success: function (data) {
+                       if (!data || Object.keys(data).length === 0) {
+                    toastr.warning("No se encontró información del horario seleccionado.");
+                    return;
+                }
+                        
+                        const $tbody = $('table tbody');
+                        $tbody.empty(); // Limpiar contenido anterior
+
+                        diasSemana.forEach(dia => {
+                            const desde = data[`${dia.prefijo.toLowerCase()}Desde`] ?? "";
+                            const hasta = data[`${dia.prefijo.toLowerCase()}Hasta`] ?? "";
+                            const recesoDesde = data[`${dia.prefijo.toLowerCase()}RecesoDesde`] ?? "";
+                            const recesoHasta = data[`${dia.prefijo.toLowerCase()}RecesoHasta`] ?? "";
+                            const trabaja = data[`ind${dia.prefijo}`];
+
+                            // Ocultar sábados o domingos si no trabaja
+                            if ((dia.prefijo === "Sab" || dia.prefijo === "Dom") && !trabaja) return;
+
+                                    const nombrePropiedad = {
+                                Lun: "Lunes",
+                                Mar: "Martes",
+                                Mie: "Miercoles",
+                                Jue: "Jueves",
+                                Vie: "Viernes",
+                                Sab: "Sabado",
+                                Dom: "Domingo"
+                            }[dia.prefijo];
+
+                            const row = `
+                                <tr id="${dia.rowId ?? ''}">
+                                    <td class="font-weight-bold">${dia.nombre}</td>
+                                    <td>
+                                        <input name="${dia.prefijo}Desde" class="form-control timepicker" type="time" value="${desde}">
+                                    </td>
+                                    <td>
+                                        <input name="${dia.prefijo}Hasta" class="form-control timepicker" type="time" value="${hasta}">
+                                    </td>
+                                    <td>
+                                        <input name="${dia.prefijo}RecesoDesde" class="form-control timepicker" type="time" value="${recesoDesde}">
+                                    </td>
+                                    <td>
+                                        <input name="${dia.prefijo}RecesoHasta" class="form-control timepicker" type="time" value="${recesoHasta}">
+                                    </td>
+                                    <td class="daily-hours">
+                                        <span class="hora-dia"></span>
+                                        <input type="hidden" name="Horas${nombrePropiedad}" class="hora-dia-hidden" value="0:00" />
+                                    </td>
+                                </tr>
+                            `;
+                            $tbody.append(row);
+                        });
+                        actualizarTotales();
+                    },
+                    error: function (xhr, status, error) {
+                toastr.error("No fue posible cargar el horario base. Asegúrese de que la clase del empleado y el horario estén activos.");
+                console.error("Error al obtener horario base:", error);
+            }
+                });
+            });
+        });
+
+        //cálculo dinámicamente cuando el usuario edite un campo
+            $(document).on('input', 'input[type="time"]', function () {
+            actualizarTotales();
+        });
+
+        //calcular diferencia de horas
+        function calcularHoras(entrada, salida, recesoInicio, recesoFin) {
+            if (!entrada || !salida) return 0;
+
+            const toMinutes = t => {
+                const [h, m] = t.split(":").map(Number);
+                return h * 60 + m;
+            };
+
+            let inicio = toMinutes(entrada);
+            let fin = toMinutes(salida);
+            let total = fin - inicio;
+
+            if (recesoInicio && recesoFin) {
+                let rIni = toMinutes(recesoInicio);
+                let rFin = toMinutes(recesoFin);
+                total -= (rFin - rIni);
+            }
+
+            return total > 0 ? total : 0;
+        }
+
+        function formatoHHMM(minutos) {
+            const h = Math.floor(minutos / 60);
+            const m = minutos % 60;
+            return `${h}:${m.toString().padStart(2, "0")}`;
+        }
+
+        //recalcular todas las filas
+                function actualizarTotales() {
+            let totalSemana = 0;
+
+            $('tbody tr').each(function () {
+                const fila = $(this);
+                const entrada = fila.find('input[name$="Desde"]').val();
+                const salida = fila.find('input[name$="Hasta"]').val();
+                const recesoInicio = fila.find('input[name$="RecesoDesde"]').val();
+                const recesoFin = fila.find('input[name$="RecesoHasta"]').val();
+
+                const minutos = calcularHoras(entrada, salida, recesoInicio, recesoFin);
+                totalSemana += minutos;
+
+                // fila.find('.daily-hours').text(formatoHHMM(minutos));
+                        const horasTexto = formatoHHMM(minutos);
+        fila.find('.hora-dia').text(horasTexto);
+        fila.find('.hora-dia-hidden').val(horasTexto);
+            });
+
+            const totalFormatted = formatoHHMM(totalSemana);
+            $('input[name="TotalHorasSemana"]').val(totalFormatted);
+        }
+
+
+        //agregar sabado y domingo
+            $('#sabadoCheck, #domingoCheck').on('change', function () {
+            const esSabado = this.id === 'sabadoCheck';
+            const activo = this.checked;
+            const prefijo = esSabado ? 'Sab' : 'Dom';
+            const nombreDia = esSabado ? 'Sábado' : 'Domingo';
+            const rowId = esSabado ? 'sabadoRow' : 'domingoRow';
+            const nombrePropiedad = esSabado ? 'Sabado' : 'Domingo';
+
+            // Si lo activó, agregamos fila
+            if (activo) {
+                // Si ya existe, no hacemos nada
+                if ($(`#${rowId}`).length > 0) return;
+
+                const row = `
+                    <tr id="${rowId}">
+                        <td class="font-weight-bold">${nombreDia}</td>
+                        <td><input name="${prefijo}Desde" class="form-control timepicker" type="time" value=""></td>
+                        <td><input name="${prefijo}Hasta" class="form-control timepicker" type="time" value=""></td>
+                        <td><input name="${prefijo}RecesoDesde" class="form-control timepicker" type="time" value="12:00"></td>
+                        <td><input name="${prefijo}RecesoHasta" class="form-control timepicker" type="time" value="13:00"></td>
+                       <td class="daily-hours">
+                            <span class="hora-dia"></span>
+                            <input type="hidden" name="Horas${nombrePropiedad}" class="hora-dia-hidden" value="0:00" />
+                        </td>
+                    </tr>
+                `;
+                $('table tbody').append(row);
+            } else {
+                // Si lo desactiva, eliminamos la fila
+                $(`#${rowId}`).remove();
+            }
+
+            actualizarTotales();
+
+
+        });
+
+
+             document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function (e) {
+                let errores = [];
+
+                // Verificar si sábado está activado y sus campos están llenos y válidos
+                if ($('#sabadoCheck').is(':checked')) {
+                    const desde = $('input[name="SabDesde"]').val();
+                    const hasta = $('input[name="SabHasta"]').val();
+                    if (!desde || !hasta || desde === '00:00' || hasta === '00:00') {
+                        errores.push("Debe ingresar horas válidas para el día sábado.");
+                    }
+                }
+
+                // Verificar si domingo está activado y sus campos están llenos y válidos
+                if ($('#domingoCheck').is(':checked')) {
+                    const desde = $('input[name="DomDesde"]').val();
+                    const hasta = $('input[name="DomHasta"]').val();
+                    if (!desde || !hasta || desde === '00:00' || hasta === '00:00') {
+                        errores.push("Debe ingresar horas válidas para el día domingo.");
+                    }
+                }
+
+                if (errores.length > 0) {
+                    e.preventDefault(); // Detener envío del formulario
+                    toastr.warning(errores.join("<br>"));
+                }
+            });
+        });
+    </script>
+}

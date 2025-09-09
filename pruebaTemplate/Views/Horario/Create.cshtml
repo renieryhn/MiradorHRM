@@ -266,8 +266,8 @@
                                 <div class="small-box bg-info">
                                     <div class="inner">
                                         <p>Total de Horas por Semana</p>
-                                        <h3 id="labelTotalHoras">43:00</h3>
-                                        <input type="text" hidden asp-for="TotalHorasSemana" value="43:00" class="form-control" />
+                                        <h3 id="labelTotalHoras">00:00</h3>
+                                        <input type="text" hidden asp-for="TotalHorasSemana" class="form-control" />
                                     </div>
                                     <div class="icon">
                                         <i class="fa-solid fa-clock"></i>
@@ -291,9 +291,7 @@
 
 
 <script type="text/javascript">
-    // Funcion para sumar todas las horas laborales en el formulario actual
-    //     La hora se suma si en campo de Indicador IndLun, mar, mier, etc esta marcado con true, ademas se debe reducir la hora indicada de comida por cada dia marcado y
-    //     llamar a esta funcion cada vez que cambia un control en el onchance para mantener la suna en tiempo real
+   
     function ValidateTime(timeFrom, timeTo) {
         if (timeFrom > timeTo) {
             alert("La hora de inicio no puede ser mayor a la hora de finalización");
@@ -363,17 +361,26 @@
         return horas + ":" + minutos;
     }
 
+        function calcularHoras(desde, hasta) {
+        let inicio = new Date("01/01/2021 " + desde);
+        let fin = new Date("01/01/2021 " + hasta);
 
-    function calcularHoras(desde, hasta) {
-        var desde = new Date("01/01/2021 " + desde);
-        var hasta = new Date("01/01/2021 " + hasta);
+        // Si el fin es menor o igual, significa que pasa de medianoche (horario nocturno)
+        if (fin <= inicio) {
+            fin.setDate(fin.getDate() + 1); // sumar un día
+        }
 
-        var diff = hasta - desde;
-        var hours = Math.floor(diff / 1000 / 60 / 60);
-        var minutes = Math.floor(diff / 1000 / 60) - (hours * 60);
+        let diff = fin - inicio;
+        let hours = Math.floor(diff / 1000 / 60 / 60);
+        let minutes = Math.floor((diff / 1000 / 60) % 60);
 
         return hours + ":" + minutes;
     }
+        $(document).ready(function () {
+        sumarHoras();
+    });
+
+
 </script>
 @section Scripts {
     @{
